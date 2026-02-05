@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: Arial, sans-serif; padding: 12px; }
+      h2 { font-size: 14px; margin: 0 0 10px; }
+      .row { margin-bottom: 10px; }
+      label { display: block; font-size: 12px; margin-bottom: 4px; }
+      input[type="text"], textarea, select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+      textarea { height: 72px; resize: vertical; }
+      .inline { display: flex; gap: 8px; align-items: center; }
+      .inline > div { flex: 1; }
+      .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+      button {
+        padding: 8px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .muted { color: #666; font-size: 11px; line-height: 1.4; white-space: pre-wrap; }
+      .ok { color: #0a7; font-size: 12px; white-space: pre-wrap; }
+      .err { color: #c00; font-size: 12px; white-space: pre-wrap; }
+      .sep { border-top: 1px solid #ddd; margin: 12px 0; }
+      code { font-family: Consolas, monospace; font-size: 11px; }
+    </style>
+  </head>
+  <body>
+    <h2>手動イベント登録（CalendarEvents）</h2>
+
+    <div id="msg" class="muted">初期化中...</div>
+
+    <div class="row muted">
+      eventKey を主キーにして <code>CalendarEvents</code> シートへ書き込みます。<br>
+      反映（カレンダー登録）は「Sync」で行います。
+    </div>
+
+    <div class="row">
+      <label>eventKey（必須）</label>
+      <input type="text" id="eventKey" placeholder="manual:2026-03-01:new-event">
+    </div>
+
+    <div class="row">
+      <label>title（必須）</label>
+      <input type="text" id="title" placeholder="イベント名">
+    </div>
+
+    <div class="row inline">
+      <div>
+        <label>status</label>
+        <select id="status">
+          <option value="active" selected>active</option>
+          <option value="cancelled">cancelled</option>
+        </select>
+      </div>
+      <div>
+        <label>source</label>
+        <select id="source">
+          <option value="manual" selected>manual</option>
+          <option value="import">import</option>
+          <option value="news">news</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <label>isAllDay</label>
+      <select id="isAllDay">
+        <option value="false" selected>false（日時）</option>
+        <option value="true">true（終日）</option>
+      </select>
+      <div class="muted">
+        終日の場合：startIso/endIso は <code>YYYY-MM-DD</code> でも可（保存時に正規化）。
+      </div>
+    </div>
+
+    <div class="row inline">
+      <div>
+        <label>startIso（必須）</label>
+        <input type="text" id="startIso" placeholder="2026-03-01T09:00:00">
+      </div>
+      <div>
+        <label>endIso（必須）</label>
+        <input type="text" id="endIso" placeholder="2026-03-01T10:00:00">
+      </div>
+    </div>
+
+    <div class="row">
+      <label>location</label>
+      <input type="text" id="location" placeholder="会場など">
+    </div>
+
+    <div class="row">
+      <label>url</label>
+      <input type="text" id="url" placeholder="https://...">
+    </div>
+
+    <div class="row">
+      <label>description</label>
+      <textarea id="description" placeholder="メモ／詳細"></textarea>
+    </div>
+
+    <div class="row">
+      <label>calendarEventId（任意）</label>
+      <input type="text" id="calendarEventId" placeholder="（通常は空欄）">
+      <div class="muted">既存イベントを操作したい場合のみ指定（通常は import で埋まる想定）。</div>
+    </div>
+
+    <div class="btns">
+      <button onclick="onSave()">シートに保存</button>
+      <button onclick="onSync(false)">Sync（本番）</button>
+      <button onclick="onSync(true)">Sync（dry-run）</button>
+      <button onclick="onReInit()">再初期化</button>
+    </div>
+
+    <div class="sep"></div>
+
+    <div class="row inline">
+      <div>
+        <label>Import: timeMin</label>
+        <input type="text" id="importMin" placeholder="2026-02-01">
+      </div>
+      <div>
+        <label>Import: timeMax</label>
+        <input type="text" id="importMax" placeholder="2026-05-01">
+      </div>
+    </div>
+
+    <div class="row inline">
+      <div>
+        <label>includeDeleted</label>
+        <select id="includeDeleted">
+          <option value="false" selected>false</option>
+          <option value="true">true</option>
+        </select>
+      </div>
+      <div style="display:flex; align-items:flex-end;">
+        <button style="width:100%;" onclick="onImport()">Import（カレンダー→シート）</button>
+      </div>
+    </div>
+
+    <script>
+      function setMsg(text, cls) {
+        var el = document.getElementById('msg');
+        el.className = cls || 'muted';
+        el.textContent = text || '';
+      }
+
+      function init() {
+        setMsg('初期化中...（Config読込/シート整備）', 'muted');
+        google.script.run
+          .withSuccessHandler(function(state) {
+            document.getElementById('eventKey').value = state.defaultEventKey || '';
+            document.getElementById('startIso').value = state.defaultStartIso || '';
+            document.getElementById('endIso').value = state.defaultEndIso || '';
+            setMsg('初期化完了。', 'ok');
+          })
+          .withFailureHandler(function(err) {
+            setMsg('初期化に失敗しました。\n' + String(err && err.message ? err.message : err), 'err');
+          })
+          .ui_init_sidebar();
+      }
+
+      function onReInit() {
+        init();
+      }
+
+      function collectForm() {
+        return {
+          eventKey: document.getElementById('eventKey').value,
+          title: document.getElementById('title').value,
+          status: document.getElementById('status').value,
+          source: document.getElementById('source').value,
+          startIso: document.getElementById('startIso').value,
+          endIso: document.getElementById('endIso').value,
+          isAllDay: document.getElementById('isAllDay').value,
+          location: document.getElementById('location').value,
+          description: document.getElementById('description').value,
+          url: document.getElementById('url').value,
+          calendarEventId: document.getElementById('calendarEventId').value
+        };
+      }
+
+      function onSave() {
+        setMsg('保存中...', 'muted');
+        var form = collectForm();
+        google.script.run
+          .withSuccessHandler(function(stored) {
+            setMsg('保存しました。\n' +
+              'eventKey=' + stored.eventKey + '\n' +
+              'calendarEventId=' + (stored.calendarEventId || '(empty)') + '\n' +
+              'status=' + stored.status, 'ok');
+          })
+          .withFailureHandler(function(err) {
+            setMsg(String(err && err.message ? err.message : err), 'err');
+          })
+          .ui_upsert_manual_event_from_form(form);
+      }
+
+      function onSync(dryRun) {
+        setMsg('Sync実行中...', 'muted');
+        google.script.run
+          .withSuccessHandler(function(res) {
+            setMsg('Sync完了（dryRun=' + res.dryRun + '）。ログを確認してください。', 'ok');
+          })
+          .withFailureHandler(function(err) {
+            setMsg(String(err && err.message ? err.message : err), 'err');
+          })
+          .ui_sync_calendar_events(!!dryRun);
+      }
+
+      function onImport() {
+        setMsg('Import実行中...', 'muted');
+        var minIso = document.getElementById('importMin').value;
+        var maxIso = document.getElementById('importMax').value;
+        var inc = document.getElementById('includeDeleted').value === 'true';
+        google.script.run
+          .withSuccessHandler(function() {
+            setMsg('Import完了。CalendarEventsシートを確認してください。', 'ok');
+          })
+          .withFailureHandler(function(err) {
+            setMsg(String(err && err.message ? err.message : err), 'err');
+          })
+          .ui_import_calendar_events(minIso, maxIso, inc);
+      }
+
+      // init after sidebar is rendered
+      init();
+    </script>
+  </body>
+</html>
