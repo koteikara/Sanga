@@ -16,6 +16,7 @@ function run() {
   for (var p = 1; p <= maxPages; p++) {
     var url = buildListPageUrl_(listUrl, p);
     var html = fetchHtml(url);
+    console.log("[debug][list] url=" + url + " htmlLen=" + (html ? html.length : 0) + " head=" + String(html || "").slice(0, 200));
     var articles = parseNewsList(html);
     if (!articles || articles.length === 0) break;
     allArticles = allArticles.concat(articles);
@@ -286,4 +287,29 @@ function run_test_extract_only() {
   }
 
   console.log("[extract-only] done");
+}
+
+function run_test_list_only() {
+  var cfg = CFG();
+  var html = fetchHtml(cfg.NEWS_LIST_URL);
+  console.log("[list-only] url=" + cfg.NEWS_LIST_URL + " htmlLen=" + (html ? html.length : 0));
+  var articles = parseNewsList(html) || [];
+  console.log("[list-only] parsed articles=" + articles.length);
+  if (articles[0]) console.log("[list-only] first=" + JSON.stringify(articles[0]));
+}
+
+function run_debug_list_scan() {
+  var cfg = CFG();
+  var url = cfg.NEWS_LIST_URL;
+  var html = fetchHtml(url) || "";
+
+  console.log("[scan] url=" + url + " htmlLen=" + html.length);
+
+  var m = html.match(/\/news\/detail\/\d+/g) || [];
+  console.log("[scan] /news/detail count=" + m.length);
+  if (m[0]) console.log("[scan] sample=" + m.slice(0, 5).join(", "));
+
+  // タイトルっぽい手がかり（ありがちな class/id を軽く確認）
+  console.log("[scan] has 'news' word? " + (html.indexOf("news") >= 0));
+  console.log("[scan] has 'detail' word? " + (html.indexOf("detail") >= 0));
 }
