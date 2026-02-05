@@ -11,67 +11,70 @@ function upsertCalendarEvent(item, article, opt) {
     return;
   }
 
+  var normalizedItem = normalizeSaleItem_(item);
+
+  var summary = buildSaleSummary_(normalizedItem);
+  var description = buildDescription(normalizedItem, article);
+
+  var fp = buildFingerprint(normalizedItem, summary);
+
+  // Ledger lookup by itemKey + fingerprint
+  var matchedRow = getLedgerRowByItemKeyAndFingerprint_(normalizedItem.itemKey, fp);
+  if (matchedRow) {
+    console.log("[skip] itemKey=" + normalizedItem.itemKey + " (fingerprint same)");
+    return;
+  }
+
   // Ledger lookup by itemKey
-  var row = getLedgerRowByItemKey(item.itemKey);
-
-  var summary = buildSaleSummary_(item);
-  var description = buildDescription(item, article);
-
-  var fp = buildFingerprint(item, summary);
+  var row = getLedgerRowByItemKey(normalizedItem.itemKey);
 
   if (!row) {
     if (dryRun) {
-      console.log("[DRYRUN][insert] itemKey=" + item.itemKey + " summary=" + summary);
+      console.log("[DRYRUN][insert] itemKey=" + normalizedItem.itemKey + " summary=" + summary);
       return;
     }
     // Insert
-    var event = insertEvent_(cfg, item, summary, description);
+    var event = insertEvent_(cfg, normalizedItem, summary, description);
     upsertLedgerRow({
-      itemKey: item.itemKey,
+      itemKey: normalizedItem.itemKey,
       calendarEventId: event.id,
       articleId: article.articleId || "",
       url: article.url || "",
-      type: item.type || "",
-      label: item.label || "",
-      startIso: formatIsoLedger_(item.start),
-      endIso: formatIsoLedger_(item.end),
+      type: normalizedItem.type || "",
+      label: normalizedItem.label || "",
+      startIso: formatIsoLedger_(normalizedItem.start),
+      endIso: formatIsoLedger_(normalizedItem.end),
       summary: summary,
       fingerprint: fp,
       lastUpsertAt: nowIso_(),
       status: "active"
     });
-    console.log("[insert] itemKey=" + item.itemKey + " eventId=" + event.id);
-    return;
-  }
-
-  // row exists
-  if (row.fingerprint === fp) {
-    console.log("[skip] itemKey=" + item.itemKey + " (fingerprint same)");
+    console.log("[insert] itemKey=" + normalizedItem.itemKey + " eventId=" + event.id);
     return;
   }
 
   if (dryRun) {
-    console.log("[DRYRUN][update] itemKey=" + item.itemKey + " eventId=" + row.calendarEventId);
+    console.log("[DRYRUN][update] itemKey=" + normalizedItem.itemKey + " eventId=" + row.calendarEventId);
     return;
   }
 
   // Update/Patch
-  var patched = patchEvent_(cfg, row.calendarEventId, item, summary, description);
+  var patched = patchEvent_(cfg, row.calendarEventId, normalizedItem, summary, description);
   upsertLedgerRow({
-    itemKey: item.itemKey,
+    itemKey: normalizedItem.itemKey,
     calendarEventId: row.calendarEventId,
     articleId: article.articleId || row.articleId || "",
     url: article.url || row.url || "",
-    type: item.type || row.type || "",
-    label: item.label || row.label || "",
-    startIso: formatIsoLedger_(item.start),
-    endIso: formatIsoLedger_(item.end),
+    type: normalizedItem.type || row.type || "",
+    label: normalizedItem.label || row.label || "",
+    startIso: formatIsoLedger_(normalizedItem.start),
+    endIso: formatIsoLedger_(normalizedItem.end),
     summary: summary,
     fingerprint: fp,
     lastUpsertAt: nowIso_(),
     status: row.status || "active"
   });
-  console.log("[update] itemKey=" + item.itemKey + " eventId=" + patched.id);
+  console.log("[patch] itemKey=" + normalizedItem.itemKey + " eventId=" + patched.id);
 }
 
 function buildSummary(item, article) {
@@ -85,7 +88,7 @@ function buildSummary(item, article) {
 
 function buildSaleSummary_(item) {
   var cfg = CFG();
-  var label = item && item.label ? item.label : "販売";
+  var label = item && item.label ? item.label : "販売開始";
   var base = "【販売開始】" + label;
   return truncateUtf16_(base, cfg.SUMMARY_MAX_LEN);
 }
@@ -182,4 +185,57 @@ function truncateUtf16_(s, maxLen) {
   s = String(s || "");
   if (s.length <= maxLen) return s;
   return s.substring(0, Math.max(0, maxLen - 1)) + "…";
+}
+
+function normalizeSaleItem_(item) {
+  var cfg = CFG();
+  var normalized = {};
+  for (var k in item) {
+    if (Object.prototype.hasOwnProperty.call(item, k)) normalized[k] = item[k];
+  }
+
+  var start = item && item.start ? new Date(item.start) : null;
+  var end = item && item.end ? new Date(item.end) : null;
+  normalized.start = start;
+  normalized.end = end;
+
+  if (!start) return normalized;
+
+  var startDay = Utilities.formatDate(start, cfg.TZ, "yyyy-MM-dd");
+  var endDay = end ? Utilities.formatDate(end, cfg.TZ, "yyyy-MM-dd") : null;
+  if (!end || endDay !== startDay) {
+    var corrected = new Date(start);
+    corrected.setHours(23, 59, 0, 0);
+    normalized.end = corrected;
+  }
+  return normalized;
+}
+
+function getLedgerRowByItemKeyAndFingerprint_(itemKey, fingerprint) {
+  var cfg = CFG();
+  var ss = openLedgerSpreadsheet_(cfg);
+  var sh = ss.getSheetByName(cfg.LEDGER_SHEET_NAME);
+  if (!sh) throw new Error("Ledger sheet missing. Call ensureLedgerSheet() first.");
+
+  var lock = LockService.getDocumentLock();
+  try {
+    lock.waitLock(2000);
+  } catch (e) {
+    throw new Error("EventLedger is locked by another execution. Stop running executions and retry.");
+  }
+
+  try {
+    var lastRow = sh.getLastRow();
+    if (lastRow <= 1) return null;
+
+    var values = sh.getRange(2, 1, lastRow - 1, 12).getValues();
+    for (var i = 0; i < values.length; i++) {
+      if (String(values[i][0]) === String(itemKey) && String(values[i][9]) === String(fingerprint)) {
+        return ledgerRowArrayToObj_(values[i], i + 2);
+      }
+    }
+    return null;
+  } finally {
+    try { lock.releaseLock(); } catch (e2) {}
+  }
 }
