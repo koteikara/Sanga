@@ -6,10 +6,15 @@ function upsertCalendarEvent(item, article, opt) {
   opt = opt || {};
   var dryRun = !!opt.dryRun;
 
+  if (!item || item.type !== "sale") {
+    console.log("[skip] itemKey=" + (item && item.itemKey ? item.itemKey : "") + " (not sale)");
+    return;
+  }
+
   // Ledger lookup by itemKey
   var row = getLedgerRowByItemKey(item.itemKey);
 
-  var summary = buildSummary(item, article);
+  var summary = buildSaleSummary_(item);
   var description = buildDescription(item, article);
 
   var fp = buildFingerprint(item, summary);
@@ -75,6 +80,13 @@ function buildSummary(item, article) {
   var datePart = formatHumanRange_(item.start, item.end);
   var base = (prefix ? prefix + " " : "") + datePart + " " + (article && article.title ? article.title : "");
   base = normalizeSpaces(base);
+  return truncateUtf16_(base, cfg.SUMMARY_MAX_LEN);
+}
+
+function buildSaleSummary_(item) {
+  var cfg = CFG();
+  var label = item && item.label ? item.label : "販売";
+  var base = "【販売開始】" + label;
   return truncateUtf16_(base, cfg.SUMMARY_MAX_LEN);
 }
 
