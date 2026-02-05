@@ -6,7 +6,8 @@ function normalizeNewsItems_(items, article) {
   var seen = {};
   var out = [];
   for (var i = 0; i < items.length; i++) {
-    var it = finalizeItem_(items[i], article);
+    var it = enforceSaleEnd_(items[i]);
+    it = finalizeItem_(it, article);
     if (!it) continue;
     if (it.type !== "sale") continue;
     if (seen[it.itemKey]) continue;
@@ -14,6 +15,15 @@ function normalizeNewsItems_(items, article) {
     out.push(it);
   }
   return out;
+}
+
+function enforceSaleEnd_(it) {
+  if (!it || !it.start) return it;
+  if (it.type !== "sale") return it;
+  var start = new Date(it.start.getTime());
+  it.start = start;
+  it.end = new Date(start.getFullYear(), start.getMonth(), start.getDate(), 23, 59, 0, 0);
+  return it;
 }
 
 function finalizeItem_(it, article) {
