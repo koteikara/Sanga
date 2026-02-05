@@ -20,10 +20,12 @@ function fetchHtml(url) {
 
       var code = res.getResponseCode();
       var body = res.getContentText(); // GAS auto-decodes; assume UTF-8 (site is UTF-8)
+      console.log("[fetchHtml] url=" + url + " attempt=" + attempt + " status=" + code + " len=" + (body ? body.length : 0));
       if (code >= 200 && code < 300 && body) return body;
 
       lastErr = new Error("HTTP " + code + " for " + url);
     } catch (e) {
+      console.error("[fetchHtml] url=" + url + " attempt=" + attempt + " exception=" + String(e && e.stack ? e.stack : e));
       lastErr = e;
     }
 

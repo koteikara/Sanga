@@ -11,18 +11,42 @@ function run() {
 
   var listUrl = cfg.NEWS_LIST_URL;
   var maxPages = cfg.MAX_PAGES_RUN;
+  if (!maxPages || maxPages < 1) {
+    console.log("[run] MAX_PAGES_RUN is invalid. fallback to 1 (was " + maxPages + ")");
+    maxPages = 1;
+  }
+  console.log("[run] start listUrl=" + listUrl + " maxPages=" + maxPages);
 
   var allArticles = [];
   for (var p = 1; p <= maxPages; p++) {
     var url = buildListPageUrl_(listUrl, p);
-    var html = fetchHtml(url);
-    console.log("[debug][list] url=" + url + " htmlLen=" + (html ? html.length : 0) + " head=" + String(html || "").slice(0, 200));
-    var articles = parseNewsList(html);
-    if (!articles || articles.length === 0) break;
+    var html = "";
+    try {
+      html = fetchHtml(url);
+    } catch (e) {
+      console.error("[run][list] fetch failed page=" + p + " url=" + url + " error=" + String(e && e.stack ? e.stack : e));
+      throw e;
+    }
+    console.log("[run][list] page=" + p + " url=" + url + " htmlLen=" + (html ? html.length : 0));
+    var articles = [];
+    try {
+      articles = parseNewsList(html) || [];
+    } catch (e2) {
+      console.error("[run][list] parse failed page=" + p + " url=" + url + " error=" + String(e2 && e2.stack ? e2.stack : e2));
+      throw e2;
+    }
+    console.log("[run][list] page=" + p + " parsed=" + articles.length);
+    if (articles.length === 0) {
+      console.log("[run][list] empty page=" + p + " break");
+      break;
+    }
     allArticles = allArticles.concat(articles);
+    console.log("[run][list] page=" + p + " accumulated=" + allArticles.length);
   }
 
+  console.log("[run] pre-dedupe articles=" + allArticles.length);
   allArticles = dedupeArticles_(allArticles);
+  console.log("[run] post-dedupe articles=" + allArticles.length);
 
   var totalItems = 0;
   for (var i = 0; i < allArticles.length; i++) {
