@@ -18,15 +18,13 @@ function upsertCalendarEvent(item, article, opt) {
 
   var fp = buildFingerprint(normalizedItem, summary);
 
-  // Ledger lookup by itemKey + fingerprint
-  var matchedRow = getLedgerRowByItemKeyAndFingerprint_(normalizedItem.itemKey, fp);
-  if (matchedRow) {
+  // Ledger lookup by itemKey
+  var row = getLedgerRowByItemKey(normalizedItem.itemKey);
+
+  if (row && row.fingerprint === fp) {
     console.log("[skip] itemKey=" + normalizedItem.itemKey + " (fingerprint same)");
     return;
   }
-
-  // Ledger lookup by itemKey
-  var row = getLedgerRowByItemKey(normalizedItem.itemKey);
 
   if (!row) {
     if (dryRun) {
@@ -194,8 +192,14 @@ function normalizeSaleItem_(item) {
     if (Object.prototype.hasOwnProperty.call(item, k)) normalized[k] = item[k];
   }
 
-  var start = item && item.start ? new Date(item.start) : null;
-  var end = item && item.end ? new Date(item.end) : null;
+  var start = null;
+  if (item && item.start) {
+    start = item.start instanceof Date ? new Date(item.start.getTime()) : new Date(item.start);
+  }
+  var end = null;
+  if (item && item.end) {
+    end = item.end instanceof Date ? new Date(item.end.getTime()) : new Date(item.end);
+  }
   normalized.start = start;
   normalized.end = end;
 
@@ -209,33 +213,4 @@ function normalizeSaleItem_(item) {
     normalized.end = corrected;
   }
   return normalized;
-}
-
-function getLedgerRowByItemKeyAndFingerprint_(itemKey, fingerprint) {
-  var cfg = CFG();
-  var ss = openLedgerSpreadsheet_(cfg);
-  var sh = ss.getSheetByName(cfg.LEDGER_SHEET_NAME);
-  if (!sh) throw new Error("Ledger sheet missing. Call ensureLedgerSheet() first.");
-
-  var lock = LockService.getDocumentLock();
-  try {
-    lock.waitLock(2000);
-  } catch (e) {
-    throw new Error("EventLedger is locked by another execution. Stop running executions and retry.");
-  }
-
-  try {
-    var lastRow = sh.getLastRow();
-    if (lastRow <= 1) return null;
-
-    var values = sh.getRange(2, 1, lastRow - 1, 12).getValues();
-    for (var i = 0; i < values.length; i++) {
-      if (String(values[i][0]) === String(itemKey) && String(values[i][9]) === String(fingerprint)) {
-        return ledgerRowArrayToObj_(values[i], i + 2);
-      }
-    }
-    return null;
-  } finally {
-    try { lock.releaseLock(); } catch (e2) {}
-  }
 }
