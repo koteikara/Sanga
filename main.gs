@@ -293,8 +293,10 @@ function run_test_list_only() {
   var cfg = CFG();
   var html = fetchHtml(cfg.NEWS_LIST_URL);
   console.log("[list-only] url=" + cfg.NEWS_LIST_URL + " htmlLen=" + (html ? html.length : 0));
-  var articles = parseNewsList(html) || [];
-  console.log("[list-only] parsed articles=" + articles.length);
+  console.log("[list-only] raw /news/detail count=" + (html.match(/\/news\/detail\/\d+/g) || []).length);
+  var articles = parseNewsList(html);
+  console.log("[list-only] parsed articles=" + (articles ? articles.length : 0));
+  articles = articles || [];
   if (articles[0]) console.log("[list-only] first=" + JSON.stringify(articles[0]));
 }
 
