@@ -941,3 +941,25 @@
     min-height:28px;
   }
 
+
+  /* JSON rendering preview */
+  .json-preview{
+    margin-top:22px;
+    padding-top:16px;
+    border-top:1px solid rgba(255,255,255,.35);
+  }
+  .json-preview h2{
+    margin:0 0 8px;
+    font-size:16px;
+    letter-spacing:.04em;
+  }
+  .json-preview-description,
+  .json-preview-status{
+    margin:0 0 10px;
+    font-size:11px;
+    line-height:1.6;
+    color:rgba(255,255,255,.92);
+  }
+  .json-preview-match{
+    cursor:default;
+  }

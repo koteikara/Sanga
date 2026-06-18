@@ -12,7 +12,7 @@
 <header>
 <h1>2026/27 Season Match Schedule</h1>
 </header>
-<section aria-labelledby="y2026">
+<section class="manual-schedule" aria-labelledby="y2026">
 <div class="year" id="y2026">2026</div>
 <div class="grid">
 <button class="match away logo-vvaren" data-id="sec01"><span class="match-inner"><span class="ha"><span>A</span><span>W</span><span>A</span><span>Y</span></span><span class="meta"><span class="sec">第1節</span><span class="team">長崎</span><span class="place">未定</span></span><span class="date tentative-date"><span class="range"><span><b class="main">8.8</b><i class="sub sat">SAT</i></span><span><b class="main">8.9</b><i class="sub sun">SUN</i></span></span></span></span></button>
@@ -37,7 +37,7 @@
 <button class="match home logo-fagiano" data-id="sec20"><span class="match-inner"><span class="ha"><span>H</span><span>O</span><span>M</span><span>E</span></span><span class="meta"><span class="sec">第20節</span><span class="team">岡山</span><span class="place">サンガスタジアム</span></span><span class="date"><b class="main compact-date">12.19</b><i class="sub sat">SAT</i></span></span></button>
 </div>
 </section>
-<section aria-labelledby="y2027">
+<section class="manual-schedule" aria-labelledby="y2027">
 <div class="year" id="y2027">2027</div>
 <div class="grid">
 <button class="match home logo-marinos" data-id="sec21"><span class="match-inner"><span class="ha"><span>H</span><span>O</span><span>M</span><span>E</span></span><span class="meta"><span class="sec">第21節</span><span class="team">横浜FM</span><span class="place">サンガスタジアム</span></span><span class="date tentative-date"><span class="range"><span><b class="main">2.13</b><i class="sub sat">SAT</i></span><span><b class="main">2.14</b><i class="sub sun">SUN</i></span></span></span></span></button>
@@ -59,6 +59,12 @@
 <button class="match home logo-grampus" data-id="sec37"><span class="match-inner"><span class="ha"><span>H</span><span>O</span><span>M</span><span>E</span></span><span class="meta"><span class="sec">第37節</span><span class="team">名古屋</span><span class="place">サンガスタジアム</span></span><span class="date tentative-date"><span class="range"><span><b class="main">5.29</b><i class="sub sat">SAT</i></span><span><b class="main">5.30</b><i class="sub sun">SUN</i></span></span></span></span></button>
 <button class="match away logo-vissel" data-id="sec38"><span class="match-inner"><span class="ha"><span>A</span><span>W</span><span>A</span><span>Y</span></span><span class="meta"><span class="sec">第38節</span><span class="team">神戸</span><span class="place">未定</span></span><span class="date"><b class="main">6.6</b><i class="sub sun">SUN</i></span></span></button>
 </div>
+</section>
+<section class="json-preview" aria-labelledby="json-preview-title">
+<h2 id="json-preview-title">JSON表示テスト</h2>
+<p class="json-preview-description">サンプルJSONから読み込んだ日程カードの描画テストです。既存の手書き日程カードとは別枠で表示しています。</p>
+<p class="json-preview-status" data-json-preview-status aria-live="polite">JSONを読み込み中です。</p>
+<div class="grid json-preview-grid" data-json-preview-list></div>
 </section>
 <div class="footer-tools">
 <div class="footer-actions">
