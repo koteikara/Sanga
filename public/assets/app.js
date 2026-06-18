@@ -1,19 +1,114 @@
 (function(){
   const key='sanga-schedule-button-states-v1';
+  let storageAvailable=true;
   let states={};
-  try{states=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){states={}}
-  document.querySelectorAll('.manual-schedule .match').forEach(btn=>{
-    const id=btn.dataset.id;
-    const current=Number(states[id]||0);
-    btn.dataset.state=String(current);
-    btn.setAttribute('aria-pressed', current ? 'true' : 'false');
-    btn.addEventListener('click',()=>{
-      const next=(Number(btn.dataset.state||0)+1)%3;
-      btn.dataset.state=String(next);
-      btn.setAttribute('aria-pressed', next ? 'true' : 'false');
-      states[id]=next;
+
+  function showStorageUnavailableMessage(){
+    const message='LocalStorageを利用できないため、タップ状態は保存されません。表示中の見た目のみ切り替わります。';
+    const liveNote=document.querySelector('.storage-clear-note');
+    if(liveNote) liveNote.textContent=message;
+    const status=document.querySelector('[data-data-mode-status]');
+    if(status && !status.textContent.includes('LocalStorageを利用できない')){
+      status.textContent=`${status.textContent} ${message}`;
+    }
+  }
+
+  function readStoredStates(){
+    try{
+      return JSON.parse(localStorage.getItem(key)||'{}') || {};
+    }catch(e){
+      storageAvailable=false;
+      showStorageUnavailableMessage();
+      return {};
+    }
+  }
+
+  function writeStoredStates(){
+    if(!storageAvailable) return false;
+    try{
       localStorage.setItem(key,JSON.stringify(states));
+      return true;
+    }catch(e){
+      storageAvailable=false;
+      showStorageUnavailableMessage();
+      return false;
+    }
+  }
+
+  function readStorageValue(storageKey, fallback=''){
+    if(!storageAvailable) return fallback;
+    try{
+      return localStorage.getItem(storageKey) || fallback;
+    }catch(e){
+      storageAvailable=false;
+      showStorageUnavailableMessage();
+      return fallback;
+    }
+  }
+
+  function writeStorageValue(storageKey, value){
+    if(!storageAvailable) return false;
+    try{
+      localStorage.setItem(storageKey, value);
+      return true;
+    }catch(e){
+      storageAvailable=false;
+      showStorageUnavailableMessage();
+      return false;
+    }
+  }
+
+  function removeStorageValue(storageKey){
+    if(!storageAvailable) return false;
+    try{
+      localStorage.removeItem(storageKey);
+      return true;
+    }catch(e){
+      storageAvailable=false;
+      showStorageUnavailableMessage();
+      return false;
+    }
+  }
+
+  function normalizeMatchState(value){
+    const state=Number(value || 0);
+    return [0,1,2].includes(state) ? state : 0;
+  }
+
+  function applyMatchState(button, state){
+    const normalized=normalizeMatchState(state);
+    button.dataset.state=String(normalized);
+    button.setAttribute('aria-pressed', normalized ? 'true' : 'false');
+  }
+
+  function escapeSelectorValue(value){
+    if(window.CSS && typeof window.CSS.escape==='function') return CSS.escape(value);
+    return String(value).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+  }
+
+  function syncMatchState(id, state){
+    document.querySelectorAll(`.match[data-id="${escapeSelectorValue(id)}"]`).forEach(button=>{
+      applyMatchState(button, state);
     });
+  }
+
+  function initializeMatchStates(root=document){
+    root.querySelectorAll('.match[data-id]').forEach(button=>{
+      applyMatchState(button, states[button.dataset.id]);
+    });
+  }
+
+  states=readStoredStates();
+  initializeMatchStates();
+
+  document.addEventListener('click',(event)=>{
+    const button=event.target.closest('.match[data-id]');
+    if(!button) return;
+    const id=button.dataset.id;
+    const next=(normalizeMatchState(button.dataset.state)+1)%3;
+    states[id]=next;
+    syncMatchState(id, next);
+    writeStoredStates();
   });
   const helpButton=document.querySelector('.help-button');
   const helpPanel=document.querySelector('.help-panel');
@@ -65,14 +160,14 @@
     });
   }
 
-  setScheduleLayout(localStorage.getItem(layoutKey) || '2');
+  setScheduleLayout(readStorageValue(layoutKey, '2'));
 
   layoutButtons.forEach(button=>{
     button.addEventListener('click',(event)=>{
       event.preventDefault();
       event.stopPropagation();
       const selected=button.dataset.layout || '2';
-      localStorage.setItem(layoutKey, selected);
+      writeStorageValue(layoutKey, selected);
       setScheduleLayout(selected);
     });
   });
@@ -81,14 +176,11 @@
   const storageClearNote=document.querySelector('.storage-clear-note');
 
   storageClearButton && storageClearButton.addEventListener('click',()=>{
-    localStorage.removeItem(key);
-    localStorage.removeItem(layoutKey);
-    localStorage.removeItem(dataModeKey);
+    removeStorageValue(key);
+    removeStorageValue(layoutKey);
+    removeStorageValue(dataModeKey);
     states={};
-    document.querySelectorAll('.manual-schedule .match').forEach(btn=>{
-      btn.dataset.state='0';
-      btn.setAttribute('aria-pressed','false');
-    });
+    initializeMatchStates();
     setScheduleLayout('2');
     setScheduleDataMode(defaultDataMode);
     if(storageClearNote){
@@ -138,7 +230,7 @@
     });
 
     if(options.persist){
-      localStorage.setItem(dataModeKey, selected);
+      writeStorageValue(dataModeKey, selected);
     }
 
     if(requested==='json' && !jsonUsable){
@@ -150,7 +242,7 @@
   }
 
   function getInitialDataMode(){
-    const savedMode=localStorage.getItem(dataModeKey);
+    const savedMode=readStorageValue(dataModeKey);
     return isValidDataMode(savedMode) ? savedMode : defaultDataMode;
   }
 
@@ -282,8 +374,7 @@
     button.dataset.id=match.id || '';
     button.dataset.jsonId=match.id || '';
     button.dataset.previewOnly='true';
-    button.dataset.state='0';
-    button.setAttribute('aria-pressed','false');
+    applyMatchState(button, states[button.dataset.id]);
     button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} JSON由来の日程表示候補`);
 
     const inner=document.createElement('span');
@@ -340,6 +431,7 @@
       const sourceLabel=data.meta && data.meta.source ? ` / 元データ: ${data.meta.source}` : '';
       const updatedLabel=data.meta && data.meta.updated_at ? ` / 更新日時: ${data.meta.updated_at}` : '';
       jsonPreviewList.replaceChildren(...createJsonPreviewItems(matches));
+      initializeMatchStates(jsonPreviewList);
       jsonPreviewReady=true;
       jsonPreviewFailed=false;
       setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示できます。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
