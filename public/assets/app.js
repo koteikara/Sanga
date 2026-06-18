@@ -178,81 +178,28 @@
   storageClearButton && storageClearButton.addEventListener('click',()=>{
     removeStorageValue(key);
     removeStorageValue(layoutKey);
-    removeStorageValue(dataModeKey);
     states={};
     initializeMatchStates();
     setScheduleLayout('2');
-    setScheduleDataMode(defaultDataMode);
     if(storageClearNote){
       storageClearNote.textContent='このページの保存内容を削除しました。';
     }
   });
 
 
-  const dataModeKey='sanga-schedule-data-mode-v1';
-  const defaultDataMode='json';
-  const dataModeButtons=Array.from(document.querySelectorAll('.data-mode-option'));
-  const dataModeStatus=document.querySelector('[data-data-mode-status]');
-  const manualSchedules=Array.from(document.querySelectorAll('.manual-schedule'));
   const jsonPreviewSection=document.querySelector('.json-preview');
   const jsonPreviewList=document.querySelector('[data-json-preview-list]');
   const jsonPreviewStatus=document.querySelector('[data-json-preview-status]');
-  let jsonPreviewReady=false;
-  let jsonPreviewFailed=false;
+  const dataModeStatus=document.querySelector('[data-data-mode-status]');
   const weekdayLabels=['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
   function setJsonPreviewStatus(message){
     if(jsonPreviewStatus) jsonPreviewStatus.textContent=message;
   }
 
-  function setDataModeStatus(message){
+  function setScheduleStatus(message){
     if(dataModeStatus) dataModeStatus.textContent=message;
   }
-
-  function isValidDataMode(mode){
-    return mode==='manual' || mode==='json';
-  }
-
-  function setScheduleDataMode(mode, options={}){
-    const requested=isValidDataMode(mode) ? mode : 'manual';
-    const jsonUsable=jsonPreviewReady && !jsonPreviewFailed;
-    const selected=requested==='json' && jsonUsable ? 'json' : 'manual';
-
-    manualSchedules.forEach(section=>{
-      section.hidden=selected !== 'manual';
-    });
-    if(jsonPreviewSection){
-      jsonPreviewSection.hidden=selected !== 'json';
-    }
-    dataModeButtons.forEach(button=>{
-      const active=button.dataset.scheduleMode===selected;
-      button.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-
-    if(options.persist){
-      writeStorageValue(dataModeKey, selected);
-    }
-
-    if(requested==='json' && !jsonUsable){
-      setDataModeStatus('JSON表示は読み込み完了後に選択できます。現在は手書き表示です。');
-      return;
-    }
-
-    setDataModeStatus(selected==='json' ? '現在はJSON表示です。手書き表示へいつでも戻せます。' : '現在は手書き表示です。');
-  }
-
-  function getInitialDataMode(){
-    const savedMode=readStorageValue(dataModeKey);
-    return isValidDataMode(savedMode) ? savedMode : defaultDataMode;
-  }
-
-  setScheduleDataMode(getInitialDataMode());
-
-  dataModeButtons.forEach(button=>{
-    button.addEventListener('click',()=>{
-      setScheduleDataMode(button.dataset.scheduleMode || 'manual', {persist:true});
-    });
-  });
 
   function formatDateParts(value){
     if(!value) return null;
@@ -373,9 +320,8 @@
     button.className=`match json-preview-match ${homeAway} logo-${match.opponent_code || 'unknown'}`;
     button.dataset.id=match.id || '';
     button.dataset.jsonId=match.id || '';
-    button.dataset.previewOnly='true';
     applyMatchState(button, states[button.dataset.id]);
-    button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} JSON由来の日程表示候補`);
+    button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} 日程カード`);
 
     const inner=document.createElement('span');
     inner.className='match-inner';
@@ -407,20 +353,11 @@
   }
 
   async function fetchJsonPreviewData(){
-    const dataPaths=['data/matches.json','data/matches.sample.json'];
-    let lastError=null;
-    for(const dataPath of dataPaths){
-      try{
-        const response=await fetch(dataPath);
-        if(!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data=await response.json();
-        return {data, dataPath};
-      }catch(error){
-        lastError=error;
-        console.warn(`JSON preview data loading failed: ${dataPath}`, error);
-      }
-    }
-    throw lastError || new Error('JSON preview data loading failed.');
+    const dataPath='data/matches.json';
+    const response=await fetch(dataPath);
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    return {data, dataPath};
   }
 
   async function renderJsonPreview(){
@@ -432,17 +369,14 @@
       const updatedLabel=data.meta && data.meta.updated_at ? ` / 更新日時: ${data.meta.updated_at}` : '';
       jsonPreviewList.replaceChildren(...createJsonPreviewItems(matches));
       initializeMatchStates(jsonPreviewList);
-      jsonPreviewReady=true;
-      jsonPreviewFailed=false;
-      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示できます。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
-      setScheduleDataMode(getInitialDataMode());
+      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
+      setScheduleStatus('JSON由来の日程カードを標準表示しています。');
     }catch(error){
       jsonPreviewList.replaceChildren();
-      jsonPreviewReady=false;
-      jsonPreviewFailed=true;
-      setScheduleDataMode('manual');
-      setJsonPreviewStatus('JSONの読み込みに失敗しました。手書き表示へ戻しているため、既存の日程表示はそのまま利用できます。');
-      console.warn('JSON preview rendering failed:', error);
+      if(jsonPreviewSection) jsonPreviewSection.hidden=false;
+      setJsonPreviewStatus('JSONの読み込みに失敗しました。日程カードを表示できません。時間を置いて再読み込みしてください。');
+      setScheduleStatus('JSON由来の日程カードを読み込めませんでした。');
+      console.warn('JSON schedule rendering failed:', error);
     }
   }
 
