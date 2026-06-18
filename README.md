@@ -108,9 +108,9 @@ CSS / JavaScript / JSONのいずれかを本番反映する場合は、必要に
 
 将来的にはGoogleスプレッドシートを日程データの正本にしますが、現段階ではGoogle Sheets APIの自動連携や認証情報の作成は行いません。まずはスプレッドシートからCSVを書き出し、確認用JSONを生成する準備段階です。
 
-列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。サンプルCSVは `docs/sheets/schedule.sample.csv` です。
+列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。実際のGoogleスプレッドシート作成時は、シート構成、入力ルール、プルダウン候補、CSV出力手順を整理した `docs/sheets/schedule-template.md` を参照してください。ヘッダー行テンプレートは `docs/sheets/schedule.template.csv`、検証用サンプルCSVは `docs/sheets/schedule.sample.csv` です。
 
-CSVから `matches.json` 形式の確認用JSONを生成する場合は、次のコマンドを実行します。
+CSV出力後は、`tools/generate-matches-from-csv.js` で `matches.json` 形式の確認用JSONを生成し、`tools/validate-generated-matches.js` で検証します。
 
 ```bash
 node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matches.generated.json
