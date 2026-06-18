@@ -7,10 +7,6 @@
     const message='LocalStorageを利用できないため、タップ状態は保存されません。表示中の見た目のみ切り替わります。';
     const liveNote=document.querySelector('.storage-clear-note');
     if(liveNote) liveNote.textContent=message;
-    const status=document.querySelector('[data-data-mode-status]');
-    if(status && !status.textContent.includes('LocalStorageを利用できない')){
-      status.textContent=`${status.textContent} ${message}`;
-    }
   }
 
   function readStoredStates(){
@@ -187,19 +183,8 @@
   });
 
 
-  const jsonPreviewSection=document.querySelector('.json-preview');
   const jsonPreviewList=document.querySelector('[data-json-preview-list]');
-  const jsonPreviewStatus=document.querySelector('[data-json-preview-status]');
-  const dataModeStatus=document.querySelector('[data-data-mode-status]');
   const weekdayLabels=['SUN','MON','TUE','WED','THU','FRI','SAT'];
-
-  function setJsonPreviewStatus(message){
-    if(jsonPreviewStatus) jsonPreviewStatus.textContent=message;
-  }
-
-  function setScheduleStatus(message){
-    if(dataModeStatus) dataModeStatus.textContent=message;
-  }
 
   function formatDateParts(value){
     if(!value) return null;
@@ -365,17 +350,10 @@
     try{
       const {data, dataPath}=await fetchJsonPreviewData();
       const matches=Array.isArray(data.matches) ? data.matches : [];
-      const sourceLabel=data.meta && data.meta.source ? ` / 元データ: ${data.meta.source}` : '';
-      const updatedLabel=data.meta && data.meta.updated_at ? ` / 更新日時: ${data.meta.updated_at}` : '';
       jsonPreviewList.replaceChildren(...createJsonPreviewItems(matches));
       initializeMatchStates(jsonPreviewList);
-      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
-      setScheduleStatus('JSON由来の日程カードを標準表示しています。');
     }catch(error){
       jsonPreviewList.replaceChildren();
-      if(jsonPreviewSection) jsonPreviewSection.hidden=false;
-      setJsonPreviewStatus('JSONの読み込みに失敗しました。日程カードを表示できません。時間を置いて再読み込みしてください。');
-      setScheduleStatus('JSON由来の日程カードを読み込めませんでした。');
       console.warn('JSON schedule rendering failed:', error);
     }
   }

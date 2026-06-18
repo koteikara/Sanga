@@ -197,39 +197,6 @@
     }
   }
 
-
-
-
-  /* schedule data source notice */
-  .schedule-data-source{
-    margin:12px 0 16px;
-    padding:12px;
-    border:1px solid rgba(255,255,255,.45);
-    border-radius:14px;
-    background:rgba(255,255,255,.10);
-  }
-  .schedule-data-source h2{
-    margin:0 0 6px;
-    font-size:15px;
-    line-height:1.3;
-    letter-spacing:.04em;
-  }
-  .schedule-data-source p,
-  .data-mode-status{
-    margin:0 0 10px;
-    color:rgba(255,255,255,.92);
-    font-size:11px;
-    line-height:1.55;
-  }
-  .schedule-data-source p:last-child,
-  .data-mode-status{
-    margin-bottom:0;
-  }
-  .data-mode-status{
-    min-height:1.55em;
-    font-weight:700;
-  }
-
   /* help overview */
   .footer-tools{
     display:flex;
@@ -982,18 +949,6 @@
     margin-top:22px;
     padding-top:16px;
     border-top:1px solid rgba(255,255,255,.35);
-  }
-  .json-preview h2{
-    margin:0 0 8px;
-    font-size:16px;
-    letter-spacing:.04em;
-  }
-  .json-preview-description,
-  .json-preview-status{
-    margin:0 0 10px;
-    font-size:11px;
-    line-height:1.6;
-    color:rgba(255,255,255,.92);
   }
   .json-preview-match{
     cursor:pointer;
