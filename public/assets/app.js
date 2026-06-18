@@ -90,7 +90,7 @@
       btn.setAttribute('aria-pressed','false');
     });
     setScheduleLayout('2');
-    setScheduleDataMode('manual');
+    setScheduleDataMode(defaultDataMode);
     if(storageClearNote){
       storageClearNote.textContent='このページの保存内容を削除しました。';
     }
@@ -98,6 +98,7 @@
 
 
   const dataModeKey='sanga-schedule-data-mode-v1';
+  const defaultDataMode='json';
   const dataModeButtons=Array.from(document.querySelectorAll('.data-mode-option'));
   const dataModeStatus=document.querySelector('[data-data-mode-status]');
   const manualSchedules=Array.from(document.querySelectorAll('.manual-schedule'));
@@ -148,7 +149,12 @@
     setDataModeStatus(selected==='json' ? '現在はJSON表示です。手書き表示へいつでも戻せます。' : '現在は手書き表示です。');
   }
 
-  setScheduleDataMode('manual');
+  function getInitialDataMode(){
+    const savedMode=localStorage.getItem(dataModeKey);
+    return isValidDataMode(savedMode) ? savedMode : defaultDataMode;
+  }
+
+  setScheduleDataMode(getInitialDataMode());
 
   dataModeButtons.forEach(button=>{
     button.addEventListener('click',()=>{
@@ -337,12 +343,12 @@
       jsonPreviewReady=true;
       jsonPreviewFailed=false;
       setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示できます。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
-      setScheduleDataMode(localStorage.getItem(dataModeKey) || 'manual');
+      setScheduleDataMode(getInitialDataMode());
     }catch(error){
       jsonPreviewList.replaceChildren();
       jsonPreviewReady=false;
       jsonPreviewFailed=true;
-      setScheduleDataMode('manual', {persist:true});
+      setScheduleDataMode('manual');
       setJsonPreviewStatus('JSONの読み込みに失敗しました。手書き表示へ戻しているため、既存の日程表示はそのまま利用できます。');
       console.warn('JSON preview rendering failed:', error);
     }

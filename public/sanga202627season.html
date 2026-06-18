@@ -14,12 +14,12 @@
 </header>
 <section class="data-mode-switch" aria-labelledby="data-mode-switch-title">
 <h2 id="data-mode-switch-title">表示データを切り替え</h2>
-<p class="data-mode-switch-description">安全のため初期表示は手書き表示です。JSON表示を選ぶと、JSONデータから生成した日程カードを確認できます。</p>
+<p class="data-mode-switch-description">JSON表示を標準の初期表示として、JSONデータから生成した日程カードを表示します。必要に応じて手書き表示へ切り替えて確認できます。</p>
 <div aria-label="表示データを切り替え" class="data-mode-group" role="group">
 <button aria-controls="manual-schedule-2026 manual-schedule-2027" aria-pressed="true" class="data-mode-option" data-schedule-mode="manual" type="button">手書き表示</button>
 <button aria-controls="json-preview" aria-pressed="false" class="data-mode-option" data-schedule-mode="json" type="button">JSON表示</button>
 </div>
-<p class="data-mode-status" data-data-mode-status aria-live="polite">現在は手書き表示です。</p>
+<p class="data-mode-status" data-data-mode-status aria-live="polite">JSON由来の日程カードを読み込み中です。保存済みの表示モードがある場合は、その設定を優先します。</p>
 </section>
 <section class="manual-schedule" id="manual-schedule-2026" aria-labelledby="y2026">
 <div class="year" id="y2026">2026</div>
@@ -70,8 +70,8 @@
 </div>
 </section>
 <section class="json-preview" id="json-preview" aria-labelledby="json-preview-title" hidden>
-<h2 id="json-preview-title">JSON由来の日程表示候補</h2>
-<p class="json-preview-description">検証用の別枠として、JSONデータから既存カードに近い構造で日程カードを描画しています。将来的に本体表示へ移行できるか、手書き日程カードと見比べて確認するための領域です。</p>
+<h2 id="json-preview-title">JSON由来の日程表示</h2>
+<p class="json-preview-description">標準表示として、JSONデータから既存カードに近い構造で日程カードを描画しています。手書き表示に切り替えると、移行前の日程カードも確認できます。</p>
 <p class="json-preview-status" data-json-preview-status aria-live="polite">JSON由来の日程カードを読み込み中です。</p>
 <div class="grid json-preview-grid" data-json-preview-list></div>
 </section>
