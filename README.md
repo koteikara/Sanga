@@ -114,9 +114,22 @@ CSVから `matches.json` 形式の確認用JSONを生成する場合は、次の
 
 ```bash
 node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matches.generated.json
+node tools/validate-generated-matches.js tmp/matches.generated.json
 ```
 
-生成先は初期状態では `tmp/matches.generated.json` とし、公開用の `public/data/matches.json` を直接上書きしません。生成後は件数、ID重複、必須項目、日付形式などを確認し、必要に応じて `node tools/validate-matches.js` と目視確認を行ってから `public/data/matches.json` へ反映します。
+本番用38件として確認する場合は、件数チェックも指定します。
+
+```bash
+node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 38
+```
+
+生成直後に公開用の `public/data/matches.json` を直接上書きしないでください。まず `tmp/matches.generated.json` を検証し、件数、ID重複、必須項目、日付形式、候補日、状態値、注記番号などを確認します。検証後に内容を目視確認し、問題がない場合だけ `public/data/matches.json` へ手作業で反映します。
+
+本番反映前には、従来どおり公開用JSON向けの検証も実行します。
+
+```bash
+node tools/validate-matches.js
+```
 
 ## 注意事項
 
