@@ -86,6 +86,38 @@
 
 スターレンタルサーバーへ反映する前後の確認手順、GitHub Secrets登録手順、アップロード対象、アップロードしてはいけないファイル、ロールバック方針は `docs/deploy-policy.md` にまとめています。デプロイ時のエラーや公開URLへ反映されない場合の確認方法も、同じ手順書のトラブル対応メモを参照してください。
 
+
+## キャッシュ更新方針
+
+スマートフォンなどで古いCSSやJavaScript、JSONが残ることを避けるため、公開HTMLではCSS / JavaScriptのURLにバージョンクエリを付けます。
+
+```html
+<link rel="stylesheet" href="assets/style.css?v=20260618-2">
+<script src="assets/app.js?v=20260618-2"></script>
+```
+
+`public/assets/app.js` から `public/data/matches.json` を読み込む場合も、同じ更新単位が分かるバージョンクエリを付けます。
+
+```js
+const dataPath = 'data/matches.json?v=20260618-2';
+```
+
+CSS / JavaScript / JSONのいずれかを本番反映する場合は、必要に応じて同じバージョン値を更新し、ページ最下部のバージョン情報もあわせて更新します。
+
+## スプレッドシート連携準備
+
+将来的にはGoogleスプレッドシートを日程データの正本にしますが、現段階ではGoogle Sheets APIの自動連携や認証情報の作成は行いません。まずはスプレッドシートからCSVを書き出し、確認用JSONを生成する準備段階です。
+
+列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。サンプルCSVは `docs/sheets/schedule.sample.csv` です。
+
+CSVから `matches.json` 形式の確認用JSONを生成する場合は、次のコマンドを実行します。
+
+```bash
+node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matches.generated.json
+```
+
+生成先は初期状態では `tmp/matches.generated.json` とし、公開用の `public/data/matches.json` を直接上書きしません。生成後は件数、ID重複、必須項目、日付形式などを確認し、必要に応じて `node tools/validate-matches.js` と目視確認を行ってから `public/data/matches.json` へ反映します。
+
 ## 注意事項
 
 * 本番サーバーへのアップロードは、明示的に指示した場合のみ行う
