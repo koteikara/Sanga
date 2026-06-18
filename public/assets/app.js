@@ -83,25 +83,78 @@
   storageClearButton && storageClearButton.addEventListener('click',()=>{
     localStorage.removeItem(key);
     localStorage.removeItem(layoutKey);
+    localStorage.removeItem(dataModeKey);
     states={};
     document.querySelectorAll('.manual-schedule .match').forEach(btn=>{
       btn.dataset.state='0';
       btn.setAttribute('aria-pressed','false');
     });
     setScheduleLayout('2');
+    setScheduleDataMode('manual');
     if(storageClearNote){
       storageClearNote.textContent='このページの保存内容を削除しました。';
     }
   });
 
 
+  const dataModeKey='sanga-schedule-data-mode-v1';
+  const dataModeButtons=Array.from(document.querySelectorAll('.data-mode-option'));
+  const dataModeStatus=document.querySelector('[data-data-mode-status]');
+  const manualSchedules=Array.from(document.querySelectorAll('.manual-schedule'));
+  const jsonPreviewSection=document.querySelector('.json-preview');
   const jsonPreviewList=document.querySelector('[data-json-preview-list]');
   const jsonPreviewStatus=document.querySelector('[data-json-preview-status]');
+  let jsonPreviewReady=false;
+  let jsonPreviewFailed=false;
   const weekdayLabels=['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
   function setJsonPreviewStatus(message){
     if(jsonPreviewStatus) jsonPreviewStatus.textContent=message;
   }
+
+  function setDataModeStatus(message){
+    if(dataModeStatus) dataModeStatus.textContent=message;
+  }
+
+  function isValidDataMode(mode){
+    return mode==='manual' || mode==='json';
+  }
+
+  function setScheduleDataMode(mode, options={}){
+    const requested=isValidDataMode(mode) ? mode : 'manual';
+    const jsonUsable=jsonPreviewReady && !jsonPreviewFailed;
+    const selected=requested==='json' && jsonUsable ? 'json' : 'manual';
+
+    manualSchedules.forEach(section=>{
+      section.hidden=selected !== 'manual';
+    });
+    if(jsonPreviewSection){
+      jsonPreviewSection.hidden=selected !== 'json';
+    }
+    dataModeButtons.forEach(button=>{
+      const active=button.dataset.scheduleMode===selected;
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+
+    if(options.persist){
+      localStorage.setItem(dataModeKey, selected);
+    }
+
+    if(requested==='json' && !jsonUsable){
+      setDataModeStatus('JSON表示は読み込み完了後に選択できます。現在は手書き表示です。');
+      return;
+    }
+
+    setDataModeStatus(selected==='json' ? '現在はJSON表示です。手書き表示へいつでも戻せます。' : '現在は手書き表示です。');
+  }
+
+  setScheduleDataMode('manual');
+
+  dataModeButtons.forEach(button=>{
+    button.addEventListener('click',()=>{
+      setScheduleDataMode(button.dataset.scheduleMode || 'manual', {persist:true});
+    });
+  });
 
   function formatDateParts(value){
     if(!value) return null;
@@ -246,10 +299,16 @@
       const sourceLabel=data.meta && data.meta.source ? ` / 元データ: ${data.meta.source}` : '';
       const updatedLabel=data.meta && data.meta.updated_at ? ` / 更新日時: ${data.meta.updated_at}` : '';
       jsonPreviewList.replaceChildren(...matches.map(createJsonMatchCard));
-      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
+      jsonPreviewReady=true;
+      jsonPreviewFailed=false;
+      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示できます。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
+      setScheduleDataMode(localStorage.getItem(dataModeKey) || 'manual');
     }catch(error){
       jsonPreviewList.replaceChildren();
-      setJsonPreviewStatus('JSONの読み込みに失敗しました。既存の日程表示はそのまま利用できます。');
+      jsonPreviewReady=false;
+      jsonPreviewFailed=true;
+      setScheduleDataMode('manual', {persist:true});
+      setJsonPreviewStatus('JSONの読み込みに失敗しました。手書き表示へ戻しているため、既存の日程表示はそのまま利用できます。');
       console.warn('JSON preview rendering failed:', error);
     }
   }
