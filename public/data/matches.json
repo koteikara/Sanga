@@ -397,10 +397,7 @@
       "competition_label": "明治安田J1リーグ",
       "round": "第16節",
       "match_date": "",
-      "date_candidates": [
-        "2026-12-16",
-        "2027-04-14"
-      ],
+      "date_candidates": [],
       "kickoff_time": "",
       "home_away": "H",
       "home_away_label": "ホーム",
@@ -410,11 +407,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※1: 26/12/16(水)もしくは27/4/14(水)のいずれかで開催予定です。"
+      "note": "※1: 26/12/16(水)もしくは27/4/14(水)のいずれかで開催予定です。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec17",
@@ -629,8 +627,7 @@
       "round": "第25節",
       "match_date": "",
       "date_candidates": [
-        "2027-03-10",
-        "2027-02-24"
+        "2027-03-10"
       ],
       "kickoff_time": "",
       "home_away": "A",
@@ -641,11 +638,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※2: 27/2/24(水)に開催する可能性があります。"
+      "note": "※2: 27/2/24(水)に開催する可能性があります。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec26",
@@ -656,9 +654,7 @@
       "match_date": "",
       "date_candidates": [
         "2027-03-13",
-        "2027-03-14",
-        "2027-03-03",
-        "2027-04-07"
+        "2027-03-14"
       ],
       "kickoff_time": "",
       "home_away": "H",
@@ -669,11 +665,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※3: 27/3/3(水)もしくは4/7(水)に開催する可能性があります。"
+      "note": "※3: 27/3/3(水)もしくは4/7(水)に開催する可能性があります。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec27",
@@ -788,9 +785,7 @@
       "match_date": "",
       "date_candidates": [
         "2027-04-24",
-        "2027-04-25",
-        "2027-04-01",
-        "2027-04-07"
+        "2027-04-25"
       ],
       "kickoff_time": "",
       "home_away": "A",
@@ -801,11 +796,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※4: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/4/1(木)もしくは4/7(水)に開催する可能性があります。"
+      "note": "※4: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/4/1(木)もしくは4/7(水)に開催する可能性があります。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec32",
@@ -815,8 +811,7 @@
       "round": "第32節",
       "match_date": "",
       "date_candidates": [
-        "2027-04-29",
-        "2027-05-19"
+        "2027-04-29"
       ],
       "kickoff_time": "",
       "home_away": "H",
@@ -827,11 +822,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※5: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/5/19(水)に開催する可能性があります。"
+      "note": "※5: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/5/19(水)に開催する可能性があります。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec33",
@@ -842,9 +838,7 @@
       "match_date": "",
       "date_candidates": [
         "2027-05-03",
-        "2027-05-04",
-        "2027-05-05",
-        "2027-05-26"
+        "2027-05-04"
       ],
       "kickoff_time": "",
       "home_away": "A",
@@ -855,11 +849,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※6: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/5/5(水･祝)もしくは5/26(水)に開催する可能性があります。"
+      "note": "※6: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/5/5(水･祝)もしくは5/26(水)に開催する可能性があります。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec34",
@@ -869,11 +864,7 @@
       "round": "第34節",
       "match_date": "",
       "date_candidates": [
-        "2027-05-09",
-        "2027-04-21",
-        "2027-05-12",
-        "2027-05-19",
-        "2027-06-02"
+        "2027-05-09"
       ],
       "kickoff_time": "",
       "home_away": "A",
@@ -884,11 +875,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "",
-      "source_url": "public/sanga202627season.html",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21152",
       "source_checked_at": "2026-06-18 00:00",
       "status": "tentative",
       "status_label": "未確定",
-      "note": "※7: ルヴァンカップ決勝進出クラブの試合は、27/4/21(水)、5/12(水)、5/19(水)、6/2(水)のいずれかに開催する可能性があります。"
+      "note": "※7: ルヴァンカップ決勝進出クラブの試合は、27/4/21(水)、5/12(水)、5/19(水)、6/2(水)のいずれかに開催する可能性があります。",
+      "updated_at": "2026-06-18 00:00"
     },
     {
       "id": "sec35",

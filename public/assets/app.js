@@ -232,6 +232,41 @@
     return date;
   }
 
+  function getMatchDateYear(match){
+    if(match.match_date){
+      return match.match_date.slice(0, 4);
+    }
+    if(Array.isArray(match.date_candidates) && match.date_candidates.length > 0){
+      return match.date_candidates[0].slice(0, 4);
+    }
+    const roundNumber=String(match.round || '').match(/\d+/);
+    if(roundNumber){
+      return Number(roundNumber[0]) <= 20 ? '2026' : '2027';
+    }
+    return '';
+  }
+
+  function createYearHeading(year){
+    const heading=document.createElement('div');
+    heading.className='year json-preview-year';
+    heading.textContent=year;
+    return heading;
+  }
+
+  function createJsonPreviewItems(matches){
+    const items=[];
+    let currentYear='';
+    matches.forEach(match=>{
+      const year=getMatchDateYear(match);
+      if(year && year !== currentYear){
+        items.push(createYearHeading(year));
+        currentYear=year;
+      }
+      items.push(createJsonMatchCard(match));
+    });
+    return items;
+  }
+
   function createJsonMatchCard(match){
     const homeAway=match.home_away==='H' ? 'home' : 'away';
     const haText=match.home_away==='H' ? 'HOME' : 'AWAY';
@@ -298,7 +333,7 @@
       const matches=Array.isArray(data.matches) ? data.matches : [];
       const sourceLabel=data.meta && data.meta.source ? ` / 元データ: ${data.meta.source}` : '';
       const updatedLabel=data.meta && data.meta.updated_at ? ` / 更新日時: ${data.meta.updated_at}` : '';
-      jsonPreviewList.replaceChildren(...matches.map(createJsonMatchCard));
+      jsonPreviewList.replaceChildren(...createJsonPreviewItems(matches));
       jsonPreviewReady=true;
       jsonPreviewFailed=false;
       setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示できます。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);

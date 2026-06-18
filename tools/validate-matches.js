@@ -27,9 +27,21 @@ function hasOwn(object, key) {
   return Object.prototype.hasOwnProperty.call(object, key);
 }
 
+function hasValidTentativeUndatedNote(match) {
+  const hasMatchDate = isNonEmptyString(match.match_date);
+  const hasCandidates = Array.isArray(match.date_candidates) && match.date_candidates.length > 0;
+  const hasNoDate = !hasMatchDate && !hasCandidates;
+
+  return match.status === 'tentative'
+    && hasNoDate
+    && isNonEmptyString(match.note)
+    && /^※\d+(?:[:：]|\s|$)/.test(match.note.trim());
+}
+
 function hasDateInfo(match) {
   return isNonEmptyString(match.match_date)
-    || (Array.isArray(match.date_candidates) && match.date_candidates.length > 0);
+    || (Array.isArray(match.date_candidates) && match.date_candidates.length > 0)
+    || hasValidTentativeUndatedNote(match);
 }
 
 function expectedId(index) {
@@ -178,7 +190,7 @@ function validateMatchesJson(data) {
     });
 
     if (!hasDateInfo(match)) {
-      addError(location, 'match_date/date_candidates', 'match_date または date_candidates のどちらかに日程情報が必要です');
+      addError(location, 'match_date/date_candidates', 'match_date または date_candidates の日程情報が必要です。未定日程は status: tentative かつ「※数字」で始まる note が必要です');
     }
 
     validateDateFields(match, location);

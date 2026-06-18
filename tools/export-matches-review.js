@@ -26,7 +26,7 @@ function formatDate(match) {
     return match.date_candidates.join(' / ');
   }
 
-  return '';
+  return '未定';
 }
 
 function noteNumber(note) {

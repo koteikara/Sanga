@@ -1021,3 +1021,7 @@
   .json-preview-match{
     cursor:default;
   }
+
+  .json-preview-year{
+    grid-column:1 / -1;
+  }
