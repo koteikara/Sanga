@@ -126,6 +126,12 @@
     return ha;
   }
 
+  function applyCompactDateClass(main, parts){
+    if(parts && parts.main.length >= 5){
+      main.classList.add('compact-date');
+    }
+  }
+
   function createDateContent(match){
     const date=document.createElement('span');
     date.className='date';
@@ -144,6 +150,7 @@
         const main=document.createElement('b');
         main.className='main';
         main.textContent=parts.main;
+        applyCompactDateClass(main, parts);
         const sub=document.createElement('i');
         sub.className=parts.weekdayClass ? `sub ${parts.weekdayClass}` : 'sub';
         sub.textContent=parts.weekday;
@@ -159,6 +166,7 @@
     const main=document.createElement('b');
     main.className='main';
     main.textContent=parts ? parts.main : '未定';
+    applyCompactDateClass(main, parts);
     date.append(main);
     if(parts){
       const sub=document.createElement('i');
@@ -174,11 +182,15 @@
   function createJsonMatchCard(match){
     const homeAway=match.home_away==='H' ? 'home' : 'away';
     const haText=match.home_away==='H' ? 'HOME' : 'AWAY';
-    const button=document.createElement('article');
+    const button=document.createElement('button');
+    button.type='button';
     button.className=`match json-preview-match ${homeAway} logo-${match.opponent_code || 'unknown'}`;
+    button.dataset.id=match.id || '';
     button.dataset.jsonId=match.id || '';
     button.dataset.previewOnly='true';
-    button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} JSON表示テスト`);
+    button.dataset.state='0';
+    button.setAttribute('aria-pressed','false');
+    button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} JSON由来の日程表示候補`);
 
     const inner=document.createElement('span');
     inner.className='match-inner';
@@ -202,6 +214,8 @@
       const note=document.createElement('span');
       note.className='note';
       note.textContent=match.note.split(':')[0] || '※';
+      note.title=match.note;
+      note.setAttribute('aria-label', match.note);
       button.append(note);
     }
     return button;
@@ -229,8 +243,10 @@
     try{
       const {data, dataPath}=await fetchJsonPreviewData();
       const matches=Array.isArray(data.matches) ? data.matches : [];
+      const sourceLabel=data.meta && data.meta.source ? ` / 元データ: ${data.meta.source}` : '';
+      const updatedLabel=data.meta && data.meta.updated_at ? ` / 更新日時: ${data.meta.updated_at}` : '';
       jsonPreviewList.replaceChildren(...matches.map(createJsonMatchCard));
-      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。読み込み元: ${dataPath}`);
+      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。読み込み元: ${dataPath}${sourceLabel}${updatedLabel}`);
     }catch(error){
       jsonPreviewList.replaceChildren();
       setJsonPreviewStatus('JSONの読み込みに失敗しました。既存の日程表示はそのまま利用できます。');
