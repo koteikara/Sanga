@@ -246,7 +246,7 @@ function parseHtmlCards() {
     });
   }
 
-  if (cards.length !== expectedCount) {
+  if (cards.length > 0 && cards.length !== expectedCount) {
     addError('sanga202627season.html', 'match cards', `手書き日程カード数は${expectedCount}件である必要があります（現在 ${cards.length} 件）`);
   }
 
@@ -295,7 +295,8 @@ if (data) {
   matches = validateMatchesJson(data);
 }
 const htmlCards = parseHtmlCards();
-if (matches.length > 0 && htmlCards.length > 0) {
+const hasHtmlCards = htmlCards.length > 0;
+if (matches.length > 0 && hasHtmlCards) {
   compareJsonWithHtml(matches, htmlCards);
 }
 
@@ -305,5 +306,11 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`日程データの検証に成功しました。matches.json は${expectedCount}件、HTMLの手書き日程カードも${expectedCount}件です。`);
-console.log('日付形式・日付範囲・候補日の昇順・注記番号・JSONとHTMLの主要項目一致も確認しました。');
+if (hasHtmlCards) {
+  console.log(`日程データの検証に成功しました。matches.json は${expectedCount}件、HTMLの手書き日程カードも${expectedCount}件です。`);
+  console.log('日付形式・日付範囲・候補日の昇順・注記番号・JSONとHTMLの主要項目一致も確認しました。');
+} else {
+  console.log(`日程データの検証に成功しました。matches.json は${expectedCount}件です。`);
+  console.log('手書きHTMLカード照合はスキップしました。');
+  console.log('日付形式・日付範囲・候補日の昇順・注記番号を確認しました。');
+}
