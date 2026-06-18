@@ -1,0 +1,57 @@
+name: 本番サーバー手動デプロイ
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: '本番デプロイする場合は DEPLOY と入力してください'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: スターレンタルサーバーへ手動デプロイ
+    runs-on: ubuntu-latest
+    steps:
+      - name: 確認入力を検証
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$CONFIRM" != "DEPLOY" ]; then
+            echo "confirm に DEPLOY と入力された場合のみデプロイします。"
+            exit 1
+          fi
+
+      - name: mainブランチをチェックアウト
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Node.jsを設定
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 日程JSONを検証
+        run: node tools/validate-matches.js
+
+      - name: JavaScript構文を検証
+        run: node --check public/assets/app.js
+
+      - name: public配下のみを本番サーバーへアップロード
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.STAR_SERVER_HOST }}
+          username: ${{ secrets.STAR_SERVER_USER }}
+          password: ${{ secrets.STAR_SERVER_PASSWORD }}
+          protocol: ${{ secrets.STAR_SERVER_PROTOCOL || 'ftp' }}
+          port: ${{ secrets.STAR_SERVER_PORT || 21 }}
+          local-dir: ./public/
+          server-dir: ${{ secrets.STAR_SERVER_REMOTE_DIR }}

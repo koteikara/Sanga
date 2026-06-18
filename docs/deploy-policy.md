@@ -135,3 +135,75 @@ GitHub Pages上で `sanga202627season.html` を開き、本番反映前の表示
 * この手順書は、本番反映前後の確認と手動アップロード対象を整理するためのものです。
 * この文書の作成・更新だけでは、本番サーバーへのアップロードは行いません。
 * 認証情報が必要な作業は、リポジトリ内に認証情報を保存せず、安全な管理方法を別途利用します。
+
+## GitHub Actionsによる手動デプロイ
+
+本番サーバーへの反映は、GitHub Actionsの手動実行ワークフロー `.github/workflows/deploy-production.yml` から行います。自動実行ではなく、GitHub Actions画面で明示的に実行した場合のみ動作します。
+
+### Repository Secretsの登録
+
+GitHubのリポジトリ画面で、次のRepository Secretsを登録します。実値はリポジトリへコミットせず、GitHub Secretsにのみ保存します。
+
+必須:
+
+* `STAR_SERVER_HOST`: スターレンタルサーバーのFTPホスト名
+* `STAR_SERVER_USER`: FTPユーザー名
+* `STAR_SERVER_PASSWORD`: FTPパスワード
+* `STAR_SERVER_REMOTE_DIR`: `public/` の中身を配置するサーバー側ディレクトリ
+
+任意:
+
+* `STAR_SERVER_PORT`: FTPポート番号。未設定時は `21` を使います。
+* `STAR_SERVER_PROTOCOL`: FTP方式。未設定時は `ftp` を使います。
+
+登録手順:
+
+1. GitHubで対象リポジトリを開く。
+2. `Settings` → `Secrets and variables` → `Actions` を開く。
+3. `Repository secrets` の `New repository secret` を選ぶ。
+4. 上記のSecret名と値を1件ずつ登録する。
+5. 登録後もSecretの値は画面上で再表示できないため、必要に応じて安全な場所で管理する。
+
+### 手動実行手順
+
+1. GitHubで対象リポジトリを開く。
+2. `Actions` タブを開く。
+3. `本番サーバー手動デプロイ` ワークフローを選ぶ。
+4. `Run workflow` を選ぶ。
+5. 対象ブランチに `main` を選ぶ。
+6. `confirm` に `DEPLOY` と入力する。
+7. `Run workflow` を実行する。
+8. ワークフローの完了後、本番URLで表示と操作を確認する。
+
+`confirm` が `DEPLOY` 以外の場合、ワークフローは確認入力の検証で停止し、アップロードは行いません。
+
+### ワークフロー内の検証
+
+アップロード前に、ワークフロー内で次の検証を実行します。
+
+```bash
+node tools/validate-matches.js
+node --check public/assets/app.js
+```
+
+どちらかが失敗した場合は、FTPアップロードのステップに進みません。
+
+### アップロード範囲
+
+GitHub ActionsのFTPアップロードでは、`local-dir` を `./public/` に限定します。そのため、サーバーへ送る対象は `public/` 配下の公開用ファイルのみです。
+
+少なくとも次の公開用ファイルがアップロード対象に含まれます。
+
+* `public/sanga202627season.html`
+* `public/assets/style.css`
+* `public/assets/app.js`
+* `public/data/matches.json`
+
+次のリポジトリ管理用ファイルやディレクトリは、アップロード対象に含めません。
+
+* `.git/`
+* `.github/`
+* `docs/`
+* `tools/`
+* `README.md`
+* `AGENTS.md`
