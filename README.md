@@ -89,13 +89,27 @@
 
 ## 検証コマンド
 
-日程JSONと既存HTML内の手書き日程カード数を確認する場合は、次のコマンドを実行します。
+日程JSONと既存HTML内の手書き日程カードを確認する場合は、次のコマンドを実行します。
 
 ```bash
 node tools/validate-matches.js
 ```
 
-この検証では、`public/data/matches.json` の件数・ID・必須項目・状態値などと、`public/sanga202627season.html` 内の日程カード数を確認します。
+この検証では、`public/data/matches.json` の件数・ID・必須項目・状態値に加えて、日付形式、日付範囲、候補日の昇順、注記番号、`public/sanga202627season.html` 内の日程カードとの主要項目の一致を確認します。
+
+日程データを目視確認しやすい一覧として出力する場合は、次のコマンドを実行します。
+
+```bash
+node tools/export-matches-review.js
+```
+
+Markdownファイルとして保存して確認する場合は、次のように実行します。
+
+```bash
+node tools/export-matches-review.js > /tmp/sanga-matches-review.md
+```
+
+日程データ監査の観点や、誤りが見つかった場合の記録欄は `docs/schedule-audit.md` にまとめています。
 
 ## ライセンス・位置づけ
 
