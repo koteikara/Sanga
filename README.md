@@ -63,6 +63,22 @@
 5. スプレッドシートからJSONを生成する
 6. 生成したHTML / JSONをスターレンタルサーバーへ反映する
 
+
+## GitHub Pages確認環境
+
+本番サーバーへ反映する前の簡易確認環境として、GitHub Pagesで `public/` ディレクトリ配下を公開できます。
+
+`.github/workflows/pages.yml` は、`main` ブランチへのpush時とGitHub Actions画面からの手動実行時に、`public/` をPagesへデプロイします。確認用トップページは `public/index.html` で、公開スケジュールページ `sanga202627season.html` へのリンクを置いています。
+
+### 一時Public運用時の注意
+
+* GitHub Freeでは、PrivateリポジトリのGitHub Pagesが使えない場合があります。
+* その場合は、確認時のみ一時的にリポジトリをPublicにしてGitHub Pagesを有効化します。
+* Publicにした間は、リポジトリ内のファイル、Actions履歴、ログが第三者に見える可能性があります。
+* 認証情報、FTP情報、APIキー、`.env`、サービスアカウントJSONなどは絶対に入れないでください。
+* 確認後にPrivateへ戻すと、GitHub Pagesはunpublishされる可能性があります。
+* 一時Public運用は簡易確認用です。継続運用では、公開専用リポジトリの分離も検討してください。
+
 ## 注意事項
 
 * 本番サーバーへのアップロードは、明示的に指示した場合のみ行う
