@@ -1019,7 +1019,7 @@
     color:rgba(255,255,255,.92);
   }
   .json-preview-match{
-    cursor:default;
+    cursor:pointer;
   }
 
   .json-preview-year{
