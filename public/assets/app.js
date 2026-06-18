@@ -207,15 +207,30 @@
     return button;
   }
 
+  async function fetchJsonPreviewData(){
+    const dataPaths=['data/matches.json','data/matches.sample.json'];
+    let lastError=null;
+    for(const dataPath of dataPaths){
+      try{
+        const response=await fetch(dataPath);
+        if(!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data=await response.json();
+        return {data, dataPath};
+      }catch(error){
+        lastError=error;
+        console.warn(`JSON preview data loading failed: ${dataPath}`, error);
+      }
+    }
+    throw lastError || new Error('JSON preview data loading failed.');
+  }
+
   async function renderJsonPreview(){
     if(!jsonPreviewList) return;
     try{
-      const response=await fetch('data/matches.sample.json');
-      if(!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data=await response.json();
+      const {data, dataPath}=await fetchJsonPreviewData();
       const matches=Array.isArray(data.matches) ? data.matches : [];
       jsonPreviewList.replaceChildren(...matches.map(createJsonMatchCard));
-      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。`);
+      setJsonPreviewStatus(`${matches.length}件のJSON由来カードを表示しています。読み込み元: ${dataPath}`);
     }catch(error){
       jsonPreviewList.replaceChildren();
       setJsonPreviewStatus('JSONの読み込みに失敗しました。既存の日程表示はそのまま利用できます。');
