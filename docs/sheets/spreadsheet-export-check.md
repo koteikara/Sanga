@@ -1,6 +1,6 @@
 # スプレッドシートCSV検証レポート
 
-このレポートは、Googleスプレッドシートの「試合」シートから出力したCSV相当の内容を、公開JSONへ反映する前にリポジトリ側で確認した結果です。今回は `public/data/matches.json` は更新せず、`docs/sheets/schedule.initial.csv` を実運用版の初期CSVとして整える段階の確認に留めます。
+このレポートは、Googleスプレッドシートの「試合」シートから出力したCSV相当の内容を、公開JSONへ反映する前にリポジトリ側で確認した結果です。前回確認した `docs/sheets/schedule.initial.csv` を、2026-06-19に公開JSON `public/data/matches.json` へ反映しました。
 
 ## 確認対象
 
@@ -9,7 +9,7 @@
 | 確認対象CSV | `docs/sheets/schedule.initial.csv` |
 | 確認日 | 2026-06-19 |
 | 用途 | Googleスプレッドシート「試合」シートの初期取り込み用CSV |
-| 公開JSONへの反映 | 今回は未実施 |
+| 公開JSONへの反映 | 2026-06-19に `public/data/matches.json` へ反映済み |
 | 生成JSON候補 | `tmp/matches.generated.json`（一時生成物のためコミット対象外） |
 
 ## CSV構造の確認結果
@@ -97,7 +97,7 @@ node tools/validate-generated-matches.js tmp/matches.generated.json --expected-c
 
 ## 公開JSONへ反映する前に確認すべき注意点
 
-* 今回は `public/data/matches.json` を変更していません。公開JSONへ反映する場合は、別PRで差分を確認してから実施します。
+* 2026-06-19に `public/data/matches.json` へ反映済みです。以後もCSVから公開JSONへ反映する場合は、生成後に差分と検証結果を確認します。
 * 生成JSON候補には `match_status`、`is_visible` などの拡張項目が追加されるため、公開画面側が未知の項目を無視できることを確認します。
 * `メモ` 列は運用者向けの非公開メモです。公開JSONへ出力されていないことを継続確認します。
 * `sec16` は開催年 `2026`、開催日・候補日空欄、注記 `※1` ありの未確定日程として扱います。公式発表後に開催日または候補日を更新する場合は、開催日と候補日を同時入力しないよう確認します。

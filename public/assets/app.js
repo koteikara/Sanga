@@ -338,7 +338,7 @@
   }
 
   async function fetchJsonPreviewData(){
-    const dataPath='data/matches.json?v=20260618-2';
+    const dataPath='data/matches.json?v=20260619-1';
     const response=await fetch(dataPath);
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();

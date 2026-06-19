@@ -2,8 +2,8 @@
   "meta": {
     "season": "2026-27",
     "team": "京都サンガF.C.",
-    "updated_at": "2026-06-18 00:00",
-    "source": "public/sanga202627season.html"
+    "updated_at": "2026-06-19 04:13",
+    "source": "docs/sheets/schedule.initial.csv"
   },
   "matches": [
     {
@@ -27,10 +27,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec02",
@@ -53,10 +56,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec03",
@@ -79,10 +85,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec04",
@@ -105,10 +114,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec05",
@@ -128,10 +140,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "confirmed",
       "status_label": "確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec06",
@@ -154,10 +169,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec07",
@@ -180,10 +198,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec08",
@@ -206,10 +227,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec09",
@@ -232,10 +256,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec10",
@@ -258,10 +285,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec11",
@@ -281,10 +311,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "confirmed",
       "status_label": "確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec12",
@@ -307,10 +340,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec13",
@@ -333,10 +369,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec14",
@@ -359,10 +398,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec15",
@@ -385,10 +427,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec16",
@@ -408,11 +453,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※1: 26/12/16(水)もしくは27/4/14(水)のいずれかで開催予定です。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec17",
@@ -435,10 +482,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec18",
@@ -461,10 +511,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec19",
@@ -487,10 +540,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec20",
@@ -510,10 +566,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "confirmed",
       "status_label": "確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec21",
@@ -536,10 +595,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec22",
@@ -562,10 +624,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec23",
@@ -588,10 +653,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec24",
@@ -614,10 +682,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec25",
@@ -639,11 +710,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※2: 27/2/24(水)に開催する可能性があります。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec26",
@@ -666,11 +739,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※3: 27/3/3(水)もしくは4/7(水)に開催する可能性があります。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec27",
@@ -693,10 +768,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec28",
@@ -719,10 +797,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec29",
@@ -745,10 +826,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec30",
@@ -771,10 +855,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec31",
@@ -797,11 +884,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※4: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/4/1(木)もしくは4/7(水)に開催する可能性があります。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec32",
@@ -823,11 +912,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※5: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/5/19(水)に開催する可能性があります。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec33",
@@ -850,11 +941,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※6: ACL Elite出場クラブがACL Elite準々決勝進出の場合は、27/5/5(水･祝)もしくは5/26(水)に開催する可能性があります。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec34",
@@ -876,11 +969,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "https://www.sanga-fc.jp/news/detail/21152",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
       "note": "※7: ルヴァンカップ決勝進出クラブの試合は、27/4/21(水)、5/12(水)、5/19(水)、6/2(水)のいずれかに開催する可能性があります。",
-      "updated_at": "2026-06-18 00:00"
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec35",
@@ -903,10 +998,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec36",
@@ -929,10 +1027,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec37",
@@ -955,10 +1056,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "tentative",
       "status_label": "未確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     },
     {
       "id": "sec38",
@@ -978,10 +1082,13 @@
       "ticket_url": "",
       "broadcast": "",
       "source_url": "public/sanga202627season.html",
-      "source_checked_at": "2026-06-18 00:00",
+      "source_checked_at": "2026-06-18",
       "status": "confirmed",
       "status_label": "確定",
-      "note": ""
+      "note": "",
+      "updated_at": "2026-06-19 04:13",
+      "match_status": "試合前",
+      "is_visible": true
     }
   ]
 }
