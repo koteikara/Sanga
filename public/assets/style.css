@@ -1254,3 +1254,48 @@
       animation:none;
     }
   }
+
+  /* filter controls */
+  .settings-section .filter-group{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+  }
+  .filter-option{
+    appearance:none;
+    min-height:42px;
+    border:2px solid var(--purple);
+    border-radius:999px;
+    background:#fff;
+    color:var(--purple);
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+    line-height:1.15;
+    padding:8px 6px;
+  }
+  .filter-option[aria-pressed="true"]{
+    background:var(--purple);
+    color:#fff;
+    border-color:var(--purple);
+    box-shadow:0 0 0 2px rgba(123,0,100,.16);
+  }
+  .filter-option:focus-visible{
+    outline:3px solid #00A6B8;
+    outline-offset:3px;
+  }
+  .filter-result{
+    margin-top:8px !important;
+    font-weight:800;
+  }
+  .empty-filter-message{
+    margin:14px 0 0;
+    padding:12px 14px;
+    border:1px solid rgba(255,255,255,.45);
+    border-radius:12px;
+    background:rgba(255,255,255,.12);
+    color:#fff;
+    font-size:13px;
+    font-weight:800;
+    line-height:1.55;
+  }
