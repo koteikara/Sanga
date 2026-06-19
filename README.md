@@ -110,15 +110,17 @@ CSS / JavaScript / JSONのいずれかを本番反映する場合は、必要に
 
 列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。実際のGoogleスプレッドシート作成時は、シート構成、入力ルール、プルダウン候補、CSV出力手順を整理した `docs/sheets/schedule-template.md` を参照してください。ヘッダー行テンプレートは `docs/sheets/schedule.template.csv`、検証用サンプルCSVは `docs/sheets/schedule.sample.csv` です。
 
-38件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成したCSVはGoogleスプレッドシートの「試合」シートに貼り付けるか、インポートして使います。
+38件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成済みの初期取り込み用CSVは `docs/sheets/schedule.initial.csv` です。このファイルは、現在の `public/data/matches.json` から生成した38件分の初期データで、Googleスプレッドシートを新規作成するときに「試合」シートへ取り込んで使います。
 
 ```bash
 node tools/export-matches-to-sheet-csv.js public/data/matches.json tmp/schedule-from-current-json.csv
 ```
 
+Googleスプレッドシートへ `docs/sheets/schedule.initial.csv` を取り込んだ後は、状態、ホームアウェイ、ホームアウェイ表示、開催年、注記番号、対戦相手コードなどのプルダウンを設定し、「注記」「設定」「確認」シートも追加します。`docs/sheets/schedule.initial.csv` は初期取り込み用であり、今後の日程データの正本はGoogleスプレッドシート側へ移していく想定です。
+
 `tmp/` 配下はCSV生成・検証用の一時作業ディレクトリです。Googleスプレッドシートへ取り込む初期CSVや、Googleスプレッドシートから出力したCSVは `tmp/schedule-from-current-json.csv`、`tmp/schedule-from-sheet.csv` などに置きます。生成結果確認用のJSONは `tmp/matches.generated.json` に出力します。`tmp/` 配下は `.gitignore` により原則コミットしません。
 
-スプレッドシートで内容を確認・修正した後は、CSVでダウンロードし、`tools/generate-matches-from-csv.js` で `matches.json` 形式の確認用JSONを生成して、`tools/validate-generated-matches.js` で検証します。
+スプレッドシートで内容を確認・修正した後は、CSVでダウンロードし、`tmp/schedule-from-sheet.csv` として扱います。そのCSVから `tools/generate-matches-from-csv.js` で `matches.json` 形式の確認用JSONを生成して、`tools/validate-generated-matches.js` で検証します。
 
 ```bash
 node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matches.generated.json
