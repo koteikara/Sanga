@@ -321,7 +321,7 @@
     if(filterResult){
       filterResult.textContent=count === 0
         ? '該当する試合はありません。'
-        : `${activeFilter === 'all' ? '' : `${filterLabels[activeFilter]}: `}${count}件を表示しています。`;
+        : `${activeFilter === 'all' ? '' : `${filterLabels[activeFilter]}：`}${count}件を表示しています。`;
     }
     if(emptyFilterMessage){
       emptyFilterMessage.hidden=count !== 0;
