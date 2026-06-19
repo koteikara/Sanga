@@ -261,6 +261,8 @@ node tools/validate-generated-matches.js tmp/matches.generated.json
 node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 38
 ```
 
+Googleスプレッドシートから出力したCSVは、公開JSONへ反映する前に必ず生成・検証します。検証観点と初期CSVの確認結果は `docs/sheets/spreadsheet-export-check.md` を参照してください。検証後に問題がなければ、次のPRで `public/data/matches.json` への反映を検討します。
+
 公開用JSONへ反映した後は、従来の検証も実行します。
 
 ```bash
