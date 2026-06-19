@@ -5,7 +5,14 @@ const path = require('path');
 
 const DEFAULT_OUTPUT = path.join('tmp', 'matches.generated.json');
 const GENERATED_AT = new Date().toISOString().slice(0, 16).replace('T', ' ');
-const REQUIRED_COLUMNS = ['ID', '節', '開催年', '状態', 'ホームアウェイ', '対戦相手', '会場'];
+const REQUIRED_COLUMNS = ['ID', '節', '状態', 'ホームアウェイ', '対戦相手', '会場'];
+const COMPETITION_LABELS = {
+  J1: '明治安田J1リーグ',
+  LEV: 'JリーグYBCルヴァンカップ',
+  EMP: '天皇杯',
+  ACL: 'AFCチャンピオンズリーグ',
+  FRI: '親善試合',
+};
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 function usage() {
@@ -62,6 +69,36 @@ function parseCsv(text) {
   return rows.filter((current) => current.some((value) => value.trim() !== ''));
 }
 
+function normalizeCompetition(value) {
+  const text = String(value || '').trim();
+  const upper = text.toUpperCase();
+  const aliases = {
+    J1: 'J1',
+    LEV: 'LEV',
+    LEVAIN: 'LEV',
+    EMP: 'EMP',
+    EMPEROR: 'EMP',
+    ACL: 'ACL',
+    FRI: 'FRI',
+    FRIENDLY: 'FRI',
+    'ルヴァン': 'LEV',
+    'ルヴァンカップ': 'LEV',
+    '天皇杯': 'EMP',
+    '親善試合': 'FRI',
+  };
+  return aliases[text] || aliases[upper] || text || 'J1';
+}
+
+function parseVisibleFlag(value) {
+  const text = String(value || '').trim();
+  if (text === '非表示') return false;
+  return true;
+}
+
+function assignIfPresent(target, key, value) {
+  if (value !== undefined && value !== '') target[key] = value;
+}
+
 function normalizeStatus(value) {
   const status = String(value || '').trim();
   if (status === '確定' || status === 'confirmed') return { status: 'confirmed', status_label: '確定' };
@@ -98,29 +135,40 @@ function buildMatch(row) {
   const status = normalizeStatus(row['状態']);
   const homeAway = normalizeHomeAway(row['ホームアウェイ'], row['ホームアウェイ表示']);
   const candidates = splitCandidates(row['候補日']);
-
-  return {
+  const competition = normalizeCompetition(row['大会']);
+  const match = {
     id: row['ID'],
     season: '2026-27',
-    competition: 'J1',
-    competition_label: '明治安田J1リーグ',
+    competition,
+    competition_label: row['大会表示'] || COMPETITION_LABELS[competition] || '',
     round: row['節'],
     match_date: row['開催日'] || '',
     date_candidates: candidates,
-    kickoff_time: '',
+    kickoff_time: row['キックオフ時刻'] || '',
     ...homeAway,
     opponent: row['対戦相手'],
     opponent_code: row['対戦相手コード'] || '',
     venue: row['会場'],
-    result: '',
-    ticket_url: '',
-    broadcast: '',
+    result: row['結果'] || '',
+    ticket_url: row['チケットURL'] || '',
+    broadcast: row['放送配信'] || '',
     source_url: row['根拠URL'] || '',
-    source_checked_at: GENERATED_AT,
+    source_checked_at: row['確認日'] || GENERATED_AT,
     ...status,
     note: row['注記'] || '',
     updated_at: GENERATED_AT,
   };
+
+  assignIfPresent(match, 'match_status', row['試合状態']);
+  assignIfPresent(match, 'kyoto_score', row['京都得点']);
+  assignIfPresent(match, 'opponent_score', row['相手得点']);
+  assignIfPresent(match, 'event_url', row['イベントURL']);
+  assignIfPresent(match, 'broadcast_url', row['放送配信URL']);
+  assignIfPresent(match, 'public_note', row['公開メモ']);
+  assignIfPresent(match, 'share_title', row['SNS用短縮タイトル']);
+  match.is_visible = parseVisibleFlag(row['表示フラグ']);
+
+  return match;
 }
 
 function validateGenerated(matches) {
