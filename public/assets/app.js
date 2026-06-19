@@ -308,7 +308,7 @@
       for(let i=index+1;i<children.length;i+=1){
         const next=children[i];
         if(next.classList.contains('json-preview-year')) break;
-        if(next.classList.contains('match') && !next.hidden){
+        if(next.classList.contains('json-preview-match') && !next.hidden && next.matches(':not([hidden])')){
           hasVisibleCard=true;
           break;
         }
