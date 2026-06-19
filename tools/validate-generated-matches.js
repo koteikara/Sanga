@@ -7,6 +7,11 @@ const MIN_DATE = '2026-08-01';
 const MAX_DATE = '2027-06-30';
 const ALLOWED_HOME_AWAY = new Set(['H', 'A']);
 const ALLOWED_STATUS = new Set(['confirmed', 'tentative']);
+const ALLOWED_COMPETITIONS = new Set(['J1', 'LEV', 'EMP', 'ACL', 'FRI']);
+const ALLOWED_MATCH_STATUS = new Set(['試合前', '試合中', '試合終了', '延期', '中止', '未定']);
+const ALLOWED_RESULTS = new Set(['勝', '分', '敗', '未定']);
+const TIME_PATTERN = /^\d{2}:\d{2}$/;
+const URL_PATTERN = /^https?:\/\//;
 const REQUIRED_META_FIELDS = ['season', 'team', 'updated_at', 'source'];
 const REQUIRED_MATCH_FIELDS = [
   'id',
@@ -110,6 +115,31 @@ function hasNoteNumber(note) {
   return /^※\d+(?:[:：]|\s|$)/.test(String(note || '').trim());
 }
 
+
+function isEmptyValue(value) {
+  return value === undefined || value === null || value === '';
+}
+
+function validateOptionalString(errors, location, field, value) {
+  if (!isEmptyValue(value) && typeof value !== 'string') {
+    addIssue(errors, location, `${field} は文字列で入力してください。`);
+  }
+}
+
+function validateOptionalUrl(warnings, location, field, value) {
+  if (isEmptyValue(value)) return;
+  if (typeof value !== 'string' || !URL_PATTERN.test(value)) {
+    addIssue(warnings, location, `${field} は http:// または https:// で始まるURLを推奨します。`);
+  }
+}
+
+function validateOptionalScore(errors, location, field, value) {
+  if (isEmptyValue(value)) return;
+  if (Number.isNaN(Number(value))) {
+    addIssue(errors, location, `${field} は数値として扱える値で入力してください。`);
+  }
+}
+
 function validateMatch(match, index, seenIds, errors, warnings) {
   const location = isPlainObject(match) && isNonEmptyString(match.id) ? match.id : `matches[${index}]`;
 
@@ -138,6 +168,35 @@ function validateMatch(match, index, seenIds, errors, warnings) {
 
   if (!ALLOWED_STATUS.has(match.status)) {
     addIssue(errors, location, 'status は confirmed または tentative にしてください。');
+  }
+
+  if (!ALLOWED_COMPETITIONS.has(match.competition)) {
+    addIssue(errors, location, 'competition は J1 / LEV / EMP / ACL / FRI のいずれかにしてください。');
+  }
+
+  if (isNonEmptyString(match.kickoff_time) && !TIME_PATTERN.test(match.kickoff_time)) {
+    addIssue(errors, location, 'kickoff_time は HH:MM 形式で入力してください。');
+  }
+
+  if (!isEmptyValue(match.match_status) && !ALLOWED_MATCH_STATUS.has(match.match_status)) {
+    addIssue(errors, location, 'match_status は 試合前 / 試合中 / 試合終了 / 延期 / 中止 / 未定 のいずれかにしてください。');
+  }
+
+  validateOptionalScore(errors, location, 'kyoto_score', match.kyoto_score);
+  validateOptionalScore(errors, location, 'opponent_score', match.opponent_score);
+
+  if (!isEmptyValue(match.result) && !ALLOWED_RESULTS.has(match.result)) {
+    addIssue(errors, location, 'result は 勝 / 分 / 敗 / 未定 のいずれかにしてください。');
+  }
+
+  validateOptionalUrl(warnings, location, 'ticket_url', match.ticket_url);
+  validateOptionalUrl(warnings, location, 'event_url', match.event_url);
+  validateOptionalUrl(warnings, location, 'broadcast_url', match.broadcast_url);
+  validateOptionalString(errors, location, 'public_note', match.public_note);
+  validateOptionalString(errors, location, 'share_title', match.share_title);
+
+  if (!isEmptyValue(match.is_visible) && typeof match.is_visible !== 'boolean') {
+    addIssue(errors, location, 'is_visible は boolean で入力してください。');
   }
 
   const hasMatchDate = isNonEmptyString(match.match_date);

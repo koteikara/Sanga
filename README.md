@@ -118,17 +118,17 @@ CSS / JavaScript / JSONのいずれかを本番反映する場合は、必要に
 
 列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。年間スケジュールページの「試合」シートは、フィルタリング、表示モード切替、フルページスクショ用表示、SNS投稿補助、戦績更新、カップ戦・ACL戦追加などの将来拡張を見据えて列拡張します。年間スケジュールページとニュース連動カレンダーの役割分担は `docs/service-scope.md` を参照してください。実際のGoogleスプレッドシート作成時は、シート構成、入力ルール、プルダウン候補、CSV出力手順を整理した `docs/sheets/schedule-template.md` を参照してください。ヘッダー行テンプレートは `docs/sheets/schedule.template.csv`、検証用サンプルCSVは `docs/sheets/schedule.sample.csv` です。
 
-38件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成済みの初期取り込み用CSVは `docs/sheets/schedule.initial.csv` です。このファイルは、現在の `public/data/matches.json` から生成した38件分の初期データで、Googleスプレッドシートを新規作成するときに「試合」シートへ取り込んで使います。
+38件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成済みの初期取り込み用CSVは `docs/sheets/schedule.initial.csv` です。このファイルは、現在の `public/data/matches.json` から生成した38件分の初期データで、拡張後の31列に対応済みです。Googleスプレッドシートを新規作成するときに「試合」シートへ取り込んで使います。既存 `matches.json` から再生成する場合も、`docs/sheets/schedule.template.csv` と同じ拡張後の列順で出力されます。
 
 ```bash
 node tools/export-matches-to-sheet-csv.js public/data/matches.json tmp/schedule-from-current-json.csv
 ```
 
-Googleスプレッドシートへ `docs/sheets/schedule.initial.csv` を取り込んだ後は、状態、ホームアウェイ、ホームアウェイ表示、開催年、注記番号、対戦相手コードなどのプルダウンを設定し、「注記」「設定」「確認」シートも追加します。`docs/sheets/schedule.initial.csv` は現行データ由来の初期取り込み用であり、拡張後の完成形ではありません。今後の日程データの正本は、`docs/sheets/schedule-columns.md` の拡張列を追加したGoogleスプレッドシート側へ移していく想定です。
+Googleスプレッドシートへ `docs/sheets/schedule.initial.csv` を取り込んだ後は、状態、試合状態、表示フラグ、ホームアウェイ、ホームアウェイ表示、開催年、注記番号、対戦相手コードなどのプルダウンを設定し、「注記」「設定」「確認」シートも追加します。取り込み時は拡張後の列を削除せず、現時点で空欄のキックオフ時刻、得点、チケットURL、イベントURL、放送配信URL、公開メモ、SNS用短縮タイトルなどは、後から手入力または自動更新で埋めます。`メモ` は運用者向け非公開メモであり、CSVからJSONを生成しても公開用JSONへ出力しません。個人メモ、参戦予定、視聴予定、気になる試合、チケット購入済みなど閲覧者ごとの情報は、引き続きLocalStorage側で扱います。
 
 `tmp/` 配下はCSV生成・検証用の一時作業ディレクトリです。Googleスプレッドシートへ取り込む初期CSVや、Googleスプレッドシートから出力したCSVは `tmp/schedule-from-current-json.csv`、`tmp/schedule-from-sheet.csv` などに置きます。生成結果確認用のJSONは `tmp/matches.generated.json` に出力します。`tmp/` 配下は `.gitignore` により原則コミットしません。
 
-スプレッドシートで内容を確認・修正した後は、CSVでダウンロードし、`tmp/schedule-from-sheet.csv` として扱います。そのCSVから `tools/generate-matches-from-csv.js` で `matches.json` 形式の確認用JSONを生成して、`tools/validate-generated-matches.js` で検証します。
+スプレッドシートで内容を確認・修正した後は、CSVでダウンロードし、`tmp/schedule-from-sheet.csv` として扱います。そのCSVから `tools/generate-matches-from-csv.js` で `matches.json` 形式の確認用JSONを生成して、`tools/validate-generated-matches.js` で検証します。CSVからJSONを生成する処理は、旧列構成のCSVと拡張列構成のCSVの両方を扱えます。拡張列がある場合は、大会、キックオフ時刻、試合状態、得点、各種URL、公開メモ、SNS用短縮タイトル、表示フラグをJSONへ反映します。
 
 ```bash
 node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matches.generated.json
