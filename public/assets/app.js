@@ -110,9 +110,14 @@
   const helpPanel=document.querySelector('.help-panel');
   const helpOverlay=document.querySelector('.help-overlay');
   const helpClose=document.querySelector('.help-close');
+  const settingsButton=document.querySelector('.settings-button');
+  const settingsPanel=document.querySelector('.settings-panel');
+  const settingsClose=document.querySelector('.settings-close');
+  const settingsTitle=document.querySelector('#settings-title');
 
   function openHelp(){
     if(!helpPanel || !helpOverlay || !helpButton) return;
+    closeSettings(false);
     helpOverlay.hidden=false;
     helpPanel.hidden=false;
     requestAnimationFrame(()=>helpPanel.classList.add('is-open'));
@@ -120,22 +125,50 @@
     helpClose && helpClose.focus();
   }
 
-  function closeHelp(){
+  function closeHelp(returnFocus=true){
     if(!helpPanel || !helpOverlay || !helpButton) return;
     helpPanel.classList.remove('is-open');
     helpButton.setAttribute('aria-expanded','false');
     window.setTimeout(()=>{
       helpPanel.hidden=true;
-      helpOverlay.hidden=true;
-      helpButton.focus();
+      if(!settingsPanel || settingsPanel.hidden) helpOverlay.hidden=true;
+      if(returnFocus) helpButton.focus();
+    }, 240);
+  }
+
+  function openSettings(){
+    if(!settingsPanel || !helpOverlay || !settingsButton) return;
+    closeHelp(false);
+    helpOverlay.hidden=false;
+    settingsPanel.hidden=false;
+    requestAnimationFrame(()=>settingsPanel.classList.add('is-open'));
+    settingsButton.setAttribute('aria-expanded','true');
+    (settingsTitle || settingsClose || settingsPanel).focus();
+  }
+
+  function closeSettings(returnFocus=true){
+    if(!settingsPanel || !helpOverlay || !settingsButton) return;
+    settingsPanel.classList.remove('is-open');
+    settingsButton.setAttribute('aria-expanded','false');
+    window.setTimeout(()=>{
+      settingsPanel.hidden=true;
+      if(!helpPanel || helpPanel.hidden) helpOverlay.hidden=true;
+      if(returnFocus) settingsButton.focus();
     }, 240);
   }
 
   helpButton && helpButton.addEventListener('click',openHelp);
-  helpClose && helpClose.addEventListener('click',closeHelp);
-  helpOverlay && helpOverlay.addEventListener('click',closeHelp);
+  helpClose && helpClose.addEventListener('click',()=>closeHelp());
+  settingsButton && settingsButton.addEventListener('click',openSettings);
+  settingsClose && settingsClose.addEventListener('click',()=>closeSettings());
+  helpOverlay && helpOverlay.addEventListener('click',()=>{
+    if(helpPanel && !helpPanel.hidden) closeHelp(false);
+    if(settingsPanel && !settingsPanel.hidden) closeSettings(false);
+  });
   document.addEventListener('keydown',(e)=>{
-    if(e.key==='Escape' && helpPanel && !helpPanel.hidden) closeHelp();
+    if(e.key !== 'Escape') return;
+    if(settingsPanel && !settingsPanel.hidden) closeSettings();
+    else if(helpPanel && !helpPanel.hidden) closeHelp();
   });
 
   // layout switcher: 2 / 3 / 4 columns
