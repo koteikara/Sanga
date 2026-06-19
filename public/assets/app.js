@@ -115,6 +115,22 @@
   const settingsClose=document.querySelector('.settings-close');
   const settingsTitle=document.querySelector('#settings-title');
 
+  function shouldReduceMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function canUseViewTransition(){
+    return !shouldReduceMotion() && typeof document.startViewTransition === 'function';
+  }
+
+  function withViewTransition(update){
+    if(!canUseViewTransition()){
+      update();
+      return null;
+    }
+    return document.startViewTransition(update);
+  }
+
   function openHelp(){
     if(!helpPanel || !helpOverlay || !helpButton) return;
     closeSettings(false);
@@ -141,20 +157,41 @@
     closeHelp(false);
     helpOverlay.hidden=false;
     settingsPanel.hidden=false;
+    const focusSettingsPanel=()=>{
+      (settingsTitle || settingsClose || settingsPanel).focus();
+    };
+    if(canUseViewTransition()){
+      withViewTransition(()=>{
+        settingsPanel.classList.add('is-open');
+        settingsButton.setAttribute('aria-expanded','true');
+      });
+      requestAnimationFrame(focusSettingsPanel);
+      return;
+    }
     requestAnimationFrame(()=>settingsPanel.classList.add('is-open'));
     settingsButton.setAttribute('aria-expanded','true');
-    (settingsTitle || settingsClose || settingsPanel).focus();
+    focusSettingsPanel();
   }
 
   function closeSettings(returnFocus=true){
     if(!settingsPanel || !helpOverlay || !settingsButton) return;
+    if(canUseViewTransition()){
+      withViewTransition(()=>{
+        settingsPanel.classList.remove('is-open');
+        settingsButton.setAttribute('aria-expanded','false');
+        settingsPanel.hidden=true;
+        if(!helpPanel || helpPanel.hidden) helpOverlay.hidden=true;
+      });
+      if(returnFocus) requestAnimationFrame(()=>settingsButton.focus());
+      return;
+    }
     settingsPanel.classList.remove('is-open');
     settingsButton.setAttribute('aria-expanded','false');
     window.setTimeout(()=>{
       settingsPanel.hidden=true;
       if(!helpPanel || helpPanel.hidden) helpOverlay.hidden=true;
       if(returnFocus) settingsButton.focus();
-    }, 240);
+    }, shouldReduceMotion() ? 0 : 240);
   }
 
   helpButton && helpButton.addEventListener('click',openHelp);
