@@ -2,6 +2,8 @@
 
 このレポートは、Googleスプレッドシートの「試合」シートから出力したCSV相当の内容を、公開JSONへ反映する前にリポジトリ側で確認した結果です。前回確認した `docs/sheets/schedule.initial.csv` を、2026-06-19に公開JSON `public/data/matches.json` へ反映しました。
 
+運用時の標準手順は `docs/operation-flow.md` に集約しています。スプレッドシート更新後のCSV出力、JSON生成、検証、GitHub Pages確認、本番デプロイ、本番確認は同手順を参照してください。
+
 ## 確認対象
 
 | 項目 | 内容 |
