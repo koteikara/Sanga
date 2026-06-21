@@ -1582,3 +1582,188 @@
     text-align:center;
     box-shadow:0 6px 16px rgba(0,0,0,.08);
   }
+
+  /* screenshot share mode */
+  .screenshot-share-header{
+    margin:4px 0 14px;
+    padding:16px 14px;
+    border:1px solid rgba(255,255,255,.45);
+    border-radius:18px;
+    background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.08));
+    box-shadow:0 10px 22px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.26);
+    text-align:center;
+  }
+  .screenshot-share-kicker{
+    margin:0 0 5px;
+    color:rgba(255,255,255,.84);
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.12em;
+  }
+  .screenshot-share-header h2{
+    margin:0 0 10px;
+    color:#fff;
+    font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(22px,7vw,30px);
+    line-height:1.05;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+  .screenshot-share-condition,
+  .screenshot-share-count{
+    margin:4px 0 0;
+    color:#fff;
+    font-size:13px;
+    font-weight:900;
+    line-height:1.35;
+  }
+  .screenshot-exit-button,
+  .screenshot-mode-button{
+    appearance:none;
+    width:100%;
+    min-height:44px;
+    border:2px solid var(--purple);
+    border-radius:14px;
+    background:var(--purple);
+    color:#fff;
+    font-size:14px;
+    font-weight:900;
+    line-height:1.2;
+    padding:10px 12px;
+    cursor:pointer;
+  }
+  .screenshot-exit-button{
+    position:sticky;
+    top:8px;
+    z-index:10;
+    margin:0 0 12px;
+    border-color:rgba(255,255,255,.92);
+    background:rgba(74,0,60,.92);
+    box-shadow:0 6px 16px rgba(0,0,0,.28);
+  }
+  .screenshot-exit-button:focus-visible,
+  .screenshot-mode-button:focus-visible{
+    outline:3px solid #00E5FF;
+    outline-offset:3px;
+  }
+  .screenshot-share-note{
+    margin:12px 0 0;
+    padding:9px 11px;
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:12px;
+    background:rgba(0,0,0,.16);
+    color:rgba(255,255,255,.90);
+    font-size:10px;
+    font-weight:800;
+    line-height:1.55;
+    text-align:center;
+  }
+  .screenshot-mode-live{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    white-space:nowrap;
+    border:0;
+  }
+  .phone.is-screenshot-mode{
+    padding:16px 12px 22px;
+    background:
+      radial-gradient(circle at 80% 8%, rgba(255,255,255,.14), transparent 26%),
+      linear-gradient(160deg,#3b002f 0%,#830066 55%,#25001f 100%);
+  }
+  .phone.is-screenshot-mode > header,
+  .phone.is-screenshot-mode .footer-tools,
+  .phone.is-screenshot-mode .disclaimer,
+  .phone.is-screenshot-mode .site-version,
+  .phone.is-screenshot-mode .help-overlay,
+  .phone.is-screenshot-mode .help-panel,
+  .phone.is-screenshot-mode .settings-panel{
+    display:none !important;
+  }
+  .phone.is-screenshot-mode .json-preview{
+    margin-top:0;
+  }
+  .phone.is-screenshot-mode .json-preview-grid{
+    grid-template-columns:1fr !important;
+    gap:9px;
+  }
+  .phone.is-screenshot-mode .match,
+  .phone.is-screenshot-mode .display-mode-compact .match{
+    min-height:72px;
+    border-width:3px;
+    box-shadow:0 4px 14px rgba(0,0,0,.18);
+  }
+  .phone.is-screenshot-mode .match-inner,
+  .phone.is-screenshot-mode .display-mode-compact .match-inner,
+  .phone.layout-3.is-screenshot-mode .display-mode-compact .match-inner,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .match-inner{
+    display:grid;
+    grid-template-columns:28px minmax(0,1fr) 76px;
+    grid-template-rows:auto;
+    min-height:68px;
+  }
+  .phone.is-screenshot-mode .home .match-inner,
+  .phone.is-screenshot-mode .display-mode-compact .home .match-inner,
+  .phone.layout-3.is-screenshot-mode .display-mode-compact .home .match-inner,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .home .match-inner{
+    background:linear-gradient(90deg,var(--purple) 0 28px,#fff 28px);
+  }
+  .phone.is-screenshot-mode .away .match-inner,
+  .phone.is-screenshot-mode .display-mode-compact .away .match-inner,
+  .phone.layout-3.is-screenshot-mode .display-mode-compact .away .match-inner,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .away .match-inner{
+    background:linear-gradient(90deg,var(--home) 0 28px,#ececec 28px);
+  }
+  .phone.is-screenshot-mode .ha,
+  .phone.is-screenshot-mode .display-mode-compact .ha,
+  .phone.layout-3.is-screenshot-mode .display-mode-compact .ha,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .ha{
+    grid-row:auto;
+    width:28px;
+    min-height:68px;
+    font-size:9px;
+  }
+  .phone.is-screenshot-mode .meta,
+  .phone.is-screenshot-mode .display-mode-compact .meta{
+    padding:7px 8px;
+  }
+  .phone.is-screenshot-mode .team,
+  .phone.is-screenshot-mode .display-mode-compact .team,
+  .phone.layout-3.is-screenshot-mode .display-mode-compact .team,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .team{
+    font-size:15px;
+    line-height:1.15;
+  }
+  .phone.is-screenshot-mode .place,
+  .phone.is-screenshot-mode .display-mode-compact .place,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .place{
+    display:block;
+    font-size:10px;
+  }
+  .phone.is-screenshot-mode .date,
+  .phone.is-screenshot-mode .display-mode-compact .date,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .date{
+    grid-column:auto;
+    min-height:68px;
+    justify-content:center;
+    padding:4px 6px;
+  }
+  .phone.is-screenshot-mode .date .main,
+  .phone.is-screenshot-mode .display-mode-compact .date .main{
+    font-size:28px;
+  }
+  .phone.is-screenshot-mode .date .sub,
+  .phone.is-screenshot-mode .display-mode-compact .date .sub,
+  .phone.layout-4.is-screenshot-mode .display-mode-compact .date .sub{
+    display:inline;
+    font-size:8px;
+  }
+  .phone.is-screenshot-mode .creator-credit{
+    margin-top:10px;
+    font-size:9px;
+    color:rgba(255,255,255,.78);
+  }
