@@ -133,13 +133,9 @@
   const settingsTitle=document.querySelector('#settings-title');
   const screenshotModeButton=document.querySelector('.screenshot-mode-button');
   const screenshotExitButton=document.querySelector('.screenshot-exit-button');
-  const screenshotShareHeader=document.querySelector('.screenshot-share-header');
-  const screenshotShareCondition=document.querySelector('.screenshot-share-condition');
-  const screenshotShareCount=document.querySelector('.screenshot-share-count');
   const screenshotShareNote=document.querySelector('.screenshot-share-note');
   const screenshotModeLive=document.querySelector('.screenshot-mode-live');
   let isScreenshotMode=false;
-  let lastVisibleCount=0;
 
   function openHelp(){
     if(!helpPanel || !helpOverlay || !helpButton) return;
@@ -197,21 +193,13 @@
     if(helpOverlay) helpOverlay.hidden=true;
   }
 
-  function updateScreenshotSummary(count=lastVisibleCount){
-    const label=filterLabels[activeFilter] || filterLabels.all;
-    if(screenshotShareCondition) screenshotShareCondition.textContent=`表示条件：${label}`;
-    if(screenshotShareCount) screenshotShareCount.textContent=`表示件数：${count}件`;
-  }
-
   function enterScreenshotMode(){
     if(isScreenshotMode) return;
     isScreenshotMode=true;
     forceClosePanels();
     phoneEl && phoneEl.classList.add('is-screenshot-mode');
-    if(screenshotShareHeader) screenshotShareHeader.hidden=false;
     if(screenshotShareNote) screenshotShareNote.hidden=false;
     if(screenshotExitButton) screenshotExitButton.hidden=false;
-    updateScreenshotSummary();
     if(screenshotModeLive) screenshotModeLive.textContent='スクショ用表示に切り替えました。';
     screenshotExitButton && screenshotExitButton.focus();
   }
@@ -220,7 +208,6 @@
     if(!isScreenshotMode) return;
     isScreenshotMode=false;
     phoneEl && phoneEl.classList.remove('is-screenshot-mode');
-    if(screenshotShareHeader) screenshotShareHeader.hidden=true;
     if(screenshotShareNote) screenshotShareNote.hidden=true;
     if(screenshotExitButton) screenshotExitButton.hidden=true;
     if(screenshotModeLive) screenshotModeLive.textContent='通常表示に戻りました。';
@@ -409,12 +396,10 @@
       if(visible) visibleCount+=1;
     });
     updateYearHeadingVisibility();
-    lastVisibleCount=visibleCount;
     filterButtons.forEach(button=>{
       button.setAttribute('aria-pressed', button.dataset.filter === activeFilter ? 'true' : 'false');
     });
     updateFilterResult(visibleCount);
-    if(isScreenshotMode) updateScreenshotSummary(visibleCount);
   }
 
   activeFilter=readFilterSettings();
