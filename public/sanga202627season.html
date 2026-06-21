@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>KYOTO SANGA F.C. 2026/27 Match Schedule</title>
-<link rel="stylesheet" href="assets/style.css?v=20260621-12">
+<link rel="stylesheet" href="assets/style.css?v=20260622-1">
 </head>
 <body>
 <main class="phone">
@@ -17,6 +17,12 @@
 <a class="share-save-link" href="#" download="sanga-schedule-share.png" hidden>画像を保存</a>
 <p class="share-save-help" hidden>スマホでは画像を長押しして保存してください。</p>
 <p class="share-status" aria-live="polite"></p>
+<div class="share-progress" hidden>
+<p class="share-progress-text">画像を生成しています…</p>
+<div class="share-progress-track" role="progressbar" aria-label="画像生成中" aria-valuemin="0" aria-valuemax="100">
+<span class="share-progress-bar"></span>
+</div>
+</div>
 <div class="share-preview" hidden>
 <p>生成画像プレビュー</p>
 <img class="share-preview-image" alt="生成された日程画像のプレビュー"/>
@@ -39,7 +45,7 @@
 <p class="screenshot-share-note" hidden>非公式の確認用日程表です。最新情報は公式情報をご確認ください。</p>
 <p class="creator-credit">作成者：<a href="https://x.com/kou_osakacity" target="_blank" rel="noopener noreferrer">Kou from OSAKA</a></p>
 </section>
-<p class="site-version">Version 2026.06.21-12 / Image save flow fixed: 2026-06-21 / Data updated: 2026-06-19</p>
+<p class="site-version">Version 2026.06.22-1 / Image save screen refined: 2026-06-22 / Data updated: 2026-06-19</p>
 <div class="help-overlay" hidden="" id="help-overlay"></div>
 <p class="screenshot-mode-live" aria-live="polite"></p>
 <section aria-labelledby="help-title" aria-modal="true" class="help-panel" hidden="" id="help-panel" role="dialog">
@@ -51,7 +57,7 @@
 <li><span class="sample-border sample-cyan"></span>2回タップ：水色枠</li>
 <li><span class="sample-date"></span>淡い黄色の日付枠：日程未確定・候補日あり</li>
 <li><b>SAT</b> は青、<b>SUN</b> は赤で表示しています。</li>
-<li>設定の「共有」から「画像を生成」を押すと、表示中の日程を画像として生成できます。PCでは「画像を保存」リンクから保存できます。スマホでは生成画像プレビューを長押しして保存してください。画像には表示中の試合、赤色枠・水色枠、短い注意書き、作成者表記が含まれます。投稿時は本文にも補足を添えると分かりやすくなります。</li>
+<li>設定の「共有」から「画像を生成」を押すと、画像生成・保存画面に移動します。生成中は進捗バーが表示され、完了後に画像プレビューと「画像を保存」が表示されます。スマホでは生成画像プレビューを長押しして保存してください。</li>
 <li>タップ状態、表示列、表示モードはLocalStorageに保存されます。同じ端末でもブラウザが異なる場合や、ブラウザのデータを削除した場合は保存内容が引き継がれません。保存内容削除ボタンで、このページの保存状態を削除できます。</li><button class="storage-clear" type="button">このページの保存内容を削除</button><p aria-live="polite" class="storage-clear-note"></p></ul>
 <button class="help-close" type="button">閉じる</button>
 </section>
@@ -105,6 +111,6 @@
 <button class="settings-close" type="button">閉じる</button>
 </section>
 </main>
-<script type="module" src="assets/app.js?v=20260621-12"></script>
+<script type="module" src="assets/app.js?v=20260622-1"></script>
 </body>
 </html>
