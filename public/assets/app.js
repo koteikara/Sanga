@@ -3,6 +3,8 @@
   let storageAvailable=true;
   let states={};
   const filterKey='sanga-schedule-filter-settings-v1';
+  const displayModeKey='sanga-schedule-display-mode-v1';
+  const validDisplayModes=['card','compact','list'];
   const validFilters=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
   const filterLabels={
     all:'すべて',
@@ -255,6 +257,52 @@
 
 
   const jsonPreviewList=document.querySelector('[data-json-preview-list]');
+  const displayModeButtons=Array.from(document.querySelectorAll('.display-mode-option'));
+  let activeDisplayMode='card';
+
+  function normalizeDisplayMode(value){
+    return validDisplayModes.includes(String(value)) ? String(value) : 'card';
+  }
+
+  function readDisplayModeSettings(){
+    const raw=readStorageValue(displayModeKey, '');
+    if(!raw) return 'card';
+    try{
+      const parsed=JSON.parse(raw);
+      return normalizeDisplayMode(parsed && parsed.mode);
+    }catch(e){
+      return 'card';
+    }
+  }
+
+  function writeDisplayModeSettings(){
+    writeStorageValue(displayModeKey, JSON.stringify({mode:activeDisplayMode}));
+  }
+
+  function applyDisplayMode(mode){
+    activeDisplayMode=normalizeDisplayMode(mode);
+    if(jsonPreviewList){
+      jsonPreviewList.classList.remove('display-mode-card','display-mode-compact','display-mode-list');
+      jsonPreviewList.classList.add(`display-mode-${activeDisplayMode}`);
+    }
+    displayModeButtons.forEach(button=>{
+      const active=button.dataset.displayMode===activeDisplayMode;
+      button.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  activeDisplayMode=readDisplayModeSettings();
+  applyDisplayMode(activeDisplayMode);
+
+  displayModeButtons.forEach(button=>{
+    button.addEventListener('click',(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
+      applyDisplayMode(button.dataset.displayMode);
+      writeDisplayModeSettings();
+    });
+  });
+
   const filterButtons=Array.from(document.querySelectorAll('.filter-option'));
   const filterResult=document.querySelector('.filter-result');
   const emptyFilterMessage=document.querySelector('.empty-filter-message');
@@ -363,13 +411,15 @@
     removeStorageValue(key);
     removeStorageValue(layoutKey);
     removeStorageValue(filterKey);
+    removeStorageValue(displayModeKey);
     states={};
     initializeMatchStates();
     setScheduleLayout('2');
+    applyDisplayMode('card');
     activeFilter='all';
     applyScheduleFilter();
     if(storageClearNote){
-      storageClearNote.textContent='このページの保存内容、表示列、絞り込み条件を削除しました。';
+      storageClearNote.textContent='このページの保存内容、表示列、表示モード、絞り込み条件を削除しました。';
     }
   });
 
