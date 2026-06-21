@@ -1507,29 +1507,6 @@
       inset 0 2px 5px rgba(0,0,0,.20),
       inset 0 1px 0 rgba(255,255,255,.24);
   }
-  .settings-panel{
-    view-transition-name:settings-panel;
-    transition:transform .24s ease, opacity .18s ease, box-shadow .24s ease;
-  }
-  ::view-transition-old(settings-panel),
-  ::view-transition-new(settings-panel){
-    animation-duration:.22s;
-    animation-timing-function:cubic-bezier(.2,.8,.2,1);
-  }
-  ::view-transition-old(settings-panel){
-    animation-name:settings-panel-out;
-  }
-  ::view-transition-new(settings-panel){
-    animation-name:settings-panel-in;
-  }
-  @keyframes settings-panel-in{
-    from{opacity:.72;transform:translateY(10px);filter:drop-shadow(0 -2px 12px rgba(0,0,0,.18));}
-    to{opacity:1;transform:translateY(0);filter:drop-shadow(0 -8px 24px rgba(0,0,0,.25));}
-  }
-  @keyframes settings-panel-out{
-    from{opacity:1;transform:translateY(0);}
-    to{opacity:.76;transform:translateY(8px);}
-  }
   @media (prefers-reduced-motion:reduce){
     .footer-action-button,
     .settings-panel{
@@ -1538,10 +1515,6 @@
     .footer-action-button:hover,
     .footer-action-button:active{
       transform:none;
-    }
-    ::view-transition-old(settings-panel),
-    ::view-transition-new(settings-panel){
-      animation:none;
     }
   }
 
