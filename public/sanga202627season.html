@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>KYOTO SANGA F.C. 2026/27 Match Schedule</title>
-<link rel="stylesheet" href="assets/style.css?v=20260622-1">
+<link rel="stylesheet" href="assets/style.css?v=20260622-2">
 </head>
 <body>
 <main class="phone">
@@ -24,8 +24,11 @@
 </div>
 </div>
 <div class="share-preview" hidden>
-<p>生成画像プレビュー</p>
+<p class="share-preview-label">生成された画像プレビュー</p>
+<p class="share-preview-note">この画像を保存できます。</p>
+<div class="share-preview-card">
 <img class="share-preview-image" alt="生成された日程画像のプレビュー"/>
+</div>
 </div>
 <button type="button" class="screenshot-exit-button" hidden>通常表示に戻る</button>
 </div>
@@ -45,7 +48,7 @@
 <p class="screenshot-share-note" hidden>非公式の確認用日程表です。最新情報は公式情報をご確認ください。</p>
 <p class="creator-credit">作成者：<a href="https://x.com/kou_osakacity" target="_blank" rel="noopener noreferrer">Kou from OSAKA</a></p>
 </section>
-<p class="site-version">Version 2026.06.22-1 / Image save screen refined: 2026-06-22 / Data updated: 2026-06-19</p>
+<p class="site-version">Version 2026.06.22-2 / Image preview fixed: 2026-06-22 / Data updated: 2026-06-19</p>
 <div class="help-overlay" hidden="" id="help-overlay"></div>
 <p class="screenshot-mode-live" aria-live="polite"></p>
 <section aria-labelledby="help-title" aria-modal="true" class="help-panel" hidden="" id="help-panel" role="dialog">
@@ -57,7 +60,7 @@
 <li><span class="sample-border sample-cyan"></span>2回タップ：水色枠</li>
 <li><span class="sample-date"></span>淡い黄色の日付枠：日程未確定・候補日あり</li>
 <li><b>SAT</b> は青、<b>SUN</b> は赤で表示しています。</li>
-<li>設定の「共有」から「画像を生成」を押すと、画像生成・保存画面に移動します。生成中は進捗バーが表示され、完了後に画像プレビューと「画像を保存」が表示されます。スマホでは生成画像プレビューを長押しして保存してください。</li>
+<li>設定の「共有」から「画像を生成」を押すと、画像生成・保存画面に移動します。画像生成中は進捗バーが表示されます。生成後は「生成された画像プレビュー」と「画像を保存」が表示されます。スマホでは画像プレビューを長押しして保存してください。</li>
 <li>タップ状態、表示列、表示モードはLocalStorageに保存されます。同じ端末でもブラウザが異なる場合や、ブラウザのデータを削除した場合は保存内容が引き継がれません。保存内容削除ボタンで、このページの保存状態を削除できます。</li><button class="storage-clear" type="button">このページの保存内容を削除</button><p aria-live="polite" class="storage-clear-note"></p></ul>
 <button class="help-close" type="button">閉じる</button>
 </section>
@@ -111,6 +114,6 @@
 <button class="settings-close" type="button">閉じる</button>
 </section>
 </main>
-<script type="module" src="assets/app.js?v=20260622-1"></script>
+<script type="module" src="assets/app.js?v=20260622-2"></script>
 </body>
 </html>

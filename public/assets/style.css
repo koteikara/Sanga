@@ -1851,13 +1851,12 @@
 
   /* share image generation */
   .share-capture-target{
-    background:linear-gradient(180deg, #5b0045 0%, #8a005f 50%, #4d003c 100%);
+    background:transparent;
   }
   .phone.is-screenshot-mode .share-capture-target{
-    position:fixed;
-    left:-99999px;
-    top:0;
-    width:min(100vw, 760px);
+    width:100%;
+    max-width:760px;
+    margin:0 auto;
     padding:20px 10px 24px;
     border-radius:18px;
     background:
@@ -1865,9 +1864,32 @@
       linear-gradient(180deg, #5b0045 0%, #8a005f 50%, #4d003c 100%);
     pointer-events:none;
   }
+  .phone.is-screenshot-mode.is-share-loading .share-capture-target{
+    position:relative;
+    left:auto;
+    top:auto;
+    height:auto;
+    overflow:visible;
+  }
+  .phone.is-screenshot-mode.is-share-success .share-capture-target,
+  .phone.is-screenshot-mode.is-share-error .share-capture-target{
+    position:absolute;
+    width:1px;
+    height:1px;
+    margin:-1px;
+    padding:0;
+    overflow:hidden;
+    clip:rect(0 0 0 0);
+    clip-path:inset(50%);
+    border:0;
+  }
   .phone.layout-4.is-screenshot-mode .share-capture-target{
     padding-right:8px;
     padding-left:8px;
+  }
+  .phone.layout-4.is-screenshot-mode.is-share-success .share-capture-target,
+  .phone.layout-4.is-screenshot-mode.is-share-error .share-capture-target{
+    padding:0;
   }
   .share-image-actions{
     display:grid;
@@ -1875,8 +1897,12 @@
     margin:0 0 12px;
   }
   .phone.is-screenshot-mode .share-image-actions{
-    min-height:calc(100dvh - 128px);
+    min-height:auto;
     align-content:start;
+  }
+  .phone.is-screenshot-mode.is-share-success .share-image-actions,
+  .phone.is-screenshot-mode.is-share-error .share-image-actions{
+    min-height:calc(100dvh - 128px);
   }
   .phone.is-screenshot-mode .share-image-actions .share-generate-button{
     display:none;
@@ -1966,26 +1992,66 @@
   .share-preview{
     display:grid;
     gap:8px;
-    padding:10px;
+    padding:12px 10px 16px;
     border:1px solid rgba(255,255,255,.32);
-    border-radius:14px;
+    border-radius:18px;
     background:rgba(255,255,255,.12);
   }
   .share-preview p{
     margin:0;
     color:#fff;
-    font-size:12px;
-    font-weight:900;
     text-align:center;
   }
+  .share-preview-label{
+    font-size:14px;
+    font-weight:900;
+  }
+  .share-preview-note{
+    font-size:12px;
+    font-weight:800;
+    opacity:.9;
+  }
+  .share-preview-card{
+    position:relative;
+    max-width:420px;
+    margin:6px auto 0;
+    padding:10px;
+    border:2px solid rgba(255,255,255,.82);
+    border-radius:22px;
+    background:rgba(255,255,255,.16);
+    box-shadow:0 16px 36px rgba(0,0,0,.35);
+    isolation:isolate;
+  }
+  .share-preview-card::before{
+    content:"";
+    position:absolute;
+    inset:-10px;
+    z-index:-1;
+    border-radius:28px;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(0,229,255,.58), transparent 32%),
+      radial-gradient(circle at 80% 30%, rgba(255,255,255,.42), transparent 28%),
+      radial-gradient(circle at 50% 90%, rgba(255,0,180,.50), transparent 36%);
+    filter:blur(14px);
+    opacity:.82;
+    animation:sharePreviewGlow 4s ease-in-out infinite alternate;
+  }
   .share-preview-image{
+    position:relative;
+    z-index:1;
     display:block;
     width:100%;
+    max-height:60vh;
     height:auto;
-    border-radius:10px;
+    object-fit:contain;
+    border-radius:14px;
     background:#fff;
     box-shadow:0 8px 22px rgba(0,0,0,.22);
     touch-action:manipulation;
+  }
+  @keyframes sharePreviewGlow{
+    from{ transform:scale(.98); opacity:.65; }
+    to{ transform:scale(1.02); opacity:.95; }
   }
   .share-image-actions[hidden],
   .share-save-link[hidden],
@@ -1999,5 +2065,8 @@
       animation:none;
       transform:none;
       width:100%;
+    }
+    .share-preview-card::before{
+      animation:none;
     }
   }
