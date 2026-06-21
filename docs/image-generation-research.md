@@ -123,6 +123,10 @@
 
 現時点では、`html-to-image`、`dom-to-image-more`、`modern-screenshot` を優先検証候補にし、`html2canvas` は比較用、`dom-to-image` は参考・非推奨寄りとして扱うのが安全です。
 
+## 小規模検証で分かったこと
+
+PC ChromeとiPhone Safariでは、`html-to-image` / `modern-screenshot` ともにPNG生成できることを確認しました。iPhone Safariでは `download` 属性よりも、画像プレビューを長押し保存する導線が自然です。
+
 ## このページでの技術的な懸念
 
 年間スケジュールページ固有の要素と懸念は次のとおりです。
