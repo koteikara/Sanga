@@ -210,6 +210,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     isScreenshotMode=true;
     forceClosePanels();
     phoneEl && phoneEl.classList.add('is-screenshot-mode');
+    setShareGenerationState(shareGenerationState);
     if(screenshotShareNote) screenshotShareNote.hidden=false;
     if(shareActions) shareActions.hidden=false;
     if(screenshotExitButton) screenshotExitButton.hidden=false;
@@ -219,7 +220,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   function exitScreenshotMode(returnFocus=false){
     if(!isScreenshotMode) return;
     isScreenshotMode=false;
-    phoneEl && phoneEl.classList.remove('is-screenshot-mode');
+    phoneEl && phoneEl.classList.remove('is-screenshot-mode','is-share-loading','is-share-success','is-share-error');
     if(screenshotShareNote) screenshotShareNote.hidden=true;
     if(shareActions) shareActions.hidden=true;
     if(screenshotExitButton) screenshotExitButton.hidden=true;
@@ -240,7 +241,13 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   function setShareGenerationState(state){
     shareGenerationState=['idle','loading','success','error'].includes(state) ? state : 'idle';
     isGeneratingShareImage=shareGenerationState==='loading';
-    phoneEl && phoneEl.setAttribute('data-share-generation-state', shareGenerationState);
+    if(phoneEl){
+      phoneEl.setAttribute('data-share-generation-state', shareGenerationState);
+      phoneEl.classList.toggle('is-share-loading', shareGenerationState==='loading');
+      phoneEl.classList.toggle('is-share-success', shareGenerationState==='success');
+      phoneEl.classList.toggle('is-share-error', shareGenerationState==='error');
+      if(shareGenerationState==='idle') phoneEl.classList.remove('is-share-loading','is-share-success','is-share-error');
+    }
     shareGenerateButtons.forEach(button=>{
       button.disabled=isGeneratingShareImage;
       button.setAttribute('aria-busy', isGeneratingShareImage ? 'true' : 'false');
@@ -283,7 +290,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     setShareGenerationState('loading');
     if(shareStatus) shareStatus.textContent='画像を生成しています…';
     try{
-      if(document.fonts && typeof document.fonts.ready === 'object') await document.fonts.ready;
+      if(document.fonts && document.fonts.ready) await document.fonts.ready;
       await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
       // modern-screenshot is loaded from a pinned esm.sh CDN URL for this initial static-site implementation.
       // It renders the DOM in the browser and does not send the page DOM or generated image to an external API.
