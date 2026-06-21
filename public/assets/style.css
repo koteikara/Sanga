@@ -1584,8 +1584,7 @@
   }
 
   /* screenshot share mode */
-  .screenshot-exit-button,
-  .screenshot-mode-button{
+  .screenshot-exit-button{
     appearance:none;
     width:100%;
     min-height:44px;
@@ -1608,8 +1607,7 @@
     background:rgba(74,0,60,.92);
     box-shadow:0 6px 16px rgba(0,0,0,.28);
   }
-  .screenshot-exit-button:focus-visible,
-  .screenshot-mode-button:focus-visible{
+  .screenshot-exit-button:focus-visible{
     outline:3px solid #00E5FF;
     outline-offset:3px;
   }
@@ -1856,7 +1854,18 @@
 
   /* share image generation */
   .share-capture-target{
-    background:transparent;
+    background:linear-gradient(180deg, #5b0045 0%, #8a005f 50%, #4d003c 100%);
+  }
+  .phone.is-screenshot-mode .share-capture-target{
+    padding:20px 10px 24px;
+    border-radius:18px;
+    background:
+      radial-gradient(circle at 80% 8%, rgba(255,255,255,.14), transparent 26%),
+      linear-gradient(180deg, #5b0045 0%, #8a005f 50%, #4d003c 100%);
+  }
+  .phone.layout-4.is-screenshot-mode .share-capture-target{
+    padding-right:8px;
+    padding-left:8px;
   }
   .share-image-actions{
     display:grid;
