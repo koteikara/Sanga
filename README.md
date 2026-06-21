@@ -161,6 +161,10 @@ node tools/validate-generated-matches.js tmp/matches.generated.json --expected-c
 node tools/validate-matches.js
 ```
 
+## Codex作業時のトークン削減検討
+
+Codex作業時のトークン削減策として、`headroom` 導入可能性を調査中です。現時点では導入・設定変更は行わず、詳細は `docs/headroom-research.md` を参照してください。
+
 ## 注意事項
 
 * 本番サーバーへのアップロードは、明示的に指示した場合のみ行う
