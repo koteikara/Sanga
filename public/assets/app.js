@@ -281,6 +281,10 @@
 
   function applyDisplayMode(mode){
     activeDisplayMode=normalizeDisplayMode(mode);
+    if(phoneEl){
+      phoneEl.classList.remove('mode-card','mode-compact','mode-list');
+      phoneEl.classList.add(`mode-${activeDisplayMode}`);
+    }
     if(jsonPreviewList){
       jsonPreviewList.classList.remove('display-mode-card','display-mode-compact','display-mode-list');
       jsonPreviewList.classList.add(`display-mode-${activeDisplayMode}`);
