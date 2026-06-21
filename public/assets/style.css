@@ -544,6 +544,79 @@
     outline-offset:3px;
   }
 
+
+  .phone.layout-1 .json-preview-grid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .phone.layout-1 .match{
+    min-height:72px;
+  }
+  .phone.layout-1 .match-inner{
+    grid-template-columns:28px minmax(0,1fr) 76px;
+    min-height:68px;
+  }
+  .phone.layout-1 .home .match-inner{
+    background:linear-gradient(90deg,var(--purple) 0 28px,#fff 28px);
+  }
+  .phone.layout-1 .away .match-inner{
+    background:linear-gradient(90deg,var(--home) 0 28px,#ececec 28px);
+  }
+  .phone.layout-1 .ha{
+    width:28px;
+    min-height:68px;
+    font-size:9px;
+  }
+  .phone.layout-1 .meta{
+    padding:7px 8px;
+  }
+  .phone.layout-1 .team{
+    font-size:15px;
+    line-height:1.15;
+  }
+  .phone.layout-1 .place{
+    font-size:10px;
+  }
+  .phone.layout-1 .date{
+    padding:4px 6px;
+  }
+  .phone.layout-1 .date .main{
+    font-size:28px;
+  }
+  .phone.layout-1 .date .main.compact-date{
+    font-size:24px;
+  }
+  .phone.layout-1 .date .range .main{
+    font-size:22px;
+  }
+  .phone.layout-1 .date .range .main.compact-date{
+    font-size:20px;
+  }
+  .phone.layout-1 .display-mode-compact .match{
+    min-height:62px;
+  }
+  .phone.layout-1 .display-mode-compact .match-inner{
+    grid-template-columns:22px minmax(0,1fr) 68px;
+    min-height:58px;
+  }
+  .phone.layout-1 .display-mode-compact .home .match-inner{
+    background:linear-gradient(90deg,var(--purple) 0 22px,#fff 22px);
+  }
+  .phone.layout-1 .display-mode-compact .away .match-inner{
+    background:linear-gradient(90deg,var(--home) 0 22px,#ececec 22px);
+  }
+  .phone.layout-1 .display-mode-compact .ha{
+    width:22px;
+    min-height:58px;
+    font-size:8px;
+  }
+  .phone.layout-1 .display-mode-compact .team{
+    font-size:13px;
+  }
+  .phone.layout-1 .display-mode-compact .place{
+    font-size:9px;
+  }
+
   .phone.layout-3 .grid{
     grid-template-columns:repeat(3,minmax(0,1fr));
     gap:6px;
@@ -1207,86 +1280,6 @@
     right:4px;
     bottom:3px;
   }
-  .display-mode-list{
-    grid-template-columns:1fr !important;
-    gap:7px;
-  }
-  .display-mode-list .json-preview-year{
-    margin-top:14px;
-    margin-bottom:4px;
-  }
-  .display-mode-list .match{
-    min-height:0;
-    border-width:2px;
-    border-radius:8px;
-    box-shadow:0 2px 8px rgba(0,0,0,.14);
-  }
-  .display-mode-list .match[data-state="1"],
-  .display-mode-list .match[data-state="2"]{
-    border-left-width:8px;
-  }
-  .display-mode-list .match[data-state="1"]{
-    box-shadow:inset 4px 0 0 var(--border-red),0 0 0 2px rgba(255,30,54,.20),0 2px 8px rgba(0,0,0,.14);
-  }
-  .display-mode-list .match[data-state="2"]{
-    box-shadow:inset 4px 0 0 var(--border-cyan),0 0 0 2px rgba(0,166,184,.24),0 2px 8px rgba(0,0,0,.14);
-  }
-  .display-mode-list .match-inner{
-    grid-template-columns:42px minmax(0,1fr) 84px;
-    min-height:54px;
-  }
-  .display-mode-list .home .match-inner{
-    background:linear-gradient(90deg,var(--purple) 0 42px,#fff 42px);
-  }
-  .display-mode-list .away .match-inner{
-    background:linear-gradient(90deg,var(--home) 0 42px,#ececec 42px);
-  }
-  .display-mode-list .ha{
-    width:42px;
-    min-height:54px;
-    font-size:9px;
-    letter-spacing:.04em;
-  }
-  .display-mode-list .meta{
-    padding:6px 8px;
-    gap:2px;
-  }
-  .display-mode-list .sec{
-    font-size:11px;
-  }
-  .display-mode-list .team{
-    font-size:14px;
-    line-height:1.15;
-  }
-  .display-mode-list .place{
-    font-size:10px;
-  }
-  .display-mode-list .date{
-    padding:4px 6px;
-  }
-  .display-mode-list .date .main{
-    font-size:25px;
-  }
-  .display-mode-list .date .main.compact-date{
-    font-size:22px;
-  }
-  .display-mode-list .date .range{
-    gap:2px;
-  }
-  .display-mode-list .date .range .main{
-    font-size:20px;
-  }
-  .display-mode-list .date .range .main.compact-date{
-    font-size:18px;
-  }
-  .display-mode-list .match:has(.note),
-  .display-mode-list .match:has(.note) .match-inner,
-  .display-mode-list .match:has(.note) .ha{
-    min-height:58px;
-  }
-  .display-mode-list .match:has(.note) .date{
-    padding-bottom:14px;
-  }
   .phone.layout-3 .display-mode-compact .match,
   .phone.layout-4 .display-mode-compact .match{
     min-height:54px;
@@ -1342,142 +1335,6 @@
     font-size:9px;
   }
 
-
-  .phone.mode-list .json-preview-grid,
-  .phone.mode-list .display-mode-list,
-  .phone.mode-list.layout-3 .json-preview-grid,
-  .phone.mode-list.layout-4 .json-preview-grid,
-  .phone.mode-list.layout-3 .display-mode-list,
-  .phone.mode-list.layout-4 .display-mode-list{
-    grid-template-columns:1fr;
-  }
-  .phone.mode-list .match{
-    min-height:0;
-    border-width:2px;
-    border-radius:8px;
-    box-shadow:0 2px 8px rgba(0,0,0,.14);
-  }
-  .phone.mode-list .match[data-state="1"],
-  .phone.mode-list .match[data-state="2"]{
-    border-left-width:8px;
-  }
-  .phone.mode-list .match[data-state="1"]{
-    box-shadow:inset 4px 0 0 var(--border-red),0 0 0 2px rgba(255,30,54,.20),0 2px 8px rgba(0,0,0,.14);
-  }
-  .phone.mode-list .match[data-state="2"]{
-    box-shadow:inset 4px 0 0 var(--border-cyan),0 0 0 2px rgba(0,166,184,.24),0 2px 8px rgba(0,0,0,.14);
-  }
-  .phone.mode-list .match-inner,
-  .phone.mode-list.layout-3 .match-inner,
-  .phone.mode-list.layout-4 .match-inner{
-    grid-template-columns:42px minmax(0,1fr) 84px;
-    grid-template-rows:auto;
-    min-height:54px;
-    column-gap:0;
-  }
-  .phone.mode-list .home .match-inner,
-  .phone.mode-list.layout-3 .home .match-inner,
-  .phone.mode-list.layout-4 .home .match-inner{
-    background:linear-gradient(90deg,var(--purple) 0 42px,#fff 42px);
-  }
-  .phone.mode-list .away .match-inner,
-  .phone.mode-list.layout-3 .away .match-inner,
-  .phone.mode-list.layout-4 .away .match-inner{
-    background:linear-gradient(90deg,var(--home) 0 42px,#ececec 42px);
-  }
-  .phone.mode-list .ha,
-  .phone.mode-list.layout-3 .ha,
-  .phone.mode-list.layout-4 .ha{
-    grid-row:auto;
-    width:42px;
-    min-height:54px;
-    font-size:9px;
-    gap:0;
-    letter-spacing:.04em;
-  }
-  .phone.mode-list .meta,
-  .phone.mode-list.layout-3 .meta,
-  .phone.mode-list.layout-4 .meta{
-    min-height:auto;
-    padding:6px 8px;
-    gap:2px;
-  }
-  .phone.mode-list .sec,
-  .phone.mode-list.layout-3 .sec,
-  .phone.mode-list.layout-4 .sec{
-    font-size:11px;
-  }
-  .phone.mode-list .team,
-  .phone.mode-list.layout-3 .team,
-  .phone.mode-list.layout-4 .team{
-    font-size:14px;
-    line-height:1.15;
-  }
-  .phone.mode-list .place,
-  .phone.mode-list.layout-3 .place,
-  .phone.mode-list.layout-4 .place{
-    display:block;
-    font-size:10px;
-  }
-  .phone.mode-list .date,
-  .phone.mode-list.layout-3 .date,
-  .phone.mode-list.layout-4 .date{
-    grid-column:auto;
-    grid-row:auto;
-    min-height:auto;
-    margin-left:0;
-    padding:4px 6px;
-    justify-content:center;
-  }
-  .phone.mode-list .date .main,
-  .phone.mode-list.layout-3 .date .main,
-  .phone.mode-list.layout-4 .date .main{
-    font-size:25px;
-  }
-  .phone.mode-list .date .main.compact-date,
-  .phone.mode-list.layout-3 .date .main.compact-date,
-  .phone.mode-list.layout-4 .date .main.compact-date{
-    font-size:22px;
-  }
-  .phone.mode-list .date .sub,
-  .phone.mode-list.layout-3 .date .sub,
-  .phone.mode-list.layout-4 .date .sub{
-    display:inline;
-    font-size:inherit;
-    margin-left:0;
-  }
-  .phone.mode-list .date .range,
-  .phone.mode-list.layout-3 .date .range,
-  .phone.mode-list.layout-4 .date .range{
-    flex-direction:row;
-    gap:2px;
-  }
-  .phone.mode-list .date .range .main,
-  .phone.mode-list.layout-3 .date .range .main,
-  .phone.mode-list.layout-4 .date .range .main{
-    font-size:20px;
-  }
-  .phone.mode-list .date .range .main.compact-date,
-  .phone.mode-list.layout-3 .date .range .main.compact-date,
-  .phone.mode-list.layout-4 .date .range .main.compact-date{
-    font-size:18px;
-  }
-  .phone.mode-list .match:has(.note),
-  .phone.mode-list .match:has(.note) .match-inner,
-  .phone.mode-list .match:has(.note) .ha,
-  .phone.mode-list.layout-3 .match:has(.note),
-  .phone.mode-list.layout-3 .match:has(.note) .match-inner,
-  .phone.mode-list.layout-3 .match:has(.note) .ha,
-  .phone.mode-list.layout-4 .match:has(.note),
-  .phone.mode-list.layout-4 .match:has(.note) .match-inner,
-  .phone.mode-list.layout-4 .match:has(.note) .ha{
-    min-height:58px;
-  }
-  .phone.mode-list .match:has(.note) .date,
-  .phone.mode-list.layout-3 .match:has(.note) .date,
-  .phone.mode-list.layout-4 .match:has(.note) .date{
-    padding-bottom:14px;
-  }
 
   .settings-section{
     margin:0 0 12px;

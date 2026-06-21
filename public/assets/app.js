@@ -4,7 +4,7 @@
   let states={};
   const filterKey='sanga-schedule-filter-settings-v1';
   const displayModeKey='sanga-schedule-display-mode-v1';
-  const validDisplayModes=['card','compact','list'];
+  const validDisplayModes=['card','compact'];
   const validFilters=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
   const filterLabels={
     all:'すべて',
@@ -225,15 +225,16 @@
     else if(helpPanel && !helpPanel.hidden) closeHelp();
   });
 
-  // layout switcher: 2 / 3 / 4 columns
+  // layout switcher: 1 / 2 / 3 / 4 columns
   const layoutKey='sanga-schedule-layout-v1';
   const phoneEl=document.querySelector('.phone');
   const layoutButtons=Array.from(document.querySelectorAll('.layout-option'));
 
   function setScheduleLayout(mode){
-    const selected=['2','3','4'].includes(String(mode)) ? String(mode) : '2';
+    const selected=['1','2','3','4'].includes(String(mode)) ? String(mode) : '2';
     if(phoneEl){
-      phoneEl.classList.remove('layout-3','layout-4');
+      phoneEl.classList.remove('layout-1','layout-3','layout-4');
+      if(selected==='1') phoneEl.classList.add('layout-1');
       if(selected==='3') phoneEl.classList.add('layout-3');
       if(selected==='4') phoneEl.classList.add('layout-4');
     }
@@ -282,11 +283,11 @@
   function applyDisplayMode(mode){
     activeDisplayMode=normalizeDisplayMode(mode);
     if(phoneEl){
-      phoneEl.classList.remove('mode-card','mode-compact','mode-list');
+      phoneEl.classList.remove('mode-card','mode-compact');
       phoneEl.classList.add(`mode-${activeDisplayMode}`);
     }
     if(jsonPreviewList){
-      jsonPreviewList.classList.remove('display-mode-card','display-mode-compact','display-mode-list');
+      jsonPreviewList.classList.remove('display-mode-card','display-mode-compact');
       jsonPreviewList.classList.add(`display-mode-${activeDisplayMode}`);
     }
     displayModeButtons.forEach(button=>{
