@@ -133,7 +133,6 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const settingsPanel=document.querySelector('.settings-panel');
   const settingsClose=document.querySelector('.settings-close');
   const settingsTitle=document.querySelector('#settings-title');
-  const screenshotModeButton=document.querySelector('.screenshot-mode-button');
   const screenshotExitButton=document.querySelector('.screenshot-exit-button');
   const screenshotShareNote=document.querySelector('.screenshot-share-note');
   const screenshotModeLive=document.querySelector('.screenshot-mode-live');
@@ -212,7 +211,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     if(screenshotShareNote) screenshotShareNote.hidden=false;
     if(shareActions) shareActions.hidden=false;
     if(screenshotExitButton) screenshotExitButton.hidden=false;
-    if(screenshotModeLive) screenshotModeLive.textContent='スクショ用表示に切り替えました。';
+    if(screenshotModeLive) screenshotModeLive.textContent='画像生成・保存画面に切り替えました。';
     screenshotExitButton && screenshotExitButton.focus();
   }
 
@@ -224,14 +223,16 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     if(shareActions) shareActions.hidden=true;
     if(screenshotExitButton) screenshotExitButton.hidden=true;
     if(screenshotModeLive) screenshotModeLive.textContent='通常表示に戻りました。';
-    if(returnFocus && screenshotModeButton) screenshotModeButton.focus();
+    if(returnFocus){
+      const focusTarget=shareGenerateButtons.find(button=>!button.hidden && button.offsetParent !== null) || settingsButton || document.querySelector('.settings-button');
+      focusTarget && focusTarget.focus();
+    }
   }
 
   helpButton && helpButton.addEventListener('click',openHelp);
   helpClose && helpClose.addEventListener('click',()=>closeHelp());
   settingsButton && settingsButton.addEventListener('click',openSettings);
   settingsClose && settingsClose.addEventListener('click',()=>closeSettings());
-  screenshotModeButton && screenshotModeButton.addEventListener('click',enterScreenshotMode);
   screenshotExitButton && screenshotExitButton.addEventListener('click',()=>exitScreenshotMode(true));
 
   function setShareGenerating(generating){
@@ -277,7 +278,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       // It renders the DOM in the browser and does not send the page DOM or generated image to an external API.
       const dataUrl=await domToPng(shareCaptureTarget, {
         scale:2,
-        backgroundColor:null
+        backgroundColor:'#5b0045'
       });
       const fileName=formatShareImageFileName();
       if(sharePreviewImage) sharePreviewImage.src=dataUrl;
