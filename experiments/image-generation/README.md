@@ -42,6 +42,20 @@ python3 -m http.server 4173
 http://localhost:4173/experiments/image-generation/prototype.html
 ```
 
+GitHub Pagesでスマホ実機確認を行うため、同じ検証ページを公開用コピーとして次にも配置しています。
+
+```text
+public/experiments/image-generation/prototype.html
+```
+
+確認URL:
+
+```text
+https://koteikara.github.io/Sanga/experiments/image-generation/prototype.html
+```
+
+`public/experiments/` 配下は検証ページ公開用であり、本番の年間スケジュールページからはリンクしません。
+
 ## 画像化対象範囲
 
 PR #66 の推奨に合わせ、案Bとして `.json-preview-grid`、短い注意書き、作成者表記を含む専用ラッパーを画像化対象にしています。
@@ -65,6 +79,7 @@ PR #66 の推奨に合わせ、案Bとして `.json-preview-grid`、短い注意
 * `html-to-image`: `prototype.js` で `https://esm.sh/html-to-image@1.11.11` から読み込みます。
 * `modern-screenshot`: `prototype.js` で `https://esm.sh/modern-screenshot@4.6.5` から読み込みます。
 
+CDN利用は検証ページ限定です。
 本番導入時はCDN / npm / vendor配置のいずれにするか別途判断します。CDNを採用する場合は、SRI、供給元リスク、可用性、ライセンス、バージョン固定方針の確認が必要です。
 
 ## 動作確認手順

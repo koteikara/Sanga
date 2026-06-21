@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>画像生成ライブラリ小規模検証</title>
+  <link rel="stylesheet" href="./prototype.css">
+</head>
+<body>
+  <main class="page-shell">
+    <header class="hero">
+      <p class="eyebrow">実験用ページ / 本番ページ未導入</p>
+      <h1>画像生成ライブラリ小規模検証</h1>
+      <p>年間スケジュールページのスクショ用表示に近い最小DOMを、ブラウザ内でPNG化できるか確認します。</p>
+      <p class="prototype-notice">これは画像生成ライブラリ検証用ページです。本番ページではありません。</p>
+    </header>
+
+    <section class="control-panel" aria-labelledby="control-heading">
+      <h2 id="control-heading">検証操作</h2>
+      <div class="control-group" aria-label="表示列の切替">
+        <span class="control-label">表示列:</span>
+        <button type="button" class="column-button is-active" data-columns="1" aria-pressed="true">1列</button>
+        <button type="button" class="column-button" data-columns="2" aria-pressed="false">2列</button>
+        <button type="button" class="column-button" data-columns="3" aria-pressed="false">3列</button>
+        <button type="button" class="column-button" data-columns="4" aria-pressed="false">4列</button>
+      </div>
+      <div class="control-group" aria-label="使用ライブラリの選択">
+        <label for="library-select" class="control-label">使用ライブラリ:</label>
+        <select id="library-select">
+          <option value="html-to-image">html-to-image</option>
+          <option value="modern-screenshot">modern-screenshot</option>
+        </select>
+        <button type="button" id="generate-button">選択したライブラリでPNG生成</button>
+        <button type="button" class="secondary-button" data-library="html-to-image">html-to-imageで生成</button>
+        <button type="button" class="secondary-button" data-library="modern-screenshot">modern-screenshotで生成</button>
+      </div>
+      <p id="capture-status" class="status-message" role="status" aria-live="polite">未生成です。</p>
+    </section>
+
+    <section class="share-capture-target" id="share-capture-target" aria-label="画像化対象の日程サンプル">
+      <div class="capture-header">
+        <p class="season-label">Kyoto Sanga F.C.</p>
+        <h2>2026-2027 年間スケジュール検証サンプル</h2>
+        <p>CSS Grid、状態枠、候補日、未定表示を含む画像化確認用DOMです。</p>
+      </div>
+
+      <div class="json-preview-grid columns-1" id="preview-grid">
+        <article class="match-card state-red">
+          <div class="home-away home">HOME</div>
+          <div class="match-body">
+            <p class="round">2026 第1節</p>
+            <h3>京都サンガF.C. vs 横浜F・マリノス</h3>
+            <p class="date">2月21日（土） 14:00</p>
+            <p class="venue">サンガスタジアム by KYOCERA</p>
+            <p class="note"><sup>1</sup>赤色枠サンプル。意味は固定しません。</p>
+          </div>
+        </article>
+
+        <article class="match-card state-blue">
+          <div class="home-away away">AWAY</div>
+          <div class="match-body">
+            <p class="round">2026 第2節</p>
+            <h3>北海道コンサドーレ札幌ロングネーム確認用</h3>
+            <p class="date">候補日: 2月28日（土） / 3月1日（日）</p>
+            <p class="venue">札幌ドーム</p>
+            <p class="note">水色枠サンプル。長い対戦相手名の折り返しを確認します。</p>
+          </div>
+        </article>
+
+        <article class="match-card">
+          <div class="home-away home">HOME</div>
+          <div class="match-body">
+            <p class="round">2026 カップ戦</p>
+            <h3>セレッソ大阪</h3>
+            <p class="date is-undecided">日時未定</p>
+            <p class="venue">会場未定</p>
+            <p class="note">未定表示がカード内で崩れないか確認します。</p>
+          </div>
+        </article>
+
+        <article class="match-card state-red">
+          <div class="home-away away">AWAY</div>
+          <div class="match-body">
+            <p class="round">2026 第10節</p>
+            <h3>鹿島アントラーズ</h3>
+            <p class="date">4月18日（土） 15:00</p>
+            <p class="venue">県立カシマサッカースタジアム</p>
+            <p class="note"><sup>2</sup>注記番号付きカードの確認用です。</p>
+          </div>
+        </article>
+
+        <article class="match-card state-blue">
+          <div class="home-away home">HOME</div>
+          <div class="match-body">
+            <p class="round">2027 第3節</p>
+            <h3>名古屋グランパス</h3>
+            <p class="date">候補日: 3月6日（土） / 3月7日（日） / 3月10日（水）</p>
+            <p class="venue">サンガスタジアム by KYOCERA</p>
+            <p class="note">候補日が複数ある場合の行間を確認します。</p>
+          </div>
+        </article>
+
+        <article class="match-card">
+          <div class="home-away away">AWAY</div>
+          <div class="match-body">
+            <p class="round">2027 最終節</p>
+            <h3>ヴィッセル神戸</h3>
+            <p class="date">12月5日（日） 時刻未定</p>
+            <p class="venue">ノエビアスタジアム神戸</p>
+            <p class="note">通常日付と時刻未定の混在確認です。</p>
+          </div>
+        </article>
+      </div>
+
+      <p class="screenshot-share-note">非公式の確認用日程表です。最新情報は公式情報をご確認ください。</p>
+      <p class="creator-credit">作成者：Kou from OSAKA</p>
+    </section>
+
+    <section class="result-panel" aria-labelledby="result-heading">
+      <h2 id="result-heading">生成結果</h2>
+      <p>生成ボタン、列切替、検証用メッセージ、hidden要素は画像化対象外です。</p>
+      <a id="download-link" class="download-link" hidden download="sanga-image-generation-prototype.png">PNGをダウンロード</a>
+      <div class="preview-frame" aria-label="PNGプレビュー">
+        <img id="preview-image" alt="生成されたPNGプレビュー" hidden>
+      </div>
+    </section>
+
+    <section class="hidden-sample" hidden>
+      <h2>hidden要素サンプル</h2>
+      <p>この要素は画像化対象に入らない想定です。</p>
+    </section>
+  </main>
+
+  <script type="module" src="./prototype.js"></script>
+</body>
+</html>
