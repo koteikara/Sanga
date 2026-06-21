@@ -6,6 +6,7 @@ const previewGrid = document.querySelector('#preview-grid');
 const statusMessage = document.querySelector('#capture-status');
 const previewImage = document.querySelector('#preview-image');
 const downloadLink = document.querySelector('#download-link');
+const saveHelp = document.querySelector('#save-help');
 const librarySelect = document.querySelector('#library-select');
 const generateButton = document.querySelector('#generate-button');
 const columnButtons = document.querySelectorAll('.column-button');
@@ -39,6 +40,7 @@ function resetResult() {
   previewImage.removeAttribute('src');
   downloadLink.hidden = true;
   downloadLink.removeAttribute('href');
+  saveHelp.hidden = true;
 }
 
 function buildFileName(libraryName) {
@@ -71,7 +73,8 @@ async function generateImage(libraryName) {
     downloadLink.href = dataUrl;
     downloadLink.download = buildFileName(libraryName);
     downloadLink.hidden = false;
-    setStatus(`${libraryName} でPNG生成に成功しました。プレビューとダウンロードリンクを確認してください。`, 'success');
+    saveHelp.hidden = false;
+    setStatus(`${libraryName} でPNG生成に成功しました。PCでは「画像を保存」リンク、スマホではプレビュー画像の長押し保存を試してください。`, 'success');
   } catch (error) {
     console.error(`${libraryName} image generation failed`, error);
     const message = error instanceof Error ? error.message : String(error);

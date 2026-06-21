@@ -79,9 +79,10 @@ button, .download-link {
 .note { font-size: 0.88rem; color: #5b5368; }
 .screenshot-share-note, .creator-credit { text-align: center; margin: 18px 0 0; font-weight: 700; }
 .creator-credit { color: var(--purple); }
-.preview-frame { min-height: 180px; border: 2px dashed rgba(36, 18, 63, 0.25); border-radius: 18px; display: grid; place-items: center; padding: 14px; background: #fff; }
-.preview-frame img { max-width: 100%; height: auto; border: 1px solid #ddd; }
-.download-link { display: inline-block; margin-bottom: 14px; }
+.preview-frame { min-height: 180px; border: 2px dashed rgba(36, 18, 63, 0.25); border-radius: 18px; display: grid; place-items: center; padding: 18px; background: #fff; }
+.preview-frame img { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; border: 1px solid #ddd; border-radius: 12px; touch-action: manipulation; }
+.download-link { display: inline-block; margin-bottom: 10px; }
+.save-help { margin: 0 0 14px; font-weight: 700; color: var(--deep); }
 [hidden] { display: none !important; }
 @media (max-width: 760px) {
   .page-shell { width: min(100% - 16px, 1120px); padding-top: 12px; }
