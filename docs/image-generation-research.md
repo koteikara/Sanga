@@ -340,6 +340,8 @@
 
 小規模検証は `experiments/image-generation/` で行い、優先検証候補は `html-to-image` と `modern-screenshot` とします。
 
+GitHub Pagesでスマホ実機確認を行うため、検証ページは `public/experiments/image-generation/` にも配置します。本番導入前の検証用であり、本番ページからは導線を張りません。
+
 フルページスクリーンショット操作だけに頼ると利用されにくいため、画像生成機能の導入検討は妥当です。
 
 ただし、年間スケジュールページは長尺DOM、スマートフォンSafari、CSS Grid、疑似要素、グラデーション、赤色枠 / 水色枠、LocalStorage由来の表示状態など、画像化で差分が出やすい要素を含みます。依存関係、ライセンス、外部CDN、セキュリティ、プライバシーの懸念もあるため、即実装は避けます。
