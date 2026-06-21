@@ -1,3 +1,5 @@
+import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
+
 (function(){
   const key='sanga-schedule-button-states-v1';
   let storageAvailable=true;
@@ -135,7 +137,16 @@
   const screenshotExitButton=document.querySelector('.screenshot-exit-button');
   const screenshotShareNote=document.querySelector('.screenshot-share-note');
   const screenshotModeLive=document.querySelector('.screenshot-mode-live');
+  const shareActions=document.querySelector('.share-image-actions');
+  const shareGenerateButtons=Array.from(document.querySelectorAll('.share-generate-button'));
+  const shareSaveLink=document.querySelector('.share-save-link');
+  const shareSaveHelp=document.querySelector('.share-save-help');
+  const shareStatus=document.querySelector('.share-status');
+  const sharePreview=document.querySelector('.share-preview');
+  const sharePreviewImage=document.querySelector('.share-preview-image');
+  const shareCaptureTarget=document.querySelector('[data-share-capture-target]');
   let isScreenshotMode=false;
+  let isGeneratingShareImage=false;
 
   function openHelp(){
     if(!helpPanel || !helpOverlay || !helpButton) return;
@@ -199,6 +210,7 @@
     forceClosePanels();
     phoneEl && phoneEl.classList.add('is-screenshot-mode');
     if(screenshotShareNote) screenshotShareNote.hidden=false;
+    if(shareActions) shareActions.hidden=false;
     if(screenshotExitButton) screenshotExitButton.hidden=false;
     if(screenshotModeLive) screenshotModeLive.textContent='スクショ用表示に切り替えました。';
     screenshotExitButton && screenshotExitButton.focus();
@@ -209,6 +221,7 @@
     isScreenshotMode=false;
     phoneEl && phoneEl.classList.remove('is-screenshot-mode');
     if(screenshotShareNote) screenshotShareNote.hidden=true;
+    if(shareActions) shareActions.hidden=true;
     if(screenshotExitButton) screenshotExitButton.hidden=true;
     if(screenshotModeLive) screenshotModeLive.textContent='通常表示に戻りました。';
     if(returnFocus && screenshotModeButton) screenshotModeButton.focus();
@@ -220,6 +233,74 @@
   settingsClose && settingsClose.addEventListener('click',()=>closeSettings());
   screenshotModeButton && screenshotModeButton.addEventListener('click',enterScreenshotMode);
   screenshotExitButton && screenshotExitButton.addEventListener('click',()=>exitScreenshotMode(true));
+
+  function setShareGenerating(generating){
+    isGeneratingShareImage=generating;
+    shareGenerateButtons.forEach(button=>{
+      button.disabled=generating;
+      button.setAttribute('aria-busy', generating ? 'true' : 'false');
+    });
+  }
+
+  function formatShareImageFileName(){
+    const now=new Date();
+    const year=String(now.getFullYear());
+    const month=String(now.getMonth()+1).padStart(2,'0');
+    const day=String(now.getDate()).padStart(2,'0');
+    return `sanga-schedule-share-${year}${month}${day}.png`;
+  }
+
+  function resetShareImageResult(){
+    if(shareSaveLink){
+      shareSaveLink.hidden=true;
+      shareSaveLink.removeAttribute('href');
+    }
+    if(shareSaveHelp) shareSaveHelp.hidden=true;
+    if(sharePreview) sharePreview.hidden=true;
+    if(sharePreviewImage) sharePreviewImage.removeAttribute('src');
+  }
+
+  async function generateShareImage(){
+    if(isGeneratingShareImage) return;
+    if(!shareCaptureTarget){
+      if(shareStatus) shareStatus.textContent='画像生成に失敗しました。表示を変えて再度お試しください。';
+      return;
+    }
+    if(!isScreenshotMode) enterScreenshotMode();
+    setShareGenerating(true);
+    resetShareImageResult();
+    if(shareStatus) shareStatus.textContent='画像を生成しています。';
+    try{
+      if(document.fonts && typeof document.fonts.ready === 'object') await document.fonts.ready;
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      // modern-screenshot is loaded from a pinned esm.sh CDN URL for this initial static-site implementation.
+      // It renders the DOM in the browser and does not send the page DOM or generated image to an external API.
+      const dataUrl=await domToPng(shareCaptureTarget, {
+        scale:2,
+        backgroundColor:null
+      });
+      const fileName=formatShareImageFileName();
+      if(sharePreviewImage) sharePreviewImage.src=dataUrl;
+      if(sharePreview) sharePreview.hidden=false;
+      if(shareSaveLink){
+        shareSaveLink.href=dataUrl;
+        shareSaveLink.download=fileName;
+        shareSaveLink.hidden=false;
+      }
+      if(shareSaveHelp) shareSaveHelp.hidden=false;
+      if(shareStatus) shareStatus.textContent='画像を生成しました。PCでは「画像を保存」リンク、スマホではプレビュー画像の長押し保存を試してください。';
+    }catch(error){
+      console.warn('Share image generation failed:', error);
+      resetShareImageResult();
+      if(shareStatus) shareStatus.textContent='画像生成に失敗しました。表示を変えて再度お試しください。';
+    }finally{
+      setShareGenerating(false);
+    }
+  }
+
+  shareGenerateButtons.forEach(button=>{
+    button.addEventListener('click',generateShareImage);
+  });
   helpOverlay && helpOverlay.addEventListener('click',()=>{
     if(helpPanel && !helpPanel.hidden) closeHelp(false);
     if(settingsPanel && !settingsPanel.hidden) closeSettings(false);
