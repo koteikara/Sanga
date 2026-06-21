@@ -1225,28 +1225,11 @@
   .display-mode-list .match[data-state="2"]{
     border-left-width:8px;
   }
-  .display-mode-list .match[data-state="1"]::after,
-  .display-mode-list .match[data-state="2"]::after{
-    position:absolute;
-    right:8px;
-    bottom:6px;
-    z-index:2;
-    padding:2px 6px;
-    border-radius:999px;
-    background:#fff;
-    color:#111;
-    font-size:10px;
-    font-weight:900;
-    line-height:1;
-    box-shadow:0 1px 4px rgba(0,0,0,.16);
+  .display-mode-list .match[data-state="1"]{
+    box-shadow:inset 4px 0 0 var(--border-red),0 0 0 2px rgba(255,30,54,.20),0 2px 8px rgba(0,0,0,.14);
   }
-  .display-mode-list .match[data-state="1"]::after{
-    content:"赤色枠";
-    border:1px solid var(--border-red);
-  }
-  .display-mode-list .match[data-state="2"]::after{
-    content:"水色枠";
-    border:1px solid var(--border-cyan);
+  .display-mode-list .match[data-state="2"]{
+    box-shadow:inset 4px 0 0 var(--border-cyan),0 0 0 2px rgba(0,166,184,.24),0 2px 8px rgba(0,0,0,.14);
   }
   .display-mode-list .match-inner{
     grid-template-columns:42px minmax(0,1fr) 84px;
@@ -1302,6 +1285,99 @@
     min-height:58px;
   }
   .display-mode-list .match:has(.note) .date{
+    padding-bottom:14px;
+  }
+  .phone.layout-3 .display-mode-list,
+  .phone.layout-4 .display-mode-list{
+    grid-template-columns:1fr !important;
+  }
+  .phone.layout-3 .display-mode-list .match,
+  .phone.layout-4 .display-mode-list .match{
+    min-height:0;
+  }
+  .phone.layout-3 .display-mode-list .match-inner,
+  .phone.layout-4 .display-mode-list .match-inner{
+    grid-template-columns:42px minmax(0,1fr) 84px;
+    grid-template-rows:auto;
+    min-height:54px;
+  }
+  .phone.layout-3 .display-mode-list .home .match-inner,
+  .phone.layout-4 .display-mode-list .home .match-inner{
+    background:linear-gradient(90deg,var(--purple) 0 42px,#fff 42px);
+  }
+  .phone.layout-3 .display-mode-list .away .match-inner,
+  .phone.layout-4 .display-mode-list .away .match-inner{
+    background:linear-gradient(90deg,var(--home) 0 42px,#ececec 42px);
+  }
+  .phone.layout-3 .display-mode-list .ha,
+  .phone.layout-4 .display-mode-list .ha{
+    grid-row:auto;
+    width:42px;
+    min-height:54px;
+    font-size:9px;
+  }
+  .phone.layout-3 .display-mode-list .meta,
+  .phone.layout-4 .display-mode-list .meta{
+    padding:6px 8px;
+    gap:2px;
+  }
+  .phone.layout-3 .display-mode-list .sec,
+  .phone.layout-4 .display-mode-list .sec{
+    font-size:11px;
+  }
+  .phone.layout-3 .display-mode-list .team,
+  .phone.layout-4 .display-mode-list .team{
+    font-size:14px;
+    line-height:1.15;
+  }
+  .phone.layout-3 .display-mode-list .place,
+  .phone.layout-4 .display-mode-list .place,
+  .phone.layout-3 .display-mode-list .date .sub,
+  .phone.layout-4 .display-mode-list .date .sub{
+    display:initial;
+  }
+  .phone.layout-3 .display-mode-list .place,
+  .phone.layout-4 .display-mode-list .place{
+    font-size:10px;
+  }
+  .phone.layout-3 .display-mode-list .date,
+  .phone.layout-4 .display-mode-list .date{
+    grid-column:auto;
+    grid-row:auto;
+    min-height:auto;
+    padding:4px 6px;
+    justify-content:center;
+  }
+  .phone.layout-3 .display-mode-list .date .main,
+  .phone.layout-4 .display-mode-list .date .main{
+    font-size:25px;
+  }
+  .phone.layout-3 .display-mode-list .date .main.compact-date,
+  .phone.layout-4 .display-mode-list .date .main.compact-date{
+    font-size:22px;
+  }
+  .phone.layout-3 .display-mode-list .date .range,
+  .phone.layout-4 .display-mode-list .date .range{
+    gap:2px;
+  }
+  .phone.layout-3 .display-mode-list .date .range .main,
+  .phone.layout-4 .display-mode-list .date .range .main{
+    font-size:20px;
+  }
+  .phone.layout-3 .display-mode-list .date .range .main.compact-date,
+  .phone.layout-4 .display-mode-list .date .range .main.compact-date{
+    font-size:18px;
+  }
+  .phone.layout-3 .display-mode-list .match:has(.note),
+  .phone.layout-4 .display-mode-list .match:has(.note),
+  .phone.layout-3 .display-mode-list .match:has(.note) .match-inner,
+  .phone.layout-4 .display-mode-list .match:has(.note) .match-inner,
+  .phone.layout-3 .display-mode-list .match:has(.note) .ha,
+  .phone.layout-4 .display-mode-list .match:has(.note) .ha{
+    min-height:58px;
+  }
+  .phone.layout-3 .display-mode-list .match:has(.note) .date,
+  .phone.layout-4 .display-mode-list .match:has(.note) .date{
     padding-bottom:14px;
   }
   .phone.layout-3 .display-mode-compact .match,
