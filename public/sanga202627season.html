@@ -5,14 +5,25 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>KYOTO SANGA F.C. 2026/27 Match Schedule</title>
-<link rel="stylesheet" href="assets/style.css?v=20260621-10">
+<link rel="stylesheet" href="assets/style.css?v=20260621-11">
 </head>
 <body>
 <main class="phone">
 <header>
 <h1>2026/27 Season Match Schedule</h1>
 </header>
+<div class="share-image-actions" hidden>
+<button type="button" class="share-generate-button">画像を生成</button>
+<a class="share-save-link" href="#" download="sanga-schedule-share.png" hidden>画像を保存</a>
+<p class="share-save-help" hidden>スマホでは画像を長押しして保存してください。</p>
+<p class="share-status" aria-live="polite"></p>
+<div class="share-preview" hidden>
+<p>生成画像プレビュー</p>
+<img class="share-preview-image" alt="生成された日程画像のプレビュー"/>
+</div>
 <button type="button" class="screenshot-exit-button" hidden>通常表示に戻る</button>
+</div>
+<section class="share-capture-target" data-share-capture-target>
 <section class="json-preview" id="json-preview" aria-label="2026/27 日程">
 <div class="grid json-preview-grid" data-json-preview-list></div>
 <p class="empty-filter-message" aria-live="polite" hidden>該当する試合はありません。設定パネルから絞り込みを変更してください。</p>
@@ -27,7 +38,8 @@
 <p class="disclaimer">免責事項：本ページは個人利用を目的とした非公式の確認用日程表です。掲載内容の正確性・完全性・最新性は保証しません。日程、会場、対戦カード、注記等は必ず公式情報をご確認ください。本ページの利用または掲載内容の誤りにより生じたいかなる損害・不利益についても、作成者は責任を負いません。</p>
 <p class="screenshot-share-note" hidden>非公式の確認用日程表です。最新情報は公式情報をご確認ください。</p>
 <p class="creator-credit">作成者：<a href="https://x.com/kou_osakacity" target="_blank" rel="noopener noreferrer">Kou from OSAKA</a></p>
-<p class="site-version">Version 2026.06.21-10 / Screenshot layout follows column setting: 2026-06-21 / Data updated: 2026-06-19</p>
+</section>
+<p class="site-version">Version 2026.06.21-11 / Image generation added: 2026-06-21 / Data updated: 2026-06-19</p>
 <div class="help-overlay" hidden="" id="help-overlay"></div>
 <p class="screenshot-mode-live" aria-live="polite"></p>
 <section aria-labelledby="help-title" aria-modal="true" class="help-panel" hidden="" id="help-panel" role="dialog">
@@ -40,6 +52,7 @@
 <li><span class="sample-date"></span>淡い黄色の日付枠：日程未確定・候補日あり</li>
 <li><b>SAT</b> は青、<b>SUN</b> は赤で表示しています。</li>
 <li>設定からスクショ用表示に切り替えると、現在の絞り込み結果を共有向けのコンパクトな見た目で確認できます。</li>
+<li>設定の「共有」やスクショ用表示中の「画像を生成」を押すと、表示中の日程を画像として生成できます。PCでは「画像を保存」リンク、スマホでは生成画像プレビューの長押し保存を試してください。投稿時は本文にも補足を添えると分かりやすくなります。</li>
 <li>タップ状態、表示列、表示モードはLocalStorageに保存されます。同じ端末でもブラウザが異なる場合や、ブラウザのデータを削除した場合は保存内容が引き継がれません。保存内容削除ボタンで、このページの保存状態を削除できます。</li><button class="storage-clear" type="button">このページの保存内容を削除</button><p aria-live="polite" class="storage-clear-note"></p></ul>
 <button class="help-close" type="button">閉じる</button>
 </section>
@@ -85,6 +98,7 @@
 <h3>共有</h3>
 <p class="settings-note">現在の絞り込み結果を、スクショで共有しやすいコンパクトな表示に切り替えます。</p>
 <button type="button" class="screenshot-mode-button">スクショ用表示にする</button>
+<button type="button" class="share-generate-button">画像を生成</button>
 </div>
 <div class="settings-section settings-section-muted">
 <h3>保存状態</h3>
@@ -93,6 +107,6 @@
 <button class="settings-close" type="button">閉じる</button>
 </section>
 </main>
-<script src="assets/app.js?v=20260621-9"></script>
+<script type="module" src="assets/app.js?v=20260621-10"></script>
 </body>
 </html>
