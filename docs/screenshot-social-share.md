@@ -315,3 +315,7 @@ sanga-schedule-share-settings-v1
 * 赤色枠・水色枠の意味を固定しない。
 * 禁止されている短縮表記を復活させない。
 * 画像だけで情報提供が完結する設計にしない。
+
+## 関連調査
+
+画像生成ライブラリ導入可否の調査は `docs/image-generation-research.md` を参照してください。
