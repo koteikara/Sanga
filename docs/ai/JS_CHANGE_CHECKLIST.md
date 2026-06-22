@@ -156,3 +156,9 @@
 
 - [ ] JavaScript内部の定数名を変更しても、LocalStorageキー文字列自体は変更しない。
 - [ ] `node tools/validate-app-contract.js` で4つのLocalStorageキー文字列が残っていることを確認する。
+
+## 表示モード・フィルタ関連定数名を変更する場合
+
+- [ ] JavaScript内部の定数名を変更しても、表示モード値、フィルタ値、フィルタラベル文言は変更しない。
+- [ ] 表示モード・フィルタのLocalStorageキー文字列と保存形式は変更しない。
+- [ ] `node tools/validate-app-contract.js` で表示モード値・フィルタ値が `public/assets/app.js` に残っていることを確認する。
