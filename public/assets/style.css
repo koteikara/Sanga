@@ -227,6 +227,7 @@
     gap:10px;
     margin-top:14px;
   }
+  /* Footer legend base: later rules only tune text readability. */
   .footer-tools .legend{
     margin:0;
     flex:1;
@@ -335,6 +336,7 @@
   .footer-tools{
     align-items:flex-start;
   }
+  /* Footer legend text adjustment; keep separate from base layout above. */
   .footer-tools .legend{
     font-size:9px;
     line-height:1.45;
@@ -520,6 +522,7 @@
 
 
   /* layout toggle */
+  /* Footer actions base layout; settings panel layouts are separate. */
   .footer-actions{
     display:flex;
     flex-direction:column;
@@ -886,6 +889,7 @@
 
 
   /* footer action visual alignment */
+  /* Footer actions visual tuning; do not merge with settings panel rules. */
   .footer-actions{
     width:112px;
     gap:8px;
@@ -957,6 +961,7 @@
     .help-button{
       transition:none;
     }
+    /* Reduced motion: neutralize active movement for accessibility. */
     .help-button:hover,
     .help-button:active{
       transform:none;
@@ -1050,6 +1055,7 @@
     line-height:1.4;
   }
   @media (prefers-reduced-motion:reduce){
+    /* Reduced motion: neutralize active movement for accessibility. */
     .storage-clear:active{
       transform:none;
     }
@@ -1441,6 +1447,7 @@
 
 
   /* unified footer action buttons */
+  /* Footer actions final width for shared footer buttons. */
   .footer-actions{
     width:128px;
     display:flex;
