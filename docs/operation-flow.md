@@ -116,7 +116,7 @@ node tools/generate-matches-from-csv.js docs/sheets/schedule.initial.csv public/
 生成した `public/data/matches.json` を検証します。
 
 ```bash
-node tools/validate-generated-matches.js public/data/matches.json --expected-count 38
+node tools/validate-generated-matches.js public/data/matches.json --expected-count 49
 node tools/validate-matches.js
 ```
 

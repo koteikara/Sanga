@@ -257,10 +257,10 @@ node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matc
 node tools/validate-generated-matches.js tmp/matches.generated.json
 ```
 
-本番用38件として確認する場合は、件数チェックも指定します。
+本番用49件として確認する場合は、件数チェックも指定します。
 
 ```bash
-node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 38
+node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 49
 ```
 
 Googleスプレッドシートから出力したCSVは、公開JSONへ反映する前に必ず生成・検証します。検証観点と初期CSVの確認結果は `docs/sheets/spreadsheet-export-check.md` を参照してください。検証後に問題がなければ、次のPRで `public/data/matches.json` への反映を検討します。
