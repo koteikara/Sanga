@@ -191,6 +191,25 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     }, 240);
   }
 
+  function prefersReducedMotion(){
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  function waitForLayout(){
+    return new Promise(resolve=>{
+      requestAnimationFrame(()=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    });
+  }
+
+  function scrollToShareTop(){
+    const behavior=prefersReducedMotion() ? 'auto' : 'smooth';
+    if(phoneEl && typeof phoneEl.scrollIntoView === 'function'){
+      phoneEl.scrollIntoView({block:'start', behavior});
+      return;
+    }
+    window.scrollTo({top:0, behavior});
+  }
+
   function forceClosePanels(){
     if(helpPanel){
       helpPanel.classList.remove('is-open');
@@ -286,12 +305,15 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       return;
     }
     if(!isScreenshotMode) enterScreenshotMode();
+    else forceClosePanels();
     resetShareImageResult();
+    scrollToShareTop();
     setShareGenerationState('loading');
     if(shareStatus) shareStatus.textContent='画像を生成しています…';
     try{
+      await waitForLayout();
       if(document.fonts && document.fonts.ready) await document.fonts.ready;
-      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      await waitForLayout();
       // modern-screenshot is loaded from a pinned esm.sh CDN URL for this initial static-site implementation.
       // It renders the DOM in the browser and does not send the page DOM or generated image to an external API.
       const dataUrl=await domToPng(shareCaptureTarget, {
