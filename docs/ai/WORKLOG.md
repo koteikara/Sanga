@@ -267,3 +267,70 @@
 - reviewer: GitHub Actionsの実行タイミング、Node.jsバージョン、チェック分割が運用上わかりやすいか。
 - a11y-reviewer: 今回は画面変更なしのため追加レビューなし。将来のブラウザ確認CI導入時に確認してほしい。
 - docs: PLAN、GOAL、WORKLOGの記録内容が、静的CI追加の経緯として十分か確認してほしい。
+
+## 2026-06-22 PR #82 Static Checks 実行結果確認
+
+### 使用した流れ
+
+- `/plan`: 既存の `docs/ai/PLAN.md` と今回の依頼内容を確認し、今回はHTML/CSS/JavaScript/日程データの実装修正ではなく、PR #82で追加したCI成功結果の記録と手動ブラウザ確認チェックリスト整備に限定した。
+- `/goal`: `docs/ai/GOAL.md` のデータ保護、LocalStorage保護、表示保護、アクセシビリティ保護の方針に沿い、実装ファイルを変更しないことを今回の完了条件として扱った。
+- CHECKLIST: `docs/ai/CHECKLIST.md` のデータ確認、JavaScript確認、完了報告の観点に加え、実ブラウザ確認の残課題を `docs/ai/BROWSER_CHECKLIST.md` へ分離して整理する方針にした。
+- WORKLOG: 本項目にPR #82のGitHub Actions成功結果、変更していない範囲、残課題を記録した。
+
+### 確認したCI結果
+
+- PR #82で追加した GitHub Actions ワークフロー `Static Checks` がGitHub Actions上で成功した。
+- Run ID: `27928145821`
+- Job名: `静的検証`
+- 結果: `success`
+- PR #82は `main` へマージ済みである。
+
+### 成功したステップ
+
+- リポジトリをチェックアウト
+- Node.jsを設定
+- Git差分の空白エラーを確認
+- 日程JSONを検証
+- 生成JSONを厳格検証
+- JavaScript構文を検証
+- CSS波括弧数を検証
+- HTMLのCSS/JS参照を検証
+
+### 今回変更していないもの
+
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/style.css` は変更していない。
+- `public/assets/app.js` は変更していない。
+- `public/data/matches.json` は変更していない。
+- `.github/workflows/static-checks.yml` は、明確な問題がないため変更していない。
+- 既存LocalStorageキー、保存値、復元処理、削除処理は変更していない。
+
+### 変更内容
+
+- PR #82で追加された `Static Checks` のGitHub Actions成功結果を記録した。
+- PR #80以降で残っている実ブラウザでの目視・操作確認を、人間が実施しやすいよう `docs/ai/BROWSER_CHECKLIST.md` に整理することにした。
+- 今回はコード本体、スタイル、JavaScript、日程データ、GitHub Actionsワークフローの実装修正は行っていない。
+
+### 未確認項目
+
+- 実ブラウザでの390px前後、768px前後、1280px前後の目視確認。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタンのブラウザ操作確認。
+- キーボード操作、フォーカス表示、ブラウザコンソールエラー有無の確認。
+
+### 残課題
+
+- ブラウザ実行環境がある端末で、`docs/ai/BROWSER_CHECKLIST.md` に沿って目視・操作確認を行う。
+- 縦幅が大きい試合カードを含む行で、隣接カードの背景・縦帯・日付欄が自然に伸びているかを重点的に確認する。
+- 確認結果を `docs/ai/WORKLOG.md` または後続PRの作業記録に追記する。
+
+### 人間が確認すべき点
+
+- `Static Checks` 成功後も、実際のブラウザ表示・操作に問題がないか。
+- PR #80で残っているカード高追随の目視確認が、スマートフォン幅・タブレット幅・PC幅で問題ないか。
+- LocalStorageを使う表示設定の保存・復元・削除が、実ブラウザで意図どおり動くか。
+
+### 次にレビューしてほしい観点
+
+- reviewer: `Static Checks` 成功結果とRun IDの記録が、PR #82マージ後確認として十分か。
+- a11y-reviewer: `docs/ai/BROWSER_CHECKLIST.md` のアクセシビリティ確認項目が、手動確認に必要な観点を含んでいるか。
+- docs: WORKLOGとBROWSER_CHECKLISTの分担が、今後の確認作業に使いやすいか。
