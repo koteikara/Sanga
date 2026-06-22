@@ -1119,3 +1119,58 @@
 
 - 実ブラウザで使い方ダイアログと設定パネルの開閉が従来どおりに見えること。
 - `PANEL_CLOSE_DELAY_MS` の配置と命名が今後の整理に適していること。
+
+## 2026-06-22 LocalStorageキー定数名の明確化
+
+### 使用した流れ
+
+- `/plan`: `docs/ai/PLAN.md` に今回の作業テーマ、変更対象の定数名、変更しないLocalStorageキー文字列、保存形式・復元処理・削除処理に影響がない理由、確認方法を追記した。
+- `/goal`: `docs/ai/GOAL.md` に今回の目的と完了条件を追記した。
+- CHECKLIST: `docs/ai/JS_CHANGE_CHECKLIST.md` と `docs/ai/CHECKLIST.md` の観点に沿って静的確認を行う。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題を記録する。
+
+### 変更ファイル
+
+- `public/assets/app.js`
+- `docs/js-inventory.md`
+- `docs/ai/JS_CHANGE_CHECKLIST.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/assets/app.js` のLocalStorageキー定数名を、`key` から `CARD_STATE_STORAGE_KEY`、`filterKey` から `FILTER_SETTINGS_STORAGE_KEY`、`displayModeKey` から `DISPLAY_MODE_STORAGE_KEY`、`layoutKey` から `LAYOUT_STORAGE_KEY` へ変更した。
+- LocalStorageキー文字列は変更していない。
+- 保存形式、復元処理、削除処理は変更していない。
+- HTML、CSS、日程データ、GitHub Actionsワークフローは変更していない。
+
+### 確認結果
+
+- `git diff --check` に成功した。
+- `node --check public/assets/app.js` に成功した。
+- `node tools/validate-app-contract.js` により、4つのLocalStorageキー文字列を含むJavaScript契約検証に成功した。
+- `node tools/validate-matches.js` により、38件の日程データ検証に成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` により、生成JSONの厳格検証に成功した。
+- Pythonワンライナーで `public/assets/style.css` の `{` と `}` の数が一致することを確認した。
+- Pythonワンライナーで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- `git diff -- public/sanga202627season.html public/assets/style.css public/data/matches.json .github/workflows/static-checks.yml --exit-code` により、変更禁止ファイルに差分がないことを確認した。
+- `rg` により、4つのLocalStorageキー文字列が `public/assets/app.js` に残っており、内部参照が新しい定数名へ置き換わっていることを確認した。
+
+### 未確認項目
+
+- 実ブラウザでの表示・操作確認は未実施。今回の変更はJavaScript内部の定数名のみで、HTML/CSS/表示仕様は変更していない。
+
+### 残課題
+
+- 現時点ではなし。
+
+### 人間が確認すべき点
+
+- LocalStorageキー文字列、保存形式、復元処理、削除処理が意図せず変更されていないことを差分で確認する。
+
+### 次にレビューしてほしい観点
+
+- reviewer: 定数名の置換が用途に沿っており、処理内容に差分がないか。
+- a11y-reviewer: UIやDOM操作の変更がないため、追加レビューは任意。
+- docs: PLAN、GOAL、JS_CHANGE_CHECKLIST、WORKLOGの記録が簡潔で後続作業に使いやすいか。

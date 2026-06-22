@@ -148,3 +148,8 @@
 
 - [ ] `tools/validate-app-contract.js` は、表示列、表示モード、フィルタの有効値が `public/assets/app.js` に残っていることも静的に確認する。
 - [ ] このチェックは静的な契約確認であり、表示列切替、表示モード切替、フィルタ操作、カード状態切替の実ブラウザ確認の代替ではない。
+
+## LocalStorageキー定数名を変更する場合
+
+- [ ] JavaScript内部の定数名を変更しても、LocalStorageキー文字列自体は変更しない。
+- [ ] `node tools/validate-app-contract.js` で4つのLocalStorageキー文字列が残っていることを確認する。
