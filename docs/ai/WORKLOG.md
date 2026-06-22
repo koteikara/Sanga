@@ -334,3 +334,56 @@
 - reviewer: `Static Checks` 成功結果とRun IDの記録が、PR #82マージ後確認として十分か。
 - a11y-reviewer: `docs/ai/BROWSER_CHECKLIST.md` のアクセシビリティ確認項目が、手動確認に必要な観点を含んでいるか。
 - docs: WORKLOGとBROWSER_CHECKLISTの分担が、今後の確認作業に使いやすいか。
+
+## 2026-06-22 実ブラウザ確認結果テンプレート追加
+
+### 使用した流れ
+
+- `/plan`: 今回の作業はHTML/CSS/JavaScript/日程データの実装修正ではなく、実ブラウザ確認結果を記録するためのテンプレート整備に限定すると整理した。
+- `/goal`: 本体コード、LocalStorageキー、GitHub Actionsワークフローを変更せず、人間が確認結果を残しやすい記録ファイルを追加することを今回の完了条件として扱った。
+- CHECKLIST: `docs/ai/CHECKLIST.md` と `docs/ai/BROWSER_CHECKLIST.md` の確認観点を、結果・問題点・次のCodex依頼内容を書ける形式に展開した。
+- WORKLOG: 本項目にテンプレート追加内容、確認結果、残課題を記録した。
+
+### 変更ファイル
+
+- `docs/ai/browser-check-results/2026-06-22-browser-check-template.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `docs/ai/browser-check-results/` ディレクトリを追加した。
+- `docs/ai/browser-check-results/2026-06-22-browser-check-template.md` を追加し、確認日、確認者、OS、ブラウザ、確認URL、確認方法、キャッシュ削除、LocalStorage初期化、390px前後、768px前後、1280px前後、表示確認、機能確認、アクセシビリティ確認、ブラウザコンソール確認、問題なし項目、問題あり項目、未確認項目、気づいた点、修正が必要な点、次にCodexへ依頼する内容を記録できるようにした。
+- 各確認項目に「確認済み / 問題なし」「問題あり」「未確認」「メモ」を記入できる形を用意した。
+- 本体コード、スタイル、JavaScript、日程データ、GitHub Actionsワークフローは変更していない。
+
+### 確認結果
+
+- `docs/ai/browser-check-results/2026-06-22-browser-check-template.md` が作成されていることを確認した。
+- `docs/ai/WORKLOG.md` に今回のテンプレート追加記録が追記されていることを確認した。
+- `public/sanga202627season.html` に差分がないことを確認した。
+- `public/assets/style.css` に差分がないことを確認した。
+- `public/assets/app.js` に差分がないことを確認した。
+- `public/data/matches.json` に差分がないことを確認した。
+- `.github/workflows/static-checks.yml` に差分がないことを確認した。
+
+### 未確認項目
+
+- 今回は記録テンプレート整備のみのため、実ブラウザでの390px前後、768px前後、1280px前後の目視確認は実施していない。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタン、キーボード操作、フォーカス表示、ブラウザコンソールエラー有無の実ブラウザ確認は実施していない。
+
+### 残課題
+
+- 次に人間が `docs/ai/browser-check-results/2026-06-22-browser-check-template.md` をコピーまたは直接編集し、ローカルブラウザでの確認結果を記録する。
+- 問題が見つかった場合は、記録した結果をもとに次のCodex修正依頼を作る。
+
+### 人間が確認すべき点
+
+- ローカルブラウザで確認対象URLを開き、390px前後、768px前後、1280px前後で表示・操作・アクセシビリティ・コンソールを確認する。
+- 問題あり項目には、再現手順、画面幅、ブラウザ、期待結果、実際の結果をできるだけ具体的に記録する。
+- 修正が必要な点を「次にCodexへ依頼する内容」に整理する。
+
+### 次にレビューしてほしい観点
+
+- reviewer: テンプレートの確認項目が、PR #80以降の実ブラウザ確認に十分か。
+- a11y-reviewer: キーボード操作、フォーカス表示、ダイアログ操作、色だけに依存しない情報伝達の記録欄が十分か。
+- docs: WORKLOGと結果テンプレートの分担が、後続の人間確認とCodex修正依頼に使いやすいか。
