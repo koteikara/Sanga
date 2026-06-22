@@ -1174,3 +1174,60 @@
 - reviewer: 定数名の置換が用途に沿っており、処理内容に差分がないか。
 - a11y-reviewer: UIやDOM操作の変更がないため、追加レビューは任意。
 - docs: PLAN、GOAL、JS_CHANGE_CHECKLIST、WORKLOGの記録が簡潔で後続作業に使いやすいか。
+
+## 2026-06-22 LocalStorage利用可否フラグ名の明確化
+
+### 作業テーマ
+
+LocalStorage仕様変更ではなく、JavaScript内部のLocalStorage利用可否フラグ名を分かりやすくする小さな整理を行った。
+
+### 変更ファイル
+
+- `public/assets/app.js`
+- `docs/js-inventory.md`
+- `docs/ai/JS_CHANGE_CHECKLIST.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/assets/app.js` の `storageAvailable` を `isStorageAvailable` に改名した。
+- LocalStorageキー文字列は変更していない。
+- 保存形式、復元処理、削除処理は変更していない。
+- `true` / `false` の代入タイミング、例外処理、`showStorageUnavailableMessage()` の呼び出しタイミングは変更していない。
+- HTML、CSS、日程データ、Static Checksワークフローは変更していない。
+- `docs/js-inventory.md` と `docs/ai/JS_CHANGE_CHECKLIST.md` に、今回の変数名整理がLocalStorage仕様変更ではないことを短く追記した。
+- `/plan` と `/goal` として、`docs/ai/PLAN.md` と `docs/ai/GOAL.md` に今回の作業計画と完了条件を追記した。
+
+### 確認結果
+
+- `git diff --check` に成功した。
+- `node --check public/assets/app.js` に成功した。
+- `node tools/validate-app-contract.js` に成功し、4つのLocalStorageキー文字列が残っていることを確認した。
+- `node tools/validate-matches.js` に成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` に成功した。
+- Pythonワンライナーで `public/assets/style.css` の `{` と `}` の数がそれぞれ509件で一致することを確認した。
+- Pythonワンライナーで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- Static Checks相当として、ワークフローに定義されている各ローカルコマンドを実行し成功した。
+- `git diff -- public/sanga202627season.html public/assets/style.css public/data/matches.json .github/workflows/static-checks.yml --exit-code` に成功し、変更禁止ファイルに差分がないことを確認した。
+- Pythonワンライナーで4つのLocalStorageキー文字列が `public/assets/app.js` に各1件ずつ残っていることを確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は未実施。
+- 表示列変更、表示モード変更、フィルタ操作、カード状態保存・復元・削除の実ブラウザ操作確認は未実施。
+- GitHub Actions上のStatic Checks結果は、PR作成後にGitHub上で確認が必要。
+
+### 残課題
+
+- 現時点ではなし。
+
+### 人間が確認すべき点
+
+- 差分上、LocalStorageキー文字列、保存形式、復元処理、削除処理に変更がないこと。
+- 実ブラウザで既存の保存・復元・削除挙動が従来どおりであること。
+
+### 次に進める候補
+
+- LocalStorage周辺の関数名や責務整理を行う場合は、保存形式・キー文字列・削除対象を維持したまま別作業として進める。

@@ -10,7 +10,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   // =========================================================
 
   const CARD_STATE_STORAGE_KEY='sanga-schedule-button-states-v1';
-  let storageAvailable=true;
+  let isStorageAvailable=true;
   let states={};
   const FILTER_SETTINGS_STORAGE_KEY='sanga-schedule-filter-settings-v1';
   const DISPLAY_MODE_STORAGE_KEY='sanga-schedule-display-mode-v1';
@@ -43,54 +43,54 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     try{
       return JSON.parse(localStorage.getItem(CARD_STATE_STORAGE_KEY)||'{}') || {};
     }catch(e){
-      storageAvailable=false;
+      isStorageAvailable=false;
       showStorageUnavailableMessage();
       return {};
     }
   }
 
   function writeStoredStates(){
-    if(!storageAvailable) return false;
+    if(!isStorageAvailable) return false;
     try{
       localStorage.setItem(CARD_STATE_STORAGE_KEY,JSON.stringify(states));
       return true;
     }catch(e){
-      storageAvailable=false;
+      isStorageAvailable=false;
       showStorageUnavailableMessage();
       return false;
     }
   }
 
   function readStorageValue(storageKey, fallback=''){
-    if(!storageAvailable) return fallback;
+    if(!isStorageAvailable) return fallback;
     try{
       return localStorage.getItem(storageKey) || fallback;
     }catch(e){
-      storageAvailable=false;
+      isStorageAvailable=false;
       showStorageUnavailableMessage();
       return fallback;
     }
   }
 
   function writeStorageValue(storageKey, value){
-    if(!storageAvailable) return false;
+    if(!isStorageAvailable) return false;
     try{
       localStorage.setItem(storageKey, value);
       return true;
     }catch(e){
-      storageAvailable=false;
+      isStorageAvailable=false;
       showStorageUnavailableMessage();
       return false;
     }
   }
 
   function removeStorageValue(storageKey){
-    if(!storageAvailable) return false;
+    if(!isStorageAvailable) return false;
     try{
       localStorage.removeItem(storageKey);
       return true;
     }catch(e){
-      storageAvailable=false;
+      isStorageAvailable=false;
       showStorageUnavailableMessage();
       return false;
     }
