@@ -136,7 +136,7 @@ CSS / JavaScript / JSONのいずれかを本番反映する場合は、必要に
 
 列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。年間スケジュールページの「試合」シートは、フィルタリング、表示モード切替、フルページスクショ用表示、SNS投稿補助、戦績更新、カップ戦・ACL戦追加などの将来拡張を見据えて列拡張します。年間スケジュールページとニュース連動カレンダーの役割分担は `docs/service-scope.md` を参照してください。実際のGoogleスプレッドシート作成時は、シート構成、入力ルール、プルダウン候補、CSV出力手順を整理した `docs/sheets/schedule-template.md` を参照してください。ヘッダー行テンプレートは `docs/sheets/schedule.template.csv`、検証用サンプルCSVは `docs/sheets/schedule.sample.csv` です。
 
-38件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成済みの初期取り込み用CSVは `docs/sheets/schedule.initial.csv` です。このファイルは、現在の `public/data/matches.json` から生成した38件分の初期データで、拡張後の31列に対応済みです。Googleスプレッドシートを新規作成するときに「試合」シートへ取り込んで使います。既存 `matches.json` から再生成する場合も、`docs/sheets/schedule.template.csv` と同じ拡張後の列順で出力されます。
+49件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成済みの初期取り込み用CSVは `docs/sheets/schedule.initial.csv` です。このファイルは、現在の `public/data/matches.json` から生成した49件分の初期データで、拡張後の31列に対応済みです。Googleスプレッドシートを新規作成するときに「試合」シートへ取り込んで使います。既存 `matches.json` から再生成する場合も、`docs/sheets/schedule.template.csv` と同じ拡張後の列順で出力されます。
 
 ```bash
 node tools/export-matches-to-sheet-csv.js public/data/matches.json tmp/schedule-from-current-json.csv
@@ -153,10 +153,10 @@ node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matc
 node tools/validate-generated-matches.js tmp/matches.generated.json
 ```
 
-本番用38件として確認する場合は、件数チェックも指定します。
+本番用49件として確認する場合は、件数チェックも指定します。
 
 ```bash
-node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 38
+node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 49
 ```
 
 生成直後に公開用の `public/data/matches.json` を直接上書きしないでください。まず `tmp/matches.generated.json` を検証し、件数、ID重複、必須項目、日付形式、候補日、状態値、注記番号などを確認します。検証後に内容を目視確認し、問題がない場合だけ `public/data/matches.json` へ手作業で反映します。

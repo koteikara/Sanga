@@ -5,7 +5,7 @@ const path = require('path');
 
 const DEFAULT_OUTPUT = path.join('tmp', 'matches.generated.json');
 const GENERATED_AT = new Date().toISOString().slice(0, 16).replace('T', ' ');
-const REQUIRED_COLUMNS = ['ID', '節', '状態', 'ホームアウェイ', '対戦相手', '会場'];
+const REQUIRED_COLUMNS = ['ID', '節', '状態', '対戦相手', '会場'];
 const COMPETITION_LABELS = {
   J1: '明治安田J1リーグ',
   LEV: 'JリーグYBCルヴァンカップ',
@@ -110,6 +110,7 @@ function normalizeHomeAway(value, label) {
   const homeAway = String(value || '').trim().toUpperCase();
   if (homeAway === 'H') return { home_away: 'H', home_away_label: label || 'ホーム' };
   if (homeAway === 'A') return { home_away: 'A', home_away_label: label || 'アウェイ' };
+  if (!homeAway && !label) return { home_away: '', home_away_label: '' };
   return { home_away: homeAway, home_away_label: label || homeAway };
 }
 
@@ -177,7 +178,7 @@ function validateGenerated(matches) {
 
   matches.forEach((match, index) => {
     const location = match.id || `matches[${index}]`;
-    ['id', 'round', 'home_away', 'opponent', 'venue', 'status'].forEach((field) => {
+    ['id', 'round', 'opponent', 'venue', 'status'].forEach((field) => {
       if (!String(match[field] || '').trim()) errors.push(`${location}: ${field} は必須です。`);
     });
 
@@ -186,7 +187,7 @@ function validateGenerated(matches) {
     }
     seenIds.set(match.id, location);
 
-    if (!['H', 'A'].includes(match.home_away)) errors.push(`${location}: home_away は H または A にしてください。`);
+    if (match.home_away && !['H', 'A'].includes(match.home_away)) errors.push(`${location}: home_away は H または A または空欄にしてください。`);
     if (!['confirmed', 'tentative'].includes(match.status)) errors.push(`${location}: status は confirmed または tentative にしてください。`);
     if (match.match_date && match.date_candidates.length > 0) errors.push(`${location}: 開催日と候補日は同時に指定できません。`);
     validateDate(errors, location, 'match_date', match.match_date);

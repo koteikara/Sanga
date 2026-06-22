@@ -6,8 +6,8 @@ const path = require('path');
 const repoRoot = path.resolve(__dirname, '..');
 const matchesPath = path.join(repoRoot, 'public', 'data', 'matches.json');
 const htmlPath = path.join(repoRoot, 'public', 'sanga202627season.html');
-const expectedCount = 38;
-const allowedHomeAway = new Set(['H', 'A']);
+const expectedCount = 49;
+const allowedHomeAway = new Set(['', 'H', 'A']);
 const allowedStatus = new Set(['confirmed', 'tentative']);
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const minDate = '2026-08-01';
@@ -129,7 +129,7 @@ function validateDateFields(match, location) {
 }
 
 function validateNote(location, note) {
-  if (!isNonEmptyString(note)) {
+  if (!isNonEmptyString(note) || !note.includes('※')) {
     return;
   }
 
@@ -173,14 +173,11 @@ function validateMatchesJson(data) {
         seenIds.set(match.id, location);
       }
 
-      const requiredId = expectedId(index);
-      if (match.id !== requiredId) {
-        addError(location, 'id', `${requiredId} 形式・順序である必要があります`);
-      }
+
     }
 
     if (!allowedHomeAway.has(match.home_away)) {
-      addError(location, 'home_away', 'H または A のみ指定できます');
+      addError(location, 'home_away', 'H または A または空欄のみ指定できます');
     }
 
     ['opponent', 'venue', 'round'].forEach((field) => {

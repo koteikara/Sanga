@@ -709,8 +709,8 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function createJsonMatchCard(match){
-    const homeAway=match.home_away==='H' ? 'home' : 'away';
-    const haText=match.home_away==='H' ? 'HOME' : 'AWAY';
+    const homeAway=match.home_away==='H' ? 'home' : match.home_away==='A' ? 'away' : '';
+    const haText=match.home_away==='H' ? 'HOME' : match.home_away==='A' ? 'AWAY' : '';
     const button=document.createElement('button');
     button.type='button';
     button.className=`match json-preview-match ${homeAway} logo-${match.opponent_code || 'unknown'}`;
@@ -753,7 +753,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   async function fetchJsonPreviewData(){
-    const dataPath='data/matches.json?v=20260619-1';
+    const dataPath='data/matches.json?v=20260622-1';
     const response=await fetch(dataPath);
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();

@@ -26,7 +26,7 @@ node --check public/assets/app.js
 確認観点:
 
 * `node tools/validate-matches.js` が成功する。
-* `public/data/matches.json` の日程データが38件である。
+* `public/data/matches.json` の日程データが49件である。
 * ID、日付形式、日付範囲、候補日の昇順、注記番号、必須項目に問題がない。
 * `node tools/export-matches-review.js` で確認用一覧を出力できる。
 * `node --check public/assets/app.js` でJavaScript構文エラーが出ない。

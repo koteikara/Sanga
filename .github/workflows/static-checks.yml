@@ -29,7 +29,7 @@ jobs:
         run: node tools/validate-matches.js
 
       - name: 生成JSONを厳格検証
-        run: node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict
+        run: node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict
 
       - name: JavaScript構文を検証
         run: node --check public/assets/app.js

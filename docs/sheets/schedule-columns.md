@@ -249,10 +249,10 @@ JSONでは `status` / `status_label` に変換します。`確定` は `confirme
    node tools/validate-generated-matches.js tmp/matches.generated.json
    ```
 
-4. 本番用38件として運用するデータでは、件数チェックも指定します。
+4. 本番用49件として運用するデータでは、件数チェックも指定します。
 
    ```bash
-   node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 38
+   node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 49
    ```
 
 5. エラーがなく、内容を確認して問題がなければ `public/data/matches.json` へ反映します。
