@@ -189,3 +189,81 @@
 - reviewer: 実ブラウザでPR #80のカード高追随が意図どおりか、特に2列・3列・4列相当表示で確認してほしい。
 - a11y-reviewer: キーボード操作、フォーカス表示、ダイアログ開閉、色だけに依存しない説明が維持されているか確認してほしい。
 - docs: 実ブラウザ未確認項目と次回確認事項の記録が、後続作業に十分か確認してほしい。
+
+## 2026-06-22 GitHub Actionsによる静的検証ワークフロー追加
+
+### 使用した流れ
+
+- `/plan`: `docs/ai/PLAN.md` に今回の作業テーマ、追加するワークフローファイル、実行するチェック内容、実行タイミング、変更しないファイル、LocalStorageへの影響有無、Playwrightを入れない理由、確認方法を追記した。
+- `/goal`: `docs/ai/GOAL.md` に、GitHub Actionsで日程データ、生成JSON、既存JavaScript構文、CSS括弧数、HTMLからのCSS/JS参照を自動確認する目的と完了条件を追記した。
+- CHECKLIST: `docs/ai/CHECKLIST.md` のデータ保護、LocalStorage保護、JavaScript確認、完了報告の観点に沿って確認した。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題を記録した。
+
+### 追加したワークフロー
+
+- `.github/workflows/static-checks.yml`
+
+### 実行するチェック
+
+- `git diff --check`
+- `node tools/validate-matches.js`
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict`
+- `node --check public/assets/app.js`
+- Pythonインラインスクリプトによる `public/assets/style.css` の `{` と `}` の数の一致確認
+- Pythonインラインスクリプトによる `public/sanga202627season.html` の `assets/style.css` / `assets/app.js` 参照確認
+
+### 変更ファイル
+
+- `.github/workflows/static-checks.yml`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更しなかったファイル
+
+- `public/sanga202627season.html`
+- `public/assets/style.css`
+- `public/assets/app.js`
+- `public/data/matches.json`
+- `tools/validate-matches.js`
+- `tools/validate-generated-matches.js`
+
+### 変更内容
+
+- Pull Requestと`main`ブランチへのpush時に実行される `Static Checks` ワークフローを追加した。
+- Node.js LTSとして `actions/setup-node@v4` の `node-version: '20'` を使用した。
+- npmパッケージ追加やPlaywright導入は行わず、既存Node.jsスクリプトとPythonインラインスクリプトだけで静的確認する構成にした。
+- 既存の `deploy-production.yml` と `pages.yml` は変更していない。
+
+### 確認結果
+
+- `git diff --check` が成功した。
+- `node tools/validate-matches.js` が成功し、`matches.json` 38件の検証に成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` が成功し、件数38件、警告0、エラー0を確認した。
+- `node --check public/assets/app.js` が成功した。
+- Pythonインラインスクリプトで `public/assets/style.css` の `{` と `}` がどちらも509件で一致することを確認した。
+- Pythonインラインスクリプトで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- `git diff -- public/sanga202627season.html public/assets/style.css public/assets/app.js public/data/matches.json` で、HTML/CSS/JavaScript/日程データに差分がないことを確認した。
+
+### 未確認項目
+
+- GitHub Actions上での実行結果は、PR作成後にGitHub上で確認が必要。
+- この環境にはPyYAMLがなかったため、ローカルでYAMLパーサーによる構文確認は未実施。ただし、ファイルのインデントと構造は目視で確認した。
+- 今回は実ブラウザ確認とPlaywright導入を対象外にしたため、PC幅・スマートフォン幅の目視確認、操作確認、スクリーンショット取得は未実施。
+
+### 残課題
+
+- PR作成後、GitHub Actionsの `Static Checks` がPull Request上で成功することを確認する。
+- 静的CIが安定した後、必要に応じてPlaywrightやスクリーンショット確認を別タスクとして検討する。
+
+### 人間が確認すべき点
+
+- Pull Request上で `Static Checks` が意図どおり実行され、全チェックが成功すること。
+- `main`ブランチpush時にも同じ静的検証が実行されること。
+- 今回の静的チェック範囲がPRごとの基本チェックとして過不足ないこと。
+
+### 次にレビューしてほしい観点
+
+- reviewer: GitHub Actionsの実行タイミング、Node.jsバージョン、チェック分割が運用上わかりやすいか。
+- a11y-reviewer: 今回は画面変更なしのため追加レビューなし。将来のブラウザ確認CI導入時に確認してほしい。
+- docs: PLAN、GOAL、WORKLOGの記録内容が、静的CI追加の経緯として十分か確認してほしい。
