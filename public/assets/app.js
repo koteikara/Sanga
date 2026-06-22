@@ -11,7 +11,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
   const CARD_STATE_STORAGE_KEY='sanga-schedule-button-states-v1';
   let isStorageAvailable=true;
-  let states={};
+  let matchStates={};
   const FILTER_SETTINGS_STORAGE_KEY='sanga-schedule-filter-settings-v1';
   const DISPLAY_MODE_STORAGE_KEY='sanga-schedule-display-mode-v1';
   const VALID_DISPLAY_MODES=['card','compact'];
@@ -52,7 +52,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   function writeStoredStates(){
     if(!isStorageAvailable) return false;
     try{
-      localStorage.setItem(CARD_STATE_STORAGE_KEY,JSON.stringify(states));
+      localStorage.setItem(CARD_STATE_STORAGE_KEY,JSON.stringify(matchStates));
       return true;
     }catch(e){
       isStorageAvailable=false;
@@ -124,11 +124,11 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
   function initializeMatchStates(root=document){
     root.querySelectorAll('.match[data-id]').forEach(button=>{
-      applyMatchState(button, states[button.dataset.id]);
+      applyMatchState(button, matchStates[button.dataset.id]);
     });
   }
 
-  states=readStoredStates();
+  matchStates=readStoredStates();
   initializeMatchStates();
 
   document.addEventListener('click',(event)=>{
@@ -136,7 +136,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     if(!button) return;
     const id=button.dataset.id;
     const next=(normalizeMatchState(button.dataset.state)+1)%3;
-    states[id]=next;
+    matchStates[id]=next;
     syncMatchState(id, next);
     writeStoredStates();
     applyScheduleFilter();
@@ -488,7 +488,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
   function getCardState(card){
     if(!card || !card.dataset.id) return 0;
-    return normalizeMatchState(states[card.dataset.id]);
+    return normalizeMatchState(matchStates[card.dataset.id]);
   }
 
   function doesCardMatchFilter(card){
@@ -576,7 +576,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     removeStorageValue(LAYOUT_STORAGE_KEY);
     removeStorageValue(FILTER_SETTINGS_STORAGE_KEY);
     removeStorageValue(DISPLAY_MODE_STORAGE_KEY);
-    states={};
+    matchStates={};
     initializeMatchStates();
     setScheduleLayout('2');
     applyDisplayMode('card');
@@ -720,7 +720,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     button.dataset.year=getMatchDateYear(match);
     button.dataset.status=match.status || '';
     button.dataset.hasCandidates=Array.isArray(match.date_candidates) && match.date_candidates.length > 0 ? 'true' : 'false';
-    applyMatchState(button, states[button.dataset.id]);
+    applyMatchState(button, matchStates[button.dataset.id]);
     button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} 日程カード`);
 
     const inner=document.createElement('span');
