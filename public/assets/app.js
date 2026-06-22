@@ -14,9 +14,9 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   let states={};
   const FILTER_SETTINGS_STORAGE_KEY='sanga-schedule-filter-settings-v1';
   const DISPLAY_MODE_STORAGE_KEY='sanga-schedule-display-mode-v1';
-  const validDisplayModes=['card','compact'];
-  const validFilters=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
-  const filterLabels={
+  const VALID_DISPLAY_MODES=['card','compact'];
+  const VALID_FILTERS=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
+  const FILTER_LABELS={
     all:'すべて',
     home:'HOME',
     away:'AWAY',
@@ -417,7 +417,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   let activeDisplayMode='card';
 
   function normalizeDisplayMode(value){
-    return validDisplayModes.includes(String(value)) ? String(value) : 'card';
+    return VALID_DISPLAY_MODES.includes(String(value)) ? String(value) : 'card';
   }
 
   function readDisplayModeSettings(){
@@ -468,7 +468,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const emptyFilterMessage=document.querySelector('.empty-filter-message');
 
   function normalizeFilter(value){
-    return validFilters.includes(String(value)) ? String(value) : 'all';
+    return VALID_FILTERS.includes(String(value)) ? String(value) : 'all';
   }
 
   function readFilterSettings(){
@@ -529,7 +529,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     if(filterResult){
       filterResult.textContent=count === 0
         ? '該当する試合はありません。'
-        : `${activeFilter === 'all' ? '' : `${filterLabels[activeFilter]}：`}${count}件を表示しています。`;
+        : `${activeFilter === 'all' ? '' : `${FILTER_LABELS[activeFilter]}：`}${count}件を表示しています。`;
     }
     if(emptyFilterMessage){
       emptyFilterMessage.hidden=count !== 0;
