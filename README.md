@@ -171,6 +171,8 @@ node tools/validate-matches.js
 
 Codexへ作業依頼する際の共通ルール、PR作成ルール、変更禁止事項、確認項目は `docs/codex-workflow.md` を参照してください。
 
+UIを伴う新機能や大きな見た目変更を検討する場合は、先に `docs/ui-prototype-workflow.md` を参照し、プロトタイプで見た目・操作感を固めてから本番実装へ進みます。
+
 ## Codex作業時のトークン削減検討
 
 Codex作業時のトークン削減策として、`headroom` 導入可能性を調査中です。現時点では導入・設定変更は行わず、詳細は `docs/headroom-research.md` を参照してください。
