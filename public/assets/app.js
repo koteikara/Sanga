@@ -169,6 +169,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   let isScreenshotMode=false;
   let isGeneratingShareImage=false;
   let shareGenerationState='idle';
+  const PANEL_CLOSE_DELAY_MS=240;
 
   function openHelp(){
     if(!helpPanel || !helpOverlay || !helpButton) return;
@@ -188,7 +189,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       helpPanel.hidden=true;
       if(!settingsPanel || settingsPanel.hidden) helpOverlay.hidden=true;
       if(returnFocus) helpButton.focus();
-    }, 240);
+    }, PANEL_CLOSE_DELAY_MS);
   }
 
   function openSettings(){
@@ -209,7 +210,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       settingsPanel.hidden=true;
       if(!helpPanel || helpPanel.hidden) helpOverlay.hidden=true;
       if(returnFocus) settingsButton.focus();
-    }, 240);
+    }, PANEL_CLOSE_DELAY_MS);
   }
 
   function prefersReducedMotion(){

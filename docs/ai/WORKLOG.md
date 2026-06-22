@@ -780,6 +780,7 @@
 ### 変更ファイル
 
 - `docs/js-inventory.md`
+- `docs/ai/JS_CHANGE_CHECKLIST.md`
 - `docs/ai/PLAN.md`
 - `docs/ai/GOAL.md`
 - `docs/ai/WORKLOG.md`
@@ -1059,3 +1060,62 @@
 - reviewer: 追加した静的チェックが誤検知を抑えつつ、有効値欠落を検知できる内容になっているか。
 - a11y-reviewer: 今回は実装本体に触れていないため、次回JavaScript変更時の実操作確認観点に不足がないか。
 - docs: PLAN、GOAL、JS_CHANGE_CHECKLIST、js-inventory、WORKLOG の追記が運用上分かりやすいか。
+
+## 2026-06-22 ダイアログ閉じる待機時間の定数化
+
+### 作業テーマ
+
+使い方ダイアログと設定パネルの閉じるアニメーション後に `hidden` を戻す待機時間 `240ms` を、意味が分かる `PANEL_CLOSE_DELAY_MS` として定数化する。今回の作業はJavaScript低リスク実装整理であり、機能追加や挙動変更ではない。
+
+### 変更ファイル
+
+- `public/assets/app.js`
+- `docs/js-inventory.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/assets/app.js` の既存定数・状態定義付近に `PANEL_CLOSE_DELAY_MS` を追加した。
+- `closeHelp()` と `closeSettings()` の `setTimeout(..., 240)` を `PANEL_CLOSE_DELAY_MS` 参照へ置き換えた。
+- 待機時間の値は従来どおり `240ms` から変更していない。
+- `docs/js-inventory.md` に、ダイアログ/設定パネルの閉じる待機時間は `PANEL_CLOSE_DELAY_MS` で管理し、挙動変更は行っていないことを追記した。
+- `docs/ai/JS_CHANGE_CHECKLIST.md` に、閉じる待機時間を整理する場合は `PANEL_CLOSE_DELAY_MS` が従来どおり `240ms` を表していることを確認する項目を追記した。
+- `/plan` と `/goal` として、`docs/ai/PLAN.md` と `docs/ai/GOAL.md` に今回の作業計画と完了条件を追記した。
+
+### 変更していない内容
+
+- `closeHelp()` と `closeSettings()` の処理順は変更していない。
+- `openHelp()` と `openSettings()` は変更していない。
+- 関数名、イベント処理、既存変数名は変更していない。
+- LocalStorageキー、保存形式、読み書き・削除処理は変更していない。
+- DOM参照、CSSクラスの付与・削除処理、CSSクラス連動は変更していない。
+- `public/sanga202627season.html`、`public/assets/style.css`、`public/data/matches.json`、`.github/workflows/static-checks.yml` は変更していない。
+
+### 確認結果
+
+- `git diff --check` に成功した。
+- `node --check public/assets/app.js` に成功した。
+- `node tools/validate-app-contract.js` に成功した。
+- `node tools/validate-matches.js` に成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` に成功した。
+- Pythonワンライナーで `public/assets/style.css` の `{` と `}` がそれぞれ509件で一致することを確認した。
+- Pythonワンライナーで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- Static Checks相当として、ワークフローに定義されている各ローカルコマンドを実行し成功した。
+- `git diff -- public/sanga202627season.html public/assets/style.css public/data/matches.json .github/workflows/static-checks.yml --exit-code` に成功し、変更禁止ファイルに差分がないことを確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は未実施。
+- 使い方ダイアログ、設定パネル、表示列変更、LocalStorage削除、共有画像生成の実ブラウザ操作確認は未実施。
+- GitHub Actions上のStatic Checks結果は、PR作成後にGitHub上で確認が必要。
+
+### 残課題
+
+- 今回は低リスクな定数化のみのため、ダイアログ周辺の関数分割や構造整理は後続作業に分ける。
+
+### 人間が確認すべき点
+
+- 実ブラウザで使い方ダイアログと設定パネルの開閉が従来どおりに見えること。
+- `PANEL_CLOSE_DELAY_MS` の配置と命名が今後の整理に適していること。
