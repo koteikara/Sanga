@@ -96,7 +96,7 @@
 
 - `.help-button`、`.help-panel`、`.help-overlay`、`.help-close` を参照します。
 - `openHelp()` は設定パネルを閉じ、オーバーレイとヘルプパネルを表示し、`.is-open` を付与します。
-- `closeHelp()` は `.is-open` を外し、240ms後に `hidden` を戻します。
+- `closeHelp()` は `.is-open` を外し、`PANEL_CLOSE_DELAY_MS`（従来どおり240ms）後に `hidden` を戻します。
 - `aria-expanded` とフォーカス移動を更新します。
 - Escapeキー、オーバーレイクリック、閉じるボタンで閉じる処理があります。
 
@@ -104,9 +104,16 @@
 
 - `.settings-button`、`.settings-panel`、`.settings-close`、`#settings-title` を参照します。
 - `openSettings()` は使い方パネルを閉じ、オーバーレイと設定パネルを表示し、`.is-open` を付与します。
-- `closeSettings()` は `.is-open` を外し、240ms後に `hidden` を戻します。
+- `closeSettings()` は `.is-open` を外し、`PANEL_CLOSE_DELAY_MS`（従来どおり240ms）後に `hidden` を戻します。
 - `aria-expanded` とフォーカス移動を更新します。
 - 設定パネル内には表示列、表示モード、フィルタ、共有画像生成入口があります。
+
+
+### ダイアログ/設定パネルの閉じる待機時間
+
+- 使い方ダイアログと設定パネルの閉じる待機時間は `PANEL_CLOSE_DELAY_MS` で管理します。
+- 値は従来どおり `240ms` です。
+- 数値の意味を明確にするための定数化のみで、挙動変更は行っていません。
 
 ### 共有画像関連
 

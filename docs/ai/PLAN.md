@@ -536,3 +536,50 @@ JavaScript本体の整理に進む前の安全策として、`tools/validate-app
 - `.github/workflows/static-checks.yml` に同チェックが既に含まれているか確認し、含まれていれば変更しない。
 - `git diff --check`、`node --check public/assets/app.js`、日程JSON検証、CSS波括弧数検証、HTMLのCSS/JS参照検証を実行する。
 - `git diff -- public/assets/app.js public/sanga202627season.html public/assets/style.css public/data/matches.json` で、変更禁止ファイルに差分がないことを確認する。
+
+## 2026-06-22 ダイアログ閉じる待機時間の定数化
+
+### 今回の作業テーマ
+
+JavaScript低リスク実装整理として、使い方ダイアログと設定パネルの閉じるアニメーション後に `hidden` を戻す待機時間を定数化する。機能追加や挙動変更ではなく、既存の `240ms` の意味を明確にするための小さな整理に限定する。
+
+### 変更対象
+
+- `public/assets/app.js`
+- `docs/js-inventory.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 定数化する値
+
+- `closeHelp()` と `closeSettings()` の `setTimeout(..., 240)` で使われている `240` を、既存定数定義付近に追加する `PANEL_CLOSE_DELAY_MS` へ置き換える。
+- 定数値は従来どおり `240` のままにする。
+
+### 変更しないもの
+
+- `closeHelp()` と `closeSettings()` の処理順。
+- `openHelp()` と `openSettings()` の処理。
+- 関数名、既存変数名、イベントリスナー。
+- LocalStorageキー、保存形式、読み書き・削除処理。
+- DOMのid/class/data属性参照。
+- CSSクラスの付与・削除処理。
+- `public/sanga202627season.html`、`public/assets/style.css`、`public/data/matches.json`、`.github/workflows/static-checks.yml`。
+
+### LocalStorage・DOM・CSSクラス連動への影響がない理由
+
+- 今回は待機時間の数値リテラルを同じ値の定数参照に置き換えるだけで、LocalStorageキーや保存処理を変更しないため。
+- DOM参照文字列、イベントリスナー、関数の呼び出し関係を変更しないため。
+- `.is-open` の付与・削除や `hidden` の戻し順序を変更せず、CSSクラス連動のタイミングも `240ms` のまま維持するため。
+
+### 確認方法
+
+- `git diff --check`
+- `node --check public/assets/app.js`
+- `node tools/validate-app-contract.js`
+- `node tools/validate-matches.js`
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict`
+- Pythonワンライナーで `public/assets/style.css` の `{` と `}` の数が一致することを確認する。
+- Pythonワンライナーで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認する。
+- Static Checks相当として、ローカルで上記の静的チェックを実行する。
+- `git diff -- public/sanga202627season.html public/assets/style.css public/data/matches.json .github/workflows/static-checks.yml --exit-code` で変更禁止ファイルに差分がないことを確認する。
