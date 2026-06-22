@@ -611,3 +611,93 @@
 - 追加したコメント見出しの区切りが、今後のCSS整理に使いやすい粒度か。
 - Static ChecksのGitHub Actions実行結果が成功しているか。
 - 必要に応じて、実ブラウザで表示・操作に変化がないことを軽量チェックするか。
+
+## 2026-06-22 CSS近接重複・上書き候補調査
+
+### 使用した流れ
+
+- `/plan`: `docs/ai/PLAN.md` に今回の作業テーマ、調査対象ファイル、調査方法、変更しないもの、調査結果の分類方針、確認方法を追記した。
+- `/goal`: `docs/ai/GOAL.md` に今回の目的と完了条件を追記した。
+- 調査: `public/assets/style.css` を読み、`rg` と一時的なPythonワンライナーで同一セレクタの出現回数と注意対象セレクタの出現箇所を確認した。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題を記録した。
+
+### 変更ファイル
+
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/css-inventory.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `docs/css-inventory.md` に「近接重複・上書き候補の調査結果」を追記した。
+- CSS本体は変更していない。
+- 低リスク候補、注意候補、現時点では触らない候補、実ブラウザ確認が必要な候補を分類した。
+- `.match`、`.date`、`.ha`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺は、安易に低リスクへ分類せず、注意または触らない候補として扱った。
+
+### 低リスク候補
+
+- `.footer-tools .legend`: まずは役割説明の補足候補。指定値の統合は要確認。
+- `.footer-actions`: フッター用配置と設定パネル用配置の役割説明補足候補。指定値の統合は要確認。
+- `.help-button:active`: `prefers-reduced-motion` による動き抑制上書きの説明補足候補。
+- `.storage-clear:active`: `prefers-reduced-motion` による動き抑制上書きの説明補足候補。
+
+### 注意候補
+
+- `.date:not(.tentative-date) .main.compact-date`: 画面幅別の日付可読性に関係する。
+- `.note` / `.match:has(.note)` 系: 注記付きカード高さと同一行の揃いに関係する。
+- `.meta::after` / `.logo-* .meta::after`: ロゴ背景とテキスト可読性に関係する。
+- `.layout-group` / `.layout-label` / `.layout-option`: 表示列変更、設定パネル、フォーカス表示に関係する。
+- `.help-button` / `.settings-button` / `.footer-action-button`: 主要操作ボタンの見た目と操作状態に関係する。
+- `.phone.layout-4 ...`: 4列表示の詰まりやすい表示に関係する。
+
+### 現時点では触らない候補
+
+- `.match` / `.match-inner`
+- `.ha`
+- `.date` / `.date .main` / `.date .range`
+- `.phone.layout-1` / `.phone.layout-3` / `.phone.layout-4` 系
+- `.display-mode-compact` 系
+- `.phone.is-screenshot-mode` 系
+- `.screenshot-exit-button`
+- `.share-save-link`
+- `.storage-clear` / `.storage-clear-note`
+
+### 次のPRで実施できそうな最小整理案
+
+- CSS本体の指定値やセレクタ統合には踏み込まず、低リスク候補に限定して、近接上書きの意図を補足するコメント追加を検討する。
+- `.match`、`.date`、`.ha`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺は次の小整理PRの対象外にする。
+- 実装整理へ進む前に、実ブラウザ確認手順を固定する。
+
+### 確認結果
+
+- `docs/css-inventory.md` に調査結果を追記した。
+- `docs/ai/WORKLOG.md` に今回の作業を記録した。
+- `public/assets/style.css` は変更していない。
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/app.js` は変更していない。
+- `public/data/matches.json` は変更していない。
+- `.github/workflows/static-checks.yml` は変更していない。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は未実施。
+- 表示列変更、コンパクト表示、共有画像モード、使い方・設定ダイアログ、LocalStorage削除ボタンの操作確認は未実施。
+- 各重複・上書き候補が意図的な履歴上書きか、統合可能な重複かは、実装変更前に要確認。
+
+### 残課題
+
+- 次のPRで、低リスク候補に限定したコメント補足を行うか、実ブラウザ確認手順の固定を先に行うか判断する。
+- CSS指定値の統合を行う場合は、対象セレクタをさらに絞り、実ブラウザ確認をセットで実施する。
+
+### 人間が確認すべき点
+
+- 低リスク候補として挙げた箇所が、次のPRでコメント補足に留める対象として妥当か。
+- 注意候補・触らない候補の分類が、現在の運用上のリスク感に合っているか。
+- 実ブラウザ確認が必要な表示モードや画面幅に不足がないか。
+
+### 次にレビューしてほしい観点
+
+- reviewer: 次のPRで扱える最小CSS整理候補の範囲が十分に小さいか。
+- a11y-reviewer: 操作ボタン、フォーカス表示、動き抑制、LocalStorage削除ボタン周辺の分類が安全側になっているか。
+- docs: `docs/css-inventory.md` の分類表が後続PRの判断材料として使いやすいか。

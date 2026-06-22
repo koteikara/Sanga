@@ -83,3 +83,7 @@
 ## 2026-06-22 低リスクCSSコメント見出し追加
 
 docs/css-inventory.md と docs/ai/PLAN.md に従い、public/assets/style.css に低リスクなコメント見出しと章立てを追加する。CSSの指定値、セレクタ、HTML、JavaScript、日程データ、LocalStorageキーは変更しない。Static Checksが成功し、docs/ai/WORKLOG.md に変更内容と確認結果を記録できたら完了とする。
+
+## 2026-06-22 CSS近接重複・上書き候補調査
+
+`docs/css-inventory.md` と `docs/ai/PLAN.md` に従い、`public/assets/style.css` の近接重複・上書き候補を調査し、低リスク候補、注意候補、触らない候補、実ブラウザ確認が必要な候補に分類する。CSS本体、HTML、JavaScript、日程データ、LocalStorageキーは変更しない。`docs/css-inventory.md` と `docs/ai/WORKLOG.md` に結果を記録できたら完了とする。
