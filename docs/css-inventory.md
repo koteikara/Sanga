@@ -326,3 +326,10 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 - CSS本体の指定値やセレクタ統合にはまだ踏み込まず、`.footer-tools .legend`、`.footer-actions`、`.help-button:active`、`.storage-clear:active` などの近接上書きについて、役割が分かる補足コメントを最小限追加する。
 - もしCSS本体に触る場合でも、まずは表示値を変えないコメント追加だけに限定し、`.match`、`.date`、`.ha`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺の統合は別PRに分ける。
 - 実装整理へ進む前に、390px前後・768px前後・1280px前後、通常・コンパクト・表示列変更・共有画像モードの実ブラウザ確認手順を先に固定する。
+
+## 2026-06-22 低リスク補足コメント追加メモ
+
+- `public/assets/style.css` の低リスク候補に、基本指定・後続調整・動き抑制目的が分かる補足コメントを最小限追加した。
+- 対象は `.footer-tools .legend`、`.footer-actions`、`.help-button:active`、`.storage-clear:active` に限定した。
+- CSSの指定値、セレクタ、ルールの並び順、統合、削除は変更していない。
+- `.match`、`.date`、`.ha`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺の整理は未実施のまま残している。

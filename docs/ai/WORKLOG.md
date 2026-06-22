@@ -701,3 +701,72 @@
 - reviewer: 次のPRで扱える最小CSS整理候補の範囲が十分に小さいか。
 - a11y-reviewer: 操作ボタン、フォーカス表示、動き抑制、LocalStorage削除ボタン周辺の分類が安全側になっているか。
 - docs: `docs/css-inventory.md` の分類表が後続PRの判断材料として使いやすいか。
+
+## 2026-06-22 CSS低リスク補足コメント追加
+
+### 使用した流れ
+
+- `/plan`: `docs/ai/PLAN.md` に今回の作業テーマ、補足コメント対象、コメント追加方針、変更しないもの、表示・LocalStorage・JavaScriptへの影響がない理由、確認方法を追記した。
+- `/goal`: `docs/ai/GOAL.md` に、低リスク候補へ補足コメントだけを追加し、Static Checks相当の確認とWORKLOG記録までを完了条件にする目的を追記した。
+- 実装: `docs/css-inventory.md` の「次のPRで実施できそうな最小整理案」に従い、CSS指定値を変えずにコメントのみ追加した。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題、次に整理できそうな候補を記録した。
+
+### 変更ファイル
+
+- `public/assets/style.css`
+- `docs/css-inventory.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/assets/style.css` に、低リスク候補の意図を残す補足コメントを追加した。
+- 追加対象は `.footer-tools .legend`、`.footer-actions`、`.help-button:active`、`.storage-clear:active` に限定した。
+- `.footer-tools .legend` は、基本指定と後続のテキスト可読性調整を混同しないためのコメントを追加した。
+- `.footer-actions` は、フッター用配置・視覚調整・共有フッターボタン幅と、設定パネル用配置を混同しないためのコメントを追加した。
+- `.help-button:active` と `.storage-clear:active` は、`prefers-reduced-motion` 内の再指定がアクセシビリティ目的で動きを抑制するためのものだと分かるコメントを追加した。
+- `docs/css-inventory.md` に、今回の低リスク補足コメント追加では指定値・セレクタ・並び順を変更していないことと、次の整理候補は未実施であることを追記した。
+
+### 変更していない内容
+
+- CSS指定値、セレクタ、ルールの並び順、統合、削除は変更していない。
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/app.js` は変更していない。
+- `public/data/matches.json` は変更していない。
+- `.github/workflows/static-checks.yml` は変更していない。
+- LocalStorageキー、保存仕様、JavaScript挙動、日程データは変更していない。
+- `.match`、`.match-inner`、`.ha`、`.date`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺の統合・整理は行っていない。
+
+### 確認結果
+
+- `git diff --check` が成功した。
+- `node tools/validate-matches.js` が成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` が成功した。
+- `node --check public/assets/app.js` が成功した。
+- Python確認で `public/assets/style.css` の `{` と `}` がそれぞれ509個で一致した。
+- Python確認で `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- `git diff -- public/sanga202627season.html public/assets/app.js public/data/matches.json .github/workflows/static-checks.yml --exit-code` が成功し、変更禁止ファイルに差分がないことを確認した。
+
+### 未確認項目
+
+- 今回はCSSコメント追加のみのため、実ブラウザでのスマートフォン幅・PC幅の目視確認は実施していない。
+- 表示列変更、使い方ダイアログ、設定パネル、LocalStorage削除ボタン、キーボード操作、ブラウザコンソールエラー有無の実ブラウザ確認は実施していない。
+- GitHub Actions上のStatic Checks実行結果は、PR作成後にGitHub上で確認する必要がある。
+
+### 残課題
+
+- CSS指定値やセレクタ整理へ進む場合は、今回コメントを追加した箇所でも統合可否を改めて表示確認込みで判断する。
+- `.match`、`.date`、`.ha`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺は、引き続き別PRで慎重に扱う。
+
+### 次に整理できそうな候補
+
+- `docs/css-inventory.md` の注意候補について、実ブラウザ確認手順を先に固定する。
+- フッター操作ボタン周辺を扱う場合は、表示列変更、使い方、設定、フォーカス、動き抑制をセットで確認する。
+- CSS指定値の統合ではなく、必要なら追加の補足コメントや確認観点の整理から進める。
+
+### 人間が確認すべき点
+
+- 追加した補足コメントが、今後のCSS整理時に意図を誤解しない粒度になっているか。
+- GitHub Actions上のStatic Checksが成功しているか。
+- 必要に応じて、実ブラウザで表示・操作に変化がないことを軽量チェックするか。
