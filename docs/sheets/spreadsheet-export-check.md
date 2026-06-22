@@ -105,3 +105,12 @@ node tools/validate-generated-matches.js tmp/matches.generated.json --expected-c
 * `sec16` は開催年 `2026`、開催日・候補日空欄、注記 `※1` ありの未確定日程として扱います。公式発表後に開催日または候補日を更新する場合は、開催日と候補日を同時入力しないよう確認します。
 * 公開JSONへ反映するPRでは、生成後に `node tools/validate-matches.js` を実行し、既存画面の表示・フィルタ・LocalStorage関連機能が破綻しないことを確認します。
 * `tmp/` 配下の生成物は一時ファイルのためコミットしません。
+
+## 2026-06-22 カップ戦日程反映確認
+
+2026-06-22時点の `docs/sheets/schedule.initial.csv` を正本として、天皇杯 `sec39`〜`sec44` とルヴァン杯 `sec45`〜`sec49` を含む49件の公開JSONを再生成しました。
+
+- `public/data/matches.json` は `node tools/generate-matches-from-csv.js docs/sheets/schedule.initial.csv public/data/matches.json` でCSVから再生成しました。
+- `sec01`〜`sec49` が存在し、ID重複がないことを確認しました。
+- `sec39` のキックオフ時刻が `19:00` として出力されることを確認しました。
+- 大会コードは `J1` / `EMP` / `LEV` のコード値として反映しました。

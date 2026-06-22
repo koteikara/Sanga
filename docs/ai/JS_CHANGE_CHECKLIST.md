@@ -34,7 +34,7 @@
 - [ ] `git diff --check` で空白エラーがない。
 - [ ] `node --check public/assets/app.js` でJavaScript構文エラーがない。
 - [ ] `node tools/validate-matches.js` で公開JSONとHTMLの基本検証が通る。
-- [ ] `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` で公開JSONの件数と形式が通る。
+- [ ] `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict` で公開JSONの件数と形式が通る。
 - [ ] Static Checks が実行できる場合は、GitHub Actionsまたはローカル同等確認の結果を記録する。
 
 ## JavaScript契約チェック
@@ -103,7 +103,7 @@
 ### JSON読み込み・カード描画に関係する変更
 
 - [ ] `matches.json` の読み込みパスとキャッシュ更新方針を不用意に変えていない。
-- [ ] `matches.json` の件数38件が維持される。
+- [ ] `matches.json` の件数49件が維持される。
 - [ ] `match.id` とカード状態保存が連動する。
 - [ ] 候補日、未定、注記、HOME/AWAY、会場が表示される。
 - [ ] 対戦相手名、節、日付、曜日、年見出しが大きく崩れていない。
