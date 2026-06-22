@@ -708,6 +708,12 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     return items;
   }
 
+  function getVisibleNoteLabel(note){
+    const text=String(note || '').trim();
+    const match=text.match(/^※\d+/);
+    return match ? match[0] : '';
+  }
+
   function createJsonMatchCard(match){
     const homeAway=match.home_away==='H' ? 'home' : match.home_away==='A' ? 'away' : '';
     const haText=match.home_away==='H' ? 'HOME' : match.home_away==='A' ? 'AWAY' : '';
@@ -719,9 +725,19 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     button.dataset.homeAway=match.home_away || '';
     button.dataset.year=getMatchDateYear(match);
     button.dataset.status=match.status || '';
+    button.dataset.competition=match.competition || '';
     button.dataset.hasCandidates=Array.isArray(match.date_candidates) && match.date_candidates.length > 0 ? 'true' : 'false';
+    if(match.competition && match.competition !== 'J1'){
+      button.classList.add('cup-match');
+    }
+    if(!match.home_away){
+      button.classList.add('neutral-match');
+    }
     applyMatchState(button, matchStates[button.dataset.id]);
-    button.setAttribute('aria-label',`${match.round || '節未定'} ${match.home_away_label || haText} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'} 日程カード`);
+    const cardTitle=match.share_title || match.round || '節未定';
+    const noteLabel=getVisibleNoteLabel(match.note);
+    const noteDescription=match.note ? ` ${match.note}` : '';
+    button.setAttribute('aria-label',`${cardTitle} ${match.home_away_label || haText || 'HOME/AWAY未定'} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'}${noteDescription} 日程カード`);
 
     const inner=document.createElement('span');
     inner.className='match-inner';
@@ -730,7 +746,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     meta.className='meta';
     const sec=document.createElement('span');
     sec.className='sec';
-    sec.textContent=match.round || '節未定';
+    sec.textContent=cardTitle;
     const team=document.createElement('span');
     team.className='team';
     team.textContent=match.opponent || '対戦相手未定';
@@ -741,10 +757,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
     inner.append(createHaLabel(haText), meta, createDateContent(match));
     button.append(inner);
-    if(match.note){
+    if(noteLabel){
       const note=document.createElement('span');
       note.className='note';
-      note.textContent=match.note.split(':')[0] || '※';
+      note.textContent=noteLabel;
       note.title=match.note;
       note.setAttribute('aria-label', match.note);
       button.append(note);
