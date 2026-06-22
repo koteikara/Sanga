@@ -5,7 +5,7 @@ const fs = require('fs');
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const MIN_DATE = '2026-08-01';
 const MAX_DATE = '2027-06-30';
-const ALLOWED_HOME_AWAY = new Set(['H', 'A']);
+const ALLOWED_HOME_AWAY = new Set(['', 'H', 'A']);
 const ALLOWED_STATUS = new Set(['confirmed', 'tentative']);
 const ALLOWED_COMPETITIONS = new Set(['J1', 'LEV', 'EMP', 'ACL', 'FRI']);
 const ALLOWED_MATCH_STATUS = new Set(['試合前', '試合中', '試合終了', '延期', '中止', '未定']);
@@ -19,8 +19,6 @@ const REQUIRED_MATCH_FIELDS = [
   'competition',
   'competition_label',
   'round',
-  'home_away',
-  'home_away_label',
   'opponent',
   'venue',
   'status',
@@ -163,7 +161,7 @@ function validateMatch(match, index, seenIds, errors, warnings) {
   }
 
   if (!ALLOWED_HOME_AWAY.has(match.home_away)) {
-    addIssue(errors, location, 'home_away は H または A にしてください。');
+    addIssue(errors, location, 'home_away は H または A または空欄にしてください。');
   }
 
   if (!ALLOWED_STATUS.has(match.status)) {
