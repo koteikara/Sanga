@@ -833,3 +833,59 @@
 - `docs/js-inventory.md` の分類が、今後のJavaScript整理の判断材料として十分か。
 - 低リスク・中リスク・高リスクの分類が、現在の運用上のリスク感に合っているか。
 - 次に着手する最小整理候補を、コメント補足、DOM参照一覧整備、表示列変更まわりの小分割のどれにするか。
+
+## 2026-06-22 JavaScript低リスクセクションコメント追加
+
+### 使用した流れ
+
+- `/plan`: `docs/ai/PLAN.md` に今回の作業テーマ、コメント追加対象、コメント追加方針、変更しないもの、LocalStorage・DOM・CSSクラス連動への影響がない理由、確認方法を追記した。
+- `/goal`: `docs/ai/GOAL.md` に、`public/assets/app.js` へ低リスクなセクションコメントだけを追加し、JavaScriptの処理内容・関数名・変数名・処理順・LocalStorageキー・DOM参照・CSSクラス連動・HTML・CSS・日程データを変更しない目的と完了条件を追記した。
+- CHECKLIST: `docs/ai/CHECKLIST.md` のデータ保護、LocalStorage保護、JavaScript確認、完了報告の観点に沿って確認した。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題を記録した。
+
+### 変更ファイル
+
+- `public/assets/app.js`
+- `docs/js-inventory.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/assets/app.js` に、Imports and initialization、LocalStorage keys and state、LocalStorage helpers、Match card state handling、Help dialog/settings/share controls、Share image mode、Layout/display mode/filters、LocalStorage reset、JSON loading and match card rendering のセクションコメントを追加した。
+- JavaScriptの処理内容、関数名、変数名、処理順、イベントリスナーは変更していない。
+- LocalStorageキー、保存形式、復元処理、削除処理は変更していない。
+- DOM参照、`data-*` 属性、`aria-*` 属性、CSSクラス連動は変更していない。
+- `docs/js-inventory.md` に、低リスク整理としてセクションコメントを追加したことと、次の整理候補は未実施であることを追記した。
+
+### 確認結果
+
+- `git diff --check` に成功した。
+- `node --check public/assets/app.js` に成功した。
+- `node tools/validate-matches.js` に成功し、`matches.json` が38件であること、日付形式・日付範囲・候補日の昇順・注記番号を確認した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` に成功し、件数38件、警告0、エラー0を確認した。
+- Pythonワンライナーで `public/assets/style.css` の `{` と `}` がそれぞれ509件で一致することを確認した。
+- Pythonワンライナーで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- `git diff -- public/sanga202627season.html public/assets/style.css public/data/matches.json .github/workflows/static-checks.yml --exit-code` に成功し、変更禁止ファイルに差分がないことを確認した。
+
+### 未確認項目
+
+- コメント追加のみのため、実ブラウザでのPC幅・スマートフォン幅の目視確認、表示列変更、表示モード、フィルタ、使い方ダイアログ、LocalStorage削除、共有画像生成の操作確認は未実施。
+- GitHub Actions上のStatic Checks結果は、PR作成後にGitHub上で確認が必要。
+
+### 残課題
+
+- 表示列、表示モード、フィルタ、共有画像関連の次の整理候補は未実施。
+- 実ブラウザでのスモークチェックは、必要に応じて `docs/ai/BROWSER_CHECKLIST.md` に沿って別途実施する。
+
+### 人間が確認すべき点
+
+- 追加したセクションコメントの粒度が、次のJavaScript整理に使いやすいか。
+- コメント見出しが、LocalStorage、DOM依存、表示列・表示モード・フィルタ、共有画像関連を誤って混同しない助けになっているか。
+
+### 次にレビューしてほしい観点
+
+- reviewer: コメント追加のみで処理差分がないこと、セクション境界が妥当かを確認してほしい。
+- a11y-reviewer: 今回は挙動変更なしのため、次にUI挙動へ触る作業時にキーボード操作・フォーカス表示・ダイアログ操作を確認してほしい。
+- docs: `PLAN`、`GOAL`、`js-inventory`、`WORKLOG` の記録が後続のJavaScript整理に十分か確認してほしい。

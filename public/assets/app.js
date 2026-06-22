@@ -1,6 +1,14 @@
 import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
+// =========================================================
+// Imports and initialization
+// =========================================================
+
 (function(){
+  // =========================================================
+  // LocalStorage keys and state
+  // =========================================================
+
   const key='sanga-schedule-button-states-v1';
   let storageAvailable=true;
   let states={};
@@ -20,6 +28,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     'state-2':'水色枠'
   };
   let activeFilter='all';
+
+  // =========================================================
+  // LocalStorage helpers
+  // =========================================================
 
   function showStorageUnavailableMessage(){
     const message='LocalStorageを利用できないため、タップ状態は保存されません。表示中の見た目のみ切り替わります。';
@@ -84,6 +96,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     }
   }
 
+  // =========================================================
+  // Match card state handling
+  // =========================================================
+
   function normalizeMatchState(value){
     const state=Number(value || 0);
     return [0,1,2].includes(state) ? state : 0;
@@ -125,6 +141,11 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     writeStoredStates();
     applyScheduleFilter();
   });
+
+  // =========================================================
+  // Help dialog, settings panel, and share image controls
+  // =========================================================
+
   const helpButton=document.querySelector('.help-button');
   const helpPanel=document.querySelector('.help-panel');
   const helpOverlay=document.querySelector('.help-overlay');
@@ -257,6 +278,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   settingsClose && settingsClose.addEventListener('click',()=>closeSettings());
   screenshotExitButton && screenshotExitButton.addEventListener('click',()=>exitScreenshotMode(true));
 
+  // =========================================================
+  // Share image mode
+  // =========================================================
+
   function setShareGenerationState(state){
     shareGenerationState=['idle','loading','success','error'].includes(state) ? state : 'idle';
     isGeneratingShareImage=shareGenerationState==='loading';
@@ -349,6 +374,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     else if(settingsPanel && !settingsPanel.hidden) closeSettings();
     else if(helpPanel && !helpPanel.hidden) closeHelp();
   });
+
+  // =========================================================
+  // Layout, display mode, and filters
+  // =========================================================
 
   // layout switcher: 1 / 2 / 3 / 4 columns
   const layoutKey='sanga-schedule-layout-v1';
@@ -534,6 +563,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     });
   });
 
+  // =========================================================
+  // LocalStorage reset
+  // =========================================================
+
   const storageClearButton=document.querySelector('.storage-clear');
   const storageClearNote=document.querySelector('.storage-clear-note');
 
@@ -553,6 +586,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     }
   });
 
+
+  // =========================================================
+  // JSON loading and match card rendering
+  // =========================================================
 
   const weekdayLabels=['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
