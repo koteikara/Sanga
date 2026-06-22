@@ -770,3 +770,66 @@
 - 追加した補足コメントが、今後のCSS整理時に意図を誤解しない粒度になっているか。
 - GitHub Actions上のStatic Checksが成功しているか。
 - 必要に応じて、実ブラウザで表示・操作に変化がないことを軽量チェックするか。
+
+## 2026-06-22 JavaScript棚卸しドキュメント追加
+
+### 作業テーマ
+
+`public/assets/app.js` の実装修正に入る前に、JavaScript全体の構成、LocalStorage、DOM依存、CSSクラス連動、次に小さく整理できそうな候補を棚卸しする。
+
+### 変更ファイル
+
+- `docs/js-inventory.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `docs/js-inventory.md` を新規追加した。
+- `public/assets/app.js` の大まかな構成、`matches.json` 読み込み、試合カード描画、表示列変更、表示モード変更、フィルタ、LocalStorage保存・復元・削除、使い方ダイアログ、設定パネル、共有画像関連を整理した。
+- LocalStorageキーと保存内容、変更時の注意点を整理した。
+- DOMで参照しているid、class、data属性、aria属性を整理した。
+- JavaScriptが付与・削除・生成するCSSクラス連動を整理した。
+- 次に小さく整理できそうな候補を、低リスク・中リスク・高リスクに分けて記録した。
+
+### 変更していない内容
+
+- `public/assets/app.js` は変更していない。
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/style.css` は変更していない。
+- `public/data/matches.json` は変更していない。
+- `.github/workflows/static-checks.yml` は変更していない。
+- LocalStorageキー、保存形式、復元処理、削除処理は変更していない。
+- JavaScriptの関数名、変数名、処理順、イベント処理は変更していない。
+
+### 確認結果
+
+- `docs/js-inventory.md` が作成されていることを確認した。
+- `docs/ai/WORKLOG.md` に今回の作業を記録した。
+- `rg "localStorage|querySelector|getElementById|classList|dataset|aria-|addEventListener|fetch|hidden" public/assets/app.js` で依存箇所を確認した。
+- `git diff -- public/assets/app.js public/sanga202627season.html public/assets/style.css public/data/matches.json .github/workflows/static-checks.yml --exit-code` で変更禁止ファイルに差分がないことを確認した。
+- `git diff --check` が成功した。
+- `node --check public/assets/app.js` が成功した。
+- `node tools/validate-matches.js` が成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` が成功した。
+- Python確認でCSSの波括弧数一致とHTMLのCSS/JavaScript参照を確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の表示確認は未実施。
+- 表示列変更、表示モード変更、フィルタ、使い方ダイアログ、設定パネル、LocalStorage削除、共有画像生成の実ブラウザ操作確認は未実施。
+- 共有画像生成に使うCDNモジュールの実ブラウザ読み込みと保存導線は未確認。
+- JSON読み込み失敗時の利用者向け表示方針は要確認。
+
+### 残課題
+
+- 次のPRでは、実装変更前に `docs/js-inventory.md` の低リスク候補から扱う範囲を選ぶ。
+- LocalStorageキーや保存形式、試合カード描画構造、共有画像生成処理は高リスクとして別途方針を決める。
+- 実ブラウザ確認が必要な操作は、`docs/ai/BROWSER_CHECKLIST.md` に沿って人間またはブラウザ環境で確認する。
+
+### 人間が確認すべき点
+
+- `docs/js-inventory.md` の分類が、今後のJavaScript整理の判断材料として十分か。
+- 低リスク・中リスク・高リスクの分類が、現在の運用上のリスク感に合っているか。
+- 次に着手する最小整理候補を、コメント補足、DOM参照一覧整備、表示列変更まわりの小分割のどれにするか。
