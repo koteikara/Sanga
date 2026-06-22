@@ -2014,27 +2014,31 @@
     max-width:420px;
     margin:6px auto 0;
     padding:10px;
-    border:3px solid transparent;
+    border:2px solid rgba(255,255,255,.84);
     border-radius:22px;
-    background:
-      linear-gradient(rgba(255,255,255,.16), rgba(255,255,255,.16)) padding-box,
-      linear-gradient(90deg, rgba(255,255,255,.24), rgba(0,229,255,.95), rgba(255,0,180,.85), rgba(255,255,255,.24)) border-box;
-    background-size:auto, 240% 100%;
-    box-shadow:0 16px 36px rgba(0,0,0,.35);
+    background:rgba(255,255,255,.16);
+    box-shadow:
+      0 0 8px rgba(255,255,255,.72),
+      0 0 18px rgba(0,229,255,.48),
+      0 0 30px rgba(255,0,180,.36),
+      0 0 42px rgba(150,80,255,.28),
+      0 18px 38px rgba(0,0,0,.36);
     isolation:isolate;
-    animation:share-preview-border-flow 2s linear infinite;
+    animation:share-preview-neon-pulse 2.4s ease-in-out infinite alternate;
   }
   .share-preview-card::before{
     content:"";
     position:absolute;
-    inset:-9px;
+    inset:-10px;
     z-index:-1;
     border-radius:28px;
-    background:conic-gradient(from 0deg, rgba(255,255,255,0), rgba(255,255,255,.92), rgba(0,229,255,.78), rgba(255,0,180,.68), rgba(255,255,255,0));
-    filter:blur(12px);
-    opacity:.74;
+    background:
+      radial-gradient(circle at 22% 28%, rgba(0,229,255,.32), transparent 36%),
+      radial-gradient(circle at 78% 72%, rgba(255,0,180,.30), transparent 38%),
+      radial-gradient(circle at 50% 50%, rgba(150,80,255,.22), transparent 48%);
+    filter:blur(16px);
+    opacity:.72;
     pointer-events:none;
-    animation:share-preview-border-orbit 2.4s linear infinite;
   }
   .share-preview-image{
     position:relative;
@@ -2049,12 +2053,25 @@
     box-shadow:0 8px 22px rgba(0,0,0,.22);
     touch-action:manipulation;
   }
-  @keyframes share-preview-border-flow{
-    from{ background-position:0 0, 0% 0; }
-    to{ background-position:0 0, 240% 0; }
-  }
-  @keyframes share-preview-border-orbit{
-    to{ transform:rotate(360deg); }
+  @keyframes share-preview-neon-pulse{
+    from{
+      border-color:rgba(255,255,255,.78);
+      box-shadow:
+        0 0 7px rgba(255,255,255,.60),
+        0 0 15px rgba(0,229,255,.38),
+        0 0 24px rgba(255,0,180,.28),
+        0 0 34px rgba(150,80,255,.22),
+        0 14px 32px rgba(0,0,0,.34);
+    }
+    to{
+      border-color:rgba(255,255,255,.92);
+      box-shadow:
+        0 0 11px rgba(255,255,255,.82),
+        0 0 24px rgba(0,229,255,.58),
+        0 0 38px rgba(255,0,180,.42),
+        0 0 52px rgba(150,80,255,.34),
+        0 18px 40px rgba(0,0,0,.38);
+    }
   }
   .share-image-actions[hidden],
   .share-save-link[hidden],
