@@ -79,3 +79,7 @@
 ## 今回の作業目的: GitHub Actionsによる静的検証ワークフロー追加
 
 `docs/ai/GOAL.md` と `docs/ai/PLAN.md` に従い、GitHub Actionsで日程データ、生成JSON、既存JavaScript構文、CSS括弧数、HTMLからのCSS/JS参照を自動確認できる静的検証ワークフローを追加する。HTML/CSS/JS/日程データ/LocalStorageキーは変更しない。`docs/ai/CHECKLIST.md` に沿って確認し、`docs/ai/WORKLOG.md` に変更内容、確認結果、未確認項目、残課題を記録できたら完了とする。
+
+## 2026-06-22 低リスクCSSコメント見出し追加
+
+docs/css-inventory.md と docs/ai/PLAN.md に従い、public/assets/style.css に低リスクなコメント見出しと章立てを追加する。CSSの指定値、セレクタ、HTML、JavaScript、日程データ、LocalStorageキーは変更しない。Static Checksが成功し、docs/ai/WORKLOG.md に変更内容と確認結果を記録できたら完了とする。

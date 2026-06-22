@@ -1,3 +1,7 @@
+  /* =========================================================
+     Base variables and page layout
+     ========================================================= */
+
   :root{
     --bg1:#4b003c;
     --bg2:#8b0069;
@@ -31,6 +35,12 @@
   h1{font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif;font-size:clamp(28px,8vw,40px);letter-spacing:.14em;line-height:1.1;margin:0;text-transform:uppercase;font-weight:900;text-shadow:0 2px 10px rgba(0,0,0,.25)}
   .year{font-size:24px;letter-spacing:.08em;font-weight:900;margin:22px 0 10px;font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+
+
+  /* =========================================================
+     Match card layout
+     ========================================================= */
+
   .match{
     appearance:none;border:3px solid var(--border-default);border-radius:2px;padding:0;background:transparent;color:inherit;min-height:78px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18);position:relative;overflow:hidden;text-align:left;transition:border-color .15s, transform .08s, box-shadow .15s;
   }
@@ -62,6 +72,10 @@
   .away .ha{background:var(--home);color:#fff}
   .match[data-id="sec16"] .ha{padding-top:0;padding-bottom:0;justify-content:center}
 
+  /* =========================================================
+     Date, home/away, and match metadata
+     ========================================================= */
+
   .meta{padding:7px 5px 6px;min-width:0;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(180deg,#fff,#f3f3f3)}
   .away .meta{background:linear-gradient(180deg,#f0f0f0,#dfdfdf)}
   .sec{font-size:12px;font-weight:900;letter-spacing:.02em;color:#333;line-height:1}
@@ -83,6 +97,10 @@
   .legend{font-size:11px;line-height:1.7;margin:18px 0 0;text-align:right;opacity:.95}
   footer{text-align:center;margin-top:28px;font-family:Georgia,"Times New Roman",serif;font-size:25px;font-weight:900;letter-spacing:.02em}
   .small{font-size:20px}
+  /* =========================================================
+     Responsive layout and column modes
+     ========================================================= */
+
   @media (min-width:390px){.grid{grid-template-columns:repeat(2,1fr);gap:11px}.match{min-height:82px}.match-inner{min-height:76px}.team{font-size:14px}.date .main{font-size:30px}}
   @media (min-width:700px){.phone{width:430px}}
 
@@ -196,6 +214,10 @@
       letter-spacing:-.10em;
     }
   }
+
+  /* =========================================================
+     Footer actions, disclaimer, and help UI
+     ========================================================= */
 
   /* help overview */
   .footer-tools{
@@ -1071,6 +1093,10 @@
     grid-column:1 / -1;
   }
 
+  /* =========================================================
+     Dialogs and settings panels
+     ========================================================= */
+
   /* settings panel */
   .settings-button{
     appearance:none;
@@ -1152,6 +1178,10 @@
     border-radius:6px;
   }
 
+
+  /* =========================================================
+     Display modes, filters, and share image mode
+     ========================================================= */
 
   /* display mode controls and schedule variants */
   .settings-subsection{
