@@ -539,3 +539,75 @@
 - reviewer: 重複・上書き候補の洗い出しが、次のCSS整理作業に十分か確認してほしい。
 - a11y-reviewer: ダイアログ、ボタン、LocalStorage削除ボタン、フォーカス表示に関する注意点が抜けていないか確認してほしい。
 - docs: `docs/css-inventory.md` の見出し構成と記録粒度が、継続運用しやすいか確認してほしい。
+
+## 2026-06-22 低リスクCSSコメント見出し追加
+
+### 使用した流れ
+
+- `/plan`: 今回の作業は `docs/css-inventory.md` の棚卸しをもとにしたCSSコメント見出し追加に限定し、CSS指定値・セレクタ・HTML・JavaScript・日程データ・LocalStorageキーを変更しない方針を `docs/ai/PLAN.md` に追記した。
+- `/goal`: `public/assets/style.css` に低リスクなコメント見出しと章立てを追加し、Static Checks相当の確認が成功し、WORKLOGへ記録できたら完了とする目的を `docs/ai/GOAL.md` に追記した。
+- CHECKLIST: 変更禁止ファイルに差分がないこと、CSS波括弧数、HTMLのCSS/JavaScript参照、日程JSON検証、JavaScript構文確認を確認対象にした。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題、次に整理できそうな候補を記録した。
+
+### 変更ファイル
+
+- `public/assets/style.css`
+- `docs/css-inventory.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/assets/style.css` に、次の大見出しコメントを追加した。
+  - `Base variables and page layout`
+  - `Match card layout`
+  - `Date, home/away, and match metadata`
+  - `Responsive layout and column modes`
+  - `Footer actions, disclaimer, and help UI`
+  - `Dialogs and settings panels`
+  - `Display modes, filters, and share image mode`
+- `docs/css-inventory.md` に、今回の低リスク整理ではコメント見出しのみを追加し、CSS指定値・セレクタ・統合・削除・大きな並び替えを行っていないことを追記した。
+- `docs/ai/PLAN.md` と `docs/ai/GOAL.md` に、今回の作業方針と完了条件を追記した。
+
+### 変更していない内容
+
+- CSS指定値、セレクタ、セレクタ名、CSSルールの統合・削除・大きな並び替えは変更していない。
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/app.js` は変更していない。
+- `public/data/matches.json` は変更していない。
+- `.github/workflows/static-checks.yml` は変更していない。
+- LocalStorageキー、保存仕様、JavaScript挙動、日程データは変更していない。
+
+### 確認結果
+
+- `git diff --check` が成功した。
+- `node tools/validate-matches.js` が成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` が成功した。
+- `node --check public/assets/app.js` が成功した。
+- Python確認で `public/assets/style.css` の `{` と `}` がそれぞれ509個で一致した。
+- Python確認で `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- `git diff -- public/sanga202627season.html public/assets/app.js public/data/matches.json .github/workflows/static-checks.yml --exit-code` が成功し、変更禁止ファイルに差分がないことを確認した。
+
+### 未確認項目
+
+- 今回はCSSコメント追加のみのため、実ブラウザでのスマートフォン幅・PC幅の目視確認は実施していない。
+- 表示列変更、使い方ダイアログ、設定パネル、LocalStorage削除ボタン、キーボード操作、ブラウザコンソールエラー有無の実ブラウザ確認は実施していない。
+- GitHub Actions上のStatic Checks実行結果は、PR作成後にGitHub上で確認する必要がある。
+
+### 残課題
+
+- 次回以降、CSS指定値やセレクタ整理に進む場合は、今回追加した章立てを目印に作業範囲を小さく区切る。
+- 重複・上書き候補の統合可否は、表示確認やスクリーンショット比較を用意してから判断する。
+
+### 次に整理できそうな候補
+
+- コメント見出し単位で、既存コメントの粒度が不足している箇所を追加で補足する。
+- `docs/css-inventory.md` の重複・上書き候補を、実ブラウザ確認を前提に1件ずつ検証する。
+- ダイアログ・設定パネル・フィルタ周辺のCSSを、見出し単位でさらに棚卸しする。
+
+### 人間が確認すべき点
+
+- 追加したコメント見出しの区切りが、今後のCSS整理に使いやすい粒度か。
+- Static ChecksのGitHub Actions実行結果が成功しているか。
+- 必要に応じて、実ブラウザで表示・操作に変化がないことを軽量チェックするか。
