@@ -9,11 +9,11 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   // LocalStorage keys and state
   // =========================================================
 
-  const key='sanga-schedule-button-states-v1';
+  const CARD_STATE_STORAGE_KEY='sanga-schedule-button-states-v1';
   let storageAvailable=true;
   let states={};
-  const filterKey='sanga-schedule-filter-settings-v1';
-  const displayModeKey='sanga-schedule-display-mode-v1';
+  const FILTER_SETTINGS_STORAGE_KEY='sanga-schedule-filter-settings-v1';
+  const DISPLAY_MODE_STORAGE_KEY='sanga-schedule-display-mode-v1';
   const validDisplayModes=['card','compact'];
   const validFilters=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
   const filterLabels={
@@ -41,7 +41,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
   function readStoredStates(){
     try{
-      return JSON.parse(localStorage.getItem(key)||'{}') || {};
+      return JSON.parse(localStorage.getItem(CARD_STATE_STORAGE_KEY)||'{}') || {};
     }catch(e){
       storageAvailable=false;
       showStorageUnavailableMessage();
@@ -52,7 +52,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   function writeStoredStates(){
     if(!storageAvailable) return false;
     try{
-      localStorage.setItem(key,JSON.stringify(states));
+      localStorage.setItem(CARD_STATE_STORAGE_KEY,JSON.stringify(states));
       return true;
     }catch(e){
       storageAvailable=false;
@@ -381,7 +381,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   // =========================================================
 
   // layout switcher: 1 / 2 / 3 / 4 columns
-  const layoutKey='sanga-schedule-layout-v1';
+  const LAYOUT_STORAGE_KEY='sanga-schedule-layout-v1';
   const phoneEl=document.querySelector('.phone');
   const layoutButtons=Array.from(document.querySelectorAll('.layout-option'));
 
@@ -399,14 +399,14 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     });
   }
 
-  setScheduleLayout(readStorageValue(layoutKey, '2'));
+  setScheduleLayout(readStorageValue(LAYOUT_STORAGE_KEY, '2'));
 
   layoutButtons.forEach(button=>{
     button.addEventListener('click',(event)=>{
       event.preventDefault();
       event.stopPropagation();
       const selected=button.dataset.layout || '2';
-      writeStorageValue(layoutKey, selected);
+      writeStorageValue(LAYOUT_STORAGE_KEY, selected);
       setScheduleLayout(selected);
     });
   });
@@ -421,7 +421,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function readDisplayModeSettings(){
-    const raw=readStorageValue(displayModeKey, '');
+    const raw=readStorageValue(DISPLAY_MODE_STORAGE_KEY, '');
     if(!raw) return 'card';
     try{
       const parsed=JSON.parse(raw);
@@ -432,7 +432,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function writeDisplayModeSettings(){
-    writeStorageValue(displayModeKey, JSON.stringify({mode:activeDisplayMode}));
+    writeStorageValue(DISPLAY_MODE_STORAGE_KEY, JSON.stringify({mode:activeDisplayMode}));
   }
 
   function applyDisplayMode(mode){
@@ -472,7 +472,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function readFilterSettings(){
-    const raw=readStorageValue(filterKey, '');
+    const raw=readStorageValue(FILTER_SETTINGS_STORAGE_KEY, '');
     if(!raw) return 'all';
     try{
       const parsed=JSON.parse(raw);
@@ -483,7 +483,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function writeFilterSettings(){
-    writeStorageValue(filterKey, JSON.stringify({activeFilter}));
+    writeStorageValue(FILTER_SETTINGS_STORAGE_KEY, JSON.stringify({activeFilter}));
   }
 
   function getCardState(card){
@@ -572,10 +572,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const storageClearNote=document.querySelector('.storage-clear-note');
 
   storageClearButton && storageClearButton.addEventListener('click',()=>{
-    removeStorageValue(key);
-    removeStorageValue(layoutKey);
-    removeStorageValue(filterKey);
-    removeStorageValue(displayModeKey);
+    removeStorageValue(CARD_STATE_STORAGE_KEY);
+    removeStorageValue(LAYOUT_STORAGE_KEY);
+    removeStorageValue(FILTER_SETTINGS_STORAGE_KEY);
+    removeStorageValue(DISPLAY_MODE_STORAGE_KEY);
     states={};
     initializeMatchStates();
     setScheduleLayout('2');
