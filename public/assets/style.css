@@ -2132,3 +2132,41 @@
       animation:none;
     }
   }
+
+  /* Cup match card display adjustment */
+  .cup-match .match-inner{
+    min-height:68px;
+  }
+  .cup-match .sec{
+    max-width:100%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:10px;
+    line-height:1.1;
+  }
+  .cup-match .team{
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    line-clamp:2;
+    -webkit-box-orient:vertical;
+    white-space:normal;
+    overflow:hidden;
+    line-height:1.12;
+  }
+  .cup-match .place{
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .neutral-match .match-inner{
+    background:linear-gradient(90deg,#6b6b6b 0 20px,#f3f3f3 20px);
+  }
+  .neutral-match .ha{
+    background:#6b6b6b;
+    color:#fff;
+  }
+  .neutral-match .date{
+    background:#d8d8d8;
+    color:#111;
+  }
