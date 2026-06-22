@@ -714,12 +714,34 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     return match ? match[0] : '';
   }
 
+  function getHaDisplayText(match){
+    if(match.home_away==='H') return 'HOME';
+    if(match.home_away==='A') return 'AWAY';
+    if(match.competition && match.competition !== 'J1') return 'CUP';
+    return '';
+  }
+
+  function getDisplayOpponentName(match){
+    const opponent=String(match.opponent || '').trim();
+    const aliases={
+      'FC町田ゼルビア':'町田'
+    };
+    return aliases[opponent] || opponent || '対戦相手未定';
+  }
+
   function createJsonMatchCard(match){
     const homeAway=match.home_away==='H' ? 'home' : match.home_away==='A' ? 'away' : '';
-    const haText=match.home_away==='H' ? 'HOME' : match.home_away==='A' ? 'AWAY' : '';
+    const haText=getHaDisplayText(match);
+    const displayOpponent=getDisplayOpponentName(match);
+    const hasOpponentLogo=Boolean(match.opponent_code) && match.opponent !== '未定';
     const button=document.createElement('button');
     button.type='button';
-    button.className=`match json-preview-match ${homeAway} logo-${match.opponent_code || 'unknown'}`;
+    button.className=`match json-preview-match ${homeAway}`;
+    if(hasOpponentLogo){
+      button.classList.add(`logo-${match.opponent_code}`);
+    }else{
+      button.classList.add('no-logo');
+    }
     button.dataset.id=match.id || '';
     button.dataset.jsonId=match.id || '';
     button.dataset.homeAway=match.home_away || '';
@@ -737,7 +759,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     const cardTitle=match.share_title || match.round || '節未定';
     const noteLabel=getVisibleNoteLabel(match.note);
     const noteDescription=match.note ? ` ${match.note}` : '';
-    button.setAttribute('aria-label',`${cardTitle} ${match.home_away_label || haText || 'HOME/AWAY未定'} ${match.opponent || '対戦相手未定'} ${match.venue || '会場未定'}${noteDescription} 日程カード`);
+    button.setAttribute('aria-label',`${cardTitle} ${match.home_away_label || haText || 'HOME/AWAY未定'} ${displayOpponent} ${match.venue || '会場未定'}${noteDescription} 日程カード`);
 
     const inner=document.createElement('span');
     inner.className='match-inner';
@@ -749,7 +771,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     sec.textContent=cardTitle;
     const team=document.createElement('span');
     team.className='team';
-    team.textContent=match.opponent || '対戦相手未定';
+    team.textContent=displayOpponent;
     const place=document.createElement('span');
     place.className='place';
     place.textContent=match.venue || '会場未定';
