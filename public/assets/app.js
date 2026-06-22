@@ -306,8 +306,8 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     }
     if(!isScreenshotMode) enterScreenshotMode();
     else forceClosePanels();
-    resetShareImageResult();
     scrollToShareTop();
+    resetShareImageResult();
     setShareGenerationState('loading');
     if(shareStatus) shareStatus.textContent='画像を生成しています…';
     try{
