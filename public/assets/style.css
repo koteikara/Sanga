@@ -1039,19 +1039,19 @@
     align-items:stretch;
   }
   .match{
+    display:flex;
     height:100%;
   }
   .match-inner{
+    flex:1 1 auto;
+    width:100%;
     height:100%;
   }
   .ha{
-    min-height:100%;
+    align-self:stretch;
   }
   .date{
-    min-height:100%;
-  }
-  .phone.layout-4 .date{
-    min-height:28px;
+    align-self:stretch;
   }
 
 
