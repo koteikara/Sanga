@@ -305,7 +305,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
         shareSaveLink.download=fileName;
       }
       setShareGenerationState('success');
-      if(shareStatus) shareStatus.textContent='画像を生成しました。';
+      if(shareStatus) shareStatus.textContent='画像を保存できます。';
     }catch(error){
       console.warn('Share image generation failed:', error);
       resetShareImageResult();
