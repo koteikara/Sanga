@@ -37,6 +37,12 @@
 - [ ] `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` で公開JSONの件数と形式が通る。
 - [ ] Static Checks が実行できる場合は、GitHub Actionsまたはローカル同等確認の結果を記録する。
 
+## JavaScript契約チェック
+
+- [ ] `node tools/validate-app-contract.js` で、LocalStorageキー、JSON読み込みパス、主要DOM/CSSフックが維持されていることを確認する。
+- [ ] この契約チェックは Static Checks でも自動実行される。
+- [ ] この契約チェックは、LocalStorageキー、JSON読み込みパス、主要DOM/CSSフックの破壊を検知する補助であり、実ブラウザでの表示・操作確認の代替ではない。
+
 ## 人間が軽く確認すること
 
 実ブラウザ確認は、毎回重くしすぎず `docs/ai/BROWSER_CHECKLIST.md` の「通常確認: 7項目」を参照します。

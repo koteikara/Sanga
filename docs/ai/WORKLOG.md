@@ -939,3 +939,69 @@
 
 - 毎回必ず確認する項目が、運用上重すぎない粒度になっているか。
 - 変更内容別の追加確認が、今後のJavaScript整理前の安全確認として十分か。
+
+## 2026-06-22 JavaScript契約チェック追加
+
+### 作業テーマ
+
+`docs/ai/JS_CHANGE_CHECKLIST.md` のうち機械的に確認できる項目を Static Checks に追加し、今後のJavaScript整理時にLocalStorageキー、JSON読み込みパス、主要DOMフック、CSS連動クラスの破壊を検知しやすくする。
+
+### 変更ファイル
+
+- `tools/validate-app-contract.js`
+- `.github/workflows/static-checks.yml`
+- `docs/ai/JS_CHANGE_CHECKLIST.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `tools/validate-app-contract.js` を追加し、Node.js標準機能だけで `public/assets/app.js` と `public/sanga202627season.html` の契約文字列を静的に検証できるようにした。
+- `.github/workflows/static-checks.yml` に `node tools/validate-app-contract.js` を追加し、Static Checksで自動実行されるようにした。
+- `docs/ai/JS_CHANGE_CHECKLIST.md` に、JavaScript契約チェックの実行、Static Checksでの自動実行、実ブラウザ確認の代替ではないことを追記した。
+- `/plan` と `/goal` として、`docs/ai/PLAN.md` と `docs/ai/GOAL.md` に今回の作業計画と完了条件を追記した。
+
+### 変更していない内容
+
+- `public/assets/app.js` は変更していない。
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/style.css` は変更していない。
+- `public/data/matches.json` は変更していない。
+- LocalStorageキー、保存形式、復元処理、削除処理は変更していない。
+- JavaScriptの関数名、変数名、処理順、イベント処理は変更していない。
+
+### 自動検証できるようになった項目
+
+- 既存LocalStorageキー4件が `public/assets/app.js` に残っていること。
+- `data/matches.json` の読み込みパスが `public/assets/app.js` に残っていること。
+- `public/sanga202627season.html` が `assets/app.js` と `assets/style.css` を参照していること。
+- 使い方、設定、LocalStorage削除、表示列、表示モード、フィルタ、JSONプレビューに関係する主要DOMフックがHTMLまたはJS内に存在すること。
+- `json-preview-match`、`json-preview-year`、共有画像生成状態に関係する主要CSS連動クラスが `public/assets/app.js` に残っていること。
+
+### 確認結果
+
+- `node tools/validate-app-contract.js` に成功した。
+- `git diff --check` に成功した。
+- `node --check public/assets/app.js` に成功した。
+- `node tools/validate-matches.js` に成功した。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` に成功した。
+- Pythonワンライナーで `public/assets/style.css` の `{` と `}` がそれぞれ509件で一致することを確認した。
+- Pythonワンライナーで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認した。
+- Static Checks相当として、ワークフローに定義されている各ローカルコマンドを実行し成功した。
+- `git diff -- public/assets/app.js public/sanga202627season.html public/assets/style.css public/data/matches.json --exit-code` に成功し、変更禁止ファイルに差分がないことを確認した。
+
+### 未確認項目
+
+- GitHub Actions上のStatic Checks結果は、PR作成後にGitHub上で確認が必要。
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認、表示列変更、表示モード、フィルタ、使い方ダイアログ、LocalStorage削除、共有画像生成の操作確認は未実施。
+
+### 残課題
+
+- 今回の契約チェックは文字列ベースの静的検証であり、DOM構造の意味的な正しさやイベント処理の動作までは保証しない。
+- JavaScript整理を行うPRでは、引き続き `docs/ai/JS_CHANGE_CHECKLIST.md` と `docs/ai/BROWSER_CHECKLIST.md` に沿った確認が必要。
+
+### 人間が確認すべき点
+
+- 契約チェック対象の文字列が、今後のJavaScript整理で守りたい最小契約として十分か。
+- 追加したStatic Checksの粒度が、運用上重すぎず壊れやすい箇所を検知できるものになっているか。

@@ -34,6 +34,9 @@ jobs:
       - name: JavaScript構文を検証
         run: node --check public/assets/app.js
 
+      - name: JavaScript契約を検証
+        run: node tools/validate-app-contract.js
+
       - name: CSS波括弧数を検証
         run: |
           python - <<'PY'
