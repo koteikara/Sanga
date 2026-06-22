@@ -191,6 +191,10 @@
     background:#fff;
   }
 
+  .no-logo .meta::after{
+    display:none;
+  }
+
 
   /* selected state border thickness */
   .match[data-state="1"],
@@ -2165,8 +2169,21 @@
   .neutral-match .ha{
     background:#6b6b6b;
     color:#fff;
+    font-size:7px;
+    letter-spacing:.04em;
   }
   .neutral-match .date{
     background:#d8d8d8;
     color:#111;
+  }
+  .neutral-match .date.tentative-date,
+  .cup-match .date.tentative-date{
+    background:#FFF3BF;
+    color:#111;
+  }
+  .neutral-match .date.tentative-date .sub.sat,
+  .neutral-match .date.tentative-date .sub.sun,
+  .cup-match .date.tentative-date .sub.sat,
+  .cup-match .date.tentative-date .sub.sun{
+    background:#fff;
   }
