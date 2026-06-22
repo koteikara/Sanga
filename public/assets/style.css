@@ -1864,32 +1864,24 @@
       linear-gradient(180deg, #5b0045 0%, #8a005f 50%, #4d003c 100%);
     pointer-events:none;
   }
-  .phone.is-screenshot-mode.is-share-loading .share-capture-target{
-    position:absolute;
-    left:-9999px;
-    top:0;
-    height:auto;
-    overflow:visible;
-  }
+  .phone.is-screenshot-mode.is-share-loading .share-capture-target,
   .phone.is-screenshot-mode.is-share-success .share-capture-target,
   .phone.is-screenshot-mode.is-share-error .share-capture-target{
-    position:absolute;
-    width:1px;
-    height:1px;
-    margin:-1px;
-    padding:0;
-    overflow:hidden;
-    clip:rect(0 0 0 0);
-    clip-path:inset(50%);
-    border:0;
+    position:relative;
+    left:auto;
+    top:auto;
+    width:100%;
+    max-width:760px;
+    height:auto;
+    margin:0 auto;
+    overflow:visible;
+    transform:none;
+    opacity:1;
+    visibility:visible;
   }
   .phone.layout-4.is-screenshot-mode .share-capture-target{
     padding-right:8px;
     padding-left:8px;
-  }
-  .phone.layout-4.is-screenshot-mode.is-share-success .share-capture-target,
-  .phone.layout-4.is-screenshot-mode.is-share-error .share-capture-target{
-    padding:0;
   }
   .share-image-actions{
     display:grid;
@@ -1976,12 +1968,23 @@
     border:0;
   }
   .share-progress{
+    position:relative;
     display:grid;
     gap:10px;
+    overflow:hidden;
     padding:18px 14px;
-    border:1px solid rgba(255,255,255,.32);
+    border:2px solid transparent;
     border-radius:16px;
-    background:rgba(255,255,255,.12);
+    background:
+      linear-gradient(rgba(255,255,255,.12), rgba(255,255,255,.12)) padding-box,
+      linear-gradient(90deg, rgba(255,255,255,.18), rgba(255,255,255,.98), rgba(0,229,255,.82), rgba(255,255,255,.18)) border-box;
+    background-size:auto, 220% 100%;
+    animation:share-progress-border-flow 1.4s linear infinite;
+    box-shadow:0 0 22px rgba(0,229,255,.22);
+  }
+  @keyframes share-progress-border-flow{
+    from{ background-position:0 0, 0% 0; }
+    to{ background-position:0 0, 220% 0; }
   }
   .share-progress-track{
     position:relative;
@@ -2063,6 +2066,11 @@
     display:none !important;
   }
   @media (prefers-reduced-motion: reduce){
+    .share-progress{
+      animation:none;
+      background-position:0 0, 50% 0;
+      box-shadow:none;
+    }
     .share-progress-bar{
       animation:none;
       transform:none;
