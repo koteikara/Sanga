@@ -889,3 +889,53 @@
 - reviewer: コメント追加のみで処理差分がないこと、セクション境界が妥当かを確認してほしい。
 - a11y-reviewer: 今回は挙動変更なしのため、次にUI挙動へ触る作業時にキーボード操作・フォーカス表示・ダイアログ操作を確認してほしい。
 - docs: `PLAN`、`GOAL`、`js-inventory`、`WORKLOG` の記録が後続のJavaScript整理に十分か確認してほしい。
+
+## 2026-06-22 JavaScript変更チェックリスト追加
+
+### 作業テーマ
+
+`public/assets/app.js` を今後変更する前に使う、JavaScript変更専用の軽量チェックリストを追加する。
+
+### 変更ファイル
+
+- `docs/ai/JS_CHANGE_CHECKLIST.md`
+- `docs/ai/CHECKLIST.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `docs/ai/JS_CHANGE_CHECKLIST.md` を新規追加した。
+- `docs/js-inventory.md` の棚卸し内容をもとに、LocalStorage、DOM参照、CSSクラス連動、表示列、表示モード、フィルタ、使い方ダイアログ、設定パネル、JSON読み込み・カード描画、共有画像関連の確認観点を整理した。
+- 自動確認、人間が軽く確認する項目、変更内容別の追加確認を分け、毎回の確認が重くなりすぎない構成にした。
+- `docs/ai/CHECKLIST.md` から、JavaScript変更時に `docs/ai/JS_CHANGE_CHECKLIST.md` を参照できるようにした。
+
+### 変更していない内容
+
+- `public/assets/app.js` は変更していない。
+- `public/sanga202627season.html` は変更していない。
+- `public/assets/style.css` は変更していない。
+- `public/data/matches.json` は変更していない。
+- `.github/workflows/static-checks.yml` は変更していない。
+- LocalStorageキー、保存形式、復元処理、削除処理は変更していない。
+
+### 確認結果
+
+- `docs/ai/JS_CHANGE_CHECKLIST.md` が作成されていることを確認した。
+- `docs/ai/CHECKLIST.md` にJavaScript変更チェックリストへの参照が追加されていることを確認した。
+- `docs/ai/WORKLOG.md` に今回の作業を記録した。
+- JavaScript本体は変更していないため、次にJavaScript整理、関数分割、LocalStorage整理、JSON描画改善へ進む前の安全確認がしやすくなった。
+
+### 未確認項目
+
+- ドキュメント追加のみのため、実ブラウザでのPC幅・スマートフォン幅の目視確認、表示列変更、表示モード、フィルタ、使い方ダイアログ、LocalStorage削除、共有画像生成の操作確認は未実施。
+- GitHub Actions上のStatic Checks結果は、PR作成後にGitHub上で確認が必要。
+
+### 残課題
+
+- 次に `public/assets/app.js` を変更するPRでは、`docs/ai/JS_CHANGE_CHECKLIST.md` に沿って自動確認、軽量ブラウザ確認、変更内容別の追加確認を記録する。
+- 共有画像関連やLocalStorage保存形式に触る場合は、静的検証だけで完了扱いにせず、実ブラウザで対象操作を確認する。
+
+### 人間が確認すべき点
+
+- 毎回必ず確認する項目が、運用上重すぎない粒度になっているか。
+- 変更内容別の追加確認が、今後のJavaScript整理前の安全確認として十分か。

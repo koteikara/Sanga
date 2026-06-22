@@ -35,6 +35,7 @@
 
 ## JavaScript確認
 
+- [ ] JavaScriptを変更する場合は、`docs/ai/JS_CHANGE_CHECKLIST.md` も参照する。
 - [ ] ブラウザコンソールに明らかなエラーがない
 - [ ] 既存LocalStorageキーを変更していない
 - [ ] 保存済み設定が意図せず消えない
