@@ -1005,3 +1005,57 @@
 
 - 契約チェック対象の文字列が、今後のJavaScript整理で守りたい最小契約として十分か。
 - 追加したStatic Checksの粒度が、運用上重すぎず壊れやすい箇所を検知できるものになっているか。
+
+## 2026-06-22 JavaScript契約チェックの有効値検証強化
+
+### 使用した流れ
+
+- `/plan`: `docs/ai/PLAN.md` に今回の作業テーマ、強化する検証内容、変更対象ファイル、変更しないもの、app.js本体へ影響がない理由、確認方法を追記した。
+- `/goal`: `docs/ai/GOAL.md` に今回の目的と完了条件を追記した。
+- CHECKLIST: `docs/ai/JS_CHANGE_CHECKLIST.md` と `docs/ai/CHECKLIST.md` の観点に沿って、静的契約チェック強化と変更禁止ファイルの差分確認を行った。
+- WORKLOG: 本項目に変更内容、確認結果、未確認項目、残課題を記録した。
+
+### 変更ファイル
+
+- `tools/validate-app-contract.js`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/JS_CHANGE_CHECKLIST.md`
+- `docs/js-inventory.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `tools/validate-app-contract.js` に、表示列の有効値 `1`、`2`、`3`、`4` と関連クラス `layout-1`、`layout-3`、`layout-4` の確認を追加した。
+- 表示モードの有効値 `card`、`compact` と関連クラス `mode-card`、`mode-compact`、`display-mode-card`、`display-mode-compact` の確認を追加した。
+- フィルタの有効値 `all`、`home`、`away`、`year-2026`、`year-2027`、`tentative`、`marked`、`state-1`、`state-2` の確認を追加した。
+- カード状態について、`normalizeMatchState()` 周辺の `0`、`1`、`2` と、`data-state` 反映、状態別フィルタ判定が残っていることを確認する静的チェックを追加した。
+- `docs/ai/JS_CHANGE_CHECKLIST.md` と `docs/js-inventory.md` に、契約チェックの対象追加と、実ブラウザ確認の代替ではないことを追記した。
+- `.github/workflows/static-checks.yml` は既に `node tools/validate-app-contract.js` を実行していたため変更していない。
+- `public/assets/app.js`、`public/sanga202627season.html`、`public/assets/style.css`、`public/data/matches.json` は変更していない。
+
+### 確認結果
+
+- `node tools/validate-app-contract.js` に成功した。
+- Static Checks相当として、契約チェック、日程JSON検証、生成JSON厳格検証、JavaScript構文検証、CSS波括弧数検証、HTMLのCSS/JS参照検証を実行した。
+- `public/assets/app.js`、`public/sanga202627season.html`、`public/assets/style.css`、`public/data/matches.json` に差分がないことを確認した。
+
+### 未確認項目
+
+- 今回は静的契約チェック強化のみのため、実ブラウザでの表示列切替、表示モード切替、フィルタ操作、カード状態切替は未確認。
+- GitHub Actions上のStatic Checks実行結果はPR作成後に確認する。
+
+### 残課題
+
+- 今後 `public/assets/app.js` を整理する際は、今回追加した契約チェックに加えて、`docs/ai/BROWSER_CHECKLIST.md` に沿った実ブラウザ確認を行う。
+
+### 人間が確認すべき点
+
+- 契約チェックの粒度が、今後のJavaScript整理の安全策として過不足ないか。
+- 実ブラウザでの表示列・表示モード・フィルタ操作確認を、次回JavaScript変更時に実施すること。
+
+### 次にレビューしてほしい観点
+
+- reviewer: 追加した静的チェックが誤検知を抑えつつ、有効値欠落を検知できる内容になっているか。
+- a11y-reviewer: 今回は実装本体に触れていないため、次回JavaScript変更時の実操作確認観点に不足がないか。
+- docs: PLAN、GOAL、JS_CHANGE_CHECKLIST、js-inventory、WORKLOG の追記が運用上分かりやすいか。
