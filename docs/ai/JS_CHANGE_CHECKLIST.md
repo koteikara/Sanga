@@ -71,6 +71,8 @@
 
 - [ ] LocalStorage利用可否フラグ名を変更しても、キー文字列・保存形式・削除対象を変更していない。
 - [ ] `node tools/validate-app-contract.js` で4つのLocalStorageキー文字列が残っていることを確認した。
+- [ ] カード状態保持変数名を変更しても、状態値・保存形式・LocalStorageキー文字列を変更していない。
+- [ ] `node tools/validate-app-contract.js` でカード状態値 `0` / `1` / `2` と4つのLocalStorageキー文字列が残っていることを確認した。
 
 ### 表示列・表示モードに関係する変更
 
