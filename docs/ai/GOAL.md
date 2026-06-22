@@ -75,3 +75,7 @@
 ## 今回の作業目的: 試合カード高が大きい行の表示崩れ改善
 
 `docs/ai/GOAL.md` と `docs/ai/PLAN.md` に従い、試合カードの縦幅が大きくなった場合でも同じ行の表示が不自然に崩れないように修正する。既存の日程データ、LocalStorageキー、表示列変更、使い方ダイアログ、LocalStorage削除ボタンは壊さない。`docs/ai/CHECKLIST.md` に沿って確認し、`docs/ai/WORKLOG.md` に変更内容、確認結果、未確認項目、残課題を記録できたら完了とする。
+
+## 今回の作業目的: GitHub Actionsによる静的検証ワークフロー追加
+
+`docs/ai/GOAL.md` と `docs/ai/PLAN.md` に従い、GitHub Actionsで日程データ、生成JSON、既存JavaScript構文、CSS括弧数、HTMLからのCSS/JS参照を自動確認できる静的検証ワークフローを追加する。HTML/CSS/JS/日程データ/LocalStorageキーは変更しない。`docs/ai/CHECKLIST.md` に沿って確認し、`docs/ai/WORKLOG.md` に変更内容、確認結果、未確認項目、残課題を記録できたら完了とする。

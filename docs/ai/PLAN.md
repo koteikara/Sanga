@@ -136,3 +136,56 @@
 - 表示列変更、使い方ダイアログ、LocalStorage削除ボタンのJavaScript
 - 免責事項、使い方、LocalStorage説明文
 - HTMLの大きな構造変更や無関係な整形
+
+## 今回の作業計画: GitHub Actionsによる静的検証ワークフロー追加
+
+### 作業テーマ
+
+Pull Requestと`main`ブランチへのpush時に、Codexがこれまで手動実行していた静的チェックをGitHub Actionsで自動実行できるようにする。今回の作業は静的検証CIの追加であり、HTML/CSS/JavaScript/日程データの修正は行わない。
+
+### 追加するワークフローファイル
+
+- `.github/workflows/static-checks.yml`
+
+### 実行するチェック内容
+
+- `git diff --check` で空白エラーなどを確認する。
+- `node tools/validate-matches.js` で日程JSONを検証する。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` で生成JSONを厳格検証する。
+- `node --check public/assets/app.js` で既存JavaScriptの構文を検証する。
+- `public/assets/style.css` の `{` と `}` の数が一致することを確認する。
+- `public/sanga202627season.html` が `assets/style.css` を参照していることを確認する。
+- `public/sanga202627season.html` が `assets/app.js` を参照していることを確認する。
+
+### 実行タイミング
+
+- Pull Request作成・更新時。
+- `main`ブランチへのpush時。
+
+### 変更しないファイル
+
+- `public/sanga202627season.html`
+- `public/assets/style.css`
+- `public/assets/app.js`
+- `public/data/matches.json`
+
+### LocalStorageへの影響有無
+
+- GitHub Actionsワークフローと作業記録のみの変更のため、LocalStorageキー・保存値・復元処理への影響はない。
+- `sanga-schedule-button-states-v1`、`sanga-schedule-layout-v1` など既存キーは変更しない。
+
+### 今回あえてPlaywrightを入れない理由
+
+- PR #81でnpm registryの403によりPlaywright取得に失敗しており、まずは外部依存の少ない静的検証を安定させるため。
+- 今回の目的は実ブラウザ確認ではなく、PRごとの基本的な静的チェックを確実に自動化することに限定するため。
+- npmパッケージ追加や外部依存追加を避け、既存のNode.jsスクリプトと標準的なシェル/Pythonで確認できる範囲に絞るため。
+
+### 確認方法
+
+- 既存ワークフローを確認し、既存の本番デプロイ・Pagesワークフローを壊さないことを確認する。
+- ローカルで `node tools/validate-matches.js` を実行する。
+- ローカルで `node tools/validate-generated-matches.js public/data/matches.json --expected-count 38 --strict` を実行する。
+- ローカルで `node --check public/assets/app.js` を実行する。
+- 追加したYAMLに明らかなインデントミスがないか確認する。
+- `git diff --check` を実行する。
+- GitHub Actions上での実行結果は、PR作成後にGitHub上で確認する。
