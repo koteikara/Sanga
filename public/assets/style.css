@@ -74,19 +74,19 @@
 
   .competition-ribbon{
     position:absolute;
-    top:6px;
-    right:6px;
+    top:0;
+    right:0;
     z-index:3;
     display:inline-flex;
     align-items:center;
-    max-width:64px;
-    min-height:15px;
-    padding:2px 9px;
-    border-radius:999px 999px 0 999px;
+    max-width:58px;
+    min-height:14px;
+    padding:2px 8px 2px 9px;
+    border-radius:0 3px 0 999px;
     color:#fff;
-    font-size:8px;
+    font-size:7px;
     font-weight:900;
-    line-height:1.05;
+    line-height:1;
     letter-spacing:.02em;
     white-space:nowrap;
     overflow:hidden;
@@ -96,16 +96,17 @@
   .competition-ribbon::after{
     content:'';
     position:absolute;
-    right:-4px;
-    bottom:1px;
+    right:0;
+    bottom:-6px;
     width:9px;
-    height:9px;
-    border-radius:0 0 8px 0;
+    height:7px;
+    border-radius:0 0 3px 0;
     background:inherit;
-    filter:brightness(.78);
+    filter:brightness(.72);
     z-index:-1;
   }
   .competition-j1{background:#1e4fa3;color:#fff}
+  .competition-ribbon.competition-j1{max-width:34px}
   .competition-emp{background:#b8860b;color:#fff}
   .competition-lev{background:#b2165b;color:#fff}
   .competition-acl{background:#1565c0}
