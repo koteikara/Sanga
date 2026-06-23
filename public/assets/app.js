@@ -14,6 +14,9 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   let matchStates={};
   const FILTER_SETTINGS_STORAGE_KEY='sanga-schedule-filter-settings-v1';
   const DISPLAY_MODE_STORAGE_KEY='sanga-schedule-display-mode-v1';
+  const DEFAULT_DISPLAY_MODE='card';
+  const DEFAULT_FILTER='all';
+  const DEFAULT_LAYOUT='2';
   const VALID_DISPLAY_MODES=['card','compact'];
   const VALID_FILTERS=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
   const FILTER_LABELS={
@@ -27,7 +30,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     'state-1':'赤色枠',
     'state-2':'水色枠'
   };
-  let activeFilter='all';
+  let activeFilter=DEFAULT_FILTER;
 
   // =========================================================
   // LocalStorage helpers
@@ -386,7 +389,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const layoutButtons=Array.from(document.querySelectorAll('.layout-option'));
 
   function setScheduleLayout(mode){
-    const selected=['1','2','3','4'].includes(String(mode)) ? String(mode) : '2';
+    const selected=['1','2','3','4'].includes(String(mode)) ? String(mode) : DEFAULT_LAYOUT;
     if(phoneEl){
       phoneEl.classList.remove('layout-1','layout-3','layout-4');
       if(selected==='1') phoneEl.classList.add('layout-1');
@@ -399,13 +402,13 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     });
   }
 
-  setScheduleLayout(readStorageValue(LAYOUT_STORAGE_KEY, '2'));
+  setScheduleLayout(readStorageValue(LAYOUT_STORAGE_KEY, DEFAULT_LAYOUT));
 
   layoutButtons.forEach(button=>{
     button.addEventListener('click',(event)=>{
       event.preventDefault();
       event.stopPropagation();
-      const selected=button.dataset.layout || '2';
+      const selected=button.dataset.layout || DEFAULT_LAYOUT;
       writeStorageValue(LAYOUT_STORAGE_KEY, selected);
       setScheduleLayout(selected);
     });
@@ -414,20 +417,20 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
   const jsonPreviewList=document.querySelector('[data-json-preview-list]');
   const displayModeButtons=Array.from(document.querySelectorAll('.display-mode-option'));
-  let activeDisplayMode='card';
+  let activeDisplayMode=DEFAULT_DISPLAY_MODE;
 
   function normalizeDisplayMode(value){
-    return VALID_DISPLAY_MODES.includes(String(value)) ? String(value) : 'card';
+    return VALID_DISPLAY_MODES.includes(String(value)) ? String(value) : DEFAULT_DISPLAY_MODE;
   }
 
   function readDisplayModeSettings(){
     const raw=readStorageValue(DISPLAY_MODE_STORAGE_KEY, '');
-    if(!raw) return 'card';
+    if(!raw) return DEFAULT_DISPLAY_MODE;
     try{
       const parsed=JSON.parse(raw);
       return normalizeDisplayMode(parsed && parsed.mode);
     }catch(e){
-      return 'card';
+      return DEFAULT_DISPLAY_MODE;
     }
   }
 
@@ -468,17 +471,17 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const emptyFilterMessage=document.querySelector('.empty-filter-message');
 
   function normalizeFilter(value){
-    return VALID_FILTERS.includes(String(value)) ? String(value) : 'all';
+    return VALID_FILTERS.includes(String(value)) ? String(value) : DEFAULT_FILTER;
   }
 
   function readFilterSettings(){
     const raw=readStorageValue(FILTER_SETTINGS_STORAGE_KEY, '');
-    if(!raw) return 'all';
+    if(!raw) return DEFAULT_FILTER;
     try{
       const parsed=JSON.parse(raw);
       return normalizeFilter(parsed && parsed.activeFilter);
     }catch(e){
-      return 'all';
+      return DEFAULT_FILTER;
     }
   }
 
@@ -578,9 +581,9 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     removeStorageValue(DISPLAY_MODE_STORAGE_KEY);
     matchStates={};
     initializeMatchStates();
-    setScheduleLayout('2');
-    applyDisplayMode('card');
-    activeFilter='all';
+    setScheduleLayout(DEFAULT_LAYOUT);
+    applyDisplayMode(DEFAULT_DISPLAY_MODE);
+    activeFilter=DEFAULT_FILTER;
     applyScheduleFilter();
     if(storageClearNote){
       storageClearNote.textContent='このページの保存内容、表示列、表示モード、絞り込み条件を削除しました。';
