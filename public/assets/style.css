@@ -72,6 +72,31 @@
   .away .ha{background:var(--home);color:#fff}
   .match[data-id="sec16"] .ha{padding-top:0;padding-bottom:0;justify-content:center}
 
+  .competition-badge{
+    position:absolute;
+    top:3px;
+    right:3px;
+    z-index:2;
+    max-width:58px;
+    padding:2px 5px;
+    border-radius:999px;
+    background:rgba(35,0,24,.78);
+    color:#fff;
+    font-size:8px;
+    font-weight:900;
+    line-height:1.15;
+    letter-spacing:.02em;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    pointer-events:none;
+  }
+  .cup-match .competition-badge{
+    background:rgba(123,0,100,.88);
+  }
+  .neutral-match .competition-badge{
+    background:rgba(80,80,80,.90);
+  }
   /* =========================================================
      Date, home/away, and match metadata
      ========================================================= */

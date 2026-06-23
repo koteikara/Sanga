@@ -717,8 +717,19 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   function getHaDisplayText(match){
     if(match.home_away==='H') return 'HOME';
     if(match.home_away==='A') return 'AWAY';
-    if(match.competition && match.competition !== 'J1') return 'CUP';
     return '';
+  }
+
+  function getCompetitionBadgeText(match){
+    const competition=String(match.competition || '').trim();
+    const labels={
+      J1:'J1',
+      EMP:'天皇杯',
+      LEV:'ルヴァン',
+      ACL:'ACL',
+      FRI:'TM'
+    };
+    return labels[competition] || '';
   }
 
   function getDisplayOpponentName(match){
@@ -733,7 +744,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     const homeAway=match.home_away==='H' ? 'home' : match.home_away==='A' ? 'away' : '';
     const haText=getHaDisplayText(match);
     const displayOpponent=getDisplayOpponentName(match);
-    const hasOpponentLogo=Boolean(match.opponent_code) && match.opponent !== '未定';
+    const competitionBadgeText=match.competition && match.competition !== 'J1'
+      ? getCompetitionBadgeText(match)
+      : '';
+    const hasOpponentLogo=Boolean(match.opponent_code) && String(match.opponent || '').trim() !== '未定';
     const button=document.createElement('button');
     button.type='button';
     button.className=`match json-preview-match ${homeAway}`;
@@ -779,6 +793,12 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
     inner.append(createHaLabel(haText), meta, createDateContent(match));
     button.append(inner);
+    if(competitionBadgeText){
+      const competitionBadge=document.createElement('span');
+      competitionBadge.className='competition-badge';
+      competitionBadge.textContent=competitionBadgeText;
+      button.append(competitionBadge);
+    }
     if(noteLabel){
       const note=document.createElement('span');
       note.className='note';
