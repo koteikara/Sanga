@@ -732,6 +732,22 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     return labels[competition] || '';
   }
 
+  function getCardRoundTitle(match){
+    const title=String(match.share_title || match.round || '節未定').trim();
+    const prefixes=[
+      '天皇杯 ',
+      'ルヴァン杯 ',
+      'JリーグYBCルヴァンカップ ',
+      '2026/27 JリーグYBCルヴァンカップ '
+    ];
+    for(const prefix of prefixes){
+      if(title.startsWith(prefix)){
+        return title.slice(prefix.length).trim() || title;
+      }
+    }
+    return title;
+  }
+
   function getDisplayOpponentName(match){
     const opponent=String(match.opponent || '').trim();
     const aliases={
@@ -744,9 +760,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     const homeAway=match.home_away==='H' ? 'home' : match.home_away==='A' ? 'away' : '';
     const haText=getHaDisplayText(match);
     const displayOpponent=getDisplayOpponentName(match);
-    const competitionBadgeText=match.competition && match.competition !== 'J1'
-      ? getCompetitionBadgeText(match)
-      : '';
+    const competitionBadgeText=getCompetitionBadgeText(match);
     const hasOpponentLogo=Boolean(match.opponent_code) && String(match.opponent || '').trim() !== '未定';
     const button=document.createElement('button');
     button.type='button';
@@ -770,7 +784,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       button.classList.add('neutral-match');
     }
     applyMatchState(button, matchStates[button.dataset.id]);
-    const cardTitle=match.share_title || match.round || '節未定';
+    const cardTitle=getCardRoundTitle(match);
     const noteLabel=getVisibleNoteLabel(match.note);
     const noteDescription=match.note ? ` ${match.note}` : '';
     button.setAttribute('aria-label',`${cardTitle} ${match.home_away_label || haText || 'HOME/AWAY未定'} ${displayOpponent} ${match.venue || '会場未定'}${noteDescription} 日程カード`);
@@ -795,7 +809,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     button.append(inner);
     if(competitionBadgeText){
       const competitionBadge=document.createElement('span');
-      competitionBadge.className='competition-badge';
+      competitionBadge.className=`competition-ribbon competition-${String(match.competition || '').toLowerCase()}`;
       competitionBadge.textContent=competitionBadgeText;
       button.append(competitionBadge);
     }

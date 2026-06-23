@@ -72,31 +72,44 @@
   .away .ha{background:var(--home);color:#fff}
   .match[data-id="sec16"] .ha{padding-top:0;padding-bottom:0;justify-content:center}
 
-  .competition-badge{
+  .competition-ribbon{
     position:absolute;
-    top:3px;
-    right:3px;
-    z-index:2;
-    max-width:58px;
-    padding:2px 5px;
-    border-radius:999px;
-    background:rgba(35,0,24,.78);
+    top:4px;
+    right:8px;
+    z-index:3;
+    display:inline-flex;
+    align-items:center;
+    max-width:72px;
+    min-height:16px;
+    padding:2px 10px;
+    border-radius:999px 999px 0 999px;
     color:#fff;
     font-size:8px;
     font-weight:900;
-    line-height:1.15;
+    line-height:1.1;
     letter-spacing:.02em;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
     pointer-events:none;
   }
-  .cup-match .competition-badge{
-    background:rgba(123,0,100,.88);
+  .competition-ribbon::after{
+    content:'';
+    position:absolute;
+    right:-6px;
+    bottom:0;
+    width:12px;
+    height:12px;
+    border-radius:0 0 999px 0;
+    background:inherit;
+    filter:brightness(.78);
+    z-index:-1;
   }
-  .neutral-match .competition-badge{
-    background:rgba(80,80,80,.90);
-  }
+  .competition-j1{background:#6d1b7b}
+  .competition-emp{background:#d6a038}
+  .competition-lev{background:#c2185b}
+  .competition-acl{background:#1565c0}
+  .competition-fri{background:#546e7a}
   /* =========================================================
      Date, home/away, and match metadata
      ========================================================= */
@@ -2189,11 +2202,12 @@
     text-overflow:ellipsis;
   }
   .neutral-match .match-inner{
-    background:linear-gradient(90deg,#6b6b6b 0 20px,#f3f3f3 20px);
+    background:linear-gradient(90deg,#ffffff 0 20px,#f3f3f3 20px);
   }
   .neutral-match .ha{
-    background:#6b6b6b;
-    color:#fff;
+    background:#fff;
+    color:transparent;
+    border-right:1px solid rgba(0,0,0,.08);
     font-size:7px;
     letter-spacing:.04em;
   }
