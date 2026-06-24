@@ -18,7 +18,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const DEFAULT_FILTER='all';
   const DEFAULT_LAYOUT='2';
   const VALID_DISPLAY_MODES=['card','compact'];
-  const VALID_FILTERS=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2'];
+  const VALID_FILTERS=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2','competition-j1','competition-emp','competition-lev'];
   const FILTER_LABELS={
     all:'すべて',
     home:'HOME',
@@ -28,7 +28,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     tentative:'未確定',
     marked:'枠線あり',
     'state-1':'赤色枠',
-    'state-2':'水色枠'
+    'state-2':'水色枠',
+    'competition-j1':'J1',
+    'competition-emp':'天皇杯',
+    'competition-lev':'ルヴァン杯'
   };
   let activeFilter=DEFAULT_FILTER;
 
@@ -506,6 +509,9 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       case 'marked': return state === 1 || state === 2;
       case 'state-1': return state === 1;
       case 'state-2': return state === 2;
+      case 'competition-j1': return card.dataset.competition === 'J1';
+      case 'competition-emp': return card.dataset.competition === 'EMP';
+      case 'competition-lev': return card.dataset.competition === 'LEV';
       default: return true;
     }
   }
