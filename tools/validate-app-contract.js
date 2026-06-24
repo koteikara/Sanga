@@ -178,10 +178,20 @@ const checks = [
     required: ['.match[data-state="1"]', '.match[data-state="2"]'],
   },
   {
+    label: 'Schedule layout definition contract in public/assets/app.js',
+    source: appJs,
+    required: ['LAYOUT_DEFINITIONS', 'VALID_LAYOUTS=Object.keys(LAYOUT_DEFINITIONS)', 'LAYOUT_PHONE_CLASSES', 'normalizeLayout', 'getLayoutDefinition', 'updatePhoneLayoutClass', 'updateLayoutButtonStates', 'setScheduleLayout'],
+  },
+  {
     label: 'Schedule layout valid value in public/assets/app.js',
     source: appJs,
     required: ['1', '2', '3', '4'],
     predicate: hasStringLiteral,
+  },
+  {
+    label: 'Schedule layout label in public/assets/app.js',
+    source: appJs,
+    required: ['1列', '2列', '3列', '4列'],
   },
   {
     label: 'Schedule layout CSS class in public/assets/app.js',
@@ -189,10 +199,25 @@ const checks = [
     required: ['layout-1', 'layout-3', 'layout-4'],
   },
   {
+    label: 'Schedule layout keeps two-column default without layout-2 in public/assets/app.js',
+    source: appJs,
+    required: ["'2':{label:'2列', phoneClass:''}"],
+  },
+  {
+    label: 'Display mode definition contract in public/assets/app.js',
+    source: appJs,
+    required: ['DISPLAY_MODE_DEFINITIONS', 'VALID_DISPLAY_MODES=Object.keys(DISPLAY_MODE_DEFINITIONS)', 'DISPLAY_MODE_PHONE_CLASSES', 'DISPLAY_MODE_LIST_CLASSES', 'getDisplayModeDefinition', 'updatePhoneDisplayModeClass', 'updateListDisplayModeClass', 'updateDisplayModeButtonStates', 'normalizeDisplayMode', 'applyDisplayMode'],
+  },
+  {
     label: 'Display mode valid value in public/assets/app.js',
     source: appJs,
     required: ['card', 'compact'],
     predicate: hasStringLiteral,
+  },
+  {
+    label: 'Display mode label in public/assets/app.js',
+    source: appJs,
+    required: ['通常カード', 'コンパクト'],
   },
   {
     label: 'Display mode CSS class in public/assets/app.js',

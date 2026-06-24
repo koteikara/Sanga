@@ -174,3 +174,17 @@
 - [ ] デフォルト値の変更が、表示モード・フィルタ・表示列の仕様変更にならないか確認する。
 - [ ] LocalStorageキー文字列、保存形式、復元時のフォールバック、削除後の初期表示に意図しない差分がないか確認する。
 - [ ] `node tools/validate-app-contract.js` で表示モード値・フィルタ値・表示列関連値が `public/assets/app.js` に残っていることを確認する。
+
+## 表示列・表示モード関連処理を変更する場合
+
+- [ ] 表示列定義、HTMLの `data-layout`、`tools/validate-app-contract.js`、`docs/display-modes.md` の `1 / 2 / 3 / 4` が一致している。
+- [ ] 表示列ラベル `1列 / 2列 / 3列 / 4列` がHTML、JavaScript定義、ドキュメントで一致している。
+- [ ] `2列` が追加クラスなしの既定状態として維持され、`layout-2` を新設していない。
+- [ ] `layout-1 / layout-3 / layout-4` のCSS連動が維持されている。
+- [ ] 表示モード定義、HTMLの `data-display-mode`、`tools/validate-app-contract.js`、`docs/display-modes.md` の `card / compact` が一致している。
+- [ ] 表示モードラベル `通常カード / コンパクト` がHTML、JavaScript定義、ドキュメントで一致している。
+- [ ] `mode-card / mode-compact / display-mode-card / display-mode-compact` のCSS連動が維持されている。
+- [ ] `LAYOUT_STORAGE_KEY` と `DISPLAY_MODE_STORAGE_KEY` のキー文字列を変更していない。
+- [ ] 表示列は文字列、表示モードは `{ "mode": "..." }` の既存形式でLocalStorageに保存・復元される。
+- [ ] 保存内容削除後に `2列 / 通常カード` へ戻る。
+- [ ] 共有画像生成に現在の表示列・表示モードが反映される。
