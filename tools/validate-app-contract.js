@@ -139,13 +139,13 @@ const checks = [
   {
     label: 'Schedule filter button value in public/sanga202627season.html',
     source: html,
-    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2'],
+    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2', 'competition-j1', 'competition-emp', 'competition-lev'],
     predicate: (source, item) => hasHtmlAttributeValue(source, 'data-filter', item),
   },
   {
     label: 'Schedule filter visible label in public/sanga202627season.html',
     source: html,
-    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠'],
+    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯'],
   },
   {
     label: 'CSS hook in public/assets/style.css',
@@ -201,13 +201,18 @@ const checks = [
   {
     label: 'Schedule filter valid value in public/assets/app.js',
     source: appJs,
-    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2'],
+    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2', 'competition-j1', 'competition-emp', 'competition-lev'],
     predicate: hasStringLiteral,
   },
   {
     label: 'Schedule filter label in public/assets/app.js',
     source: appJs,
-    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠'],
+    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯'],
+  },
+  {
+    label: 'Competition filter handling in public/assets/app.js',
+    source: cardFilterBody,
+    required: ['competition-j1', 'competition-emp', 'competition-lev', "dataset.competition === 'J1'", "dataset.competition === 'EMP'", "dataset.competition === 'LEV'"],
   },
   {
     label: 'Match card state normalization value in public/assets/app.js',

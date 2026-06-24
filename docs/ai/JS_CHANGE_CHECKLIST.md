@@ -85,7 +85,8 @@
 
 ### フィルタに関係する変更
 
-- [ ] `all`、`home`、`away`、`year-2026`、`year-2027`、`tentative`、`marked`、`state-1`、`state-2` の扱いを壊していない。
+- [ ] `all`、`home`、`away`、`year-2026`、`year-2027`、`tentative`、`marked`、`state-1`、`state-2`、`competition-j1`、`competition-emp`、`competition-lev` の扱いを壊していない。
+- [ ] フィルタ値に大会フィルタが含まれる場合、HTML / app.js / validate-app-contract.js / docs/filtering.md が一致しているか確認する。
 - [ ] フィルタボタンの選択状態と `aria-pressed` が一致している。
 - [ ] 件数表示が現在の絞り込み結果と一致している。
 - [ ] 該当なしの場合の空メッセージが崩れていない。

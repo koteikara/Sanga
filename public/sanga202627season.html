@@ -46,7 +46,7 @@
 <p class="screenshot-share-note" hidden>非公式の確認用日程表です。最新情報は公式情報をご確認ください。</p>
 <p class="creator-credit">作成者：<a href="https://x.com/kou_osakacity" target="_blank" rel="noopener noreferrer">Kou from OSAKA</a></p>
 </section>
-<p class="site-version">Version 2026.06.23-5 / Screenshot 4-column spacing: 2026-06-23 / Data updated: 2026-06-22</p>
+<p class="site-version">Version 2026.06.24-1 / Competition filter: 2026-06-24 / Data updated: 2026-06-22</p>
 <div class="help-overlay" hidden="" id="help-overlay"></div>
 <p class="screenshot-mode-live" aria-live="polite"></p>
 <section aria-labelledby="help-title" aria-modal="true" class="help-panel" hidden="" id="help-panel" role="dialog">
@@ -58,6 +58,7 @@
 <li><span class="sample-border sample-cyan"></span>2回タップ：水色枠</li>
 <li><span class="sample-date"></span>淡い黄色の日付枠：日程未確定・候補日あり</li>
 <li><b>SAT</b> は青、<b>SUN</b> は赤で表示しています。</li>
+<li>設定の「フィルタ」では、HOME/AWAY、年、未確定、枠線あり、赤色枠・水色枠に加えて、J1・天皇杯・ルヴァン杯などの大会で絞り込めます。</li>
 <li>設定の「共有」から「画像を生成」を押すと、画像生成・保存画面に移動します。完了後に「画像を保存」が表示されます。スマホでは生成画像を長押しして保存してください。</li>
 <li>タップ状態、表示列、表示モードはLocalStorageに保存されます。同じ端末でもブラウザが異なる場合や、ブラウザのデータを削除した場合は保存内容が引き継がれません。保存内容削除ボタンで、このページの保存状態を削除できます。</li><button class="storage-clear" type="button">このページの保存内容を削除</button><p aria-live="polite" class="storage-clear-note"></p></ul>
 <button class="help-close" type="button">閉じる</button>
@@ -97,6 +98,9 @@
 <button type="button" class="filter-option" data-filter="marked" aria-pressed="false">枠線あり</button>
 <button type="button" class="filter-option" data-filter="state-1" aria-pressed="false">赤色枠</button>
 <button type="button" class="filter-option" data-filter="state-2" aria-pressed="false">水色枠</button>
+<button type="button" class="filter-option" data-filter="competition-j1" aria-pressed="false">J1</button>
+<button type="button" class="filter-option" data-filter="competition-emp" aria-pressed="false">天皇杯</button>
+<button type="button" class="filter-option" data-filter="competition-lev" aria-pressed="false">ルヴァン杯</button>
 </div>
 <p class="filter-result" aria-live="polite"></p>
 </div>
@@ -112,6 +116,6 @@
 <button class="settings-close" type="button">閉じる</button>
 </section>
 </main>
-<script type="module" src="assets/app.js?v=20260623-3"></script>
+<script type="module" src="assets/app.js?v=20260624-1"></script>
 </body>
 </html>
