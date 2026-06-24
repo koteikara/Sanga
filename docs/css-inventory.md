@@ -49,6 +49,7 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 - `.meta`: 節、チーム名、会場、注記などの情報ブロック。対戦相手ロゴ背景の疑似要素 `.meta::after` と重なるため、内部要素は `.meta > *` で前面に出している。
 - `.sec`、`.team`、`.place`、`.small`: 節、対戦相手、会場、補助テキストの表示。
 - `.note`、`.match:has(.note)` 系: 注記付きカードの高さ、余白、注記配置を調整する。
+- `.competition-ribbon` / `.competition-j1` / `.competition-emperor` / `.competition-levain`: J1・天皇杯・ルヴァン杯の大会種別をカード右上端のリボンとして表示する。`top: 0` / `right: 0` の端揃え、左下端の浅い角丸、折り返し疑似要素がカード本体と馴染むように調整されている。
 - `.match[data-state="1"]`、`.match[data-state="2"]`: タップ状態の視覚表現。JavaScriptの保存状態と連動するため、状態値の意味はCSSだけで判断しない。
 
 ### 日付・ホーム/アウェイ・会場表示
@@ -69,6 +70,7 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 - `.layout-option[aria-pressed="true"]`: 選択中の表示列ボタン。JavaScriptが `aria-pressed` を更新する。
 - `.phone.layout-1 .json-preview-grid` / `.phone.layout-3 .grid` / `.phone.layout-4 .grid`: 表示列数に応じたグリッド列指定。
 - `.phone.layout-1 ...`、`.phone.layout-4 ...`: 1列・4列表示時のカード高さ、内部グリッド、文字サイズ、日付欄、注記、ロゴ背景の調整。
+- `.phone.layout-4.is-screenshot-mode ...`: 共有画像モードの4列表示に限定し、カード左帯、本文余白、節名、対戦相手、日付欄の横詰まりを抑える上書き。通常表示や1〜3列表示へ影響させない前提で扱う。
 - `.display-mode-option`: 表示モード切替ボタン。選択状態は `aria-pressed` と `::before` で示す。
 - `.display-mode-compact ...`: コンパクト表示時のカード高さ、枠線、文字サイズ、日付欄、注記の調整。
 - `.phone.layout-3 .display-mode-compact ...`、`.phone.layout-4 .display-mode-compact ...`: 表示列とコンパクト表示の組み合わせ上書き。
@@ -292,6 +294,8 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 | `.layout-group` / `.layout-label` / `.layout-option` | フッターの表示列切替と設定パネル内の選択UIで似た目的の指定がある。 | `aria-pressed`、フォーカス表示、ボタンサイズ、設定パネル内の余白が関係する。 | 表示列変更、設定パネル、キーボードフォーカス、選択状態を確認する。 |
 | `.help-button` / `.settings-button` / `.footer-action-button` | フッター操作ボタンの個別指定と統一ボタン指定が重なっている。 | 見た目、ホバー、押下感、フォーカス表示、動き抑制に影響する。 | フッターの使い方・設定ボタンをマウス・キーボードで操作し、通常時・ホバー・押下・フォーカスを確認する。 |
 | `.phone.layout-4 ...` | 4列表示のサイズ・余白・日付欄指定が複数ブロックに分かれている。 | 4列表示は余白が小さく、統合で日付・チーム名・会場が詰まりやすい。 | 4列表示で通常カード、注記付きカード、候補日、コンパクト表示を確認する。 |
+| `.competition-ribbon` / `.competition-ribbon::after` | 大会リボンの右上端揃え、左下端の浅い角丸、折り返しを共通指定している。 | カード右上の角丸、日付欄、タイトル右余白と重なりやすく、通常表示と共有画像で見え方が変わる可能性がある。 | J1・天皇杯・ルヴァン杯のカードで、1〜4列、通常・コンパクト、共有画像モードを確認する。 |
+| `.phone.layout-4.is-screenshot-mode ...` | 共有画像モード4列表示の横詰まり対策として、カード左帯・本文余白・文字サイズを専用上書きしている。 | 通常4列と共有画像4列で意図的に差分があるため、単純統合すると保存用画像の収まりが悪化する可能性がある。 | 共有画像モード4列で日付数字、節名、対戦相手、大会リボンが見切れないか確認する。 |
 
 ### 現時点では触らない候補
 
@@ -303,6 +307,8 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 | `.phone.layout-1` / `.phone.layout-3` / `.phone.layout-4` 系 | 表示列切替とLocalStorageに保存される表示設定に連動するため。 |
 | `.display-mode-compact` 系 | コンパクト表示は通常表示との差分として上書きされており、単純統合で表示密度が変わる可能性があるため。 |
 | `.phone.is-screenshot-mode` 系 | 共有画像モードは通常表示とは別の見え方で、共有画像生成状態や保存リンクにも関係するため。 |
+| `.phone.layout-4.is-screenshot-mode` 系 | 共有画像4列表示の横詰まり改善用の限定上書きで、通常4列と同一視して整理しない方が安全なため。 |
+| `.competition-ribbon` / `.competition-ribbon::after` | 大会リボンの右上端揃えと角丸調整がカード本体・日付欄・共有画像にまたがるため。 |
 | `.screenshot-exit-button` | 共有画像モード終了操作に関係し、通常表示では確認しづらいため。 |
 | `.share-save-link` | リンク要素のボタン風表示、非表示状態、フォーカス表示、生成結果状態に関係するため。 |
 | `.storage-clear` / `.storage-clear-note` | LocalStorage削除ボタンと結果通知に関係し、利用者説明・操作安全性に直結するため。 |
@@ -320,6 +326,7 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 | `.layout-option` / `.display-mode-option` / `.filter-option` | 選択状態、フォーカス表示、キーボード操作。 |
 | `.help-panel` / `.settings-panel` | ダイアログの表示、閉じるボタン、スクロール、フォーカス表示。 |
 | `.phone.is-screenshot-mode` / `.share-save-link` / `.screenshot-exit-button` | 共有画像生成中・成功・エラー・保存リンク・終了ボタンの表示。 |
+| `.phone.layout-4.is-screenshot-mode` / `.competition-ribbon` | 共有画像モード4列表示での日付数字、節名、対戦相手、大会リボン右上端揃え、左下端の角丸。 |
 
 ### 次のPRで実施できそうな最小整理案
 
@@ -333,3 +340,9 @@ CSS整理に入る前の棚卸しとして、`public/assets/style.css` の現在
 - 対象は `.footer-tools .legend`、`.footer-actions`、`.help-button:active`、`.storage-clear:active` に限定した。
 - CSSの指定値、セレクタ、ルールの並び順、統合、削除は変更していない。
 - `.match`、`.date`、`.ha`、`.layout-*`、共有画像モード、LocalStorage削除ボタン周辺の整理は未実施のまま残している。
+
+## 2026-06-24 現状整理時の追記メモ
+
+- 大会リボン関連は `.competition-ribbon` と大会別クラスで管理され、カード右上端揃えと左下端の浅い角丸調整が入っていることを棚卸しに反映した。
+- 共有画像4列表示の横詰まり改善は `.phone.layout-4.is-screenshot-mode` 配下の限定上書きとして扱い、通常表示や1〜3列表示の整理とは分けて確認する必要がある。
+- CSS本体、HTML、JavaScript、日程JSON、GitHub Actionsは今回変更していない。
