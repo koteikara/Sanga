@@ -62,6 +62,7 @@ function getFunctionBody(source, functionName) {
 const normalizeMatchStateBody = getFunctionBody(appJs, 'normalizeMatchState');
 const applyMatchStateBody = getFunctionBody(appJs, 'applyMatchState');
 const cardFilterBody = getFunctionBody(appJs, 'doesCardMatchFilter');
+const cardFilterDefinitionBody = getFunctionBody(appJs, 'doesCardMatchDefinition');
 const shareGenerationStateBody = getFunctionBody(appJs, 'setShareGenerationState');
 const generateShareImageBody = getFunctionBody(appJs, 'generateShareImage');
 const competitionBadgeTextBody = getFunctionBody(appJs, 'getCompetitionBadgeText');
@@ -210,9 +211,14 @@ const checks = [
     required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯'],
   },
   {
+    label: 'Schedule filter definition contract in public/assets/app.js',
+    source: appJs,
+    required: ['FILTER_DEFINITIONS', 'VALID_FILTERS=Object.keys(FILTER_DEFINITIONS)', 'FILTER_LABELS=Object.fromEntries', 'getFilterDefinition', 'getFilterLabel', 'doesCardMatchDefinition'],
+  },
+  {
     label: 'Competition filter handling in public/assets/app.js',
-    source: cardFilterBody,
-    required: ['competition-j1', 'competition-emp', 'competition-lev', "dataset.competition === 'J1'", "dataset.competition === 'EMP'", "dataset.competition === 'LEV'"],
+    source: appJs,
+    required: ["'competition-j1':{label:'J1', type:'competition', value:'J1'}", "'competition-emp':{label:'天皇杯', type:'competition', value:'EMP'}", "'competition-lev':{label:'ルヴァン杯', type:'competition', value:'LEV'}", 'getCardCompetition(card) === definition.value'],
   },
   {
     label: 'Match card state normalization value in public/assets/app.js',
@@ -226,8 +232,9 @@ const checks = [
   },
   {
     label: 'Match card state filter handling in public/assets/app.js',
-    source: cardFilterBody,
-    required: ['state === 1', 'state === 2'],
+    source: `${appJs}
+${cardFilterDefinitionBody}`,
+    required: ["'marked':{label:'枠線あり', type:'stateAny', values:[1,2]}", "'state-1':{label:'赤色枠', type:'state', value:1}", "'state-2':{label:'水色枠', type:'state', value:2}", 'definition.values.includes(state)', 'state === definition.value'],
   },
   {
     label: 'CSS-linked class in public/assets/app.js',

@@ -30,7 +30,7 @@
 | データ | JSONデータによる日程表示 | 本番反映済み | `docs/data-schema.md` / `docs/project-structure.md` | `public/data/matches.json` を当面の正本として表示する。 |
 | 表示 | 表示列切替 | 本番反映済み | `docs/display-modes.md` | 1列、2列、3列、4列を切り替え可能。 |
 | 表示 | 表示モード切替 | 本番反映済み | `docs/display-modes.md` | 通常カードとコンパクト表示を切り替え可能。 |
-| 表示 | フィルタリング | 本番反映済み / 大会フィルタ追加済み | `docs/filtering.md` | HOME/AWAY、年、未確定、枠線あり、色枠状態、J1、天皇杯、ルヴァン杯で絞り込み可能。 |
+| 表示 | フィルタリング | 本番反映済み / 大会フィルタ追加済み | `docs/filtering.md` | HOME/AWAY、年、未確定、枠線あり、色枠状態、J1、天皇杯、ルヴァン杯で絞り込み可能。フィルタ定義・ラベル・判定処理の整理は一部実施済み。 |
 | 個人状態 | 色枠状態のLocalStorage保存 | 本番反映済み | `docs/personalization.md` | 色枠の意味はページ側で固定しない。 |
 | UI | 設定パネルへの表示関連UI集約 | 本番反映済み | `docs/filtering.md` | 表示列、表示モード、フィルタ、画像生成入口を設定パネルへ集約。 |
 | UI | 使い方パネル | 本番反映済み | `docs/project-structure.md` | 操作説明とLocalStorage説明を表示する。 |

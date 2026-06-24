@@ -18,21 +18,24 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const DEFAULT_FILTER='all';
   const DEFAULT_LAYOUT='2';
   const VALID_DISPLAY_MODES=['card','compact'];
-  const VALID_FILTERS=['all','home','away','year-2026','year-2027','tentative','marked','state-1','state-2','competition-j1','competition-emp','competition-lev'];
-  const FILTER_LABELS={
-    all:'すべて',
-    home:'HOME',
-    away:'AWAY',
-    'year-2026':'2026',
-    'year-2027':'2027',
-    tentative:'未確定',
-    marked:'枠線あり',
-    'state-1':'赤色枠',
-    'state-2':'水色枠',
-    'competition-j1':'J1',
-    'competition-emp':'天皇杯',
-    'competition-lev':'ルヴァン杯'
+  const FILTER_DEFINITIONS={
+    all:{label:'すべて', type:'all'},
+    home:{label:'HOME', type:'homeAway', value:'H'},
+    away:{label:'AWAY', type:'homeAway', value:'A'},
+    'year-2026':{label:'2026', type:'year', value:'2026'},
+    'year-2027':{label:'2027', type:'year', value:'2027'},
+    tentative:{label:'未確定', type:'tentative'},
+    'marked':{label:'枠線あり', type:'stateAny', values:[1,2]},
+    'state-1':{label:'赤色枠', type:'state', value:1},
+    'state-2':{label:'水色枠', type:'state', value:2},
+    'competition-j1':{label:'J1', type:'competition', value:'J1'},
+    'competition-emp':{label:'天皇杯', type:'competition', value:'EMP'},
+    'competition-lev':{label:'ルヴァン杯', type:'competition', value:'LEV'}
   };
+  const VALID_FILTERS=Object.keys(FILTER_DEFINITIONS);
+  const FILTER_LABELS=Object.fromEntries(
+    Object.entries(FILTER_DEFINITIONS).map(([key, definition])=>[key, definition.label])
+  );
   let activeFilter=DEFAULT_FILTER;
 
   // =========================================================
@@ -477,6 +480,14 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     return VALID_FILTERS.includes(String(value)) ? String(value) : DEFAULT_FILTER;
   }
 
+  function getFilterDefinition(filter){
+    return FILTER_DEFINITIONS[normalizeFilter(filter)] || FILTER_DEFINITIONS[DEFAULT_FILTER];
+  }
+
+  function getFilterLabel(filter){
+    return FILTER_LABELS[normalizeFilter(filter)] || FILTER_LABELS[DEFAULT_FILTER];
+  }
+
   function readFilterSettings(){
     const raw=readStorageValue(FILTER_SETTINGS_STORAGE_KEY, '');
     if(!raw) return DEFAULT_FILTER;
@@ -497,23 +508,27 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     return normalizeMatchState(matchStates[card.dataset.id]);
   }
 
-  function doesCardMatchFilter(card){
-    if(!card) return false;
+  function getCardCompetition(card){
+    return card && card.dataset ? card.dataset.competition || '' : '';
+  }
+
+  function doesCardMatchDefinition(card, definition){
+    if(!card || !definition) return false;
     const state=getCardState(card);
-    switch(activeFilter){
-      case 'home': return card.dataset.homeAway === 'H';
-      case 'away': return card.dataset.homeAway === 'A';
-      case 'year-2026': return card.dataset.year === '2026';
-      case 'year-2027': return card.dataset.year === '2027';
+    switch(definition.type){
+      case 'all': return true;
+      case 'homeAway': return card.dataset.homeAway === definition.value;
+      case 'year': return card.dataset.year === definition.value;
       case 'tentative': return card.dataset.status === 'tentative' || card.dataset.hasCandidates === 'true';
-      case 'marked': return state === 1 || state === 2;
-      case 'state-1': return state === 1;
-      case 'state-2': return state === 2;
-      case 'competition-j1': return card.dataset.competition === 'J1';
-      case 'competition-emp': return card.dataset.competition === 'EMP';
-      case 'competition-lev': return card.dataset.competition === 'LEV';
+      case 'stateAny': return definition.values.includes(state);
+      case 'state': return state === definition.value;
+      case 'competition': return getCardCompetition(card) === definition.value;
       default: return true;
     }
+  }
+
+  function doesCardMatchFilter(card){
+    return doesCardMatchDefinition(card, getFilterDefinition(activeFilter));
   }
 
   function updateYearHeadingVisibility(){
@@ -534,11 +549,31 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     });
   }
 
+  function getScheduleCards(){
+    return Array.from(document.querySelectorAll('.json-preview-match'));
+  }
+
+  function updateCardVisibility(cards){
+    let visibleCount=0;
+    cards.forEach(card=>{
+      const visible=doesCardMatchFilter(card);
+      card.hidden=!visible;
+      if(visible) visibleCount+=1;
+    });
+    return visibleCount;
+  }
+
+  function updateFilterButtonStates(){
+    filterButtons.forEach(button=>{
+      button.setAttribute('aria-pressed', button.dataset.filter === activeFilter ? 'true' : 'false');
+    });
+  }
+
   function updateFilterResult(count){
     if(filterResult){
       filterResult.textContent=count === 0
         ? '該当する試合はありません。'
-        : `${activeFilter === 'all' ? '' : `${FILTER_LABELS[activeFilter]}：`}${count}件を表示しています。`;
+        : `${activeFilter === 'all' ? '' : `${getFilterLabel(activeFilter)}：`}${count}件を表示しています。`;
     }
     if(emptyFilterMessage){
       emptyFilterMessage.hidden=count !== 0;
@@ -546,17 +581,10 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function applyScheduleFilter(){
-    const cards=Array.from(document.querySelectorAll('.json-preview-match'));
-    let visibleCount=0;
-    cards.forEach(card=>{
-      const visible=doesCardMatchFilter(card);
-      card.hidden=!visible;
-      if(visible) visibleCount+=1;
-    });
+    const cards=getScheduleCards();
+    const visibleCount=updateCardVisibility(cards);
     updateYearHeadingVisibility();
-    filterButtons.forEach(button=>{
-      button.setAttribute('aria-pressed', button.dataset.filter === activeFilter ? 'true' : 'false');
-    });
+    updateFilterButtonStates();
     updateFilterResult(visibleCount);
   }
 
