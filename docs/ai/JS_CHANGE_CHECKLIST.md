@@ -86,11 +86,14 @@
 ### フィルタに関係する変更
 
 - [ ] `all`、`home`、`away`、`year-2026`、`year-2027`、`tentative`、`marked`、`state-1`、`state-2`、`competition-j1`、`competition-emp`、`competition-lev` の扱いを壊していない。
-- [ ] フィルタ値に大会フィルタが含まれる場合、HTML / app.js / validate-app-contract.js / docs/filtering.md が一致しているか確認する。
+- [ ] フィルタ定義、HTML `data-filter`、`validate-app-contract.js`、`docs/filtering.md` が一致しているか確認する。
+- [ ] 大会フィルタ `competition-j1` / `competition-emp` / `competition-lev` と JSON `competition` 値 `J1` / `EMP` / `LEV` の対応が維持されている。
 - [ ] フィルタボタンの選択状態と `aria-pressed` が一致している。
 - [ ] 件数表示が現在の絞り込み結果と一致している。
 - [ ] 該当なしの場合の空メッセージが崩れていない。
 - [ ] 年見出しの表示・非表示が絞り込み結果と大きくずれていない。
+- [ ] 0件時に2026 / 2027の年見出しだけが残らない。
+- [ ] 共有画像生成に現在のフィルタ結果が反映される。
 
 ### 使い方ダイアログ・設定パネルに関係する変更
 
