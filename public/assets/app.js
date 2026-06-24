@@ -17,7 +17,21 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const DEFAULT_DISPLAY_MODE='card';
   const DEFAULT_FILTER='all';
   const DEFAULT_LAYOUT='2';
-  const VALID_DISPLAY_MODES=['card','compact'];
+  const LAYOUT_DEFINITIONS={
+    '1':{label:'1列', phoneClass:'layout-1'},
+    '2':{label:'2列', phoneClass:''},
+    '3':{label:'3列', phoneClass:'layout-3'},
+    '4':{label:'4列', phoneClass:'layout-4'}
+  };
+  const VALID_LAYOUTS=Object.keys(LAYOUT_DEFINITIONS);
+  const LAYOUT_PHONE_CLASSES=Object.values(LAYOUT_DEFINITIONS).map((definition)=>definition.phoneClass).filter(Boolean);
+  const DISPLAY_MODE_DEFINITIONS={
+    'card':{label:'通常カード', phoneClass:'mode-card', listClass:'display-mode-card'},
+    'compact':{label:'コンパクト', phoneClass:'mode-compact', listClass:'display-mode-compact'}
+  };
+  const VALID_DISPLAY_MODES=Object.keys(DISPLAY_MODE_DEFINITIONS);
+  const DISPLAY_MODE_PHONE_CLASSES=Object.values(DISPLAY_MODE_DEFINITIONS).map((definition)=>definition.phoneClass);
+  const DISPLAY_MODE_LIST_CLASSES=Object.values(DISPLAY_MODE_DEFINITIONS).map((definition)=>definition.listClass);
   const FILTER_DEFINITIONS={
     all:{label:'すべて', type:'all'},
     home:{label:'HOME', type:'homeAway', value:'H'},
@@ -394,18 +408,34 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const phoneEl=document.querySelector('.phone');
   const layoutButtons=Array.from(document.querySelectorAll('.layout-option'));
 
-  function setScheduleLayout(mode){
-    const selected=['1','2','3','4'].includes(String(mode)) ? String(mode) : DEFAULT_LAYOUT;
-    if(phoneEl){
-      phoneEl.classList.remove('layout-1','layout-3','layout-4');
-      if(selected==='1') phoneEl.classList.add('layout-1');
-      if(selected==='3') phoneEl.classList.add('layout-3');
-      if(selected==='4') phoneEl.classList.add('layout-4');
-    }
+  function normalizeLayout(value){
+    const layout=String(value);
+    return VALID_LAYOUTS.includes(layout) ? layout : DEFAULT_LAYOUT;
+  }
+
+  function getLayoutDefinition(layout){
+    return LAYOUT_DEFINITIONS[normalizeLayout(layout)] || LAYOUT_DEFINITIONS[DEFAULT_LAYOUT];
+  }
+
+  function updatePhoneLayoutClass(layout){
+    if(!phoneEl) return;
+    const definition=getLayoutDefinition(layout);
+    phoneEl.classList.remove(...LAYOUT_PHONE_CLASSES);
+    if(definition.phoneClass) phoneEl.classList.add(definition.phoneClass);
+  }
+
+  function updateLayoutButtonStates(layout){
+    const selected=normalizeLayout(layout);
     layoutButtons.forEach(button=>{
       const active=button.dataset.layout===selected;
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
+  }
+
+  function setScheduleLayout(mode){
+    const selected=normalizeLayout(mode);
+    updatePhoneLayoutClass(selected);
+    updateLayoutButtonStates(selected);
   }
 
   setScheduleLayout(readStorageValue(LAYOUT_STORAGE_KEY, DEFAULT_LAYOUT));
@@ -426,7 +456,12 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   let activeDisplayMode=DEFAULT_DISPLAY_MODE;
 
   function normalizeDisplayMode(value){
-    return VALID_DISPLAY_MODES.includes(String(value)) ? String(value) : DEFAULT_DISPLAY_MODE;
+    const mode=String(value);
+    return VALID_DISPLAY_MODES.includes(mode) ? mode : DEFAULT_DISPLAY_MODE;
+  }
+
+  function getDisplayModeDefinition(mode){
+    return DISPLAY_MODE_DEFINITIONS[normalizeDisplayMode(mode)] || DISPLAY_MODE_DEFINITIONS[DEFAULT_DISPLAY_MODE];
   }
 
   function readDisplayModeSettings(){
@@ -444,20 +479,33 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     writeStorageValue(DISPLAY_MODE_STORAGE_KEY, JSON.stringify({mode:activeDisplayMode}));
   }
 
-  function applyDisplayMode(mode){
-    activeDisplayMode=normalizeDisplayMode(mode);
-    if(phoneEl){
-      phoneEl.classList.remove('mode-card','mode-compact');
-      phoneEl.classList.add(`mode-${activeDisplayMode}`);
-    }
-    if(jsonPreviewList){
-      jsonPreviewList.classList.remove('display-mode-card','display-mode-compact');
-      jsonPreviewList.classList.add(`display-mode-${activeDisplayMode}`);
-    }
+  function updatePhoneDisplayModeClass(mode){
+    if(!phoneEl) return;
+    const definition=getDisplayModeDefinition(mode);
+    phoneEl.classList.remove(...DISPLAY_MODE_PHONE_CLASSES);
+    phoneEl.classList.add(definition.phoneClass);
+  }
+
+  function updateListDisplayModeClass(mode){
+    if(!jsonPreviewList) return;
+    const definition=getDisplayModeDefinition(mode);
+    jsonPreviewList.classList.remove(...DISPLAY_MODE_LIST_CLASSES);
+    jsonPreviewList.classList.add(definition.listClass);
+  }
+
+  function updateDisplayModeButtonStates(mode){
+    const selected=normalizeDisplayMode(mode);
     displayModeButtons.forEach(button=>{
-      const active=button.dataset.displayMode===activeDisplayMode;
+      const active=button.dataset.displayMode===selected;
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
+  }
+
+  function applyDisplayMode(mode){
+    activeDisplayMode=normalizeDisplayMode(mode);
+    updatePhoneDisplayModeClass(activeDisplayMode);
+    updateListDisplayModeClass(activeDisplayMode);
+    updateDisplayModeButtonStates(activeDisplayMode);
   }
 
   activeDisplayMode=readDisplayModeSettings();
