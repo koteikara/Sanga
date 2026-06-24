@@ -188,3 +188,12 @@
 - [ ] 表示列は文字列、表示モードは `{ "mode": "..." }` の既存形式でLocalStorageに保存・復元される。
 - [ ] 保存内容削除後に `2列 / 通常カード` へ戻る。
 - [ ] 共有画像生成に現在の表示列・表示モードが反映される。
+
+## LocalStorage関連処理を変更する場合の追加確認
+
+- [ ] `sanga-schedule-button-states-v1`、`sanga-schedule-filter-settings-v1`、`sanga-schedule-display-mode-v1`、`sanga-schedule-layout-v1` のキー名が変わっていない。
+- [ ] 新しいLocalStorageキーを追加していない、または追加理由と移行方針を明記している。
+- [ ] 試合カード状態、フィルタ状態、表示列、表示モードの保存形式が変わっていない。
+- [ ] 保存内容削除で、タップ状態、フィルタ、表示列、表示モードが初期状態へ戻る。
+- [ ] LocalStorage利用不可時でも、保存はされないが画面上の見た目は切り替わる。
+- [ ] LocalStorage利用不可時の利用者向け文言を不用意に変更していない。

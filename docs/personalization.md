@@ -243,3 +243,18 @@ sanga-schedule-state-settings-v1
 * 色だけで状態を伝えるUIにしないこと。
 * 状態数を増やすだけで、直接選択UIや設定UIの必要性を無視しないこと。
 * 認証情報、サービスアカウントJSON、APIキー、`.env`、Secretsの実値を作成・保存・記載しないこと。
+
+## 2026-06-24 現在LocalStorageに保存している個人状態
+
+現在の年間スケジュールページでは、次の個人状態をLocalStorageに保存します。
+
+| 対象 | キー | 保存形式 | 初期値 |
+| --- | --- | --- | --- |
+| 試合カードのタップ状態 | `sanga-schedule-button-states-v1` | `{"sec01":1,"sec02":2}` のように試合IDをキーにしたオブジェクト | 空オブジェクト |
+| フィルタ状態 | `sanga-schedule-filter-settings-v1` | `{"activeFilter":"all"}` または大会フィルタなどの有効値 | `all` |
+| 表示列 | `sanga-schedule-layout-v1` | `"1"` / `"2"` / `"3"` / `"4"` の文字列 | `"2"` |
+| 表示モード | `sanga-schedule-display-mode-v1` | `{"mode":"card"}` または `{"mode":"compact"}` | `card` |
+
+保存内容削除ボタンでは、上記4キーを削除します。削除後の画面状態は、試合カードのタップ状態なし、表示列2列、表示モード通常カード、フィルタすべてに戻ります。
+
+LocalStorageはブラウザごとの端末内保存です。同じ端末でも、Safari / Chrome / Firefox などブラウザが異なる場合や、通常ウィンドウとプライベートブラウズが異なる場合は保存内容が引き継がれません。

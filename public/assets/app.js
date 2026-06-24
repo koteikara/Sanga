@@ -9,11 +9,24 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   // LocalStorage keys and state
   // =========================================================
 
-  const CARD_STATE_STORAGE_KEY='sanga-schedule-button-states-v1';
+  const STORAGE_KEYS={
+    cardStates:'sanga-schedule-button-states-v1',
+    filter:'sanga-schedule-filter-settings-v1',
+    displayMode:'sanga-schedule-display-mode-v1',
+    layout:'sanga-schedule-layout-v1'
+  };
+  const CARD_STATE_STORAGE_KEY=STORAGE_KEYS.cardStates;
+  const FILTER_SETTINGS_STORAGE_KEY=STORAGE_KEYS.filter;
+  const DISPLAY_MODE_STORAGE_KEY=STORAGE_KEYS.displayMode;
+  const LAYOUT_STORAGE_KEY=STORAGE_KEYS.layout;
+  const STORAGE_CLEAR_KEYS=[
+    CARD_STATE_STORAGE_KEY,
+    FILTER_SETTINGS_STORAGE_KEY,
+    DISPLAY_MODE_STORAGE_KEY,
+    LAYOUT_STORAGE_KEY
+  ];
   let isStorageAvailable=true;
   let matchStates={};
-  const FILTER_SETTINGS_STORAGE_KEY='sanga-schedule-filter-settings-v1';
-  const DISPLAY_MODE_STORAGE_KEY='sanga-schedule-display-mode-v1';
   const DEFAULT_DISPLAY_MODE='card';
   const DEFAULT_FILTER='all';
   const DEFAULT_LAYOUT='2';
@@ -62,28 +75,6 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     if(liveNote) liveNote.textContent=message;
   }
 
-  function readStoredStates(){
-    try{
-      return JSON.parse(localStorage.getItem(CARD_STATE_STORAGE_KEY)||'{}') || {};
-    }catch(e){
-      isStorageAvailable=false;
-      showStorageUnavailableMessage();
-      return {};
-    }
-  }
-
-  function writeStoredStates(){
-    if(!isStorageAvailable) return false;
-    try{
-      localStorage.setItem(CARD_STATE_STORAGE_KEY,JSON.stringify(matchStates));
-      return true;
-    }catch(e){
-      isStorageAvailable=false;
-      showStorageUnavailableMessage();
-      return false;
-    }
-  }
-
   function readStorageValue(storageKey, fallback=''){
     if(!isStorageAvailable) return fallback;
     try{
@@ -119,6 +110,24 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     }
   }
 
+  function readStorageJson(storageKey, fallback, disableStorageOnParseError=false){
+    const raw=readStorageValue(storageKey, '');
+    if(!raw) return fallback;
+    try{
+      return JSON.parse(raw) || fallback;
+    }catch(e){
+      if(disableStorageOnParseError){
+        isStorageAvailable=false;
+        showStorageUnavailableMessage();
+      }
+      return fallback;
+    }
+  }
+
+  function writeStorageJson(storageKey, value){
+    return writeStorageValue(storageKey, JSON.stringify(value));
+  }
+
   // =========================================================
   // Match card state handling
   // =========================================================
@@ -126,6 +135,21 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   function normalizeMatchState(value){
     const state=Number(value || 0);
     return [0,1,2].includes(state) ? state : 0;
+  }
+
+  function normalizeStoredMatchStates(value){
+    if(!value || typeof value !== 'object' || Array.isArray(value)) return {};
+    return Object.fromEntries(
+      Object.entries(value).map(([id, state])=>[id, normalizeMatchState(state)]).filter(([, state])=>state !== 0)
+    );
+  }
+
+  function readStoredStates(){
+    return normalizeStoredMatchStates(readStorageJson(CARD_STATE_STORAGE_KEY, {}, true));
+  }
+
+  function writeStoredStates(){
+    return writeStorageJson(CARD_STATE_STORAGE_KEY, matchStates);
   }
 
   function applyMatchState(button, state){
@@ -404,7 +428,6 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   // =========================================================
 
   // layout switcher: 1 / 2 / 3 / 4 columns
-  const LAYOUT_STORAGE_KEY='sanga-schedule-layout-v1';
   const phoneEl=document.querySelector('.phone');
   const layoutButtons=Array.from(document.querySelectorAll('.layout-option'));
 
@@ -465,18 +488,12 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function readDisplayModeSettings(){
-    const raw=readStorageValue(DISPLAY_MODE_STORAGE_KEY, '');
-    if(!raw) return DEFAULT_DISPLAY_MODE;
-    try{
-      const parsed=JSON.parse(raw);
-      return normalizeDisplayMode(parsed && parsed.mode);
-    }catch(e){
-      return DEFAULT_DISPLAY_MODE;
-    }
+    const parsed=readStorageJson(DISPLAY_MODE_STORAGE_KEY, null);
+    return parsed ? normalizeDisplayMode(parsed.mode) : DEFAULT_DISPLAY_MODE;
   }
 
   function writeDisplayModeSettings(){
-    writeStorageValue(DISPLAY_MODE_STORAGE_KEY, JSON.stringify({mode:activeDisplayMode}));
+    writeStorageJson(DISPLAY_MODE_STORAGE_KEY, {mode:activeDisplayMode});
   }
 
   function updatePhoneDisplayModeClass(mode){
@@ -537,18 +554,12 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   function readFilterSettings(){
-    const raw=readStorageValue(FILTER_SETTINGS_STORAGE_KEY, '');
-    if(!raw) return DEFAULT_FILTER;
-    try{
-      const parsed=JSON.parse(raw);
-      return normalizeFilter(parsed && parsed.activeFilter);
-    }catch(e){
-      return DEFAULT_FILTER;
-    }
+    const parsed=readStorageJson(FILTER_SETTINGS_STORAGE_KEY, null);
+    return parsed ? normalizeFilter(parsed.activeFilter) : DEFAULT_FILTER;
   }
 
   function writeFilterSettings(){
-    writeStorageValue(FILTER_SETTINGS_STORAGE_KEY, JSON.stringify({activeFilter}));
+    writeStorageJson(FILTER_SETTINGS_STORAGE_KEY, {activeFilter});
   }
 
   function getCardState(card){
@@ -656,17 +667,22 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   const storageClearButton=document.querySelector('.storage-clear');
   const storageClearNote=document.querySelector('.storage-clear-note');
 
-  storageClearButton && storageClearButton.addEventListener('click',()=>{
-    removeStorageValue(CARD_STATE_STORAGE_KEY);
-    removeStorageValue(LAYOUT_STORAGE_KEY);
-    removeStorageValue(FILTER_SETTINGS_STORAGE_KEY);
-    removeStorageValue(DISPLAY_MODE_STORAGE_KEY);
+  function clearAllStoredSettings(){
+    STORAGE_CLEAR_KEYS.forEach(removeStorageValue);
+  }
+
+  function resetUiStateAfterStorageClear(){
     matchStates={};
     initializeMatchStates();
     setScheduleLayout(DEFAULT_LAYOUT);
     applyDisplayMode(DEFAULT_DISPLAY_MODE);
     activeFilter=DEFAULT_FILTER;
     applyScheduleFilter();
+  }
+
+  storageClearButton && storageClearButton.addEventListener('click',()=>{
+    clearAllStoredSettings();
+    resetUiStateAfterStorageClear();
     if(storageClearNote){
       storageClearNote.textContent='このページの保存内容、表示列、表示モード、絞り込み条件を削除しました。';
     }
