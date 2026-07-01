@@ -241,7 +241,7 @@ function validateMatch(match, index, seenIds, errors, warnings) {
     addIssue(warnings, location, 'status が confirmed の場合は、原則 match_date を指定してください。');
   }
 
-  if (match.status === 'tentative' && hasMatchDate && candidates.length === 0 && !isNonEmptyString(match.note)) {
+  if (match.status === 'tentative' && hasMatchDate && candidates.length === 0 && isNonEmptyString(match.kickoff_time) && !isNonEmptyString(match.note)) {
     addIssue(warnings, location, 'status が tentative ですが match_date が指定されています。確定扱いでよいか確認してください。');
   }
 }
