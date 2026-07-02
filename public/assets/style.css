@@ -2244,3 +2244,42 @@
   .cup-match .date.tentative-date .sub.sun{
     background:#fff;
   }
+
+  /* hotel preview */
+  .hotel-preview{
+    margin-top:12px;
+  }
+  .hotel-preview-card{
+    padding:12px 14px;
+    border:1px solid rgba(255,255,255,.22);
+    border-radius:16px;
+    background:rgba(255,255,255,.10);
+    box-shadow:0 8px 18px rgba(0,0,0,.10);
+  }
+  .hotel-preview-label{
+    margin:0 0 4px;
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.72);
+  }
+  .hotel-preview-title{
+    margin:0 0 6px;
+    font-size:14px;
+    font-weight:900;
+    color:#fff;
+  }
+  .hotel-preview-summary,
+  .hotel-preview-meta{
+    margin:0;
+    font-size:12px;
+    line-height:1.5;
+    color:rgba(255,255,255,.9);
+  }
+  .hotel-preview-meta{
+    margin-top:4px;
+    font-size:10px;
+    opacity:.82;
+    word-break:break-all;
+  }
