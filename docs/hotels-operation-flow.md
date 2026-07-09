@@ -11,7 +11,7 @@
 ## PR #122 時点の到達点
 
 - `public/data/hotel-index.json` を空索引として追加した。
-- 公開ページに、ホテルデータ件数と更新情報を表示する小さなプレビュー枠を追加した。
+- PR #122 時点では公開ページにホテルデータ件数と更新情報を表示する小さなプレビュー枠を追加していたが、2026-07-09 の見直しで、スケジュールと直接関係しない情報を表示しない方針に戻した。
 - `tools/hotels/` に、楽天 API 調査用 CLI、公開 JSON 生成 CLI、内部モデル、公開スキーマ変換の足場を追加した。
 - 実データ取得・ホテル詳細表示・宿泊条件の本決定は未実装である。
 
@@ -29,11 +29,15 @@ PR #122 時点の `build_match_hotels.py` は、楽天 API の実取得ではな
 
 ```bash
 python tools/hotels/build_match_hotels.py --match-id sec01
+node tools/validate-hotels.js
 python -m py_compile tools/hotels/*.py
 node --check public/assets/app.js
 ```
 
 `build_match_hotels.py` は `public/data/hotel-index.json` と `public/data/hotels/{match_id}.json` を更新するため、実行後は差分を確認し、ダミーデータを公開対象に含めない。
+
+`node tools/validate-hotels.js` は、空の `hotel-index.json` を正常扱いしつつ、索引に試合が追加された場合は `matches.json` の `id` との対応、`data/hotels/{match_id}.json` の存在、件数、日付、ホテル候補の基本フィールドを確認する。
+
 
 ## 今後の実装ポイント
 

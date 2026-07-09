@@ -813,3 +813,72 @@ PR #110 の大会リボン右上端揃えを維持しつつ、共有画像モー
 - Pythonで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認する。
 - `git diff -- public/data/matches.json public/assets/app.js .github/workflows/static-checks.yml` で変更禁止ファイルに差分がないことを確認する。
 - 可能であれば共有画像モード4列表示を確認し、できない場合は未確認として `docs/ai/WORKLOG.md` に記録する。
+
+## 2026-07-09 ホテルJSON構造検証の追加
+
+### 作業テーマ
+
+PR #122 のホテル連携スキャフォールドを安全に次へ進めるため、公開用ホテル索引 `public/data/hotel-index.json` と、将来追加される `public/data/hotels/{match_id}.json` の構造を静的に検証できるようにする。
+
+### 変更対象ファイル
+
+- `tools/validate-hotels.js`
+- `.github/workflows/static-checks.yml`
+- `docs/hotels-operation-flow.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 実装方針
+
+- 現在の空索引は正常扱いする。
+- 索引にホテルデータが追加された場合は、`match_id` が `public/data/matches.json` の `id` と一致することを確認する。
+- `data_path` は `data/hotels/{match_id}.json` 形式とし、対応する詳細JSONの存在を確認する。
+- 詳細JSONでは `hotel_count` と `hotels` 件数、`meta`、宿泊日、検索条件、ホテル候補の基本フィールドを確認する。
+- 日程データ、HTML、CSS、JavaScript、LocalStorageキー、ホテル実データは変更しない。
+
+### 確認方法
+
+- `node --check tools/validate-hotels.js`
+- `node tools/validate-hotels.js`
+- `node tools/validate-matches.js`
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict`
+- `node --check public/assets/app.js`
+- `node tools/validate-app-contract.js`
+- `git diff --check`
+
+## 2026-07-09 ホテルプレビュー表示の削除
+
+### 作業テーマ
+
+スケジュールページ上に表示されていたホテル連携プレビューは、試合日程表の主目的と直接関係しないため公開画面から削除する。ホテルデータ生成・検証の裏側の足場は残し、ユーザー向け画面にはホテル情報を表示しない。
+
+### 変更対象ファイル
+
+- `public/sanga202627season.html`
+- `public/assets/app.js`
+- `public/assets/style.css`
+- `docs/hotels-data-schema.md`
+- `docs/hotels-operation-flow.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 実装方針
+
+- `hotel-preview` セクションをHTMLから削除する。
+- `hotel-index.json` を画面表示のために読み込むJavaScript処理を削除する。
+- ホテルプレビュー専用CSSを削除する。
+- 日程データ、表示列、表示モード、フィルタ、共有画像、LocalStorageキーは変更しない。
+- `tools/hotels/` と `tools/validate-hotels.js` は運用・検証用の裏側の足場として残す。
+
+### 確認方法
+
+- `rg -n "hotel-preview|hotelPreview|fetchHotelIndexData|renderHotelPreview|Hotel Data|Rakuten Travel API 連携メモ" public` で公開画面表示用の残存がないことを確認する。
+- `node tools/validate-matches.js`
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict`
+- `node tools/validate-hotels.js`
+- `node --check public/assets/app.js`
+- `node tools/validate-app-contract.js`
+- PythonでCSS波括弧数とHTMLのCSS/JS参照を確認する。
+- `git diff --check`
