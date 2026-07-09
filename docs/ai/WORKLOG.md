@@ -2024,47 +2024,48 @@ PR #117で `public/assets/app.js` を変更したことに伴い、静的サイ�
 - 公式発表と `public/data/matches.json` のJ1日程・会場・注記番号が一致しているか。
 - 日程未定のJ1第20節を `status: tentative` かつ日付空欄で扱う方針が運用上問題ないか。
 
-## 2026-07-02 PR #122ホテル連携スキャフォールド確認とドキュメント補足
+## 2026-07-09 Jリーグ公式日程PDFに基づく出典・放送配信更新
 
 ### 作業テーマ
 
-PR #122（`hotel scaffolding`）のマージ差分を確認し、ホテル候補データ連携の現状、未実装部分、スキーマ文書と生成ツールの差分が分かるようにドキュメントを補足した。
+Jリーグ公式ニュース（https://www.jleague.jp/news/article/34406/）および同ニュースに紐づくJ1日程PDF（https://www.jleague.jp/img/pdf/2026_0701_j1.pdf）を確認し、京都サンガF.C.関連のJ1日程データを照合したうえで、J1試合データの出典URL、確認日、放送配信、キャッシュ更新用クエリを更新した。
 
 ### 変更ファイル
 
-- `docs/hotels-data-schema.md`
-- `docs/hotels-operation-flow.md`
-- `tools/hotels/README.md`
+- `public/data/matches.json`
+- `public/assets/app.js`
+- `public/sanga202627season.html`
 - `docs/ai/WORKLOG.md`
 
 ### 変更内容
 
-- PR #122 時点では、ホテル連携が初期スキャフォールドであり、公開ページは `hotel-index.json` の件数・更新情報プレビューのみを表示することを明記した。
-- `build_match_hotels.py` が楽天 API の実レスポンスではなく、固定のサンプルホテルを出力する足場であることを明記した。
-- `checkin_date` / `checkout_date`、`stadium_id`、`affiliate_url` 必須扱いなど、実データ公開前に再確認が必要なスキーマ差分を整理した。
-- 手動確認コマンドと、生成ツール実行後にダミーデータを公開対象に含めない注意を追記した。
+- Jリーグ公式PDFの京都サンガF.C.関連行を確認し、既存の開催日・キックオフ時刻・対戦相手・会場・未確定状態がPDF内容と一致していることを確認した。
+- J1各試合の `source_url` をJリーグ公式ニュースURLへ更新し、`source_checked_at` を `2026-07-09` に更新した。
+- Jリーグ公式PDFの放送・配信欄に合わせ、J1各試合の `broadcast` を `DAZN` に更新した。
+- `matches.json` の `meta.updated_at` / `meta.source` と各J1試合の `updated_at` を更新した。
+- `matches.json` 読み込み用キャッシュクエリとページ下部のData updated表記を `2026-07-09` に更新した。
 
 ### 確認結果
 
-- `git diff f0bae5d..HEAD` で PR #122 の追加・変更ファイルを確認した。
-- `git show --stat --oneline HEAD` で PR #122 が現在のブランチにマージ済みであることを確認した。
-- `node --check public/assets/app.js` に成功した。
-- `python -m py_compile tools/hotels/*.py` に成功した。
-- `git diff --check` に成功した。
+- `node tools/validate-matches.js` 成功。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node --check tools/validate-matches.js` 成功。
+- `node --check tools/validate-generated-matches.js` 成功。
+- `git diff --check` 成功。
+- `node tools/export-matches-review.js > /tmp/sanga-matches-review.md` で一覧出力を確認した。
 
 ### 未確認項目
 
-- 楽天 API 認証情報は設定していないため、`tools/hotels/investigate.py` による実 API 疎通は未確認。
-- 実ブラウザでのホテルプレビュー表示確認は未実施。
-- `build_match_hotels.py` は公開データにダミーホテルを生成するため、今回は実行していない。
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は、この環境にブラウザ自動操作環境がないため未確認。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタンの実ブラウザ操作確認は未確認。
 
 ### 残課題
 
-- 実データ公開前に、宿泊日ルール、スタジアム座標、検索半径、料金表示、外部リンク・アフィリエイト表記を決める。
-- `public_schema.py` の出力と `docs/hotels-data-schema.md` の必須項目を合わせる。
-- ホテル詳細カードを表示する場合は、アクセシビリティとスマートフォン表示を別途確認する。
+- 2027年開催分の詳細はJリーグ公式PDFでも12月上旬発表予定のため、追加発表後にキックオフ時刻などを再更新する。
+- J1第20節は開催日・キックオフが未定のため、追加発表後に更新する。
 
-### 人間が確認すべき点
+### 次にレビューしてほしい観点
 
-- ホテル候補データをこのリポジトリで公開する方針と、楽天 API・アフィリエイト表記の運用が問題ないか。
-- サンプルホテル生成を本番公開前に必ず実データ生成へ置き換える運用で問題ないか。
+- Jリーグ公式PDFと `public/data/matches.json` のJ1日程・放送配信・出典URLが一致しているか。
+- 前回PRで更新した検証スクリプトの未定日程・キックオフ未定判定が、今後の運用上問題ないか。
