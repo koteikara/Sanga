@@ -29,11 +29,15 @@ PR #122 時点の `build_match_hotels.py` は、楽天 API の実取得ではな
 
 ```bash
 python tools/hotels/build_match_hotels.py --match-id sec01
+node tools/validate-hotels.js
 python -m py_compile tools/hotels/*.py
 node --check public/assets/app.js
 ```
 
 `build_match_hotels.py` は `public/data/hotel-index.json` と `public/data/hotels/{match_id}.json` を更新するため、実行後は差分を確認し、ダミーデータを公開対象に含めない。
+
+`node tools/validate-hotels.js` は、空の `hotel-index.json` を正常扱いしつつ、索引に試合が追加された場合は `matches.json` の `id` との対応、`data/hotels/{match_id}.json` の存在、件数、日付、ホテル候補の基本フィールドを確認する。
+
 
 ## 今後の実装ポイント
 

@@ -2069,3 +2069,54 @@ Jリーグ公式ニュース（https://www.jleague.jp/news/article/34406/）お�
 
 - Jリーグ公式PDFと `public/data/matches.json` のJ1日程・放送配信・出典URLが一致しているか。
 - 前回PRで更新した検証スクリプトの未定日程・キックオフ未定判定が、今後の運用上問題ないか。
+
+## 2026-07-09 ホテルJSON構造検証の追加
+
+### 作業テーマ
+
+PR #122 のホテル連携スキャフォールドを次へ進めるため、空のホテル索引を許容しつつ、今後ホテル詳細JSONを追加したときに構造・参照関係を確認できる静的検証を追加した。
+
+### 変更ファイル
+
+- `tools/validate-hotels.js`
+- `.github/workflows/static-checks.yml`
+- `docs/hotels-operation-flow.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `public/data/hotel-index.json` の `meta` と `matches` を検証する `tools/validate-hotels.js` を追加した。
+- 索引に試合が追加された場合、`match_id` が `public/data/matches.json` の `id` と一致すること、`data_path` が `data/hotels/{match_id}.json` 形式で実在すること、宿泊日と件数が妥当であることを検証するようにした。
+- `public/data/hotels/*.json` が追加された場合、対応する索引、`hotel_count` と `hotels` 件数、`meta`、検索条件、ホテル候補の基本フィールドを検証するようにした。
+- Static Checks に `node tools/validate-hotels.js` を追加した。
+- ホテル運用メモに検証コマンドと検証内容を追記した。
+
+### 確認結果
+
+- `node --check tools/validate-hotels.js` 成功。
+- `node tools/validate-hotels.js` 成功。
+- `node tools/validate-matches.js` 成功。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node tools/validate-app-contract.js` 成功。
+- `python -m py_compile tools/hotels/*.py` 成功。
+- `python tools/hotels/build_match_hotels.py --match-id sec01 && node tools/validate-hotels.js` で一時サンプル生成後の検証が成功。生成されたサンプル差分は公開対象に含めないため戻した。
+- `git diff --check` 成功。
+
+### 未確認項目
+
+- HTML/CSS/JavaScriptの表示変更は行っていないため、実ブラウザでのPC幅・スマートフォン幅の目視確認は未実施。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタンの実ブラウザ操作確認は未実施。
+
+### 残課題
+
+- 楽天APIの実レスポンスから `HotelCandidate` へ変換する処理は未実装。
+- 宿泊日ルール、スタジアム座標、料金表示、アフィリエイトリンク表記の確定は今後の作業。
+- ホテル詳細JSONのフロントエンド遅延読み込みと詳細表示は未実装。
+
+### 次にレビューしてほしい観点
+
+- ホテル索引と詳細JSONの検証項目が、PR #122 の設計メモと今後の運用に対して過不足ないか。
+- 空索引を正常扱いし、詳細JSON追加後に厳しく確認する方針で問題ないか。
