@@ -813,3 +813,36 @@ PR #110 の大会リボン右上端揃えを維持しつつ、共有画像モー
 - Pythonで `public/sanga202627season.html` が `assets/style.css` と `assets/app.js` を参照していることを確認する。
 - `git diff -- public/data/matches.json public/assets/app.js .github/workflows/static-checks.yml` で変更禁止ファイルに差分がないことを確認する。
 - 可能であれば共有画像モード4列表示を確認し、できない場合は未確認として `docs/ai/WORKLOG.md` に記録する。
+
+## 2026-07-09 ホテルJSON構造検証の追加
+
+### 作業テーマ
+
+PR #122 のホテル連携スキャフォールドを安全に次へ進めるため、公開用ホテル索引 `public/data/hotel-index.json` と、将来追加される `public/data/hotels/{match_id}.json` の構造を静的に検証できるようにする。
+
+### 変更対象ファイル
+
+- `tools/validate-hotels.js`
+- `.github/workflows/static-checks.yml`
+- `docs/hotels-operation-flow.md`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 実装方針
+
+- 現在の空索引は正常扱いする。
+- 索引にホテルデータが追加された場合は、`match_id` が `public/data/matches.json` の `id` と一致することを確認する。
+- `data_path` は `data/hotels/{match_id}.json` 形式とし、対応する詳細JSONの存在を確認する。
+- 詳細JSONでは `hotel_count` と `hotels` 件数、`meta`、宿泊日、検索条件、ホテル候補の基本フィールドを確認する。
+- 日程データ、HTML、CSS、JavaScript、LocalStorageキー、ホテル実データは変更しない。
+
+### 確認方法
+
+- `node --check tools/validate-hotels.js`
+- `node tools/validate-hotels.js`
+- `node tools/validate-matches.js`
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict`
+- `node --check public/assets/app.js`
+- `node tools/validate-app-contract.js`
+- `git diff --check`

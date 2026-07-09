@@ -475,6 +475,8 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
 
 
   const jsonPreviewList=document.querySelector('[data-json-preview-list]');
+  const hotelPreviewSummary=document.querySelector('[data-hotel-preview-summary]');
+  const hotelPreviewMeta=document.querySelector('[data-hotel-preview-meta]');
   const displayModeButtons=Array.from(document.querySelectorAll('.display-mode-option'));
   let activeDisplayMode=DEFAULT_DISPLAY_MODE;
 
@@ -933,6 +935,32 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
     return {data, dataPath};
   }
 
+  async function fetchHotelIndexData(){
+    const dataPath='data/hotel-index.json?v=20260702-1';
+    const response=await fetch(dataPath);
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data=await response.json();
+    return {data, dataPath};
+  }
+
+  function renderHotelPreview(){
+    if(!hotelPreviewSummary || !hotelPreviewMeta) return;
+    fetchHotelIndexData()
+      .then(({data, dataPath})=>{
+        const matches=Array.isArray(data.matches) ? data.matches : [];
+        const updatedAt=data.meta && data.meta.updated_at ? data.meta.updated_at : '未更新';
+        hotelPreviewSummary.textContent=matches.length > 0
+          ? `ホテルデータは ${matches.length} 試合分あります。`
+          : 'まだホテルデータはありません。';
+        hotelPreviewMeta.textContent=`更新: ${updatedAt} / source: ${data.meta && data.meta.source ? data.meta.source : 'Rakuten Travel API'} / ${dataPath}`;
+      })
+      .catch((error)=>{
+        console.warn('Hotel index rendering failed:', error);
+        hotelPreviewSummary.textContent='ホテルデータの読み込みに失敗しました。';
+        hotelPreviewMeta.textContent='data/hotel-index.json を確認してください。';
+      });
+  }
+
   async function renderJsonPreview(){
     if(!jsonPreviewList) return;
     try{
@@ -948,5 +976,6 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   renderJsonPreview();
+  renderHotelPreview();
 
 })();
