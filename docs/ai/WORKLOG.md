@@ -1973,3 +1973,146 @@ PR #117で `public/assets/app.js` を変更したことに伴い、静的サイ�
 - reviewer: LocalStorageキーと保存形式を維持した整理として過不足がないか。
 - a11y-reviewer: 削除ボタン、フィルタ、表示列、表示モードのキーボード操作と `aria-pressed` が維持されているか。
 - docs: LocalStorage保存対象と未確認項目の説明が運用上分かりやすいか。
+
+## 2026-07-01 公式発表に基づくJ1日程更新
+
+### 作業テーマ
+
+京都サンガF.C.公式ニュース「2026/27明治安田Ｊ１リーグ」試合日程決定のお知らせ（https://www.sanga-fc.jp/news/detail/21194）を確認し、J1リーグ日程の開催日、キックオフ時刻、会場、注記番号、出典URLを公開JSONへ反映した。
+
+### 変更ファイル
+
+- `public/data/matches.json`
+- `public/assets/app.js`
+- `public/sanga202627season.html`
+- `tools/validate-matches.js`
+- `tools/validate-generated-matches.js`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- 公式発表を反映し、J1第1節〜第20節の確定済み開催日、キックオフ時刻、会場を更新した。
+- J1第7節、第9節、第13節、第15節、第16節、第17節、第20節は、公式発表上も日程またはキックオフ未定のため `tentative` として維持した。
+- 2027年開催分について、公式発表に掲載された会場と注記番号（※1〜※6）を反映した。
+- J1各試合の `source_url` を公式ニュースURLへ更新し、`source_checked_at` を `2026-07-01` に更新した。
+- `matches.json` のキャッシュクエリとページ下部のData updated表記を更新した。
+- 公式発表上「未定」とされるJ1第20節のように、注記番号がなくても `status: tentative` で日程未定を表現できるよう、公開JSON検証の未定日程判定を調整した。
+- 開催日は出ているがキックオフ未定のJ1第38節のようなケースを `tentative` として扱えるよう、生成JSON検証の警告条件を調整した。
+
+### 確認結果
+
+- `node tools/validate-matches.js` 成功。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node --check tools/validate-matches.js` 成功。
+- `node --check tools/validate-generated-matches.js` 成功。
+- `git diff --check` 成功。
+- `node tools/export-matches-review.js` で第1節〜第20節および2027年側の会場・注記番号を確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は、この環境にブラウザ自動操作環境がないため未確認。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタンの実ブラウザ操作確認は未確認。
+
+### 残課題
+
+- 2027年開催分の詳細は公式発表でも12月上旬発表予定とされているため、後日発表時にキックオフ時刻などを再更新する。
+- J1第20節は開催日・キックオフが未定のため、追加発表後に更新する。
+
+### 次にレビューしてほしい観点
+
+- 公式発表と `public/data/matches.json` のJ1日程・会場・注記番号が一致しているか。
+- 日程未定のJ1第20節を `status: tentative` かつ日付空欄で扱う方針が運用上問題ないか。
+
+## 2026-07-09 Jリーグ公式日程PDFに基づく出典・放送配信更新
+
+### 作業テーマ
+
+Jリーグ公式ニュース（https://www.jleague.jp/news/article/34406/）および同ニュースに紐づくJ1日程PDF（https://www.jleague.jp/img/pdf/2026_0701_j1.pdf）を確認し、京都サンガF.C.関連のJ1日程データを照合したうえで、J1試合データの出典URL、確認日、放送配信、キャッシュ更新用クエリを更新した。
+
+### 変更ファイル
+
+- `public/data/matches.json`
+- `public/assets/app.js`
+- `public/sanga202627season.html`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- Jリーグ公式PDFの京都サンガF.C.関連行を確認し、既存の開催日・キックオフ時刻・対戦相手・会場・未確定状態がPDF内容と一致していることを確認した。
+- J1各試合の `source_url` をJリーグ公式ニュースURLへ更新し、`source_checked_at` を `2026-07-09` に更新した。
+- Jリーグ公式PDFの放送・配信欄に合わせ、J1各試合の `broadcast` を `DAZN` に更新した。
+- `matches.json` の `meta.updated_at` / `meta.source` と各J1試合の `updated_at` を更新した。
+- `matches.json` 読み込み用キャッシュクエリとページ下部のData updated表記を `2026-07-09` に更新した。
+
+### 確認結果
+
+- `node tools/validate-matches.js` 成功。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node --check tools/validate-matches.js` 成功。
+- `node --check tools/validate-generated-matches.js` 成功。
+- `git diff --check` 成功。
+- `node tools/export-matches-review.js > /tmp/sanga-matches-review.md` で一覧出力を確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は、この環境にブラウザ自動操作環境がないため未確認。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタンの実ブラウザ操作確認は未確認。
+
+### 残課題
+
+- 2027年開催分の詳細はJリーグ公式PDFでも12月上旬発表予定のため、追加発表後にキックオフ時刻などを再更新する。
+- J1第20節は開催日・キックオフが未定のため、追加発表後に更新する。
+
+### 次にレビューしてほしい観点
+
+- Jリーグ公式PDFと `public/data/matches.json` のJ1日程・放送配信・出典URLが一致しているか。
+- 前回PRで更新した検証スクリプトの未定日程・キックオフ未定判定が、今後の運用上問題ないか。
+
+## 2026-07-09 ルヴァンカップ4回戦確定情報反映
+
+### 作業テーマ
+
+京都サンガF.C.公式ニュース（https://www.sanga-fc.jp/news/detail/21171）を確認し、2026/27 JリーグYBCルヴァンカップ 4回戦の開催日、キックオフ時刻、会場の確定情報を `public/data/matches.json` に反映した。
+
+### 変更ファイル
+
+- `public/data/matches.json`
+- `public/assets/app.js`
+- `public/sanga202627season.html`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `sec45`（ルヴァンカップ4回戦）を、候補日 `2026-10-03 / 2026-10-04` から `2026-10-03` の単日開催へ更新した。
+- `sec45` のキックオフ時刻を `16:00`、会場を `Gスタ` に更新した。
+- `sec45` の `status` / `status_label` を `confirmed` / `確定` に更新した。
+- `sec45` の `source_checked_at` と `updated_at` を `2026-07-09` に更新した。
+- 公式ニュースでは放送・配信は未定のため、`sec45` の `broadcast` は空欄のまま維持した。
+- `matches.json` 読み込み用キャッシュクエリとHTML側の `app.js` 参照を `20260709-2` に更新した。
+
+### 確認結果
+
+- `node tools/validate-matches.js` 成功。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 49 --strict` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node --check tools/validate-matches.js` 成功。
+- `node --check tools/validate-generated-matches.js` 成功。
+- `git diff --check` 成功。
+- `node tools/export-matches-review.js > /tmp/sanga-matches-review.md` 実行後、`sec45` が `2026-10-03` / `16:00` / `Gスタ` / `confirmed` 相当の内容であることを確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅の目視確認は、この環境にブラウザ自動操作環境がないため未確認。
+- 表示列変更、使い方ダイアログ、LocalStorage削除ボタンの実ブラウザ操作確認は未確認。
+
+### 残課題
+
+- ルヴァンカップの放送・配信は公式ニュース上も未定のため、追加発表後に更新する。
+- 勝ち上がり後のプライムラウンド詳細は未定のまま維持し、確定後に更新する。
+
+### 次にレビューしてほしい観点
+
+- `sec45` の日付、キックオフ時刻、対戦相手、会場、状態が公式ニュースと一致しているか。
+- `broadcast` 空欄維持が、公式ニュースの「決まり次第改めてお知らせ」の扱いとして問題ないか。
