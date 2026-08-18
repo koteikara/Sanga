@@ -171,7 +171,7 @@ body{
 .card-name{
   z-index:3;position:absolute;top:48%;left:12%;right:12%;
   display:flex;flex-direction:column;align-items:center;
-  text-align:center;padding-top:.6cqw;overflow:hidden;
+  text-align:center;padding:.6cqw 0 1.2cqw;overflow:hidden;
 }
 /* 長い名前は枠幅に合わせて自動縮小する（JSで font-size を調整） */
 .name-en,.name-ja,.tile span{display:inline-block;white-space:nowrap}
@@ -183,7 +183,8 @@ body:not(.show-ja) .name-ja{display:none}
 .flag{
   width:20%;aspect-ratio:3/2;margin-top:.6cqw;border-radius:.3cqw;
   background-size:100% 100%;background-repeat:no-repeat;
-  box-shadow:0 0 0 1px rgba(255,255,255,.45), 0 .2cqw .4cqw rgba(0,0,0,.45);
+  border:1px solid rgba(255,255,255,.5);
+  filter:drop-shadow(0 .2cqw .35cqw rgba(0,0,0,.5));
 }
 .flag-jp{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%2212%22%20fill%3D%22%23bc002d%22%2F%3E%3C%2Fsvg%3E")}
 .flag-br{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23009b3a%22%2F%3E%3Cpolygon%20points%3D%2230%2C4%2056%2C20%2030%2C36%204%2C20%22%20fill%3D%22%23fedf00%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%229%22%20fill%3D%22%23002776%22%2F%3E%3Cpath%20d%3D%22M21.5%2C17.5%20A11%2C11%200%200%200%2038.6%2C23.4%20L38.2%2C25.6%20A11%2C11%200%200%201%2021.2%2C19.6%20Z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E")}
