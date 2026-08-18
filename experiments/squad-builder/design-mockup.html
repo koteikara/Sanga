@@ -62,9 +62,16 @@ body{
 
 /* ================= スタイル切替 ================= */
 /* 既定はモダン。ビクトリアンは data-style="victorian" で切り替える */
-.sq-title-img.is-victorian{display:none}
-[data-style="victorian"] .sq-title-img.is-modern{display:none}
+.sq-title-img{display:none}
+[data-style] .sq-title-img{display:none}
+[data-style="modern"] .sq-title-img.is-modern{display:block}
 [data-style="victorian"] .sq-title-img.is-victorian{display:block}
+[data-style="graffiti"] .sq-title-img.is-graffiti{display:block}
+[data-style="cyber"] .sq-title-img.is-cyber{display:block}
+[data-style="vapor"] .sq-title-img.is-vapor{display:block}
+[data-style="synth"] .sq-title-img.is-synth{display:block}
+[data-style="scrap"] .sq-title-img.is-scrap{display:block}
+
 
 [data-style="victorian"]{
   background:
@@ -123,6 +130,141 @@ body{
   border:1px solid rgba(201,162,39,.6);color:#eddfbe;
   font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.14em;
 }
+
+
+/* ---------- グラフィティ ---------- */
+[data-style="graffiti"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22300%22%20height%3D%22300%22%20viewBox%3D%220%200%20300%20300%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.07%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%3E%3Cpath%20d%3D%22M20%2C60%20C60%2C20%2090%2C90%20140%2C50%20C180%2C20%20210%2C80%20280%2C40%22%2F%3E%3Cpath%20d%3D%22M10%2C180%20C70%2C140%20110%2C220%20170%2C170%20C220%2C130%20250%2C200%20290%2C160%22%2F%3E%3Cpath%20d%3D%22M40%2C260%20C90%2C230%20130%2C290%20200%2C250%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%22.05%22%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%22120%22%20r%3D%2226%22%2F%3E%3Ccircle%20cx%3D%22230%22%20cy%3D%22230%22%20r%3D%2234%22%2F%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%2290%22%20r%3D%2218%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/40cqw auto,
+    linear-gradient(180deg,#2b2b30,#141416 60%,#0d0d0f);
+}
+[data-style="graffiti"] .squad-canvas::before{display:none}
+[data-style="graffiti"] .sq-title-img{width:80cqw}
+[data-style="graffiti"] .sq-subtitle{
+  background:#7cff3d;color:#111;font-weight:900;letter-spacing:.06em;
+  display:inline-block;padding:.6cqw 2.4cqw;transform:rotate(-1.2deg);
+  box-shadow:.8cqw .8cqw 0 #111;
+}
+[data-style="graffiti"] .sq-rule{display:none}
+[data-style="graffiti"] .pitch{box-shadow:0 0 0 .8cqw #111, 0 0 24px rgba(0,0,0,.6)}
+[data-style="graffiti"] .sq-footer{background:#111;border-top:.8cqw solid #ff2d55}
+[data-style="graffiti"] .meta-row dt,[data-style="graffiti"] .formation-badge .num{color:#7cff3d}
+[data-style="graffiti"] .bench-chip{
+  border-radius:0;background:#f5f5f5;color:#111;font-weight:900;border:2px solid #111;
+  box-shadow:.4cqw .4cqw 0 #ff2d55;
+}
+[data-style="graffiti"] .bench-chip b{color:#ff2d55}
+[data-style="graffiti"] .pos-pill{
+  border-radius:0;background:#7cff3d;color:#111;border:2px solid #111;font-weight:900;
+}
+
+/* ---------- サイバーコア ---------- */
+[data-style="cyber"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cg%20stroke%3D%22%2354f5a6%22%20stroke-opacity%3D%22.16%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M0%2C0%20H60%20M0%2C30%20H60%20M0%2C0%20V60%20M30%2C0%20V60%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/9cqw auto,
+    repeating-linear-gradient(0deg, rgba(84,245,166,.05) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg,#04120d,#01080a);
+}
+[data-style="cyber"] .squad-canvas::before{display:none}
+[data-style="cyber"] .sq-title-img{width:74cqw}
+[data-style="cyber"] .sq-subtitle{
+  font-family:"DejaVu Sans Mono",monospace;color:#54f5a6;letter-spacing:.16em;
+}
+[data-style="cyber"] .sq-rule{background:linear-gradient(90deg,transparent,#54f5a6,transparent)}
+[data-style="cyber"] .pitch{box-shadow:0 0 0 1px #54f5a6, 0 0 30px rgba(84,245,166,.25)}
+[data-style="cyber"] .sq-footer{background:#03110c;border-top:1px solid #54f5a6}
+[data-style="cyber"] .meta-row dt,[data-style="cyber"] .formation-badge .num{color:#54f5a6}
+[data-style="cyber"] .formation-badge .fig,
+[data-style="cyber"] .formation-badge .fig::before,
+[data-style="cyber"] .formation-badge .fig::after{border-color:#54f5a6}
+[data-style="cyber"] .bench-chip,[data-style="cyber"] .pos-pill{
+  border-radius:0;background:rgba(84,245,166,.10);border:1px solid rgba(84,245,166,.55);
+  color:#c9ffe8;font-family:"DejaVu Sans Mono",monospace;
+}
+[data-style="cyber"] .bench-chip b{color:#54f5a6}
+
+/* ---------- ヴェイパーウェーブ ---------- */
+[data-style="vapor"]{
+  background:
+    linear-gradient(180deg,#ff9ad5 0%,#c98ce8 34%,#7fb6f2 62%,#7df9ff 100%);
+}
+[data-style="vapor"] .squad-canvas::before{
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 2px, transparent 2px 7px);
+}
+[data-style="vapor"] .sq-title-img{width:76cqw}
+[data-style="vapor"] .sq-subtitle{
+  color:#fff;letter-spacing:.22em;text-shadow:.3cqw .3cqw 0 #ff2ea6,-.2cqw -.2cqw 0 #14e0ff;
+}
+[data-style="vapor"] .sq-rule{background:linear-gradient(90deg,transparent,#fff,transparent)}
+[data-style="vapor"] .pitch{box-shadow:0 0 0 2px rgba(255,255,255,.85), 0 0 24px rgba(255,46,166,.4)}
+[data-style="vapor"] .sq-footer{
+  background:linear-gradient(180deg,rgba(40,10,60,.86),rgba(20,5,40,.92));
+  border-top:2px solid #fff;
+}
+[data-style="vapor"] .meta-row dt,[data-style="vapor"] .formation-badge .num{color:#7df9ff}
+[data-style="vapor"] .bench-chip,[data-style="vapor"] .pos-pill{
+  border-radius:0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.7);color:#fff;
+}
+[data-style="vapor"] .bench-chip b{color:#ffd9f4}
+
+/* ---------- シンセウェーブ ---------- */
+[data-style="synth"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20preserveAspectRatio%3D%22none%22%3E%3Cg%20stroke%3D%22%23ff2ea6%22%20stroke-opacity%3D%22.55%22%20stroke-width%3D%22.4%22%3E%3Cpath%20d%3D%22M0%2C60%20H100%20M0%2C68%20H100%20M0%2C78%20H100%20M0%2C90%20H100%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%2342f4ff%22%20stroke-opacity%3D%22.45%22%20stroke-width%3D%22.4%22%3E%3Cpath%20d%3D%22M50%2C60%20L-40%2C100%20M50%2C60%20L0%2C100%20M50%2C60%20L25%2C100%20M50%2C60%20L50%2C100%20M50%2C60%20L75%2C100%20M50%2C60%20L100%2C100%20M50%2C60%20L140%2C100%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/100% 100%,
+    linear-gradient(180deg,#150a35 0%,#2b0d46 40%,#3a0f4f 62%,#12061f 100%);
+}
+[data-style="synth"] .squad-canvas::before{display:none}
+[data-style="synth"] .sq-title-img{width:78cqw}
+[data-style="synth"] .sq-subtitle{color:#42f4ff;letter-spacing:.2em;text-shadow:0 0 1.4cqw #14e0ff}
+[data-style="synth"] .sq-rule{
+  background:linear-gradient(90deg,transparent,#ff2ea6,#42f4ff,transparent);
+  box-shadow:0 0 1.4cqw #ff2ea6;
+}
+[data-style="synth"] .pitch{box-shadow:0 0 0 2px #ff2ea6, 0 0 3cqw rgba(255,46,166,.5)}
+[data-style="synth"] .sq-footer{background:#0d0420;border-top:2px solid #42f4ff}
+[data-style="synth"] .meta-row dt,[data-style="synth"] .formation-badge .num{color:#ff5fa8}
+[data-style="synth"] .bench-chip,[data-style="synth"] .pos-pill{
+  border-radius:0;background:rgba(255,46,166,.12);border:1px solid #ff5fa8;color:#ffe9f6;
+}
+[data-style="synth"] .bench-chip b{color:#42f4ff}
+
+/* ---------- スクラップブック ---------- */
+[data-style="scrap"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Cg%20fill%3D%22%237a6a52%22%20fill-opacity%3D%22.10%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2230%22%20r%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%2218%22%20r%3D%221.2%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2260%22%20r%3D%221.8%22%2F%3E%3Ccircle%20cx%3D%2246%22%20cy%3D%2296%22%20r%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22112%22%20cy%3D%22128%22%20r%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%22140%22%20r%3D%221.1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/22cqw auto,
+    linear-gradient(180deg,#efe6d2,#e2d6bd 60%,#d8c9ac);
+}
+[data-style="scrap"] .squad-canvas::before{display:none}
+[data-style="scrap"] .sq-title-img{width:82cqw}
+[data-style="scrap"] .sq-subtitle{
+  display:inline-block;background:#1a1a1a;color:#f4efe2;padding:.5cqw 2cqw;
+  transform:rotate(-1deg);letter-spacing:.1em;
+}
+[data-style="scrap"] .sq-rule{display:none}
+[data-style="scrap"] .pitch{
+  box-shadow:0 0 0 1.2cqw #f4efe2, .6cqw .8cqw 1.6cqw rgba(0,0,0,.35);
+  transform:rotate(-.6deg);
+}
+[data-style="scrap"] .sq-footer{
+  background:#f4efe2;border:none;color:#1a1a1a;
+  margin:2cqw 3cqw 3cqw;transform:rotate(.5deg);
+  box-shadow:.5cqw .6cqw 1.2cqw rgba(0,0,0,.3);
+}
+[data-style="scrap"] .meta-row dt{color:#a33a2a}
+[data-style="scrap"] .meta-row dd{color:#1a1a1a}
+[data-style="scrap"] .formation-badge .num{color:#1a1a1a}
+[data-style="scrap"] .formation-badge .fig,
+[data-style="scrap"] .formation-badge .fig::before,
+[data-style="scrap"] .formation-badge .fig::after{border-color:#1a1a1a}
+[data-style="scrap"] .bench-chip{
+  border-radius:0;background:#fffdf6;border:1px solid #1a1a1a;color:#1a1a1a;
+  box-shadow:.2cqw .3cqw 0 rgba(0,0,0,.3);
+}
+[data-style="scrap"] .bench-chip b{color:#a33a2a}
+[data-style="scrap"] .pos-pill{
+  border-radius:0;background:#ffe45c;border:1px solid #1a1a1a;color:#1a1a1a;
+}
+[data-style="scrap"] .disclaimer{color:#5a5040;border-top-color:rgba(0,0,0,.2)}
 
 /* ---- ヘッダー ---- */
 .sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
@@ -324,6 +466,11 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
     <select id="sel-style">
       <option value="modern">モダン</option>
       <option value="victorian">ヴィクトリアン</option>
+      <option value="graffiti">グラフィティ</option>
+      <option value="cyber">サイバーコア</option>
+      <option value="vapor">ヴェイパーウェーブ</option>
+      <option value="synth">シンセウェーブ</option>
+      <option value="scrap">スクラップブック</option>
     </select>
   </label>
 </div>
@@ -354,6 +501,11 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
   <header class="sq-header">
     <img class="sq-title-img is-modern" src="assets/header-starting-xi.png" alt="PREDICTED STARTING XI">
     <img class="sq-title-img is-victorian" src="assets/header-victorian.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-graffiti" src="assets/header-graffiti.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-cyber" src="assets/header-cyber.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-vapor" src="assets/header-vapor.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-synth" src="assets/header-synth.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-scrap" src="assets/header-scrap.png" alt="PREDICTED STARTING XI">
     <div class="sq-subtitle">2026 明治安田J1リーグ 第10節 vs ○○</div>
     <div class="sq-rule"></div>
   </header>
