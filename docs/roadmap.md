@@ -66,8 +66,15 @@
 2. `validate-app-contract.js` の確認範囲拡張（CSS整理・JS整理に合わせて継続）
 3. CSS整理の小分け実施
 4. JavaScript整理の小分け実施
-5. チケット・観戦準備メモのUIプロトタイプ
-6. 追加メモ機能のUIプロトタイプ
+5. 予想スカッド作成ページのプロトタイプ実装（デザイン検証は完了）
+6. チケット・観戦準備メモのUIプロトタイプ
+7. 追加メモ機能のUIプロトタイプ
+
+## 進行中の別ページ
+
+| 項目 | 状態 | 関連ドキュメント | メモ |
+| --- | --- | --- | --- |
+| 予想スカッド作成ページ | デザイン検証済み | `docs/squad-builder.md` / `docs/players-data-schema.md` | `public/squad.html` として独立ページを作る。年間スケジュールページには手を入れない。デザイン見本は `experiments/squad-builder/design-mockup.html`。 |
 
 ## 中期候補
 
