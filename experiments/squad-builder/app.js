@@ -4,6 +4,10 @@
 // design-mockup.html 自体は変更していない。
 import { FORMATIONS, BENCH_SIZE } from "./formations.js";
 import { SAMPLE_PLAYERS } from "./sample-players.js";
+// modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
+// experiments/squad-builder/vendor/ に静的配置したものを読み込む。詳細は下記の
+// 「画像化（PNG出力）」セクションのコメントを参照。
+import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs";
 
 const STORAGE_PREFIX = "sanga-squad-";
 const STORAGE_INDEX_KEY = STORAGE_PREFIX + "index";
@@ -527,69 +531,22 @@ document.addEventListener("keydown", (e) => {
 
 /* ------------------------------------------------------------------
    画像化（PNG出力）
-   docs/image-generation-research.md の結論により本来は html-to-image /
-   modern-screenshot を使うが、今回はネットワークが使えずライブラリを
-   同梱できない。そのため、ボタン→対象範囲特定→生成処理という導線だけを
-   実装し、生成処理は差し替え可能な1関数 exportPng() に切り出す。
-   ライブラリ導入は後日別作業。
+   docs/image-generation-research.md の結論に従い、modern-screenshot@4.6.5 を使う。
+   年間スケジュールページ（public/assets/app.js）ではesm.sh CDN経由で同バージョンを
+   読み込んでいるが、本プロトタイプではCDNに依存せず、npm registryから取得した
+   modern-screenshot@4.6.5 の dist/index.mjs をそのまま
+   experiments/squad-builder/vendor/modern-screenshot/modern-screenshot.mjs に
+   静的配置して読み込む（MITライセンス表記は同ディレクトリのLICENSEを参照）。
 ------------------------------------------------------------------ */
 async function exportPng(node) {
-  // TODO: ライブラリ導入後、ここを html-to-image の toPng(node) 等に差し替える。
-  // 現在は代替の簡易実装として、SVG の foreignObject 経由でDOMをXHTML化し、
-  // それをImageに読み込んでcanvasに描画することを試みる。
-  // クロスオリジン背景画像・Webフォント・container queryの扱いにより
-  // 実際には描画が崩れる/失敗することがあるが、導線の検証が目的のため許容する。
-  const rect = node.getBoundingClientRect();
-  const width = Math.round(rect.width);
-  const height = Math.round(rect.height);
-
-  const cssText = await collectStylesheetText();
-  const xhtml = new XMLSerializer().serializeToString(node);
-  const svgMarkup = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
-      <foreignObject width="100%" height="100%">
-        <div xmlns="http://www.w3.org/1999/xhtml">
-          <style>${cssText}</style>
-          ${xhtml}
-        </div>
-      </foreignObject>
-    </svg>`;
-
-  const svgBlob = new Blob([svgMarkup], { type: "image/svg+xml;charset=utf-8" });
-  const url = URL.createObjectURL(svgBlob);
-  try {
-    const img = await loadImage(url);
-    const cv = document.createElement("canvas");
-    cv.width = width;
-    cv.height = height;
-    const ctx = cv.getContext("2d");
-    ctx.drawImage(img, 0, 0, width, height);
-    return cv.toDataURL("image/png");
-  } finally {
-    URL.revokeObjectURL(url);
-  }
-}
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
+  // modern-screenshot はブラウザ内でDOMを解析してPNGのdata URLを返す。
+  // 対象DOMや生成画像を外部サーバーへ送信しない。
+  // 背景色を明示しないと透明/黒背景に見えることがあるため、canvas自体の
+  // 背景色（styleで設定済み）に加えてbackgroundColorも指定しておく。
+  return await domToPng(node, {
+    scale: 2,
+    backgroundColor: getComputedStyle(node).backgroundColor || "#0b0b12",
   });
-}
-
-async function collectStylesheetText() {
-  // 同一オリジンのstyleシートのCSSテキストを集める簡易実装。
-  let text = "";
-  for (const sheet of document.styleSheets) {
-    try {
-      for (const rule of sheet.cssRules) text += rule.cssText + "\n";
-    } catch (err) {
-      // クロスオリジン等で読めない場合はスキップ（簡易実装のため許容）
-    }
-  }
-  return text;
 }
 
 const exportBtn = $("#export-btn");
@@ -597,9 +554,11 @@ const exportStatus = $("#export-status");
 const exportPreview = $("#export-preview");
 
 exportBtn.addEventListener("click", async () => {
-  exportStatus.textContent = "生成しています…";
+  exportBtn.disabled = true;
+  exportStatus.textContent = "画像を生成しています…";
   exportPreview.innerHTML = "";
   try {
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
     const dataUrl = await exportPng(canvas);
     const img = document.createElement("img");
     img.src = dataUrl;
@@ -608,16 +567,21 @@ exportBtn.addEventListener("click", async () => {
     const a = document.createElement("a");
     a.href = dataUrl;
     a.download = "sanga-squad.png";
-    a.textContent = "画像を保存（このプロトタイプでは動作しない場合があります）";
+    a.textContent = "画像を保存";
     a.className = "btn";
     exportPreview.appendChild(a);
-    exportStatus.textContent =
-      "生成できました（簡易実装のため崩れる場合があります。正式実装ではhtml-to-image等に差し替えます）。";
+    const help = document.createElement("p");
+    help.className = "export-save-help";
+    help.textContent = "スマホでは画像を長押しして保存してください。";
+    exportPreview.appendChild(help);
+    exportStatus.textContent = "画像を保存できます。";
   } catch (err) {
-    console.error(err);
+    console.error("Squad image generation failed:", err);
     exportStatus.textContent =
-      "簡易実装のため生成に失敗しました（想定内）。正式にはhtml-to-image等のライブラリ導入後に解消します。エラー: " +
+      "画像生成に失敗しました。表示スタイルや選手の配置を変えて再度お試しください。エラー: " +
       (err && err.message ? err.message : String(err));
+  } finally {
+    exportBtn.disabled = false;
   }
 });
 
