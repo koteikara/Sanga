@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>予想スカッド 画像デザイン見本</title>
+<style>
+:root{
+  --purple-900:#2b0a3d;
+  --purple-800:#3d1155;
+  --purple-700:#5b1a7d;
+  --purple-600:#7b2296;
+  --gold-100:#fff6cf;
+  --gold-300:#f4dc8a;
+  --gold-500:#d4af37;
+  --gold-700:#9c7a1c;
+  --grass-dark:#1f5c2e;
+  --grass-light:#27713a;
+  --line:rgba(255,255,255,.55);
+  --ink:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#14061d;
+  color:#fff;
+  font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 12px 60px;
+}
+
+/* ---- 画面上の操作（見本確認用。実装では設定パネルに入る） ---- */
+.controls{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+  background:#200c2c;border:1px solid #3d1155;border-radius:12px;padding:12px 16px;max-width:520px;width:100%;
+}
+.controls label{font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.note{font-size:12px;line-height:1.7;color:#c9b6d6;max-width:520px}
+
+/* ---- 出力キャンバス 9:16 ---- */
+.squad-canvas{
+  width:min(420px,100%);
+  aspect-ratio:9/16;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--purple-700) 0%, var(--purple-900) 60%),
+    var(--purple-900);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  position:relative;
+  box-shadow:0 18px 50px rgba(0,0,0,.6);
+  container-type:inline-size;
+}
+/* 斜めの装飾ストライプ */
+.squad-canvas::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 2px,transparent 2px 26px);
+  pointer-events:none;
+}
+
+/* ---- ヘッダー ---- */
+.sq-header{padding:3cqw 5cqw 1.4cqw;text-align:center;position:relative;z-index:2}
+.sq-title{
+  font-size:7.4cqw;font-weight:900;letter-spacing:.06em;line-height:1.05;
+  background:linear-gradient(180deg,var(--gold-100),var(--gold-500) 60%,var(--gold-700));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 2px 0 rgba(0,0,0,.35);
+}
+.sq-subtitle{
+  margin-top:1.2cqw;font-size:3.1cqw;letter-spacing:.18em;color:#e6d7f0;font-weight:700;
+}
+.sq-rule{
+  margin:2.4cqw auto 0;width:34cqw;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold-500),transparent);
+}
+
+/* ---- ピッチ ---- */
+.pitch{
+  flex:1;margin:2cqw 3cqw;border-radius:8px;position:relative;z-index:1;
+  background:
+    repeating-linear-gradient(0deg,var(--grass-dark) 0 8.5%,var(--grass-light) 8.5% 17%);
+  box-shadow:inset 0 0 0 2px var(--line), 0 0 24px rgba(0,0,0,.5);
+  display:grid;
+  grid-template-rows:1fr 1fr 1fr .82fr;
+  padding:2cqw 1cqw;
+  gap:.5cqw;
+}
+/* ピッチライン */
+.pitch::before{ /* センターライン＋サークル */
+  content:"";position:absolute;left:0;right:0;top:50%;height:0;
+  border-top:2px solid var(--line);
+}
+.pitch::after{
+  content:"";position:absolute;left:50%;top:50%;width:22cqw;height:22cqw;
+  transform:translate(-50%,-50%);border:2px solid var(--line);border-radius:50%;
+}
+.penalty-box{
+  position:absolute;left:50%;transform:translateX(-50%);
+  width:44cqw;height:11cqw;border:2px solid var(--line);
+}
+.penalty-box.bottom{bottom:0;border-bottom:none}
+.penalty-box.top{top:0;border-top:none}
+.goal-box{
+  position:absolute;left:50%;transform:translateX(-50%);
+  width:22cqw;height:5cqw;border:2px solid var(--line);
+}
+.goal-box.bottom{bottom:0;border-bottom:none}
+.goal-box.top{top:0;border-top:none}
+
+.line-row{display:flex;justify-content:space-evenly;align-items:center;position:relative;z-index:2}
+
+/* ---- 選手カード ---- */
+.player{display:flex;flex-direction:column;align-items:center;gap:.8cqw}
+.card{
+  width:17cqw;
+  aspect-ratio:41/58;
+  position:relative;
+  border-radius:1.6cqw 1.6cqw 2.6cqw 2.6cqw;
+  background:
+    linear-gradient(160deg,var(--gold-100) 0%,var(--gold-300) 18%,var(--gold-500) 48%,var(--gold-700) 78%,var(--gold-500) 100%);
+  padding:.7cqw;
+  box-shadow:0 1.2cqw 2.4cqw rgba(0,0,0,.5);
+}
+/* カードの光沢 */
+.card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(105deg,rgba(255,255,255,.55) 0 12%,transparent 26% 72%,rgba(255,255,255,.28) 88% 100%);
+  mix-blend-mode:screen;opacity:.6;
+}
+.card-inner{
+  height:100%;width:100%;border-radius:1.1cqw 1.1cqw 2.1cqw 2.1cqw;
+  background:linear-gradient(180deg,var(--purple-600),var(--purple-800) 70%,var(--purple-900));
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+/* 左肩：背番号（レーティング枠の代用）とポジション */
+.card-meta{
+  position:absolute;top:.8cqw;left:.9cqw;text-align:center;line-height:1;z-index:3;
+  text-shadow:0 .2cqw .4cqw rgba(0,0,0,.6);
+}
+.card-num{font-size:3.8cqw;font-weight:900;color:var(--gold-100);letter-spacing:-.02em}
+.card-pos{font-size:1.85cqw;font-weight:800;color:var(--gold-300);letter-spacing:.06em;margin-top:.3cqw}
+.card-meta::after{
+  content:"";display:block;width:3.6cqw;height:1px;margin:.5cqw auto 0;
+  background:linear-gradient(90deg,transparent,var(--gold-500),transparent);
+}
+/* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
+.card-photo{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding-top:1.6cqw;
+}
+.tile{
+  width:76%;aspect-ratio:1/1;border-radius:.6cqw;
+  background:linear-gradient(180deg,#7a2394,#5d1a75);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.tile b{
+  font-size:5.6cqw;font-weight:900;color:#fff;line-height:.9;font-style:italic;
+  text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.5);
+}
+.tile span{font-size:1.45cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:.4cqw;white-space:nowrap}
+/* 下部：名前 */
+.card-name{
+  text-align:center;padding:.5cqw .3cqw .9cqw;
+  border-top:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(180deg,rgba(0,0,0,.25),transparent);
+}
+.name-en{font-size:1.95cqw;font-weight:800;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.name-ja{font-size:1.7cqw;font-weight:600;color:#e9d8f5;margin-top:.2cqw;white-space:nowrap}
+body:not(.show-ja) .name-ja{display:none}
+
+/* ポジションのピル */
+.pos-pill{
+  font-size:1.8cqw;font-weight:800;letter-spacing:.08em;
+  background:linear-gradient(180deg,#1a3d7a,#0f2350);
+  color:#cfe2ff;border:1px solid rgba(255,255,255,.28);
+  border-radius:99px;padding:.35cqw 1.6cqw;
+  box-shadow:0 .3cqw .6cqw rgba(0,0,0,.45);
+}
+body:not(.show-pill) .pos-pill{visibility:hidden}
+
+/* マスコットのネタ枠 */
+.card.mascot .card-inner{background:linear-gradient(180deg,#b4232e,#6d1119 70%,#3c0a0f)}
+.card.mascot .tile{background:linear-gradient(180deg,#c9303c,#8b1a23)}
+
+/* ---- 下部帯 ---- */
+.sq-footer{
+  position:relative;z-index:2;flex:0 0 auto;
+  background:linear-gradient(180deg,#180722,#0e0415);
+  border-top:2px solid var(--gold-500);
+  padding:2.2cqw 4cqw 2.4cqw;
+}
+.footer-top{display:flex;align-items:center;gap:3cqw}
+.formation-badge{
+  flex:0 0 auto;text-align:center;
+}
+.formation-badge .fig{
+  width:13cqw;height:8.5cqw;border:1.5px solid var(--gold-300);border-radius:1px;
+  position:relative;margin:0 auto;
+}
+.formation-badge .fig::before,.formation-badge .fig::after{
+  content:"";position:absolute;top:50%;transform:translateY(-50%);
+  width:2.4cqw;height:4.2cqw;border:1.5px solid var(--gold-300);
+}
+.formation-badge .fig::before{left:-1.5px;border-left:none}
+.formation-badge .fig::after{right:-1.5px;border-right:none}
+.formation-badge .num{
+  margin-top:1cqw;font-size:4.4cqw;font-weight:900;letter-spacing:.04em;color:var(--gold-100);
+}
+.footer-meta{flex:1;min-width:0}
+.meta-row{display:flex;gap:1.4cqw;align-items:baseline;font-size:2.3cqw;line-height:1.5}
+.meta-row dt{flex:0 0 auto;color:var(--gold-300);font-weight:800;letter-spacing:.08em}
+.meta-row dd{font-weight:700;color:#f2e9f8}
+.bench{
+  margin-top:2cqw;display:flex;flex-wrap:wrap;gap:.8cqw 1.2cqw;
+}
+.bench-chip{
+  font-size:1.9cqw;font-weight:700;color:#e6d7f0;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  border-radius:99px;padding:.4cqw 1.4cqw;white-space:nowrap;
+}
+.bench-chip b{color:var(--gold-300);margin-right:.5cqw}
+.disclaimer{
+  margin-top:2.4cqw;padding-top:1.6cqw;border-top:1px solid rgba(255,255,255,.14);
+  font-size:1.9cqw;line-height:1.6;color:#a894b6;text-align:center;
+}
+</style>
+</head>
+<body class="show-ja show-pill">
+
+<div class="controls">
+  <label><input type="checkbox" id="tg-ja" checked> 日本語名を併記</label>
+  <label><input type="checkbox" id="tg-pill" checked> ポジションのピルを表示</label>
+  <label><input type="checkbox" id="tg-mascot" checked> マスコットをベンチに入れる</label>
+</div>
+
+<div class="squad-canvas" id="canvas">
+  <header class="sq-header">
+    <div class="sq-title">予想スタメン</div>
+    <div class="sq-subtitle">2026 明治安田J1リーグ 第10節 vs ○○</div>
+    <div class="sq-rule"></div>
+  </header>
+
+  <div class="pitch">
+    <div class="penalty-box top"></div><div class="goal-box top"></div>
+    <div class="penalty-box bottom"></div><div class="goal-box bottom"></div>
+
+    <!-- FW -->
+    <div class="line-row">
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">11</div><div class="card-pos">FW</div></div>
+          <div class="card-photo"><div class="tile"><b>11</b><span>M.TÚLIO</span></div></div>
+          <div class="card-name"><div class="name-en">M.TÚLIO</div><div class="name-ja">マルコ・トゥーリオ</div></div>
+        </div></div>
+        <div class="pos-pill">LWG</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">9</div><div class="card-pos">FW</div></div>
+          <div class="card-photo"><div class="tile"><b>9</b><span>RAFAEL</span></div></div>
+          <div class="card-name"><div class="name-en">RAFAEL</div><div class="name-ja">ラファエル・エリアス</div></div>
+        </div></div>
+        <div class="pos-pill">CF</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">7</div><div class="card-pos">FW</div></div>
+          <div class="card-photo"><div class="tile"><b>7</b><span>MASAYA</span></div></div>
+          <div class="card-name"><div class="name-en">MASAYA</div><div class="name-ja">原 大智</div></div>
+        </div></div>
+        <div class="pos-pill">RWG</div>
+      </div>
+    </div>
+
+    <!-- MF -->
+    <div class="line-row">
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">14</div><div class="card-pos">MF</div></div>
+          <div class="card-photo"><div class="tile"><b>14</b><span>THIAGO</span></div></div>
+          <div class="card-name"><div class="name-en">THIAGO</div><div class="name-ja">ティアゴ</div></div>
+        </div></div>
+        <div class="pos-pill">CMF</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">6</div><div class="card-pos">MF</div></div>
+          <div class="card-photo"><div class="tile"><b>6</b><span>JOÃO PEDRO</span></div></div>
+          <div class="card-name"><div class="name-en">JOÃO PEDRO</div><div class="name-ja">ジョアン・ペドロ</div></div>
+        </div></div>
+        <div class="pos-pill">DMF</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">8</div><div class="card-pos">MF</div></div>
+          <div class="card-photo"><div class="tile"><b>8</b><span>YONEMOTO</span></div></div>
+          <div class="card-name"><div class="name-en">YONEMOTO</div><div class="name-ja">米本 拓司</div></div>
+        </div></div>
+        <div class="pos-pill">CMF</div>
+      </div>
+    </div>
+
+    <!-- DF -->
+    <div class="line-row">
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">17</div><div class="card-pos">DF</div></div>
+          <div class="card-photo"><div class="tile"><b>17</b><span>ALEX SOUZA</span></div></div>
+          <div class="card-name"><div class="name-en">ALEX SOUZA</div><div class="name-ja">アレクサンドレ・ソウザ</div></div>
+        </div></div>
+        <div class="pos-pill">LSB</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">5</div><div class="card-pos">DF</div></div>
+          <div class="card-photo"><div class="tile"><b>5</b><span>API</span></div></div>
+          <div class="card-name"><div class="name-en">API</div><div class="name-ja">アピアタウィア 久</div></div>
+        </div></div>
+        <div class="pos-pill">CB</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">15</div><div class="card-pos">DF</div></div>
+          <div class="card-photo"><div class="tile"><b>15</b><span>NAGATA</span></div></div>
+          <div class="card-name"><div class="name-en">NAGATA</div><div class="name-ja">永田 一輝</div></div>
+        </div></div>
+        <div class="pos-pill">CB</div>
+      </div>
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">2</div><div class="card-pos">DF</div></div>
+          <div class="card-photo"><div class="tile"><b>2</b><span>FUKUDA</span></div></div>
+          <div class="card-name"><div class="name-en">FUKUDA</div><div class="name-ja">福田 心之助</div></div>
+        </div></div>
+        <div class="pos-pill">RSB</div>
+      </div>
+    </div>
+
+    <!-- GK -->
+    <div class="line-row">
+      <div class="player">
+        <div class="card"><div class="card-inner">
+          <div class="card-meta"><div class="card-num">21</div><div class="card-pos">GK</div></div>
+          <div class="card-photo"><div class="tile"><b>21</b><span>KAKOI</span></div></div>
+          <div class="card-name"><div class="name-en">KAKOI</div><div class="name-ja">（日本語名）</div></div>
+        </div></div>
+        <div class="pos-pill">GK</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="sq-footer">
+    <div class="footer-top">
+      <div class="formation-badge">
+        <div class="fig"></div>
+        <div class="num">4-3-3</div>
+      </div>
+      <div class="footer-meta">
+        <dl class="meta-row"><dt>監督</dt><dd>チョウ キジェ</dd></dl>
+        <dl class="meta-row"><dt>KICK OFF</dt><dd>2026.05.02 SAT 14:00 / サンガS</dd></dl>
+        <div class="bench" id="bench">
+          <span class="bench-chip"><b>1</b>GAKUJI</span>
+          <span class="bench-chip"><b>16</b>TAIYO</span>
+          <span class="bench-chip"><b>18</b>TEMMA</span>
+          <span class="bench-chip"><b>19</b>DAVID</span>
+          <span class="bench-chip"><b>25</b>YOON</span>
+          <span class="bench-chip"><b>34</b>H.TREVISAN</span>
+          <span class="bench-chip" id="mascot-chip"><b>510</b>KOTONO</span>
+        </div>
+      </div>
+    </div>
+    <div class="disclaimer">
+      非公式のファン作成コンテンツです。実際のメンバーとは関係ありません。<br>
+      作成: sangasanga.stars.ne.jp
+    </div>
+  </footer>
+</div>
+
+<p class="note">
+  ※ これは見た目確認用の静止デザイン見本です。選手カードの中央は、公式の背番号一覧画像から切り出したタイルが入る枠で、
+  現在はCSSで再現したプレースホルダーを表示しています。実装では 9:16 のこの領域をそのままPNG化します。
+</p>
+
+<script>
+const b = document.body;
+document.getElementById('tg-ja').addEventListener('change', e => b.classList.toggle('show-ja', e.target.checked));
+document.getElementById('tg-pill').addEventListener('change', e => b.classList.toggle('show-pill', e.target.checked));
+document.getElementById('tg-mascot').addEventListener('change', e => {
+  document.getElementById('mascot-chip').style.display = e.target.checked ? '' : 'none';
+});
+</script>
+</body>
+</html>
