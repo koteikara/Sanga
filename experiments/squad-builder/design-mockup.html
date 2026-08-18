@@ -57,24 +57,22 @@ body{
 }
 
 /* ---- ヘッダー ---- */
-.sq-header{padding:3cqw 5cqw 1.4cqw;text-align:center;position:relative;z-index:2}
-.sq-title{
-  font-size:7.4cqw;font-weight:900;letter-spacing:.06em;line-height:1.05;
-  background:linear-gradient(180deg,var(--gold-100),var(--gold-500) 60%,var(--gold-700));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 2px 0 rgba(0,0,0,.35);
+.sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
+.sq-title-img{
+  display:block;width:62cqw;max-width:100%;height:auto;margin:0 auto;
+  filter:drop-shadow(0 .6cqw 1.4cqw rgba(0,0,0,.5));
 }
 .sq-subtitle{
-  margin-top:1.2cqw;font-size:3.1cqw;letter-spacing:.18em;color:#e6d7f0;font-weight:700;
+  margin-top:.8cqw;font-size:3.1cqw;letter-spacing:.18em;color:#e6d7f0;font-weight:700;
 }
 .sq-rule{
-  margin:2.4cqw auto 0;width:34cqw;height:2px;
+  margin:1.4cqw auto 0;width:34cqw;height:2px;
   background:linear-gradient(90deg,transparent,var(--gold-500),transparent);
 }
 
 /* ---- ピッチ ---- */
 .pitch{
-  flex:1;margin:2cqw 3cqw;border-radius:8px;position:relative;z-index:1;
+  flex:1;min-height:0;margin:1.6cqw 3cqw;border-radius:8px;position:relative;z-index:1;
   background:
     repeating-linear-gradient(0deg,var(--grass-dark) 0 8.5%,var(--grass-light) 8.5% 17%);
   box-shadow:inset 0 0 0 2px var(--line), 0 0 24px rgba(0,0,0,.5);
@@ -189,7 +187,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
   position:relative;z-index:2;flex:0 0 auto;
   background:linear-gradient(180deg,#180722,#0e0415);
   border-top:2px solid var(--gold-500);
-  padding:2.2cqw 4cqw 2.4cqw;
+  padding:2cqw 4cqw 2cqw;
 }
 .footer-top{display:flex;align-items:center;gap:3cqw}
 .formation-badge{
@@ -213,7 +211,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 .meta-row dt{flex:0 0 auto;color:var(--gold-300);font-weight:800;letter-spacing:.08em}
 .meta-row dd{font-weight:700;color:#f2e9f8}
 .bench{
-  margin-top:2cqw;display:flex;flex-wrap:wrap;gap:.8cqw 1.2cqw;
+  margin-top:1.4cqw;display:flex;flex-wrap:wrap;gap:.8cqw 1.2cqw;
 }
 .bench-chip{
   font-size:1.9cqw;font-weight:700;color:#e6d7f0;
@@ -222,8 +220,8 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 }
 .bench-chip b{color:var(--gold-300);margin-right:.5cqw}
 .disclaimer{
-  margin-top:2.4cqw;padding-top:1.6cqw;border-top:1px solid rgba(255,255,255,.14);
-  font-size:1.9cqw;line-height:1.6;color:#a894b6;text-align:center;
+  margin-top:1.6cqw;padding-top:1.2cqw;border-top:1px solid rgba(255,255,255,.14);
+  font-size:1.75cqw;line-height:1.5;color:#a894b6;text-align:center;white-space:nowrap;
 }
 </style>
 </head>
@@ -237,7 +235,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 
 <div class="squad-canvas" id="canvas">
   <header class="sq-header">
-    <div class="sq-title">予想スタメン</div>
+    <img class="sq-title-img" src="assets/header-starting-xi.png" alt="PREDICTED STARTING XI">
     <div class="sq-subtitle">2026 明治安田J1リーグ 第10節 vs ○○</div>
     <div class="sq-rule"></div>
   </header>
@@ -372,8 +370,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
       </div>
     </div>
     <div class="disclaimer">
-      非公式のファン作成コンテンツです。実際のメンバーとは関係ありません。<br>
-      作成: sangasanga.stars.ne.jp
+非公式のファン作成コンテンツです。実際のメンバーとは関係ありません。 / 作成: sangasanga.stars.ne.jp
     </div>
   </footer>
 </div>
