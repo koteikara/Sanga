@@ -59,6 +59,71 @@ body{
   pointer-events:none;
 }
 
+
+/* ================= スタイル切替 ================= */
+/* 既定はモダン。ビクトリアンは data-style="victorian" で切り替える */
+.sq-title-img.is-victorian{display:none}
+[data-style="victorian"] .sq-title-img.is-modern{display:none}
+[data-style="victorian"] .sq-title-img.is-victorian{display:block}
+
+[data-style="victorian"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22120%22%20height%3D%22120%22%20viewBox%3D%220%200%20120%20120%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23e8cc72%22%20stroke-opacity%3D%22.10%22%20stroke-width%3D%221.2%22%3E%3Cpath%20d%3D%22M60%2C14%20C74%2C26%2074%2C42%2060%2C52%20C46%2C42%2046%2C26%2060%2C14%20Z%22%2F%3E%3Cpath%20d%3D%22M60%2C52%20C60%2C66%2052%2C74%2040%2C76%20C48%2C64%2050%2C58%2060%2C52%20Z%22%2F%3E%3Cpath%20d%3D%22M60%2C52%20C60%2C66%2068%2C74%2080%2C76%20C72%2C64%2070%2C58%2060%2C52%20Z%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2233%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M0%2C90%20C14%2C78%2026%2C78%2040%2C90%20C26%2C102%2014%2C102%200%2C90%20Z%22%2F%3E%3Cpath%20d%3D%22M120%2C90%20C106%2C78%2094%2C78%2080%2C90%20C94%2C102%20106%2C102%20120%2C90%20Z%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2296%22%20r%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/17cqw auto,
+    radial-gradient(120% 80% at 50% 0%, #3a1230 0%, #1b0a18 62%),
+    #150713;
+}
+[data-style="victorian"] .squad-canvas::before{display:none}
+
+/* 外周の装飾枠と四隅の飾り */
+.canvas-frame{display:none}
+[data-style="victorian"] .canvas-frame{
+  display:block;position:absolute;inset:1.6cqw;z-index:4;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2090%20160%22%20preserveAspectRatio%3D%22none%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23c9a227%22%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2285%22%20height%3D%22155%22%20stroke-width%3D%221.4%22%20stroke-opacity%3D%22.85%22%2F%3E%3Crect%20x%3D%225%22%20y%3D%225%22%20width%3D%2280%22%20height%3D%22150%22%20stroke-width%3D%220.6%22%20stroke-opacity%3D%22.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/100% 100%;
+}
+[data-style="victorian"] .canvas-frame span{
+  position:absolute;width:5.4cqw;height:5.4cqw;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2044%2044%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23c9a227%22%20stroke-width%3D%221.6%22%3E%3Cpath%20d%3D%22M2%2C20%20C2%2C8%208%2C2%2020%2C2%22%2F%3E%3Cpath%20d%3D%22M8%2C20%20C8%2C12%2012%2C8%2020%2C8%22%2F%3E%3Cpath%20d%3D%22M2%2C32%20C10%2C30%2014%2C26%2016%2C18%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%222.4%22%20fill%3D%22%23e8cc72%22%2F%3E%3C%2Fsvg%3E") no-repeat center/100% 100%;
+}
+[data-style="victorian"] .canvas-frame span:nth-child(1){top:.4cqw;left:.4cqw}
+[data-style="victorian"] .canvas-frame span:nth-child(2){top:.4cqw;right:.4cqw;transform:scaleX(-1)}
+[data-style="victorian"] .canvas-frame span:nth-child(3){bottom:.4cqw;left:.4cqw;transform:scaleY(-1)}
+[data-style="victorian"] .canvas-frame span:nth-child(4){bottom:.4cqw;right:.4cqw;transform:scale(-1,-1)}
+
+/* 見出しまわりの体裁 */
+[data-style="victorian"] .sq-header{padding:3cqw 7cqw 1.4cqw}
+[data-style="victorian"] .sq-title-img{width:64cqw}
+[data-style="victorian"] .sq-subtitle{
+  font-family:"Liberation Serif","Times New Roman",serif;
+  letter-spacing:.12em;color:#f0e3c6;font-size:3.2cqw;
+}
+[data-style="victorian"] .sq-rule{
+  width:44cqw;background:linear-gradient(90deg,transparent,#c9a227,transparent);
+}
+[data-style="victorian"] .pitch{
+  margin:1.6cqw 6cqw;box-shadow:0 0 0 1px rgba(201,162,39,.55), 0 0 24px rgba(0,0,0,.7);
+}
+[data-style="victorian"] .sq-footer{
+  background:linear-gradient(180deg,#1d0a1a,#0d0410);
+  border:1px solid rgba(201,162,39,.55);
+  margin:0 4.4cqw 4.4cqw;
+}
+[data-style="victorian"] .meta-row dt,
+[data-style="victorian"] .formation-badge .num{color:#e8cc72}
+[data-style="victorian"] .formation-badge .fig,
+[data-style="victorian"] .formation-badge .fig::before,
+[data-style="victorian"] .formation-badge .fig::after{border-color:#c9a227}
+[data-style="victorian"] .bench-chip{
+  border-radius:0;border-color:rgba(201,162,39,.5);
+  font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.06em;
+}
+[data-style="victorian"] .bench-chip b{color:#e8cc72}
+[data-style="victorian"] .disclaimer{color:#9c8ba0;padding-bottom:.4cqw}
+[data-style="victorian"] .pos-pill{
+  border-radius:0;background:linear-gradient(180deg,#2a1026,#160718);
+  border:1px solid rgba(201,162,39,.6);color:#eddfbe;
+  font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.14em;
+}
+
 /* ---- ヘッダー ---- */
 .sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
 .sq-title-img{
@@ -255,9 +320,15 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
   <label><input type="checkbox" id="tg-ja" checked> 日本語名を併記</label>
   <label><input type="checkbox" id="tg-pill" checked> ポジションのピルを表示</label>
   <label><input type="checkbox" id="tg-mascot" checked> マスコットをベンチに入れる</label>
+  <label>スタイル
+    <select id="sel-style">
+      <option value="modern">モダン</option>
+      <option value="victorian">ヴィクトリアン</option>
+    </select>
+  </label>
 </div>
 
-<div class="squad-canvas" id="canvas">
+<div class="squad-canvas" id="canvas" data-style="modern">
   <!-- 盾型のクリップパス。カード形状はここだけで定義する -->
   <svg class="shield-def" width="0" height="0" aria-hidden="true" focusable="false">
     <defs>
@@ -279,8 +350,10 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
       </clipPath>
     </defs>
   </svg>
+  <div class="canvas-frame"><span></span><span></span><span></span><span></span></div>
   <header class="sq-header">
-    <img class="sq-title-img" src="assets/header-starting-xi.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-modern" src="assets/header-starting-xi.png" alt="PREDICTED STARTING XI">
+    <img class="sq-title-img is-victorian" src="assets/header-victorian.png" alt="PREDICTED STARTING XI">
     <div class="sq-subtitle">2026 明治安田J1リーグ 第10節 vs ○○</div>
     <div class="sq-rule"></div>
   </header>
@@ -473,6 +546,11 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 
 <script>
 const b = document.body;
+const canvas = document.getElementById('canvas');
+document.getElementById('sel-style').addEventListener('change', e => {
+  canvas.dataset.style = e.target.value;
+  fitNames();
+});
 
 /* 枠からはみ出す名前は、収まるまで文字サイズを段階的に小さくする。
    下限を決めて、極端に小さくならないようにする。 */
