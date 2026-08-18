@@ -157,15 +157,17 @@ body{
   font-size:5.6cqw;font-weight:900;color:#fff;line-height:.9;font-style:italic;
   text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.5);
 }
-.tile span{font-size:1.45cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:.4cqw;white-space:nowrap}
+.tile span{font-size:1.45cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:.4cqw;max-width:96%}
 /* 下部：名前 */
 .card-name{
-  text-align:center;padding:.5cqw .3cqw .9cqw;
+  text-align:center;padding:.5cqw .6cqw .9cqw;overflow:hidden;
   border-top:1px solid rgba(255,255,255,.18);
   background:linear-gradient(180deg,rgba(0,0,0,.25),transparent);
 }
-.name-en{font-size:1.95cqw;font-weight:800;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.name-ja{font-size:1.7cqw;font-weight:600;color:#e9d8f5;margin-top:.2cqw;white-space:nowrap}
+/* 長い名前は枠幅に合わせて自動縮小する（JSで font-size を調整） */
+.name-en,.name-ja,.tile span{display:block;white-space:nowrap}
+.name-en{font-size:1.95cqw;font-weight:800;letter-spacing:.03em}
+.name-ja{font-size:1.7cqw;font-weight:600;color:#e9d8f5;margin-top:.2cqw}
 body:not(.show-ja) .name-ja{display:none}
 
 /* ポジションのピル */
@@ -383,6 +385,35 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 
 <script>
 const b = document.body;
+
+/* 枠からはみ出す名前は、収まるまで文字サイズを段階的に小さくする。
+   下限を決めて、極端に小さくならないようにする。 */
+function fitNames(){
+  document.querySelectorAll('.name-en,.name-ja,.tile span').forEach(el => {
+    el.style.fontSize = '';
+    const base = parseFloat(getComputedStyle(el).fontSize);
+    const box = el.parentElement;
+    const cs = getComputedStyle(box);
+    const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    if (avail <= 0) return;
+    let size = base;
+    const min = base * 0.6;
+    while (el.scrollWidth > avail && size > min) {
+      size -= base * 0.04;
+      el.style.fontSize = size + 'px';
+    }
+    // 下限まで縮めても収まらない場合だけ、残りを横方向の圧縮で吸収する
+    if (el.scrollWidth > avail) {
+      el.style.transformOrigin = 'center';
+      el.style.transform = 'scaleX(' + (avail / el.scrollWidth).toFixed(3) + ')';
+    } else {
+      el.style.transform = '';
+    }
+  });
+}
+fitNames();
+window.addEventListener('resize', fitNames);
+document.fonts && document.fonts.ready.then(fitNames);
 document.getElementById('tg-ja').addEventListener('change', e => b.classList.toggle('show-ja', e.target.checked));
 document.getElementById('tg-pill').addEventListener('change', e => b.classList.toggle('show-pill', e.target.checked));
 document.getElementById('tg-mascot').addEventListener('change', e => {
