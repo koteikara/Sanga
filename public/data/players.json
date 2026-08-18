@@ -1,0 +1,386 @@
+{
+  "updatedAt": "2026-08-18",
+  "source": "京都サンガF.C. 公式サイト",
+  "players": [
+    {
+      "number": "1",
+      "nameEn": "GAKUJI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "GK",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "2",
+      "nameEn": "FUKUDA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "5",
+      "nameEn": "API",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "6",
+      "nameEn": "JOÃO PEDRO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "7",
+      "nameEn": "MASAYA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "8",
+      "nameEn": "YONEMOTO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "9",
+      "nameEn": "RAFAEL",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "10",
+      "nameEn": "SHIMPEI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "11",
+      "nameEn": "M.TÚLIO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "14",
+      "nameEn": "THIAGO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "15",
+      "nameEn": "NAGATA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "16",
+      "nameEn": "TAIYO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "17",
+      "nameEn": "ALEX SOUZA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "18",
+      "nameEn": "TEMMA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "19",
+      "nameEn": "DAVID",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "21",
+      "nameEn": "KAKOI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "GK",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "23",
+      "nameEn": "KATO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "25",
+      "nameEn": "YOON",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "kr",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "26",
+      "nameEn": "REN",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "29",
+      "nameEn": "KOU",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "31",
+      "nameEn": "HIRAGA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "GK",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "32",
+      "nameEn": "SAITO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "34",
+      "nameEn": "H.TREVISAN",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "36",
+      "nameEn": "FANTINI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "38",
+      "nameEn": "E.MACEIÓ",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "39",
+      "nameEn": "TAIKI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "40",
+      "nameEn": "ISHIDA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "GK",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "43",
+      "nameEn": "WEVERTON",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "44",
+      "nameEn": "KYO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "48",
+      "nameEn": "NAKANO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "50",
+      "nameEn": "NORI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "GK",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "60",
+      "nameEn": "YAMANAKA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "77",
+      "nameEn": "HARUKI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "93",
+      "nameEn": "NAGASAWA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "FW",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "94",
+      "nameEn": "MURAKAMI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "99",
+      "nameEn": "FUCHI",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "DF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "83",
+      "nameEn": "PURSA",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": true
+    },
+    {
+      "number": "510",
+      "nameEn": "KOTONO",
+      "nameJa": "（暫定）",
+      "nameKana": "",
+      "position": "",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": true
+    }
+  ]
+}
