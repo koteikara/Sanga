@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>予想スカッド作成 プロトタイプ</title>
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body class="show-ja show-pill">
+
+<h1 class="proto-title">予想スカッド作成（操作プロトタイプ）</h1>
+
+<div class="proto-layout">
+  <!-- ===================== 設定パネル ===================== -->
+  <div class="panel" aria-label="スカッド作成の設定">
+    <section>
+      <h2>1. フォーメーション</h2>
+      <div class="formation-grid" id="formation-grid"></div>
+      <p class="field-row" style="margin-top:8px">
+        <button type="button" class="btn" id="reset-positions">位置をプリセットに戻す</button>
+      </p>
+    </section>
+
+    <section>
+      <h2>タイトル・日付・監督</h2>
+      <div class="field-row">
+        <label for="field-title">タイトル</label>
+        <input type="text" id="field-title" value="予想スタメン">
+      </div>
+      <div class="field-row">
+        <label for="field-match">試合情報（大会・節・対戦相手）</label>
+        <input type="text" id="field-match" value="2026 明治安田J1リーグ 第10節 vs ○○">
+      </div>
+      <div class="field-row">
+        <label for="field-coach">監督名</label>
+        <input type="text" id="field-coach" value="チョウ キジェ">
+      </div>
+      <div class="field-row">
+        <label for="field-kickoff">日付・キックオフ・会場</label>
+        <input type="text" id="field-kickoff" value="2026.05.02 SAT 14:00 / サンガS">
+      </div>
+    </section>
+
+    <section>
+      <h2>表示</h2>
+      <div class="field-row">
+        <label for="field-style">スタイル</label>
+        <select id="field-style">
+          <option value="modern">モダン</option>
+          <option value="victorian">ヴィクトリアン</option>
+          <option value="graffiti">グラフィティ</option>
+          <option value="cyber">サイバーコア</option>
+          <option value="vapor">ヴェイパーウェーブ</option>
+          <option value="synth">シンセウェーブ</option>
+          <option value="scrap">スクラップブック</option>
+        </select>
+      </div>
+      <div class="toggle-row">
+        <label><input type="checkbox" id="tg-ja" checked> 日本語名を併記</label>
+        <label><input type="checkbox" id="tg-pill" checked> ポジション名を表示</label>
+        <label><input type="checkbox" id="tg-mascot"> マスコットを選択肢に含める</label>
+      </div>
+    </section>
+
+    <section>
+      <h2>保存（LocalStorage）</h2>
+      <form id="save-form" class="field-row" style="flex-direction:row;gap:8px;align-items:center">
+        <label for="save-name" class="visually-hidden">保存名</label>
+        <input type="text" id="save-name" placeholder="保存名（例：第10節 予想）" style="flex:1">
+        <button type="submit" class="btn primary">名前を付けて保存</button>
+      </form>
+      <div class="save-list" id="save-list"></div>
+    </section>
+
+    <section>
+      <h2>4. 画像を作成する</h2>
+      <button type="button" class="btn primary" id="export-btn">画像を作成する（PNG）</button>
+      <p class="export-status" id="export-status"></p>
+      <div class="export-preview" id="export-preview"></div>
+    </section>
+  </div>
+
+  <!-- ===================== 出力キャンバス ===================== -->
+  <div class="canvas-wrap">
+    <div class="canvas-shell">
+      <div class="squad-canvas" id="canvas" data-style="modern">
+        <!-- 盾型のクリップパス。design-mockup.html と同じ定義をそのまま使う -->
+        <svg class="shield-def" width="0" height="0" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="shield-clip" clipPathUnits="objectBoundingBox">
+              <path d="M0.000,0.088
+                       C0.000,0.038 0.026,0.014 0.076,0.012
+                       C0.200,0.000 0.360,0.004 0.446,0.014
+                       L0.500,0.082
+                       L0.554,0.014
+                       C0.640,0.004 0.800,0.000 0.924,0.012
+                       C0.974,0.014 1.000,0.038 1.000,0.088
+                       L1.000,0.700
+                       C1.000,0.760 0.972,0.808 0.916,0.846
+                       C0.844,0.894 0.700,0.940 0.596,0.972
+                       C0.540,0.990 0.514,0.994 0.500,1.000
+                       C0.486,0.994 0.460,0.990 0.404,0.972
+                       C0.300,0.940 0.156,0.894 0.084,0.846
+                       C0.028,0.808 0.000,0.760 0.000,0.700 Z"/>
+            </clipPath>
+          </defs>
+        </svg>
+        <div class="canvas-frame"><span></span><span></span><span></span><span></span></div>
+
+        <header class="sq-header">
+          <img class="sq-title-img is-modern" src="assets/header-starting-xi.png" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-victorian" src="assets/header-victorian.png" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-graffiti" src="assets/header-graffiti.png" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-cyber" src="assets/header-cyber.png" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-vapor" src="assets/header-vapor.png" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-synth" src="assets/header-synth.png" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-scrap" src="assets/header-scrap.png" alt="PREDICTED STARTING XI">
+          <div class="sq-subtitle" id="sq-title-text">予想スタメン</div>
+          <div class="sq-subtitle" id="sq-subtitle" style="margin-top:.4cqw">2026 明治安田J1リーグ 第10節 vs ○○</div>
+          <div class="sq-rule"></div>
+        </header>
+
+        <div class="pitch" id="pitch">
+          <svg class="pitch-art" viewBox="0 0 100 130" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#123a20"/>
+                <stop offset="45%" stop-color="#1d5c31"/>
+                <stop offset="100%" stop-color="#0f2e1a"/>
+              </linearGradient>
+              <clipPath id="pitch-shape">
+                <path d="M19,0 L81,0 L100,130 L0,130 Z"/>
+              </clipPath>
+            </defs>
+            <g clip-path="url(#pitch-shape)">
+              <path d="M19,0 L81,0 L100,130 L0,130 Z" fill="url(#grass)"/>
+              <g fill="#ffffff" opacity="0.045">
+                <rect x="-10" y="0" width="120" height="9"/>
+                <rect x="-10" y="19" width="120" height="10"/>
+                <rect x="-10" y="41" width="120" height="12"/>
+                <rect x="-10" y="66" width="120" height="13"/>
+                <rect x="-10" y="93" width="120" height="15"/>
+                <rect x="-10" y="122" width="120" height="16"/>
+              </g>
+              <g fill="none" stroke="rgba(255,255,255,.5)" stroke-width="0.7">
+                <path d="M19,0 L81,0 L100,130 L0,130 Z"/>
+                <line x1="9.5" y1="65" x2="90.5" y2="65"/>
+                <ellipse cx="50" cy="65" rx="14" ry="5.6"/>
+                <path d="M24,130 L24,104 L76,104 L76,130"/>
+                <path d="M37,130 L37,118 L63,118 L63,130"/>
+                <path d="M33.5,0 L33.5,25 L66.5,25 L66.5,0"/>
+                <path d="M41.5,0 L41.5,11 L58.5,11 L58.5,0"/>
+              </g>
+            </g>
+          </svg>
+          <div class="pitch-glow"></div>
+          <div class="pitch-vignette"></div>
+          <!-- .player 要素はJSが座標に基づいて生成・配置する -->
+        </div>
+
+        <footer class="sq-footer">
+          <div class="footer-top">
+            <div class="formation-badge">
+              <div class="fig"></div>
+              <div class="num" id="formation-num">4-4-2</div>
+            </div>
+            <div class="footer-meta">
+              <dl class="meta-row"><dt>監督</dt><dd id="meta-coach">チョウ キジェ</dd></dl>
+              <dl class="meta-row"><dt>KICK OFF</dt><dd id="meta-kickoff">2026.05.02 SAT 14:00 / サンガS</dd></dl>
+              <div class="bench" id="bench"></div>
+            </div>
+          </div>
+          <div class="disclaimer">
+非公式のファン作成コンテンツです。実際のメンバーとは関係ありません。 / 作成: sangasanga.stars.ne.jp
+          </div>
+        </footer>
+      </div>
+    </div>
+    <p class="export-status">
+      2. ピッチ上の空きスロットやベンチをタップすると選手一覧が開きます。3. 配置済みのカードはドラッグ（タッチ操作可）で動かせます。
+    </p>
+  </div>
+</div>
+
+<!-- ===================== 選手選択モーダル ===================== -->
+<div class="picker-backdrop" id="picker-backdrop">
+  <div class="picker" role="dialog" aria-modal="true" aria-labelledby="picker-title">
+    <div class="picker-head">
+      <h2 id="picker-title">選手を選ぶ</h2>
+      <button type="button" class="btn" id="picker-close" aria-label="選手選択を閉じる">閉じる</button>
+    </div>
+    <div class="picker-filters" id="picker-filters"></div>
+    <div class="picker-list" id="picker-list"></div>
+    <button type="button" class="btn danger" id="picker-clear" style="margin-top:10px">このスロットを空にする</button>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
