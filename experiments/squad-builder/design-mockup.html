@@ -17,13 +17,8 @@
   --grass-dark:#1f5c2e;
   --grass-light:#27713a;
   --line:rgba(255,255,255,.55);
-  /* 盾型のシルエット。カードと中面で共有する */
-  --shield:polygon(
-    7% 0%, 93% 0%, 100% 5%, 100% 52%,
-    98% 63%, 93% 72%, 85% 81%, 74% 89%,
-    62% 95%, 50% 100%, 38% 95%, 26% 89%,
-    15% 81%, 7% 72%, 2% 63%, 0% 52%, 0% 5%
-  );
+  /* 盾型のシルエットはSVGのclipPathで定義する（#shield-clip） */
+  --shield:url(#shield-clip);
   --ink:#fff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -57,6 +52,7 @@ body{
   container-type:inline-size;
 }
 /* 斜めの装飾ストライプ */
+.shield-def{position:absolute;width:0;height:0}
 .squad-canvas::before{
   content:"";position:absolute;inset:0;
   background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 2px,transparent 2px 26px);
@@ -84,7 +80,7 @@ body{
     repeating-linear-gradient(0deg,var(--grass-dark) 0 8.5%,var(--grass-light) 8.5% 17%);
   box-shadow:inset 0 0 0 2px var(--line), 0 0 24px rgba(0,0,0,.5);
   display:grid;
-  grid-template-rows:1fr 1fr 1fr .95fr;
+  grid-template-rows:1fr 1fr 1fr .9fr;
   padding:2cqw 1cqw;
   gap:.5cqw;
 }
@@ -115,8 +111,8 @@ body{
 /* ---- 選手カード ---- */
 .player{display:flex;flex-direction:column;align-items:center;gap:.8cqw}
 .card{
-  width:16cqw;
-  aspect-ratio:41/60;
+  width:18cqw;
+  aspect-ratio:47/58;
   position:relative;
   clip-path:var(--shield);
   background:
@@ -149,11 +145,11 @@ body{
 }
 /* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
 .card-photo{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding-top:2.6cqw;
+  position:absolute;top:6%;left:0;right:0;height:46%;
+  display:flex;align-items:center;justify-content:center;
 }
 .tile{
-  width:70%;aspect-ratio:1/1;border-radius:.6cqw;
+  height:100%;aspect-ratio:1/1;border-radius:.6cqw;
   background:linear-gradient(180deg,#7a2394,#5d1a75);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
@@ -165,15 +161,15 @@ body{
 .tile span{font-size:1.45cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:.4cqw;max-width:96%}
 /* 下部：名前 */
 .card-name{
-  text-align:center;padding:.5cqw 1.2cqw 0;overflow:hidden;
-  margin-bottom:26%;
+  position:absolute;top:52%;left:14%;right:14%;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding-top:.6cqw;overflow:hidden;
   border-top:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(180deg,rgba(0,0,0,.25),transparent);
 }
 /* 長い名前は枠幅に合わせて自動縮小する（JSで font-size を調整） */
-.name-en,.name-ja,.tile span{display:block;white-space:nowrap}
-.name-en{font-size:1.95cqw;font-weight:800;letter-spacing:.03em}
-.name-ja{font-size:1.7cqw;font-weight:600;color:#e9d8f5;margin-top:.2cqw}
+.name-en,.name-ja,.tile span{display:inline-block;white-space:nowrap}
+.name-en{font-size:2.1cqw;font-weight:800;letter-spacing:.03em}
+.name-ja{font-size:1.75cqw;font-weight:600;color:#e9d8f5;margin-top:.2cqw}
 body:not(.show-ja) .name-ja{display:none}
 
 /* ポジションのピル */
@@ -242,6 +238,23 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 </div>
 
 <div class="squad-canvas" id="canvas">
+  <!-- 盾型のクリップパス。カード形状はここだけで定義する -->
+  <svg class="shield-def" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <clipPath id="shield-clip" clipPathUnits="objectBoundingBox">
+        <path d="M0.062,0.038
+                 C0.230,-0.014 0.770,-0.014 0.938,0.038
+                 C0.982,0.052 1.000,0.086 0.998,0.152
+                 C0.994,0.286 0.988,0.396 0.966,0.512
+                 C0.942,0.640 0.884,0.746 0.792,0.838
+                 C0.706,0.924 0.596,0.978 0.500,1.000
+                 C0.404,0.978 0.294,0.924 0.208,0.838
+                 C0.116,0.746 0.058,0.640 0.034,0.512
+                 C0.012,0.396 0.006,0.286 0.002,0.152
+                 C0.000,0.086 0.018,0.052 0.062,0.038 Z"/>
+      </clipPath>
+    </defs>
+  </svg>
   <header class="sq-header">
     <img class="sq-title-img" src="assets/header-starting-xi.png" alt="PREDICTED STARTING XI">
     <div class="sq-subtitle">2026 明治安田J1リーグ 第10節 vs ○○</div>
@@ -258,7 +271,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">11</div><div class="card-pos">FW</div></div>
           <div class="card-photo"><div class="tile"><b>11</b><span>M.TÚLIO</span></div></div>
-          <div class="card-name"><div class="name-en">M.TÚLIO</div><div class="name-ja">マルコ・トゥーリオ</div></div>
+          <div class="card-name"><div class="name-en">M.TÚLIO</div><div class="name-ja" data-fit-ratio="0.72">マルコ・トゥーリオ</div></div>
         </div></div>
         <div class="pos-pill">LWG</div>
       </div>
@@ -266,7 +279,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">9</div><div class="card-pos">FW</div></div>
           <div class="card-photo"><div class="tile"><b>9</b><span>RAFAEL</span></div></div>
-          <div class="card-name"><div class="name-en">RAFAEL</div><div class="name-ja">ラファエル・エリアス</div></div>
+          <div class="card-name"><div class="name-en">RAFAEL</div><div class="name-ja" data-fit-ratio="0.72">ラファエル・エリアス</div></div>
         </div></div>
         <div class="pos-pill">CF</div>
       </div>
@@ -274,7 +287,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">7</div><div class="card-pos">FW</div></div>
           <div class="card-photo"><div class="tile"><b>7</b><span>MASAYA</span></div></div>
-          <div class="card-name"><div class="name-en">MASAYA</div><div class="name-ja">原 大智</div></div>
+          <div class="card-name"><div class="name-en">MASAYA</div><div class="name-ja" data-fit-ratio="0.72">原 大智</div></div>
         </div></div>
         <div class="pos-pill">RWG</div>
       </div>
@@ -286,7 +299,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">14</div><div class="card-pos">MF</div></div>
           <div class="card-photo"><div class="tile"><b>14</b><span>THIAGO</span></div></div>
-          <div class="card-name"><div class="name-en">THIAGO</div><div class="name-ja">ティアゴ</div></div>
+          <div class="card-name"><div class="name-en">THIAGO</div><div class="name-ja" data-fit-ratio="0.72">ティアゴ</div></div>
         </div></div>
         <div class="pos-pill">CMF</div>
       </div>
@@ -294,7 +307,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">6</div><div class="card-pos">MF</div></div>
           <div class="card-photo"><div class="tile"><b>6</b><span>JOÃO PEDRO</span></div></div>
-          <div class="card-name"><div class="name-en">JOÃO PEDRO</div><div class="name-ja">ジョアン・ペドロ</div></div>
+          <div class="card-name"><div class="name-en">JOÃO PEDRO</div><div class="name-ja" data-fit-ratio="0.72">ジョアン・ペドロ</div></div>
         </div></div>
         <div class="pos-pill">DMF</div>
       </div>
@@ -302,7 +315,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">8</div><div class="card-pos">MF</div></div>
           <div class="card-photo"><div class="tile"><b>8</b><span>YONEMOTO</span></div></div>
-          <div class="card-name"><div class="name-en">YONEMOTO</div><div class="name-ja">米本 拓司</div></div>
+          <div class="card-name"><div class="name-en">YONEMOTO</div><div class="name-ja" data-fit-ratio="0.72">米本 拓司</div></div>
         </div></div>
         <div class="pos-pill">CMF</div>
       </div>
@@ -314,7 +327,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">17</div><div class="card-pos">DF</div></div>
           <div class="card-photo"><div class="tile"><b>17</b><span>ALEX SOUZA</span></div></div>
-          <div class="card-name"><div class="name-en">ALEX SOUZA</div><div class="name-ja">アレクサンドレ・ソウザ</div></div>
+          <div class="card-name"><div class="name-en">ALEX SOUZA</div><div class="name-ja" data-fit-ratio="0.72">アレクサンドレ・ソウザ</div></div>
         </div></div>
         <div class="pos-pill">LSB</div>
       </div>
@@ -322,7 +335,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">5</div><div class="card-pos">DF</div></div>
           <div class="card-photo"><div class="tile"><b>5</b><span>API</span></div></div>
-          <div class="card-name"><div class="name-en">API</div><div class="name-ja">アピアタウィア 久</div></div>
+          <div class="card-name"><div class="name-en">API</div><div class="name-ja" data-fit-ratio="0.72">アピアタウィア 久</div></div>
         </div></div>
         <div class="pos-pill">CB</div>
       </div>
@@ -330,7 +343,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">15</div><div class="card-pos">DF</div></div>
           <div class="card-photo"><div class="tile"><b>15</b><span>NAGATA</span></div></div>
-          <div class="card-name"><div class="name-en">NAGATA</div><div class="name-ja">永田 一輝</div></div>
+          <div class="card-name"><div class="name-en">NAGATA</div><div class="name-ja" data-fit-ratio="0.72">永田 一輝</div></div>
         </div></div>
         <div class="pos-pill">CB</div>
       </div>
@@ -338,7 +351,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">2</div><div class="card-pos">DF</div></div>
           <div class="card-photo"><div class="tile"><b>2</b><span>FUKUDA</span></div></div>
-          <div class="card-name"><div class="name-en">FUKUDA</div><div class="name-ja">福田 心之助</div></div>
+          <div class="card-name"><div class="name-en">FUKUDA</div><div class="name-ja" data-fit-ratio="0.72">福田 心之助</div></div>
         </div></div>
         <div class="pos-pill">RSB</div>
       </div>
@@ -350,7 +363,7 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
         <div class="card"><div class="card-inner">
           <div class="card-meta"><div class="card-num">21</div><div class="card-pos">GK</div></div>
           <div class="card-photo"><div class="tile"><b>21</b><span>KAKOI</span></div></div>
-          <div class="card-name"><div class="name-en">KAKOI</div><div class="name-ja">（日本語名）</div></div>
+          <div class="card-name"><div class="name-en">KAKOI</div><div class="name-ja" data-fit-ratio="0.72">（日本語名）</div></div>
         </div></div>
         <div class="pos-pill">GK</div>
       </div>
@@ -399,18 +412,19 @@ function fitNames(){
     const base = parseFloat(getComputedStyle(el).fontSize);
     const box = el.parentElement;
     const cs = getComputedStyle(box);
-    const avail = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const ratio = parseFloat(el.dataset.fitRatio || 1);
+    const avail = (box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)) * ratio;
     if (avail <= 0) return;
     let size = base;
     const min = base * 0.6;
-    while (el.scrollWidth > avail && size > min) {
+    while (el.offsetWidth > avail && size > min) {
       size -= base * 0.04;
       el.style.fontSize = size + 'px';
     }
     // 下限まで縮めても収まらない場合だけ、残りを横方向の圧縮で吸収する
-    if (el.scrollWidth > avail) {
+    if (el.offsetWidth > avail) {
       el.style.transformOrigin = 'center';
-      el.style.transform = 'scaleX(' + (avail / el.scrollWidth).toFixed(3) + ')';
+      el.style.transform = 'scaleX(' + (avail / el.offsetWidth).toFixed(3) + ')';
     } else {
       el.style.transform = '';
     }
