@@ -125,7 +125,19 @@ body{
   font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.06em;
 }
 [data-style="victorian"] .bench-chip b{color:#e8cc72}
-[data-style="victorian"] .disclaimer{color:#9c8ba0;padding-bottom:.4cqw}
+[data-style="victorian"] /* 投稿者名。誰の予想かを画像に残す */
+.poster-name{
+  margin-top:1.6cqw;text-align:center;
+  font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
+  color:var(--gold-300);
+}
+.poster-name[hidden]{display:none}
+[data-style="scrap"] .poster-name{color:#7b1fa2}
+[data-style="vapor"] .poster-name,[data-style="synth"] .poster-name{color:#e2c4ff}
+[data-style="cyber"] .poster-name{color:#c77dff;font-family:"DejaVu Sans Mono",monospace}
+[data-style="graffiti"] .poster-name{color:#7cff3d;color:#c77dff}
+
+.disclaimer{color:#9c8ba0;padding-bottom:.4cqw}
 [data-style="victorian"] .pos-pill{
   border-radius:0;background:linear-gradient(180deg,#2a1026,#160718);
   border:1px solid rgba(201,162,39,.6);color:#eddfbe;
@@ -264,7 +276,19 @@ body{
 [data-style="scrap"] .pos-pill{
   border-radius:0;background:#c9a3e8;border:1px solid #4a1466;color:#2b0a3d;
 }
-[data-style="scrap"] .disclaimer{color:#6a5580;border-top-color:rgba(43,10,61,.2)}
+[data-style="scrap"] /* 投稿者名。誰の予想かを画像に残す */
+.poster-name{
+  margin-top:1.6cqw;text-align:center;
+  font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
+  color:var(--gold-300);
+}
+.poster-name[hidden]{display:none}
+[data-style="scrap"] .poster-name{color:#7b1fa2}
+[data-style="vapor"] .poster-name,[data-style="synth"] .poster-name{color:#e2c4ff}
+[data-style="cyber"] .poster-name{color:#c77dff;font-family:"DejaVu Sans Mono",monospace}
+[data-style="graffiti"] .poster-name{color:#7cff3d;color:#c77dff}
+
+.disclaimer{color:#6a5580;border-top-color:rgba(43,10,61,.2)}
 
 /* ---- ヘッダー ---- */
 .sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
@@ -464,6 +488,18 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
   border-radius:99px;padding:.4cqw 1.4cqw;white-space:nowrap;
 }
 .bench-chip b{color:var(--gold-300);margin-right:.5cqw}
+/* 投稿者名。誰の予想かを画像に残す */
+.poster-name{
+  margin-top:1.6cqw;text-align:center;
+  font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
+  color:var(--gold-300);
+}
+.poster-name[hidden]{display:none}
+[data-style="scrap"] .poster-name{color:#7b1fa2}
+[data-style="vapor"] .poster-name,[data-style="synth"] .poster-name{color:#e2c4ff}
+[data-style="cyber"] .poster-name{color:#c77dff;font-family:"DejaVu Sans Mono",monospace}
+[data-style="graffiti"] .poster-name{color:#7cff3d;color:#c77dff}
+
 .disclaimer{
   margin-top:1.6cqw;padding-top:1.2cqw;border-top:1px solid rgba(255,255,255,.14);
   font-size:1.75cqw;line-height:1.5;color:#a894b6;text-align:center;white-space:nowrap;
@@ -622,6 +658,7 @@ button{
 .picker-item .pos-tag{font-size:11px;background:#4a1e63;padding:2px 8px;border-radius:99px}
 .picker-item.is-used{opacity:.5}
 .picker-item.is-used::after{content:"配置済み";font-size:10px;color:var(--gold-300);margin-left:6px}
+.field-note{font-size:12px;color:#c9b6d6;margin-top:4px;line-height:1.5}
 .picker-empty{font-size:13px;color:#c9b6d6;padding:12px}
 
 /* ---- PNG生成プレビュー ---- */

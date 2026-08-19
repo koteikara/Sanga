@@ -39,6 +39,11 @@
         <label for="field-kickoff">日付・キックオフ・会場</label>
         <input type="text" id="field-kickoff" value="2026.05.02 SAT 14:00 / サンガS">
       </div>
+      <div class="field-row">
+        <label for="field-poster">投稿者名（画像に表示されます）</label>
+        <input type="text" id="field-poster" placeholder="例：さんが太郎" maxlength="20">
+        <p class="field-note">本名やSNSのパスワードなど、知られたくない情報は入れないでください。</p>
+      </div>
     </section>
 
     <section>
@@ -170,6 +175,7 @@
               <div class="bench" id="bench"></div>
             </div>
           </div>
+          <div class="poster-name" id="meta-poster" hidden></div>
           <div class="disclaimer">
 非公式のファン作成コンテンツです。実際のメンバーとは関係ありません。 / 作成: sangasanga.stars.ne.jp
           </div>

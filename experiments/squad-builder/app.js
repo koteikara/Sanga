@@ -23,6 +23,7 @@ const state = {
   matchInfo: "2026 明治安田J1リーグ 第10節 vs ○○",
   coach: "チョウ キジェ",
   kickoff: "2026.05.02 SAT 14:00 / サンガS",
+  poster: "", // 投稿者名。誰の予想かを画像に残すために使う
   style: "modern",
   showJa: true,
   showPill: true,
@@ -88,6 +89,7 @@ const subtitleEl = $("#sq-subtitle");
 const titleTextEl = $("#sq-title-text");
 const coachEl = $("#meta-coach");
 const kickoffEl = $("#meta-kickoff");
+const posterEl = $("#meta-poster");
 const formationNumEl = $("#formation-num");
 
 const pickerBackdrop = $("#picker-backdrop");
@@ -268,6 +270,10 @@ function renderMeta() {
   subtitleEl.textContent = state.matchInfo;
   coachEl.textContent = state.coach;
   kickoffEl.textContent = state.kickoff;
+  // 投稿者名は入力があるときだけ出す
+  const poster = state.poster.trim();
+  posterEl.textContent = poster ? `予想: ${poster}` : "";
+  posterEl.hidden = !poster;
   canvas.dataset.style = state.style;
   document.body.classList.toggle("show-ja", state.showJa);
   document.body.classList.toggle("show-pill", state.showPill);
@@ -629,6 +635,7 @@ function saveSquad(name) {
     matchInfo: state.matchInfo,
     coach: state.coach,
     kickoff: state.kickoff,
+    poster: state.poster,
     style: state.style,
     showJa: state.showJa,
     showPill: state.showPill,
@@ -653,6 +660,7 @@ function loadSquad(name) {
   state.matchInfo = data.matchInfo;
   state.coach = data.coach;
   state.kickoff = data.kickoff;
+  state.poster = data.poster || "";
   state.style = data.style;
   state.showJa = data.showJa;
   state.showPill = data.showPill;
@@ -662,6 +670,7 @@ function loadSquad(name) {
   $("#field-match").value = state.matchInfo;
   $("#field-coach").value = state.coach;
   $("#field-kickoff").value = state.kickoff;
+  $("#field-poster").value = state.poster;
   $("#field-style").value = state.style;
   $("#tg-ja").checked = state.showJa;
   $("#tg-pill").checked = state.showPill;
@@ -727,6 +736,10 @@ function wireControls() {
   });
   $("#field-kickoff").addEventListener("input", (e) => {
     state.kickoff = e.target.value;
+    renderMeta();
+  });
+  $("#field-poster").addEventListener("input", (e) => {
+    state.poster = e.target.value;
     renderMeta();
   });
   $("#field-style").addEventListener("change", (e) => {
