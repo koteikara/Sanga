@@ -46,7 +46,7 @@
 | --- | --- |
 | 素材 | 公式の背番号一覧画像から、背番号タイルを切り出して使う |
 | 配置 | `public/assets/players/<背番号>.webp` |
-| 切り出し | 一覧画像を分割するスクリプトを `tools/` に用意し、一括生成する |
+| 切り出し | `tools/crop-player-numbers.js` で一括生成する（実行にPlaywrightが必要） |
 | 未取得の選手 | 同じ配色の「背番号＋名前」のプレースホルダーをCSSで生成する |
 
 顔写真ではなく背番号タイルを使う判断は、素材の扱いが単純になることと、切り出しを機械的に行えることによります。
@@ -179,17 +179,19 @@ http://localhost:4173/experiments/squad-builder/design-mockup.html
 
 ## 実装済み
 
-- 選手データのCSVテンプレートと生成・検証ツール（`tools/generate-players-from-csv.js` / `tools/validate-players.js`）
+- 選手データのCSVと生成・検証ツール（`tools/generate-players-from-csv.js` / `tools/validate-players.js`）
+- 背番号タイルの切り出し（`tools/crop-player-numbers.js`、38件を `public/assets/players/` へ）
 - 操作プロトタイプ（フォーメーション選択、選手選択、位置の微調整、保存と呼び出し）
 - `modern-screenshot` による9:16のPNG生成
 
 ## 次の作業
 
-1. 選手データの暫定値を公式サイトで確認して修正する（ポジション、日本語名、国籍）
-2. 背番号一覧画像を受領し、切り出しスクリプトを作る
-3. 実機での操作確認を行う（`docs/ai/BROWSER_CHECKLIST.md` に沿って目視確認）
-4. 確認後に `public/squad.html` として公開し、ライブラリを `public/assets/vendor/` へ移す
+1. 実機での操作確認を行う（`docs/ai/BROWSER_CHECKLIST.md` に沿って目視確認）
+2. 同じ選手を複数の位置に置けるかどうかを決める
+3. `public/squad.html` として公開し、ライブラリを `public/assets/vendor/` へ移す
 
-### 注意
+### 選手データについて
 
-選手データのポジション、日本語名、国籍は現在すべて暫定値です。公式サイトを確認して `docs/sheets/players.csv` を修正し、JSONを再生成する必要があります。修正前の状態では、カード上の日本語名に「（暫定）」と表示されます。
+国籍は、いただいた選手一覧の出生地から判断しています（ブラジル→br、大韓民国→kr、イタリア→it、国内の都道府県→jp）。**出生地と国籍は必ずしも一致しない**ため、正確を期す場合は公式の表記で確認してください。
+
+背番号90 ハウス は選手一覧にありますが背番号一覧画像には含まれないため、タイル画像がありません。カードではプレースホルダー表示になります。

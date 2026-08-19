@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-18",
+  "updatedAt": "2026-08-19",
   "source": "京都サンガF.C. 公式サイト",
   "players": [
     {
       "number": "1",
       "nameEn": "GAKUJI",
-      "nameJa": "（暫定）",
+      "nameJa": "太田 岳志",
       "nameKana": "",
       "position": "GK",
       "nationality": "jp",
@@ -15,7 +15,7 @@
     {
       "number": "2",
       "nameEn": "FUKUDA",
-      "nameJa": "（暫定）",
+      "nameJa": "福田 心之助",
       "nameKana": "",
       "position": "DF",
       "nationality": "jp",
@@ -25,7 +25,7 @@
     {
       "number": "5",
       "nameEn": "API",
-      "nameJa": "（暫定）",
+      "nameJa": "アピアタウィア 久",
       "nameKana": "",
       "position": "DF",
       "nationality": "jp",
@@ -35,9 +35,9 @@
     {
       "number": "6",
       "nameEn": "JOÃO PEDRO",
-      "nameJa": "（暫定）",
+      "nameJa": "ジョアン ペドロ",
       "nameKana": "",
-      "position": "DF",
+      "position": "MF",
       "nationality": "br",
       "image": "",
       "isMascot": false
@@ -45,7 +45,7 @@
     {
       "number": "7",
       "nameEn": "MASAYA",
-      "nameJa": "（暫定）",
+      "nameJa": "奥川 雅也",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -55,7 +55,7 @@
     {
       "number": "8",
       "nameEn": "YONEMOTO",
-      "nameJa": "（暫定）",
+      "nameJa": "米本 拓司",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -65,7 +65,7 @@
     {
       "number": "9",
       "nameEn": "RAFAEL",
-      "nameJa": "（暫定）",
+      "nameJa": "ラファエル エリアス",
       "nameKana": "",
       "position": "FW",
       "nationality": "br",
@@ -75,7 +75,7 @@
     {
       "number": "10",
       "nameEn": "SHIMPEI",
-      "nameJa": "（暫定）",
+      "nameJa": "福岡 慎平",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -85,7 +85,7 @@
     {
       "number": "11",
       "nameEn": "M.TÚLIO",
-      "nameJa": "（暫定）",
+      "nameJa": "マルコ トゥーリオ",
       "nameKana": "",
       "position": "FW",
       "nationality": "br",
@@ -95,9 +95,9 @@
     {
       "number": "14",
       "nameEn": "THIAGO",
-      "nameJa": "（暫定）",
+      "nameJa": "チアゴ",
       "nameKana": "",
-      "position": "FW",
+      "position": "MF",
       "nationality": "br",
       "image": "",
       "isMascot": false
@@ -105,7 +105,7 @@
     {
       "number": "15",
       "nameEn": "NAGATA",
-      "nameJa": "（暫定）",
+      "nameJa": "永田 倖大",
       "nameKana": "",
       "position": "DF",
       "nationality": "jp",
@@ -115,7 +115,7 @@
     {
       "number": "16",
       "nameEn": "TAIYO",
-      "nameJa": "（暫定）",
+      "nameJa": "平岡 大陽",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -125,9 +125,9 @@
     {
       "number": "17",
       "nameEn": "ALEX SOUZA",
-      "nameJa": "（暫定）",
+      "nameJa": "アレックス ソウザ",
       "nameKana": "",
-      "position": "MF",
+      "position": "FW",
       "nationality": "br",
       "image": "",
       "isMascot": false
@@ -135,7 +135,7 @@
     {
       "number": "18",
       "nameEn": "TEMMA",
-      "nameJa": "（暫定）",
+      "nameJa": "松田 天馬",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -145,17 +145,17 @@
     {
       "number": "19",
       "nameEn": "DAVID",
-      "nameJa": "（暫定）",
+      "nameJa": "デイビッジ シルバ",
       "nameKana": "",
       "position": "FW",
-      "nationality": "jp",
+      "nationality": "br",
       "image": "",
       "isMascot": false
     },
     {
       "number": "21",
       "nameEn": "KAKOI",
-      "nameJa": "（暫定）",
+      "nameJa": "圍 謙太朗",
       "nameKana": "",
       "position": "GK",
       "nationality": "jp",
@@ -165,9 +165,9 @@
     {
       "number": "23",
       "nameEn": "KATO",
-      "nameJa": "（暫定）",
+      "nameJa": "加藤 拓己",
       "nameKana": "",
-      "position": "DF",
+      "position": "FW",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -175,9 +175,9 @@
     {
       "number": "25",
       "nameEn": "YOON",
-      "nameJa": "（暫定）",
+      "nameJa": "尹 星俊",
       "nameKana": "",
-      "position": "DF",
+      "position": "MF",
       "nationality": "kr",
       "image": "",
       "isMascot": false
@@ -185,7 +185,7 @@
     {
       "number": "26",
       "nameEn": "REN",
-      "nameJa": "（暫定）",
+      "nameJa": "加藤 蓮",
       "nameKana": "",
       "position": "DF",
       "nationality": "jp",
@@ -195,9 +195,9 @@
     {
       "number": "29",
       "nameEn": "KOU",
-      "nameJa": "（暫定）",
+      "nameJa": "酒井 滉生",
       "nameKana": "",
-      "position": "MF",
+      "position": "FW",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -205,9 +205,9 @@
     {
       "number": "31",
       "nameEn": "HIRAGA",
-      "nameJa": "（暫定）",
+      "nameJa": "平賀 大空",
       "nameKana": "",
-      "position": "GK",
+      "position": "FW",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -215,9 +215,9 @@
     {
       "number": "32",
       "nameEn": "SAITO",
-      "nameJa": "（暫定）",
+      "nameJa": "齊藤 未月",
       "nameKana": "",
-      "position": "DF",
+      "position": "MF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -225,7 +225,7 @@
     {
       "number": "34",
       "nameEn": "H.TREVISAN",
-      "nameJa": "（暫定）",
+      "nameJa": "エンリケ トレヴィザン",
       "nameKana": "",
       "position": "DF",
       "nationality": "br",
@@ -235,17 +235,17 @@
     {
       "number": "36",
       "nameEn": "FANTINI",
-      "nameJa": "（暫定）",
+      "nameJa": "ファンティーニ 燦",
       "nameKana": "",
-      "position": "FW",
-      "nationality": "br",
+      "position": "GK",
+      "nationality": "it",
       "image": "",
       "isMascot": false
     },
     {
       "number": "38",
       "nameEn": "E.MACEIÓ",
-      "nameJa": "（暫定）",
+      "nameJa": "エベルトン マセイオ",
       "nameKana": "",
       "position": "FW",
       "nationality": "br",
@@ -255,7 +255,7 @@
     {
       "number": "39",
       "nameEn": "TAIKI",
-      "nameJa": "（暫定）",
+      "nameJa": "平戸 太貴",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -265,9 +265,9 @@
     {
       "number": "40",
       "nameEn": "ISHIDA",
-      "nameJa": "（暫定）",
+      "nameJa": "石田 侑資",
       "nameKana": "",
-      "position": "GK",
+      "position": "DF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -275,9 +275,9 @@
     {
       "number": "43",
       "nameEn": "WEVERTON",
-      "nameJa": "（暫定）",
+      "nameJa": "ウェベルトン",
       "nameKana": "",
-      "position": "FW",
+      "position": "DF",
       "nationality": "br",
       "image": "",
       "isMascot": false
@@ -285,7 +285,7 @@
     {
       "number": "44",
       "nameEn": "KYO",
-      "nameJa": "（暫定）",
+      "nameJa": "佐藤 響",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -295,9 +295,9 @@
     {
       "number": "48",
       "nameEn": "NAKANO",
-      "nameJa": "（暫定）",
+      "nameJa": "中野 瑠馬",
       "nameKana": "",
-      "position": "DF",
+      "position": "MF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -305,9 +305,9 @@
     {
       "number": "50",
       "nameEn": "NORI",
-      "nameJa": "（暫定）",
+      "nameJa": "鈴木 義宜",
       "nameKana": "",
-      "position": "GK",
+      "position": "DF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -315,7 +315,7 @@
     {
       "number": "60",
       "nameEn": "YAMANAKA",
-      "nameJa": "（暫定）",
+      "nameJa": "山中 亮輔",
       "nameKana": "",
       "position": "DF",
       "nationality": "jp",
@@ -325,7 +325,7 @@
     {
       "number": "77",
       "nameEn": "HARUKI",
-      "nameJa": "（暫定）",
+      "nameJa": "新井 晴樹",
       "nameKana": "",
       "position": "MF",
       "nationality": "jp",
@@ -333,9 +333,19 @@
       "isMascot": false
     },
     {
+      "number": "90",
+      "nameEn": "HAUS",
+      "nameJa": "ハウス",
+      "nameKana": "",
+      "position": "GK",
+      "nationality": "br",
+      "image": "",
+      "isMascot": false
+    },
+    {
       "number": "93",
       "nameEn": "NAGASAWA",
-      "nameJa": "（暫定）",
+      "nameJa": "長沢 駿",
       "nameKana": "",
       "position": "FW",
       "nationality": "jp",
@@ -345,9 +355,9 @@
     {
       "number": "94",
       "nameEn": "MURAKAMI",
-      "nameJa": "（暫定）",
+      "nameJa": "村上 昌謙",
       "nameKana": "",
-      "position": "MF",
+      "position": "GK",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -355,9 +365,9 @@
     {
       "number": "99",
       "nameEn": "FUCHI",
-      "nameJa": "（暫定）",
+      "nameJa": "本田 風智",
       "nameKana": "",
-      "position": "DF",
+      "position": "MF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -365,7 +375,7 @@
     {
       "number": "83",
       "nameEn": "PURSA",
-      "nameJa": "（暫定）",
+      "nameJa": "パーサ",
       "nameKana": "",
       "position": "",
       "nationality": "jp",
@@ -375,7 +385,7 @@
     {
       "number": "510",
       "nameEn": "KOTONO",
-      "nameJa": "（暫定）",
+      "nameJa": "コトノ",
       "nameKana": "",
       "position": "",
       "nationality": "jp",
