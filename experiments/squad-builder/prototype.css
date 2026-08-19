@@ -308,7 +308,7 @@ body{
 .line-row{display:flex;justify-content:space-evenly;align-items:center;position:relative;z-index:2}
 
 /* ---- 選手カード ---- */
-.player{display:flex;flex-direction:column;align-items:center;gap:.8cqw}
+.player{display:flex;flex-direction:column;align-items:center;gap:0}
 .card{
   height:var(--card-h, 24cqw);
   width:auto;
@@ -410,8 +410,11 @@ body:not(.show-ja) .name-ja{display:none}
 .flag-it{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23009246%22%2F%3E%3Crect%20x%3D%2220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%2240%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce2b37%22%2F%3E%3C%2Fsvg%3E")}
 
 
-/* ポジションのピル */
+/* ポジションのピル。カード下端の尖りに半分重ねる */
 .pos-pill{
+  position:relative;
+  top:-1.6cqw;
+  z-index:6;
   font-size:1.8cqw;font-weight:800;letter-spacing:.08em;
   background:linear-gradient(180deg,#5b1a7d,#2b0a3d);
   color:#eadcff;border:1px solid rgba(255,255,255,.28);
@@ -541,7 +544,7 @@ button{
   left:0;top:0;
   z-index:2; /* ピッチの光と周辺減光の層より前に出す */
   transform:translate(-50%,-50%);
-  display:flex;flex-direction:column;align-items:center;gap:.8cqw;
+  display:flex;flex-direction:column;align-items:center;gap:0;
   touch-action:none; /* ポインタでドラッグするため、ブラウザ既定のスクロール/ズームを止める */
   cursor:grab;
   padding:2px;
