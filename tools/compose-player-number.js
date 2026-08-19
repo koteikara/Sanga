@@ -248,28 +248,30 @@ async function main() {
         if (label) {
           const chars = label.split("");
           const haveAll = chars.every((ch) => ch === " " || letterAtlas[ch]);
-          const labelH = Math.round(H * 0.105);
-          const labelBottom = Math.round(H * 0.90);
+          const labelBottom = Math.round(H * 0.90); // 字形が足りないときの描画位置
 
           if (haveAll) {
-            // 文字ごとの高さの比率を保つため、大文字の高さを基準にそろえる
-            const heights = chars.filter((ch) => ch !== " ").map((ch) => letterAtlas[ch].h);
-            const baseH = heights.sort((a, b) => a - b)[Math.floor(heights.length / 2)];
-            const scale = labelH / baseH;
-            const spacing = Math.round(W * 0.012);
+            // タイルの寸法はどれも同じなので、拡縮せず原寸のまま置く。
+            // これで文字の大きさと太さが既存タイルと完全に一致する。
+            const spacing = Math.round(W * 0.014);
             const spaceWidth = Math.round(W * 0.03);
             const items = chars.map((ch) => {
               if (ch === " ") return { space: true, w: spaceWidth };
               const gl = letterAtlas[ch];
-              return { gl, w: Math.round(gl.w * scale), h: Math.round(gl.h * scale) };
+              return { gl, w: gl.w, h: gl.h };
             });
             const totalW =
               items.reduce((a, it) => a + it.w, 0) + spacing * (items.length - 1);
+            // 縦位置も元のタイルに合わせる（大文字の下端がそろう位置を使う）
+            const bottoms = chars
+              .filter((ch) => ch !== " ")
+              .map((ch) => letterAtlas[ch].y + letterAtlas[ch].h)
+              .sort((a, b) => a - b);
+            const baseline = bottoms[Math.floor(bottoms.length / 2)];
             let lx = Math.round((W - totalW) / 2);
             items.forEach((it) => {
               if (!it.space) {
-                // 大文字は下端がそろうため、下端を基準に置く
-                g.drawImage(it.gl.img, it.gl.x, it.gl.y, it.gl.w, it.gl.h, lx, labelBottom - it.h, it.w, it.h);
+                g.drawImage(it.gl.img, it.gl.x, it.gl.y, it.gl.w, it.gl.h, lx, baseline - it.h, it.w, it.h);
               }
               lx += it.w + spacing;
             });
