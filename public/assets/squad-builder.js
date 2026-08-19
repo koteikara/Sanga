@@ -20,9 +20,7 @@ const state = {
   slots: cloneSlots(FORMATIONS["4-4-2"].slots), // 各要素に playerNumber を持たせる
   bench: new Array(BENCH_SIZE).fill(null),
   title: "予想スタメン",
-  matchInfo: "2026 明治安田J1リーグ 第10節 vs ○○",
-  coach: "チョウ キジェ",
-  kickoff: "2026.05.02 SAT 14:00 / サンガS",
+  matchInfo: "", // 年間スケジュールから選んだ試合の表示文。未選択なら空
   poster: "", // 投稿者名。誰の予想かを画像に残すために使う
   style: "modern",
   showJa: true,
@@ -87,8 +85,6 @@ const benchEl = $("#bench");
 const formationGrid = $("#formation-grid");
 const subtitleEl = $("#sq-subtitle");
 const titleTextEl = $("#sq-title-text");
-const coachEl = $("#meta-coach");
-const kickoffEl = $("#meta-kickoff");
 const posterEl = $("#meta-poster");
 const formationNumEl = $("#formation-num");
 
@@ -179,6 +175,57 @@ function cardMarkup(player, posLabelFallback) {
 /** 背番号タイル画像の場所。公開ページへ移す際はここだけ変える */
 const PLAYER_IMAGE_BASE = "assets/players/";
 
+/* ------------------------------------------------------------------
+   試合の選択肢。年間スケジュールの公開JSONから作る
+------------------------------------------------------------------ */
+
+/** 試合1件を、画像に載せる1行の文にする */
+function matchLabel(match) {
+  // 1行に収めたいので、月日までにして時刻は入れない
+  const date = match.match_date
+    ? `${Number(match.match_date.slice(5, 7))}/${Number(match.match_date.slice(8, 10))}`
+    : "";
+  const head = [match.competition_label, match.round].filter(Boolean).join(" ");
+  const versus = match.opponent ? `vs ${match.opponent}` : "";
+  return [date, head, versus].filter(Boolean).join(" ");
+}
+
+/** 年間スケジュールを読んで、試合の選択肢を並べる */
+async function loadMatchOptions() {
+  const select = $("#field-match");
+  if (!select) return;
+  try {
+    const res = await fetch("data/matches.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    const matches = (data.matches || []).filter((m) => m.is_visible !== false);
+    matches.forEach((m) => {
+      const label = matchLabel(m);
+      if (!label) return;
+      const option = document.createElement("option");
+      option.value = label;
+      option.textContent = label;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    // 日程が読めなくても、指定しないまま作成はできる
+    console.info("[squad-builder] data/matches.json を読み込めないため、試合の選択肢は空です。", err);
+  }
+}
+
+/** 保存データから復元するとき、一覧に無い文字列でも選べるようにする */
+function setMatchSelectValue(value) {
+  const select = $("#field-match");
+  if (!select) return;
+  if (value && ![...select.options].some((o) => o.value === value)) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  }
+  select.value = value || "";
+}
+
 function playerImageSrc(player) {
   if (player.image) {
     // players.json の image は public/ からの相対で持つため、その分をさかのぼる
@@ -253,9 +300,10 @@ function renderBench() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "bench-slot" + (player ? "" : " is-empty");
+    // 空き枠は画像の中で場所を取らないよう、記号だけにする
     btn.innerHTML = player
       ? `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`
-      : `控え${index + 1}：未選択`;
+      : "＋";
     btn.setAttribute(
       "aria-label",
       player ? `控え${index + 1}：${player.nameEn} を変更` : `控え${index + 1} に選手を選ぶ`
@@ -268,8 +316,6 @@ function renderBench() {
 function renderMeta() {
   titleTextEl.textContent = state.title;
   subtitleEl.textContent = state.matchInfo;
-  coachEl.textContent = state.coach;
-  kickoffEl.textContent = state.kickoff;
   // 投稿者名は入力があるときだけ出す
   const poster = state.poster.trim();
   posterEl.textContent = poster ? `予想: ${poster}` : "";
@@ -328,7 +374,24 @@ function countRows(slots) {
   return bands.map((b) => b.count);
 }
 
+/** 1行に収まらない見出しを、収まるまで文字サイズを下げる */
+function fitOneLine(el) {
+  el.style.fontSize = "";
+  const base = parseFloat(getComputedStyle(el).fontSize);
+  const avail = el.parentElement.clientWidth;
+  if (!avail) return;
+  let size = base;
+  const min = base * 0.6;
+  while (el.scrollWidth > avail && size > min) {
+    size -= base * 0.04;
+    el.style.fontSize = `${size}px`;
+  }
+}
+
 function fitNames() {
+  [subtitleEl, titleTextEl].forEach((el) => {
+    if (el) fitOneLine(el);
+  });
   $$(".name-en,.name-ja,.tile span", pitchEl).forEach((el) => {
     el.style.fontSize = "";
     el.style.transform = "";
@@ -633,8 +696,6 @@ function saveSquad(name) {
     bench: state.bench,
     title: state.title,
     matchInfo: state.matchInfo,
-    coach: state.coach,
-    kickoff: state.kickoff,
     poster: state.poster,
     style: state.style,
     showJa: state.showJa,
@@ -658,8 +719,6 @@ function loadSquad(name) {
   state.bench = data.bench;
   state.title = data.title;
   state.matchInfo = data.matchInfo;
-  state.coach = data.coach;
-  state.kickoff = data.kickoff;
   state.poster = data.poster || "";
   state.style = data.style;
   state.showJa = data.showJa;
@@ -667,9 +726,7 @@ function loadSquad(name) {
   state.showMascot = data.showMascot;
 
   $("#field-title").value = state.title;
-  $("#field-match").value = state.matchInfo;
-  $("#field-coach").value = state.coach;
-  $("#field-kickoff").value = state.kickoff;
+  setMatchSelectValue(state.matchInfo);
   $("#field-poster").value = state.poster;
   $("#field-style").value = state.style;
   $("#tg-ja").checked = state.showJa;
@@ -726,16 +783,8 @@ function wireControls() {
     state.title = e.target.value;
     renderMeta();
   });
-  $("#field-match").addEventListener("input", (e) => {
+  $("#field-match").addEventListener("change", (e) => {
     state.matchInfo = e.target.value;
-    renderMeta();
-  });
-  $("#field-coach").addEventListener("input", (e) => {
-    state.coach = e.target.value;
-    renderMeta();
-  });
-  $("#field-kickoff").addEventListener("input", (e) => {
-    state.kickoff = e.target.value;
     renderMeta();
   });
   $("#field-poster").addEventListener("input", (e) => {
@@ -777,11 +826,25 @@ function wireControls() {
 ------------------------------------------------------------------ */
 async function init() {
   players = await loadPlayers();
+  await loadMatchOptions();
   buildFormationButtons();
   wireControls();
   renderSaveList();
   renderAll();
   window.addEventListener("resize", () => requestAnimationFrame(layoutPitch));
+  // ベンチの行数や見出しの行数が変わるとピッチの高さも変わる。
+  // そのたびにカードの寸法を計算し直す。
+  if (window.ResizeObserver) {
+    let scheduled = false;
+    new ResizeObserver(() => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        layoutPitch();
+      });
+    }).observe(pitchEl);
+  }
   document.fonts && document.fonts.ready.then(() => requestAnimationFrame(layoutPitch));
 }
 init();
