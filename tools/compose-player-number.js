@@ -4,12 +4,14 @@
  *
  *   NODE_PATH=$(npm root -g) node tools/compose-player-number.js --number 90 --label HAUS
  *
- * 既存タイル（public/assets/players/*.webp）から数字の字形を切り出して並べ、
- * 下に名前を描いて1枚のタイルにする。字形は元画像のものをそのまま使うため、
- * 数字の見た目は他のタイルと揃う。名前の書体だけは元画像と完全には一致しない。
+ * 既存タイル（public/assets/players/*.webp）から数字と名前の字形を切り出して
+ * 並べ、1枚のタイルにする。字形は元画像のものをそのまま使うため、見た目が
+ * 他のタイルと揃う。
  *
- * 数字の字形は、タイル上部の明るい画素のかたまりを桁ごとに切り出して集める。
- * 例えばタイル「10」からは「1」と「0」が得られる。
+ * 数字はタイル上部、名前はタイル下部から、明るい画素のかたまりを1文字ずつ
+ * 切り出して集める。例えばタイル「10 SHIMPEI」からは数字の「1」「0」と、
+ * 文字の「S」「H」「I」「M」「P」「E」「I」が得られる。
+ * 名前の字形が揃わない場合に限り、その文字だけサンセリフで描く。
  */
 
 const fs = require("fs");
@@ -18,8 +20,30 @@ const http = require("http");
 
 const DEFAULT_DIR = "public/assets/players";
 
-/** 字形を取り出す元にするタイル。1桁ずつ確実に取れるものを選ぶ */
-const GLYPH_SOURCES = ["1", "2", "5", "6", "7", "8", "9", "10", "40"];
+/** 数字の字形を取り出す元にするタイル。1桁ずつ確実に取れるものを選ぶ */
+const DIGIT_SOURCES = ["1", "2", "5", "6", "7", "8", "9", "10", "40"];
+
+/** 名前の字形の取得元。players.json の nameEn とタイルの表記が一致する前提で読む */
+const PLAYERS_JSON = "public/data/players.json";
+
+/** 名前の字形を集めるとき、記号や合成文字を含むものは扱いにくいので除く */
+function isPlainLabel(text) {
+  return /^[A-Z ]+$/.test(text);
+}
+
+/** players.json から「背番号 → 名前」を読む。無い場合は名前の切り貼りをあきらめる */
+function readLabelSources(dir) {
+  if (!fs.existsSync(PLAYERS_JSON)) return [];
+  try {
+    const data = JSON.parse(fs.readFileSync(PLAYERS_JSON, "utf8"));
+    return (data.players || [])
+      .filter((p) => isPlainLabel(p.nameEn || ""))
+      .filter((p) => fs.existsSync(path.join(dir, `${p.number}.webp`)))
+      .map((p) => ({ number: p.number, label: p.nameEn }));
+  } catch (err) {
+    return [];
+  }
+}
 
 function parseArgs(argv) {
   const opts = { number: null, label: "", dir: DEFAULT_DIR };
@@ -78,7 +102,7 @@ async function main() {
     process.exit(1);
   }
 
-  const missing = GLYPH_SOURCES.filter((n) => !fs.existsSync(path.join(opts.dir, `${n}.webp`)));
+  const missing = DIGIT_SOURCES.filter((n) => !fs.existsSync(path.join(opts.dir, `${n}.webp`)));
   if (missing.length) {
     console.error(`字形の元にするタイルが足りません: ${missing.join(", ")}`);
     console.error("先に node tools/crop-player-numbers.js を実行してください。");
@@ -93,7 +117,7 @@ async function main() {
     await page.goto(`${base}/`);
 
     const dataUrl = await page.evaluate(
-      async ({ base, sources, number, label }) => {
+      async ({ base, sources, labelSources, number, label }) => {
         const load = async (name) => {
           const img = new Image();
           img.src = `${base}/${name}.webp`;
@@ -101,17 +125,21 @@ async function main() {
           return img;
         };
 
-        /** 画像を読み、上部の数字帯から桁ごとの字形を切り出す */
-        const readGlyphs = async (name) => {
+        /**
+         * 画像を読み、指定した帯から1文字ずつ字形を切り出す。
+         * bandTop / bandBottom は画像の高さに対する割合で与える。
+         */
+        const readGlyphs = async (name, bandTopRatio, bandBottomRatio, minWidth) => {
           const img = await load(name);
           const c = document.createElement("canvas");
           c.width = img.width;
           c.height = img.height;
           const ctx = c.getContext("2d");
           ctx.drawImage(img, 0, 0);
-          // 数字は上寄りにあるため、下の名前部分は見ない
-          const bandBottom = Math.round(img.height * 0.72);
-          const data = ctx.getImageData(0, 0, img.width, bandBottom).data;
+          const bandTop = Math.round(img.height * bandTopRatio);
+          const bandBottom = Math.round(img.height * bandBottomRatio);
+          const bandHeight = bandBottom - bandTop;
+          const data = ctx.getImageData(0, bandTop, img.width, bandHeight).data;
           const bright = (x, y) => {
             const i = (y * img.width + x) * 4;
             return data[i] > 170 && data[i + 1] > 170 && data[i + 2] > 170;
@@ -120,7 +148,7 @@ async function main() {
           const cols = [];
           for (let x = 0; x < img.width; x += 1) {
             let hit = false;
-            for (let y = 0; y < bandBottom; y += 1) {
+            for (let y = 0; y < bandHeight; y += 1) {
               if (bright(x, y)) { hit = true; break; }
             }
             cols.push(hit);
@@ -131,36 +159,47 @@ async function main() {
             if (x < img.width && cols[x]) {
               if (start < 0) start = x;
             } else if (start >= 0) {
-              if (x - start > 4) groups.push([start, x]);
+              if (x - start >= minWidth) groups.push([start, x]);
               start = -1;
             }
           }
-          // 各桁の上下も詰める
+          // 各文字の上下も詰める
           return groups.map(([x0, x1]) => {
-            let y0 = bandBottom;
+            let y0 = bandHeight;
             let y1 = 0;
             for (let x = x0; x < x1; x += 1) {
-              for (let y = 0; y < bandBottom; y += 1) {
+              for (let y = 0; y < bandHeight; y += 1) {
                 if (bright(x, y)) {
                   if (y < y0) y0 = y;
                   if (y > y1) y1 = y;
                 }
               }
             }
-            return { img, x: x0, y: y0, w: x1 - x0, h: y1 - y0 + 1 };
+            return { img, x: x0, y: bandTop + y0, w: x1 - x0, h: y1 - y0 + 1 };
           });
         };
 
-        // 字形の辞書を作る（タイルの背番号の並びと、切り出した桁の並びを対応させる）
+        // 数字の辞書（タイルの背番号の並びと、切り出した桁の並びを対応させる）
         const atlas = {};
         let sample = null;
         for (const name of sources) {
-          const glyphs = await readGlyphs(name);
+          const glyphs = await readGlyphs(name, 0, 0.72, 5);
           if (!sample) sample = await load(name);
           const digits = name.split("");
           if (glyphs.length !== digits.length) continue; // 桁数が合わないものは使わない
           digits.forEach((d, i) => {
             if (!atlas[d]) atlas[d] = glyphs[i];
+          });
+        }
+
+        // 名前の辞書（タイル下部の名前の並びと、切り出した文字の並びを対応させる）
+        const letterAtlas = {};
+        for (const src of labelSources || []) {
+          const letters = src.label.replace(/ /g, "").split("");
+          const glyphs = await readGlyphs(src.number, 0.72, 1, 2);
+          if (glyphs.length !== letters.length) continue; // 文字数が合わないものは使わない
+          letters.forEach((ch, i) => {
+            if (!letterAtlas[ch]) letterAtlas[ch] = glyphs[i];
           });
         }
 
@@ -204,21 +243,58 @@ async function main() {
           x += p.w + gap;
         });
 
-        // 名前。元画像の書体とは一致しないため、太めのサンセリフで近づける
+        // 名前。既存タイルから同じ文字を切り出して並べる
+        const usedFallback = [];
         if (label) {
-          g.fillStyle = "#ffffff";
-          g.textAlign = "center";
-          g.textBaseline = "alphabetic";
-          const size = Math.round(H * 0.125);
-          g.font = `bold ${size}px "DejaVu Sans", Arial, sans-serif`;
-          // 元のタイルは字間が広めなので合わせる
-          if ("letterSpacing" in g) g.letterSpacing = `${Math.round(size * 0.06)}px`;
-          g.fillText(label, W / 2, Math.round(H * 0.90));
+          const chars = label.split("");
+          const haveAll = chars.every((ch) => ch === " " || letterAtlas[ch]);
+          const labelH = Math.round(H * 0.105);
+          const labelBottom = Math.round(H * 0.90);
+
+          if (haveAll) {
+            // 文字ごとの高さの比率を保つため、大文字の高さを基準にそろえる
+            const heights = chars.filter((ch) => ch !== " ").map((ch) => letterAtlas[ch].h);
+            const baseH = heights.sort((a, b) => a - b)[Math.floor(heights.length / 2)];
+            const scale = labelH / baseH;
+            const spacing = Math.round(W * 0.012);
+            const spaceWidth = Math.round(W * 0.03);
+            const items = chars.map((ch) => {
+              if (ch === " ") return { space: true, w: spaceWidth };
+              const gl = letterAtlas[ch];
+              return { gl, w: Math.round(gl.w * scale), h: Math.round(gl.h * scale) };
+            });
+            const totalW =
+              items.reduce((a, it) => a + it.w, 0) + spacing * (items.length - 1);
+            let lx = Math.round((W - totalW) / 2);
+            items.forEach((it) => {
+              if (!it.space) {
+                // 大文字は下端がそろうため、下端を基準に置く
+                g.drawImage(it.gl.img, it.gl.x, it.gl.y, it.gl.w, it.gl.h, lx, labelBottom - it.h, it.w, it.h);
+              }
+              lx += it.w + spacing;
+            });
+          } else {
+            // 足りない文字がある場合だけ、サンセリフで描く
+            usedFallback.push(...chars.filter((ch) => ch !== " " && !letterAtlas[ch]));
+            g.fillStyle = "#ffffff";
+            g.textAlign = "center";
+            g.textBaseline = "alphabetic";
+            const size = Math.round(H * 0.125);
+            g.font = `bold ${size}px "DejaVu Sans", Arial, sans-serif`;
+            if ("letterSpacing" in g) g.letterSpacing = `${Math.round(size * 0.06)}px`;
+            g.fillText(label, W / 2, labelBottom);
+          }
         }
 
-        return { dataUrl: out.toDataURL("image/webp", 0.92) };
+        return { dataUrl: out.toDataURL("image/webp", 0.92), usedFallback };
       },
-      { base, sources: GLYPH_SOURCES, number: opts.number, label: opts.label }
+      {
+        base,
+        sources: DIGIT_SOURCES,
+        labelSources: readLabelSources(opts.dir).filter((p) => p.number !== opts.number),
+        number: opts.number,
+        label: opts.label,
+      }
     );
 
     if (dataUrl.error) {
@@ -229,7 +305,11 @@ async function main() {
     const outPath = path.join(opts.dir, `${opts.number}.webp`);
     fs.writeFileSync(outPath, Buffer.from(dataUrl.dataUrl.split(",")[1], "base64"));
     console.log(`背番号${opts.number}のタイルを作成しました: ${outPath}`);
-    console.log("数字は既存タイルの字形、名前はサンセリフで描いています。");
+    if (dataUrl.usedFallback && dataUrl.usedFallback.length) {
+      console.log(`次の文字は既存タイルに無いため、サンセリフで描きました: ${dataUrl.usedFallback.join(", ")}`);
+    } else {
+      console.log("数字と名前のどちらも既存タイルの字形を使っています。");
+    }
   } finally {
     await browser.close();
     server.close();
