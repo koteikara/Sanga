@@ -160,7 +160,6 @@ function cardMarkup(player, posLabelFallback) {
   const tileSrc = playerImageSrc(player);
   return `
     <div class="card${player.isMascot ? " mascot" : ""}"><div class="card-inner">
-      <div class="card-meta"><div class="card-num">${escapeHtml(player.number)}</div><div class="card-pos">${escapeHtml(player.position || "")}</div></div>
       <div class="card-split"></div>
       <div class="card-photo">
         <div class="tile"><b>${escapeHtml(player.number)}</b><span>${escapeHtml(player.nameEn)}</span></div>

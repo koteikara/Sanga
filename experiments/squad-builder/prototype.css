@@ -329,7 +329,8 @@ body{
 }
 .card-inner{
   height:100%;width:100%;clip-path:var(--shield);
-  background:linear-gradient(180deg,var(--purple-600),var(--purple-800) 70%,var(--purple-900));
+  /* タイル画像の地色 #750069 に合わせた紫。カードとタイルの境目を目立たせない */
+  background:linear-gradient(180deg,#8a0d7c,#56004d 70%,#360031);
   position:relative;overflow:hidden;
 }
 /* 中面上部の斜めハッチと円のモチーフ */
@@ -362,7 +363,7 @@ body{
 }
 /* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
 .card-photo{
-  z-index:2;position:absolute;top:5%;left:13%;right:13%;height:40%;
+  z-index:2;position:absolute;top:8%;left:11%;right:11%;height:44%;
   display:flex;align-items:center;justify-content:center;
 }
 .card-photo{position:relative}
@@ -551,7 +552,7 @@ button{
 .player.dragging{z-index:20;filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
 .player.is-empty .card-inner{
   background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px),
-             linear-gradient(180deg,#5b1a7d,#2b0a3d);
+             linear-gradient(180deg,#6d0060,#360031);
 }
 .player.is-empty .card{filter:none;opacity:.86}
 .player.is-empty .card-split{opacity:.45}
