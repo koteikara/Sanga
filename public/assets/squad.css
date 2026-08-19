@@ -395,17 +395,13 @@ body{
 }
 /* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
 .card-photo{
-  overflow:hidden; /* 画像の名前の帯を隠す */
-  z-index:2;position:absolute;top:8%;left:11%;right:11%;height:44%;
+  z-index:2;position:absolute;top:6%;left:7%;right:7%;height:48%;
   display:flex;align-items:center;justify-content:center;
 }
 /* 切り出したタイル画像。読み込めたときはプレースホルダーを隠す */
 .tile-img{
-  /* 画像には背番号とローマ字名が写っている。カードが小さいと名前は
-     読めないため、枠より大きく表示して背番号だけを見せ、
-     名前の帯は枠の下からはみ出させて隠す */
-  position:absolute;top:0;left:50%;
-  width:128%;height:auto;transform:translateX(-50%);
+  /* 背番号とローマ字名の両方が収まるように、枠内へ全体を入れる */
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
   border-radius:3.3cqw;
 }
 .card-photo.no-image .tile-img{display:none}
@@ -423,7 +419,7 @@ body{
 .tile span{font-size:8cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:2.2cqw;max-width:96%}
 /* 下部：名前 */
 .card-name{
-  z-index:3;position:absolute;top:55%;left:12%;right:12%;
+  z-index:3;position:absolute;top:57%;left:10%;right:10%;
   display:flex;flex-direction:column;align-items:center;
   text-align:center;padding:3.3cqw 0 6.6cqw;overflow:hidden;
 }
