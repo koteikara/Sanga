@@ -154,19 +154,36 @@ function cardMarkup(player, posLabelFallback) {
         <div class="empty-hint">タップして<br>選手を選ぶ</div>
       </div></div>`;
   }
-  const tileLabel = player.isMascot ? player.nameEn : player.nameEn;
   const nameJa = player.nameJa || "";
+  // 切り出した背番号タイルがあればそれを使い、無ければCSSのプレースホルダーを出す。
+  // 画像の読み込みに失敗した場合も同じくプレースホルダーへ戻す。
+  const tileSrc = playerImageSrc(player);
   return `
     <div class="card${player.isMascot ? " mascot" : ""}"><div class="card-inner">
       <div class="card-meta"><div class="card-num">${escapeHtml(player.number)}</div><div class="card-pos">${escapeHtml(player.position || "")}</div></div>
       <div class="card-split"></div>
-      <div class="card-photo"><div class="tile"><b>${escapeHtml(player.number)}</b><span>${escapeHtml(tileLabel)}</span></div></div>
+      <div class="card-photo">
+        <div class="tile"><b>${escapeHtml(player.number)}</b><span>${escapeHtml(player.nameEn)}</span></div>
+        <img class="tile-img" src="${escapeHtml(tileSrc)}" alt=""
+             onerror="this.closest('.card-photo').classList.add('no-image')">
+      </div>
       <div class="card-name">
         <div class="name-en">${escapeHtml(player.nameEn)}</div>
         <div class="name-ja" data-fit-ratio="0.8">${escapeHtml(nameJa)}</div>
         <div class="flag flag-${escapeHtml(player.nationality || "jp")}"></div>
       </div>
     </div></div>`;
+}
+
+/** 背番号タイル画像の場所。公開ページへ移す際はここだけ変える */
+const PLAYER_IMAGE_BASE = "../../public/assets/players/";
+
+function playerImageSrc(player) {
+  if (player.image) {
+    // players.json の image は public/ からの相対で持つため、その分をさかのぼる
+    return `../../public/${player.image}`;
+  }
+  return `${PLAYER_IMAGE_BASE}${encodeURIComponent(player.number)}.webp`;
 }
 
 function escapeHtml(str) {

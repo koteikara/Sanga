@@ -365,6 +365,14 @@ body{
   z-index:2;position:absolute;top:5%;left:13%;right:13%;height:40%;
   display:flex;align-items:center;justify-content:center;
 }
+.card-photo{position:relative}
+/* 切り出したタイル画像。読み込めたときはプレースホルダーを隠す */
+.tile-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  border-radius:3.3cqw;
+}
+.card-photo.no-image .tile-img{display:none}
+.card-photo:not(.no-image) .tile{visibility:hidden}
 .tile{
   height:100%;aspect-ratio:1/1;border-radius:.6cqw;
   background:linear-gradient(180deg,#7a2394,#5d1a75);
