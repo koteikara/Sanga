@@ -6,7 +6,7 @@
 
 年間スケジュールページ（`public/sanga202627season.html`）とは独立した別ページとして作ります。既存ページのHTML、CSS、JavaScript、公開JSONは変更しません。
 
-現時点ではデザイン検証を `experiments/squad-builder/` で進めており、本番ページはまだ作成していません。
+`public/squad.html` として公開しています。`experiments/squad-builder/` には、デザイン見本と検証用のプロトタイプを残しています。
 
 ## 利用者の操作の流れ
 
@@ -59,14 +59,14 @@
 | 比率 | 9:16（スマートフォンの縦） |
 | 生成方式 | ブラウザ内でDOMを画像化する。`modern-screenshot` 4.6.5 を使う（`docs/image-generation-research.md` の結論に従う） |
 | 配置場所 | ライブラリは静的配置し、CDNには依存しない。検証中は `experiments/squad-builder/vendor/`、本番公開時は `public/assets/vendor/` |
-| 含める内容 | スタメン11人、ベンチ、監督、フォーメーション名、タイトルと日付の自由入力、非公式表記、作成者表記、免責 |
+| 含める内容 | スタメン11人、ベンチ、監督、フォーメーション名、タイトルと日付の自由入力、投稿者名、非公式表記、作成者表記、免責 |
 
 ### 個人状態
 
 | 項目 | 決定内容 |
 | --- | --- |
 | 保存先 | LocalStorage |
-| 保存内容 | 作成中のスカッド（フォーメーション、選手の配置、位置の微調整、自由入力テキスト、選んだスタイル） |
+| 保存内容 | 作成中のスカッド（フォーメーション、選手の配置、位置の微調整、自由入力テキスト、投稿者名、選んだスタイル） |
 | 複数保存 | 名前を付けて複数保存し、呼び出しと削除ができるようにする |
 | 公開JSON | 個人の作成内容は公開JSONに含めない |
 
@@ -178,18 +178,39 @@ python3 -m http.server 4173
 http://localhost:4173/experiments/squad-builder/design-mockup.html
 ```
 
+## 公開ファイル
+
+```text
+public/squad.html                          公開ページ
+public/assets/squad.css                    見た目
+public/assets/squad-builder.js             操作の本体
+public/assets/squad-formations.js          フォーメーションの座標
+public/assets/squad-sample-players.js      公開JSONを読めない場合の代替
+public/assets/squad/                       ヘッダー画像
+public/assets/players/                     背番号タイル（39件）
+public/assets/vendor/modern-screenshot/    画像生成ライブラリ
+```
+
+`public/index.html` からリンクしています。年間スケジュールページからはリンクしていません。
+
+## 投稿者名
+
+誰の予想かがわかるよう、下部帯に投稿者名を表示します。未入力のときは何も出しません。入力値はLocalStorageに保存され、公開JSONには含めません。入力欄には、知られたくない情報を入れないよう注意書きを添えています。
+
 ## 実装済み
 
 - 選手データのCSVと生成・検証ツール（`tools/generate-players-from-csv.js` / `tools/validate-players.js`）
 - 背番号タイルの切り出し（`tools/crop-player-numbers.js`、38件を `public/assets/players/` へ）
 - 操作プロトタイプ（フォーメーション選択、選手選択、位置の微調整、保存と呼び出し）
 - `modern-screenshot` による9:16のPNG生成
+- 投稿者名の表示
+- `public/squad.html` としての公開
 
 ## 次の作業
 
-1. 実機での操作確認を行う（`docs/ai/BROWSER_CHECKLIST.md` に沿って目視確認）
-2. 同じ選手を複数の位置に置けるかどうかを決める
-3. `public/squad.html` として公開し、ライブラリを `public/assets/vendor/` へ移す
+1. GitHub Pagesと実機での操作確認を行う（`docs/ai/BROWSER_CHECKLIST.md` に沿って目視確認）
+2. 同じ選手を複数の位置に置けるかどうかを決める（現在は重複して置ける）
+3. 確認後、`docs/deploy-policy.md` に沿って本番サーバーへ手動反映する
 
 ### 選手データについて
 
