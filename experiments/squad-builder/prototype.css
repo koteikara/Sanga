@@ -366,7 +366,6 @@ body{
   z-index:2;position:absolute;top:8%;left:11%;right:11%;height:44%;
   display:flex;align-items:center;justify-content:center;
 }
-.card-photo{position:relative}
 /* 切り出したタイル画像。読み込めたときはプレースホルダーを隠す */
 .tile-img{
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
@@ -387,7 +386,7 @@ body{
 .tile span{font-size:8cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:2.2cqw;max-width:96%}
 /* 下部：名前 */
 .card-name{
-  z-index:3;position:absolute;top:48%;left:12%;right:12%;
+  z-index:3;position:absolute;top:55%;left:12%;right:12%;
   display:flex;flex-direction:column;align-items:center;
   text-align:center;padding:3.3cqw 0 6.6cqw;overflow:hidden;
 }

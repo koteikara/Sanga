@@ -167,7 +167,7 @@ function cardMarkup(player, posLabelFallback) {
              onerror="this.closest('.card-photo').classList.add('no-image')">
       </div>
       <div class="card-name">
-        <div class="name-en">${escapeHtml(player.nameEn)}</div>
+        <!-- ローマ字名はタイル画像に入っているため、ここでは出さない -->
         <div class="name-ja" data-fit-ratio="0.8">${escapeHtml(nameJa)}</div>
         <div class="flag flag-${escapeHtml(player.nationality || "jp")}"></div>
       </div>
