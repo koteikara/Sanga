@@ -1,108 +1,109 @@
 // フォーメーションのプリセット定義。
-// 各プリセットは、ピッチ上の相対座標（%、x=左右 0-100 / y=上下 0-100、
-// 0がゴール裏＝上辺、100が自陣ゴール前＝下辺に近い）と
-// ポジション名（表示用の略号）の配列として持つ。
-// 「自由配置」は4-4-2の座標を初期値として使うが、posLabelは選手のポジションに追従する。
+//
+// 座標はピッチ上の相対位置（%）で持つ。
+//   x: 左右（0が左端、100が右端）
+//   y: 上下（0が相手ゴール側＝上辺、100が自陣ゴール側＝下辺）
+//
+// ポジション表記は GK / DF / MF / FW の4種類だけにする。
+// 細かい表記（LSB、CMFなど）は使わない。
+//
+// 「自由配置」は 4-4-2 の座標を初期値として使う。
+
+/** 1列ぶんのスロットを作る。xs は左から順の位置 */
+function line(group, y, xs) {
+  return xs.map((x) => ({ posGroup: group, posLabel: group, x, y }));
+}
+
+/** 列をつなげて、通し番号のidを振る */
+function build(...lines) {
+  return lines.flat().map((slot, i) => ({ id: `s${i + 1}`, ...slot }));
+}
+
+/** 上下の基準位置。列の役割ごとにそろえる */
+const Y = {
+  gk: 90,
+  df: 70,
+  dm: 54,
+  mf: 44,
+  am: 29,
+  fw: 14,
+};
+
+const FOUR_BACK = line("DF", Y.df, [16, 38, 62, 84]);
+const THREE_BACK = line("DF", Y.df, [28, 50, 72]);
+const FIVE_BACK = line("DF", Y.df, [10, 30, 50, 70, 90]);
+const GK = line("GK", Y.gk, [50]);
 
 export const FORMATIONS = {
   "4-4-2": {
     label: "4-4-2",
-    slots: [
-      { id: "gk", posGroup: "GK", posLabel: "GK", x: 50, y: 90 },
-      { id: "df1", posGroup: "DF", posLabel: "LSB", x: 16, y: 68 },
-      { id: "df2", posGroup: "DF", posLabel: "CB", x: 38, y: 70 },
-      { id: "df3", posGroup: "DF", posLabel: "CB", x: 62, y: 70 },
-      { id: "df4", posGroup: "DF", posLabel: "RSB", x: 84, y: 68 },
-      { id: "mf1", posGroup: "MF", posLabel: "LMF", x: 16, y: 42 },
-      { id: "mf2", posGroup: "MF", posLabel: "CMF", x: 38, y: 44 },
-      { id: "mf3", posGroup: "MF", posLabel: "CMF", x: 62, y: 44 },
-      { id: "mf4", posGroup: "MF", posLabel: "RMF", x: 84, y: 42 },
-      { id: "fw1", posGroup: "FW", posLabel: "ST", x: 37, y: 16 },
-      { id: "fw2", posGroup: "FW", posLabel: "ST", x: 63, y: 16 },
-    ],
+    slots: build(GK, FOUR_BACK, line("MF", Y.mf, [16, 38, 62, 84]), line("FW", Y.fw, [37, 63])),
+  },
+  "4-4-1-1": {
+    label: "4-4-1-1",
+    slots: build(GK, FOUR_BACK, line("MF", Y.mf, [16, 38, 62, 84]), line("MF", Y.am, [50]), line("FW", 12, [50])),
   },
   "4-2-3-1": {
     label: "4-2-3-1",
-    slots: [
-      { id: "gk", posGroup: "GK", posLabel: "GK", x: 50, y: 90 },
-      { id: "df1", posGroup: "DF", posLabel: "LSB", x: 16, y: 68 },
-      { id: "df2", posGroup: "DF", posLabel: "CB", x: 38, y: 70 },
-      { id: "df3", posGroup: "DF", posLabel: "CB", x: 62, y: 70 },
-      { id: "df4", posGroup: "DF", posLabel: "RSB", x: 84, y: 68 },
-      { id: "dm1", posGroup: "MF", posLabel: "DMF", x: 37, y: 50 },
-      { id: "dm2", posGroup: "MF", posLabel: "DMF", x: 63, y: 50 },
-      { id: "am1", posGroup: "MF", posLabel: "LAM", x: 18, y: 28 },
-      { id: "am2", posGroup: "MF", posLabel: "CAM", x: 50, y: 26 },
-      { id: "am3", posGroup: "MF", posLabel: "RAM", x: 82, y: 28 },
-      { id: "fw1", posGroup: "FW", posLabel: "CF", x: 50, y: 12 },
-    ],
+    slots: build(GK, FOUR_BACK, line("MF", Y.dm, [37, 63]), line("MF", Y.am, [18, 50, 82]), line("FW", 12, [50])),
   },
   "4-3-3": {
     label: "4-3-3",
-    slots: [
-      { id: "gk", posGroup: "GK", posLabel: "GK", x: 50, y: 90 },
-      { id: "df1", posGroup: "DF", posLabel: "LSB", x: 16, y: 68 },
-      { id: "df2", posGroup: "DF", posLabel: "CB", x: 38, y: 70 },
-      { id: "df3", posGroup: "DF", posLabel: "CB", x: 62, y: 70 },
-      { id: "df4", posGroup: "DF", posLabel: "RSB", x: 84, y: 68 },
-      { id: "mf1", posGroup: "MF", posLabel: "CMF", x: 28, y: 44 },
-      { id: "mf2", posGroup: "MF", posLabel: "CMF", x: 50, y: 48 },
-      { id: "mf3", posGroup: "MF", posLabel: "CMF", x: 72, y: 44 },
-      { id: "fw1", posGroup: "FW", posLabel: "LWG", x: 16, y: 16 },
-      { id: "fw2", posGroup: "FW", posLabel: "CF", x: 50, y: 12 },
-      { id: "fw3", posGroup: "FW", posLabel: "RWG", x: 84, y: 16 },
-    ],
+    slots: build(GK, FOUR_BACK, line("MF", Y.mf, [28, 50, 72]), line("FW", 15, [16, 50, 84])),
+  },
+  "4-1-4-1": {
+    label: "4-1-4-1",
+    slots: build(GK, FOUR_BACK, line("MF", 56, [50]), line("MF", 38, [16, 38, 62, 84]), line("FW", 13, [50])),
+  },
+  "4-3-1-2": {
+    label: "4-3-1-2",
+    slots: build(GK, FOUR_BACK, line("MF", 50, [26, 50, 74]), line("MF", 30, [50]), line("FW", 13, [37, 63])),
+  },
+  "4-1-2-1-2": {
+    label: "4-1-2-1-2",
+    slots: build(GK, FOUR_BACK, line("MF", 56, [50]), line("MF", Y.mf, [24, 76]), line("MF", 30, [50]), line("FW", 13, [37, 63])),
+  },
+  "4-2-2-2": {
+    label: "4-2-2-2",
+    slots: build(GK, FOUR_BACK, line("MF", Y.dm, [37, 63]), line("MF", 32, [26, 74]), line("FW", 13, [37, 63])),
+  },
+  "4-5-1": {
+    label: "4-5-1",
+    slots: build(GK, FOUR_BACK, line("MF", 42, [12, 32, 50, 68, 88]), line("FW", 13, [50])),
   },
   "3-4-2-1": {
     label: "3-4-2-1",
-    slots: [
-      { id: "gk", posGroup: "GK", posLabel: "GK", x: 50, y: 90 },
-      { id: "df1", posGroup: "DF", posLabel: "CB", x: 28, y: 68 },
-      { id: "df2", posGroup: "DF", posLabel: "CB", x: 50, y: 70 },
-      { id: "df3", posGroup: "DF", posLabel: "CB", x: 72, y: 68 },
-      { id: "mf1", posGroup: "MF", posLabel: "LMF", x: 12, y: 44 },
-      { id: "mf2", posGroup: "MF", posLabel: "CMF", x: 38, y: 46 },
-      { id: "mf3", posGroup: "MF", posLabel: "CMF", x: 62, y: 46 },
-      { id: "mf4", posGroup: "MF", posLabel: "RMF", x: 88, y: 44 },
-      { id: "am1", posGroup: "MF", posLabel: "LAM", x: 34, y: 24 },
-      { id: "am2", posGroup: "MF", posLabel: "RAM", x: 66, y: 24 },
-      { id: "fw1", posGroup: "FW", posLabel: "CF", x: 50, y: 12 },
-    ],
+    slots: build(GK, THREE_BACK, line("MF", 45, [12, 38, 62, 88]), line("MF", 27, [35, 65]), line("FW", 12, [50])),
+  },
+  "3-4-3": {
+    label: "3-4-3",
+    slots: build(GK, THREE_BACK, line("MF", 45, [12, 38, 62, 88]), line("FW", 15, [18, 50, 82])),
   },
   "3-5-2": {
     label: "3-5-2",
-    slots: [
-      { id: "gk", posGroup: "GK", posLabel: "GK", x: 50, y: 90 },
-      { id: "df1", posGroup: "DF", posLabel: "CB", x: 28, y: 68 },
-      { id: "df2", posGroup: "DF", posLabel: "CB", x: 50, y: 70 },
-      { id: "df3", posGroup: "DF", posLabel: "CB", x: 72, y: 68 },
-      { id: "mf1", posGroup: "MF", posLabel: "LWB", x: 10, y: 46 },
-      { id: "mf2", posGroup: "MF", posLabel: "CMF", x: 33, y: 42 },
-      { id: "mf3", posGroup: "MF", posLabel: "CMF", x: 50, y: 46 },
-      { id: "mf4", posGroup: "MF", posLabel: "CMF", x: 67, y: 42 },
-      { id: "mf5", posGroup: "MF", posLabel: "RWB", x: 90, y: 46 },
-      { id: "fw1", posGroup: "FW", posLabel: "ST", x: 38, y: 16 },
-      { id: "fw2", posGroup: "FW", posLabel: "ST", x: 62, y: 16 },
-    ],
+    slots: build(GK, THREE_BACK, line("MF", 45, [10, 32, 50, 68, 90]), line("FW", Y.fw, [37, 63])),
+  },
+  "3-6-1": {
+    label: "3-6-1",
+    slots: build(GK, THREE_BACK, line("MF", 50, [14, 38, 62, 86]), line("MF", 30, [37, 63]), line("FW", 12, [50])),
+  },
+  "5-3-2": {
+    label: "5-3-2",
+    slots: build(GK, FIVE_BACK, line("MF", 45, [28, 50, 72]), line("FW", Y.fw, [37, 63])),
+  },
+  "5-4-1": {
+    label: "5-4-1",
+    slots: build(GK, FIVE_BACK, line("MF", Y.mf, [16, 38, 62, 84]), line("FW", 13, [50])),
+  },
+  "5-2-3": {
+    label: "5-2-3",
+    slots: build(GK, FIVE_BACK, line("MF", 48, [37, 63]), line("FW", 18, [18, 50, 82])),
   },
   free: {
     label: "自由配置",
-    free: true,
-    // 初期値は4-4-2と同じ。posLabelは配置後に選手のポジションで上書きする。
-    slots: [
-      { id: "gk", posGroup: "", posLabel: "FP", x: 50, y: 90 },
-      { id: "df1", posGroup: "", posLabel: "FP", x: 16, y: 68 },
-      { id: "df2", posGroup: "", posLabel: "FP", x: 38, y: 70 },
-      { id: "df3", posGroup: "", posLabel: "FP", x: 62, y: 70 },
-      { id: "df4", posGroup: "", posLabel: "FP", x: 84, y: 68 },
-      { id: "mf1", posGroup: "", posLabel: "FP", x: 16, y: 42 },
-      { id: "mf2", posGroup: "", posLabel: "FP", x: 38, y: 44 },
-      { id: "mf3", posGroup: "", posLabel: "FP", x: 62, y: 44 },
-      { id: "mf4", posGroup: "", posLabel: "FP", x: 84, y: 42 },
-      { id: "fw1", posGroup: "", posLabel: "FP", x: 37, y: 16 },
-      { id: "fw2", posGroup: "", posLabel: "FP", x: 63, y: 16 },
-    ],
+    slots: build(GK, FOUR_BACK, line("MF", Y.mf, [16, 38, 62, 84]), line("FW", Y.fw, [37, 63])),
   },
 };
 
+/** ベンチの枠数 */
 export const BENCH_SIZE = 7;
