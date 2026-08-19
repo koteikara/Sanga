@@ -395,12 +395,17 @@ body{
 }
 /* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
 .card-photo{
+  overflow:hidden; /* 画像の名前の帯を隠す */
   z-index:2;position:absolute;top:8%;left:11%;right:11%;height:44%;
   display:flex;align-items:center;justify-content:center;
 }
 /* 切り出したタイル画像。読み込めたときはプレースホルダーを隠す */
 .tile-img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  /* 画像には背番号とローマ字名が写っている。カードが小さいと名前は
+     読めないため、枠より大きく表示して背番号だけを見せ、
+     名前の帯は枠の下からはみ出させて隠す */
+  position:absolute;top:0;left:50%;
+  width:128%;height:auto;transform:translateX(-50%);
   border-radius:3.3cqw;
 }
 .card-photo.no-image .tile-img{display:none}
@@ -425,12 +430,12 @@ body{
 /* 長い名前は枠幅に合わせて自動縮小する（JSで font-size を調整） */
 .name-en,.name-ja,.tile span{display:inline-block;white-space:nowrap}
 .name-en{font-size:11.7cqw;font-weight:800;letter-spacing:.03em}
-.name-ja{font-size:9.7cqw;font-weight:600;color:#e9d8f5;margin-top:1.1cqw}
+.name-ja{font-size:13cqw;font-weight:600;color:#e9d8f5;margin-top:1.1cqw}
 body:not(.show-ja) .name-ja{display:none}
 
 /* 名前の下に置く国籍の旗 */
 .flag{
-  width:20%;aspect-ratio:3/2;margin-top:3.3cqw;border-radius:1.6cqw;
+  width:24%;aspect-ratio:3/2;margin-top:2.6cqw;border-radius:1.6cqw;
   background-size:100% 100%;background-repeat:no-repeat;
   background-origin:border-box;background-clip:border-box;
   border:1px solid rgba(255,255,255,.85);
