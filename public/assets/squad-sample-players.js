@@ -1,0 +1,35 @@
+// public/data/players.json が存在しない場合のフォールバック用サンプルデータ。
+// 形式は docs/players-data-schema.md に合わせている。
+// 実データではなく、プロトタイプ動作確認のための架空の名前を含む。
+export const SAMPLE_PLAYERS = {
+  updatedAt: "2026-08-18",
+  source: "プロトタイプ同梱サンプル（架空データ）",
+  players: [
+    { number: "21", nameEn: "KAKOI", nameJa: "（日本語名）", nameKana: "", position: "GK", nationality: "jp" },
+    { number: "1", nameEn: "GAKUJI", nameJa: "岳司", nameKana: "", position: "GK", nationality: "jp" },
+    { number: "12", nameEn: "MAEDA", nameJa: "前田", nameKana: "", position: "GK", nationality: "jp" },
+    { number: "2", nameEn: "FUKUDA", nameJa: "福田 心之助", nameKana: "", position: "DF", nationality: "jp" },
+    { number: "5", nameEn: "API", nameJa: "アピアタウィア 久", nameKana: "", position: "DF", nationality: "jp" },
+    { number: "15", nameEn: "NAGATA", nameJa: "永田 一輝", nameKana: "", position: "DF", nationality: "jp" },
+    { number: "17", nameEn: "ALEX SOUZA", nameJa: "アレクサンドレ・ソウザ", nameKana: "", position: "DF", nationality: "br" },
+    { number: "3", nameEn: "MATSUYAMA", nameJa: "松山", nameKana: "", position: "DF", nationality: "jp" },
+    { number: "22", nameEn: "SUGAWARA", nameJa: "菅原", nameKana: "", position: "DF", nationality: "jp" },
+    { number: "4", nameEn: "H.TREVISAN", nameJa: "エドゥアルド・トレヴィザン", nameKana: "", position: "DF", nationality: "br" },
+    { number: "6", nameEn: "JOÃO PEDRO", nameJa: "ジョアン・ペドロ", nameKana: "", position: "MF", nationality: "br" },
+    { number: "8", nameEn: "YONEMOTO", nameJa: "米本 拓司", nameKana: "", position: "MF", nationality: "jp" },
+    { number: "14", nameEn: "THIAGO", nameJa: "ティアゴ", nameKana: "", position: "MF", nationality: "br" },
+    { number: "10", nameEn: "SEKIZUKA", nameJa: "関塚", nameKana: "", position: "MF", nationality: "jp" },
+    { number: "16", nameEn: "TAIYO", nameJa: "太陽", nameKana: "", position: "MF", nationality: "jp" },
+    { number: "25", nameEn: "YOON", nameJa: "ユン", nameKana: "", position: "MF", nationality: "kr" },
+    { number: "18", nameEn: "TEMMA", nameJa: "天真", nameKana: "", position: "MF", nationality: "jp" },
+    { number: "20", nameEn: "OGIWARA", nameJa: "荻原", nameKana: "", position: "MF", nationality: "jp" },
+    { number: "7", nameEn: "MASAYA", nameJa: "原 大智", nameKana: "", position: "FW", nationality: "jp" },
+    { number: "9", nameEn: "RAFAEL", nameJa: "ラファエル・エリアス", nameKana: "", position: "FW", nationality: "br" },
+    { number: "11", nameEn: "M.TÚLIO", nameJa: "マルコ・トゥーリオ", nameKana: "", position: "FW", nationality: "br" },
+    { number: "19", nameEn: "DAVID", nameJa: "ダビド", nameKana: "", position: "FW", nationality: "br" },
+    { number: "27", nameEn: "KOBAYASHI", nameJa: "小林", nameKana: "", position: "FW", nationality: "jp" },
+    { number: "30", nameEn: "ONISHI", nameJa: "大西", nameKana: "", position: "FW", nationality: "jp" },
+    { number: "83", nameEn: "PURSA", nameJa: "パーサ", nameKana: "", position: "", nationality: "jp", isMascot: true },
+    { number: "510", nameEn: "KOTONO", nameJa: "コトノ", nameKana: "", position: "", nationality: "jp", isMascot: true },
+  ],
+};

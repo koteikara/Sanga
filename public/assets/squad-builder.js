@@ -2,10 +2,10 @@
 // design-mockup.html の見た目（盾型カード、装飾、7スタイル、寸法計算の考え方）を引き継ぎ、
 // フォーメーション選択・選手選択・位置の微調整・画像化導線・保存呼び出しを実装する。
 // design-mockup.html 自体は変更していない。
-import { FORMATIONS, BENCH_SIZE } from "./formations.js";
-import { SAMPLE_PLAYERS } from "./sample-players.js";
+import { FORMATIONS, BENCH_SIZE } from "./squad-formations.js";
+import { SAMPLE_PLAYERS } from "./squad-sample-players.js";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
-// experiments/squad-builder/vendor/ に静的配置したものを読み込む。詳細は下記の
+// public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
 // 「画像化（PNG出力）」セクションのコメントを参照。
 import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs";
 
@@ -38,11 +38,11 @@ function cloneSlots(slots) {
 
 /* ------------------------------------------------------------------
    選手データの読み込み
-   public/data/players.json は別担当が同時に作成中のため存在しない場合がある。
+   public/data/players.json が読めない場合に備え、同梱のサンプルへ切り替える。
    その場合は同梱のサンプル配列にフォールバックし、理由をコンソールに出す。
 ------------------------------------------------------------------ */
 async function loadPlayers() {
-  const candidates = ["../../public/data/players.json", "/data/players.json"];
+  const candidates = ["data/players.json"];
   for (const url of candidates) {
     try {
       const res = await fetch(url, { cache: "no-store" });
@@ -57,7 +57,7 @@ async function loadPlayers() {
     }
   }
   console.warn(
-    "[squad-builder] public/data/players.json が見つからないか未整備のため、" +
+    "[squad-builder] data/players.json を読み込めないため、" +
       "同梱のサンプル選手データ（sample-players.js）にフォールバックします。" +
       "このファイルは別担当が作成中の想定です。"
   );
@@ -177,12 +177,12 @@ function cardMarkup(player, posLabelFallback) {
 }
 
 /** 背番号タイル画像の場所。公開ページへ移す際はここだけ変える */
-const PLAYER_IMAGE_BASE = "../../public/assets/players/";
+const PLAYER_IMAGE_BASE = "assets/players/";
 
 function playerImageSrc(player) {
   if (player.image) {
     // players.json の image は public/ からの相対で持つため、その分をさかのぼる
-    return `../../public/${player.image}`;
+    return player.image;
   }
   return `${PLAYER_IMAGE_BASE}${encodeURIComponent(player.number)}.webp`;
 }

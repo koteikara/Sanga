@@ -124,7 +124,19 @@ body{
   font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.06em;
 }
 [data-style="victorian"] .bench-chip b{color:#e8cc72}
-[data-style="victorian"] .disclaimer{color:#9c8ba0;padding-bottom:.4cqw}
+[data-style="victorian"] /* 投稿者名。誰の予想かを画像に残す */
+.poster-name{
+  margin-top:1.6cqw;text-align:center;
+  font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
+  color:var(--gold-300);
+}
+.poster-name[hidden]{display:none}
+[data-style="scrap"] .poster-name{color:#7b1fa2}
+[data-style="vapor"] .poster-name,[data-style="synth"] .poster-name{color:#e2c4ff}
+[data-style="cyber"] .poster-name{color:#c77dff;font-family:"DejaVu Sans Mono",monospace}
+[data-style="graffiti"] .poster-name{color:#7cff3d;color:#c77dff}
+
+.disclaimer{color:#9c8ba0;padding-bottom:.4cqw}
 [data-style="victorian"] .pos-pill{
   border-radius:0;background:linear-gradient(180deg,#2a1026,#160718);
   border:1px solid rgba(201,162,39,.6);color:#eddfbe;
@@ -263,7 +275,19 @@ body{
 [data-style="scrap"] .pos-pill{
   border-radius:0;background:#c9a3e8;border:1px solid #4a1466;color:#2b0a3d;
 }
-[data-style="scrap"] .disclaimer{color:#6a5580;border-top-color:rgba(43,10,61,.2)}
+[data-style="scrap"] /* 投稿者名。誰の予想かを画像に残す */
+.poster-name{
+  margin-top:1.6cqw;text-align:center;
+  font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
+  color:var(--gold-300);
+}
+.poster-name[hidden]{display:none}
+[data-style="scrap"] .poster-name{color:#7b1fa2}
+[data-style="vapor"] .poster-name,[data-style="synth"] .poster-name{color:#e2c4ff}
+[data-style="cyber"] .poster-name{color:#c77dff;font-family:"DejaVu Sans Mono",monospace}
+[data-style="graffiti"] .poster-name{color:#7cff3d;color:#c77dff}
+
+.disclaimer{color:#6a5580;border-top-color:rgba(43,10,61,.2)}
 
 /* ---- ヘッダー ---- */
 .sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
@@ -307,7 +331,7 @@ body{
 .line-row{display:flex;justify-content:space-evenly;align-items:center;position:relative;z-index:2}
 
 /* ---- 選手カード ---- */
-.player{display:flex;flex-direction:column;align-items:center;gap:.8cqw}
+.player{display:flex;flex-direction:column;align-items:center;gap:0}
 .card{
   height:var(--card-h, 24cqw);
   width:auto;
@@ -328,7 +352,8 @@ body{
 }
 .card-inner{
   height:100%;width:100%;clip-path:var(--shield);
-  background:linear-gradient(180deg,var(--purple-600),var(--purple-800) 70%,var(--purple-900));
+  /* タイル画像の地色 #750069 に合わせた紫。カードとタイルの境目を目立たせない */
+  background:linear-gradient(180deg,#8a0d7c,#56004d 70%,#360031);
   position:relative;overflow:hidden;
 }
 /* 中面上部の斜めハッチと円のモチーフ */
@@ -361,7 +386,7 @@ body{
 }
 /* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
 .card-photo{
-  z-index:2;position:absolute;top:5%;left:13%;right:13%;height:40%;
+  z-index:2;position:absolute;top:8%;left:11%;right:11%;height:44%;
   display:flex;align-items:center;justify-content:center;
 }
 .tile{
@@ -377,7 +402,7 @@ body{
 .tile span{font-size:8cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:2.2cqw;max-width:96%}
 /* 下部：名前 */
 .card-name{
-  z-index:3;position:absolute;top:48%;left:12%;right:12%;
+  z-index:3;position:absolute;top:55%;left:12%;right:12%;
   display:flex;flex-direction:column;align-items:center;
   text-align:center;padding:3.3cqw 0 6.6cqw;overflow:hidden;
 }
@@ -398,10 +423,14 @@ body:not(.show-ja) .name-ja{display:none}
 .flag-jp{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%2212%22%20fill%3D%22%23bc002d%22%2F%3E%3C%2Fsvg%3E")}
 .flag-br{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23009b3a%22%2F%3E%3Cpolygon%20points%3D%2230%2C4%2056%2C20%2030%2C36%204%2C20%22%20fill%3D%22%23fedf00%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%229%22%20fill%3D%22%23002776%22%2F%3E%3Cpath%20d%3D%22M21.5%2C17.5%20A11%2C11%200%200%200%2038.6%2C23.4%20L38.2%2C25.6%20A11%2C11%200%200%201%2021.2%2C19.6%20Z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E")}
 .flag-kr{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22M30%2C10%20a10%2C10%200%200%201%200%2C20%20a5%2C5%200%200%201%200%2C-10%20a5%2C5%200%200%200%200%2C-10%22%20fill%3D%22%23cd2e3a%22%2F%3E%3Cpath%20d%3D%22M30%2C10%20a10%2C10%200%200%200%200%2C20%20a5%2C5%200%200%200%200%2C-10%20a5%2C5%200%200%201%200%2C-10%22%20fill%3D%22%230047a0%22%2F%3E%3Cg%20fill%3D%22%23000%22%3E%3Crect%20x%3D%227%22%20y%3D%229%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%2212%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%2215%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%2244%22%20y%3D%2224%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%2244%22%20y%3D%2227%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%2244%22%20y%3D%2230%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+.flag-it{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23009246%22%2F%3E%3Crect%20x%3D%2220%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Crect%20x%3D%2240%22%20width%3D%2220%22%20height%3D%2240%22%20fill%3D%22%23ce2b37%22%2F%3E%3C%2Fsvg%3E")}
 
 
-/* ポジションのピル */
+/* ポジションのピル。カード下端の尖りに半分重ねる */
 .pos-pill{
+  position:relative;
+  top:-1.6cqw;
+  z-index:6;
   font-size:1.8cqw;font-weight:800;letter-spacing:.08em;
   background:linear-gradient(180deg,#5b1a7d,#2b0a3d);
   color:#eadcff;border:1px solid rgba(255,255,255,.28);
@@ -451,6 +480,18 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
   border-radius:99px;padding:.4cqw 1.4cqw;white-space:nowrap;
 }
 .bench-chip b{color:var(--gold-300);margin-right:.5cqw}
+/* 投稿者名。誰の予想かを画像に残す */
+.poster-name{
+  margin-top:1.6cqw;text-align:center;
+  font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
+  color:var(--gold-300);
+}
+.poster-name[hidden]{display:none}
+[data-style="scrap"] .poster-name{color:#7b1fa2}
+[data-style="vapor"] .poster-name,[data-style="synth"] .poster-name{color:#e2c4ff}
+[data-style="cyber"] .poster-name{color:#c77dff;font-family:"DejaVu Sans Mono",monospace}
+[data-style="graffiti"] .poster-name{color:#7cff3d;color:#c77dff}
+
 .disclaimer{
   margin-top:1.6cqw;padding-top:1.2cqw;border-top:1px solid rgba(255,255,255,.14);
   font-size:1.75cqw;line-height:1.5;color:#a894b6;text-align:center;white-space:nowrap;
