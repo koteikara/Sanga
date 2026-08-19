@@ -34,6 +34,9 @@ jobs:
       - name: ホテルJSONを検証
         run: node tools/validate-hotels.js
 
+      - name: 選手JSONを検証
+        run: node tools/validate-players.js
+
       - name: JavaScript構文を検証
         run: node --check public/assets/app.js
 

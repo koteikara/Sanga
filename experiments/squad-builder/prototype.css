@@ -1,0 +1,626 @@
+/*
+ * prototype.css
+ * design-mockup.html の見た目（カードの盾型、装飾、7スタイル、寸法の考え方）を
+ * そのまま引き継ぎ、操作可能なプロトタイプ用に拡張したスタイルシート。
+ * design-mockup.html 自体は変更していない。基本ブロックはそこからのコピー。
+ * 末尾に「プロトタイプ追加分」として、自由配置レイアウト・ドラッグ・
+ * モーダル・設定パネルなどの追加スタイルをまとめている。
+ */
+:root{
+  --purple-900:#2b0a3d;
+  --purple-800:#3d1155;
+  --purple-700:#5b1a7d;
+  --purple-600:#7b2296;
+  --gold-100:#fff6cf;
+  --gold-300:#f4dc8a;
+  --gold-500:#d4af37;
+  --gold-700:#9c7a1c;
+  --grass-dark:#1f5c2e;
+  --grass-light:#27713a;
+  --line:rgba(255,255,255,.55);
+  /* 盾型のシルエットはSVGのclipPathで定義する（#shield-clip） */
+  --shield:url(#shield-clip);
+  --ink:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#14061d;
+  color:#fff;
+  font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 12px 60px;
+}
+
+/* ---- 画面上の操作（見本確認用。実装では設定パネルに入る） ---- */
+.controls{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;
+  background:#200c2c;border:1px solid #3d1155;border-radius:12px;padding:12px 16px;max-width:520px;width:100%;
+}
+.controls label{font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.note{font-size:12px;line-height:1.7;color:#c9b6d6;max-width:520px}
+
+/* ---- 出力キャンバス 9:16 ---- */
+.squad-canvas{
+  width:min(420px,100%);
+  aspect-ratio:9/16;
+  background:
+    radial-gradient(120% 80% at 50% 0%, var(--purple-700) 0%, var(--purple-900) 60%),
+    var(--purple-900);
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  position:relative;
+  box-shadow:0 18px 50px rgba(0,0,0,.6);
+  container-type:inline-size;
+}
+/* 斜めの装飾ストライプ */
+.shield-def{position:absolute;width:0;height:0}
+.squad-canvas::before{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 2px,transparent 2px 26px);
+  pointer-events:none;
+}
+
+
+/* ================= スタイル切替 ================= */
+/* 既定はモダン。ビクトリアンは data-style="victorian" で切り替える */
+.sq-title-img{display:none}
+[data-style] .sq-title-img{display:none}
+[data-style="modern"] .sq-title-img.is-modern{display:block}
+[data-style="victorian"] .sq-title-img.is-victorian{display:block}
+[data-style="graffiti"] .sq-title-img.is-graffiti{display:block}
+[data-style="cyber"] .sq-title-img.is-cyber{display:block}
+[data-style="vapor"] .sq-title-img.is-vapor{display:block}
+[data-style="synth"] .sq-title-img.is-synth{display:block}
+[data-style="scrap"] .sq-title-img.is-scrap{display:block}
+
+
+[data-style="victorian"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22120%22%20height%3D%22120%22%20viewBox%3D%220%200%20120%20120%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23e8cc72%22%20stroke-opacity%3D%22.10%22%20stroke-width%3D%221.2%22%3E%3Cpath%20d%3D%22M60%2C14%20C74%2C26%2074%2C42%2060%2C52%20C46%2C42%2046%2C26%2060%2C14%20Z%22%2F%3E%3Cpath%20d%3D%22M60%2C52%20C60%2C66%2052%2C74%2040%2C76%20C48%2C64%2050%2C58%2060%2C52%20Z%22%2F%3E%3Cpath%20d%3D%22M60%2C52%20C60%2C66%2068%2C74%2080%2C76%20C72%2C64%2070%2C58%2060%2C52%20Z%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2233%22%20r%3D%224%22%2F%3E%3Cpath%20d%3D%22M0%2C90%20C14%2C78%2026%2C78%2040%2C90%20C26%2C102%2014%2C102%200%2C90%20Z%22%2F%3E%3Cpath%20d%3D%22M120%2C90%20C106%2C78%2094%2C78%2080%2C90%20C94%2C102%20106%2C102%20120%2C90%20Z%22%2F%3E%3Ccircle%20cx%3D%2260%22%20cy%3D%2296%22%20r%3D%223%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/17cqw auto,
+    radial-gradient(120% 80% at 50% 0%, #3a1230 0%, #1b0a18 62%),
+    #150713;
+}
+[data-style="victorian"] .squad-canvas::before{display:none}
+
+/* 外周の装飾枠と四隅の飾り */
+.canvas-frame{display:none}
+[data-style="victorian"] .canvas-frame{
+  display:block;position:absolute;inset:1.6cqw;z-index:4;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2090%20160%22%20preserveAspectRatio%3D%22none%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23c9a227%22%3E%3Crect%20x%3D%222.5%22%20y%3D%222.5%22%20width%3D%2285%22%20height%3D%22155%22%20stroke-width%3D%221.4%22%20stroke-opacity%3D%22.85%22%2F%3E%3Crect%20x%3D%225%22%20y%3D%225%22%20width%3D%2280%22%20height%3D%22150%22%20stroke-width%3D%220.6%22%20stroke-opacity%3D%22.5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/100% 100%;
+}
+[data-style="victorian"] .canvas-frame span{
+  position:absolute;width:5.4cqw;height:5.4cqw;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2044%2044%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23c9a227%22%20stroke-width%3D%221.6%22%3E%3Cpath%20d%3D%22M2%2C20%20C2%2C8%208%2C2%2020%2C2%22%2F%3E%3Cpath%20d%3D%22M8%2C20%20C8%2C12%2012%2C8%2020%2C8%22%2F%3E%3Cpath%20d%3D%22M2%2C32%20C10%2C30%2014%2C26%2016%2C18%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2220%22%20r%3D%222.4%22%20fill%3D%22%23e8cc72%22%2F%3E%3C%2Fsvg%3E") no-repeat center/100% 100%;
+}
+[data-style="victorian"] .canvas-frame span:nth-child(1){top:.4cqw;left:.4cqw}
+[data-style="victorian"] .canvas-frame span:nth-child(2){top:.4cqw;right:.4cqw;transform:scaleX(-1)}
+[data-style="victorian"] .canvas-frame span:nth-child(3){bottom:.4cqw;left:.4cqw;transform:scaleY(-1)}
+[data-style="victorian"] .canvas-frame span:nth-child(4){bottom:.4cqw;right:.4cqw;transform:scale(-1,-1)}
+
+/* 見出しまわりの体裁 */
+[data-style="victorian"] .sq-header{padding:3cqw 7cqw 1.4cqw}
+[data-style="victorian"] .sq-title-img{width:64cqw}
+[data-style="victorian"] .sq-subtitle{
+  font-family:"Liberation Serif","Times New Roman",serif;
+  letter-spacing:.12em;color:#f0e3c6;font-size:3.2cqw;
+}
+[data-style="victorian"] .sq-rule{
+  width:44cqw;background:linear-gradient(90deg,transparent,#c9a227,transparent);
+}
+[data-style="victorian"] .pitch{
+  margin:1.6cqw 6cqw;box-shadow:0 0 0 1px rgba(201,162,39,.55), 0 0 24px rgba(0,0,0,.7);
+}
+[data-style="victorian"] .sq-footer{
+  background:linear-gradient(180deg,#1d0a1a,#0d0410);
+  border:1px solid rgba(201,162,39,.55);
+  margin:0 4.4cqw 4.4cqw;
+}
+[data-style="victorian"] .meta-row dt,
+[data-style="victorian"] .formation-badge .num{color:#e8cc72}
+[data-style="victorian"] .formation-badge .fig,
+[data-style="victorian"] .formation-badge .fig::before,
+[data-style="victorian"] .formation-badge .fig::after{border-color:#c9a227}
+[data-style="victorian"] .bench-chip{
+  border-radius:0;border-color:rgba(201,162,39,.5);
+  font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.06em;
+}
+[data-style="victorian"] .bench-chip b{color:#e8cc72}
+[data-style="victorian"] .disclaimer{color:#9c8ba0;padding-bottom:.4cqw}
+[data-style="victorian"] .pos-pill{
+  border-radius:0;background:linear-gradient(180deg,#2a1026,#160718);
+  border:1px solid rgba(201,162,39,.6);color:#eddfbe;
+  font-family:"Liberation Serif","Times New Roman",serif;letter-spacing:.14em;
+}
+
+
+/* ---------- グラフィティ ---------- */
+[data-style="graffiti"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22860%22%20height%3D%22900%22%20viewBox%3D%220%200%20860%20900%22%3E%3Cpath%20d%3D%22M192.3%2C130.0%20Q205.6%2C172.0%20226.1%2C185.4%20Q175.9%2C198.6%20180.1%2C217.8%20Q167.8%2C189.2%20131.3%2C190.2%20Q134.6%2C211.4%2089.1%2C188.7%20Q53.2%2C143.9%2068.6%2C151.0%20Q64.0%2C152.0%2054.9%2C105.0%20Q58.8%2C64.9%2075.6%2C55.7%20Q100.1%2C42.7%20133.0%2C81.0%20Q130.6%2C81.7%20158.6%2C89.2%20Q191.8%2C67.6%20225.4%2C75.1%20Q194.2%2C87.2%20192.3%2C130.0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%22-69.0%22%20cy%3D%2232.9%22%20r%3D%224.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22151.9%22%20cy%3D%22-42.2%22%20r%3D%229.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22-105.8%22%20cy%3D%22148.8%22%20r%3D%229.8%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22162.8%22%20cy%3D%22-80.6%22%20r%3D%227.7%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.50%22%2F%3E%3Ccircle%20cx%3D%2249.5%22%20cy%3D%2271.7%22%20r%3D%228.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%2286.1%22%20cy%3D%2256.3%22%20r%3D%2218.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22353.0%22%20cy%3D%2288.0%22%20r%3D%2212.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22313.3%22%20cy%3D%2260.4%22%20r%3D%229.1%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22157.7%22%20cy%3D%22-126.2%22%20r%3D%2219.0%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22357.5%22%20cy%3D%223.7%22%20r%3D%224.8%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22116.6%22%20cy%3D%22-9.8%22%20r%3D%2215.9%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22315.1%22%20cy%3D%22100.3%22%20r%3D%2219.7%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22243.9%22%20cy%3D%2264.2%22%20r%3D%228.0%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22-114.8%22%20cy%3D%22131.0%22%20r%3D%229.9%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.51%22%2F%3E%3Ccircle%20cx%3D%22-78.5%22%20cy%3D%22157.3%22%20r%3D%2210.1%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22-24.2%22%20cy%3D%22311.3%22%20r%3D%2216.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.49%22%2F%3E%3Cpath%20d%3D%22M132.9%2C130.0%20h24.6%20v172.9%20a12.3%2C12.3%200%200%201%20-24.6%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.50%22%2F%3E%3Cpath%20d%3D%22M142.4%2C130.0%20h20.1%20v154.9%20a10.1%2C10.1%200%200%201%20-20.1%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.50%22%2F%3E%3Cpath%20d%3D%22M737.4%2C95.0%20Q715.5%2C115.5%20723.2%2C142.0%20Q689.7%2C145.1%20665.5%2C128.9%20Q676.4%2C150.7%20644.5%2C133.4%20Q622.7%2C142.3%20597.1%2C156.0%20Q577.5%2C115.9%20577.9%2C116.2%20Q559.1%2C94.0%20581.4%2C74.9%20Q591.0%2C60.3%20616.4%2C56.2%20Q645.4%2C43.1%20640.3%2C27.8%20Q661.9%2C19.0%20678.2%2C33.2%20Q671.4%2C38.5%20706.0%2C59.0%20Q705.9%2C77.5%20737.4%2C95.0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22752.1%22%20cy%3D%22161.2%22%20r%3D%224.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%22714.6%22%20cy%3D%2210.5%22%20r%3D%225.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22561.8%22%20cy%3D%22-96.4%22%20r%3D%2211.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%22740.9%22%20cy%3D%22-14.5%22%20r%3D%227.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22453.0%22%20cy%3D%2292.4%22%20r%3D%2214.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22830.1%22%20cy%3D%2212.8%22%20r%3D%228.3%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22699.2%22%20cy%3D%22177.5%22%20r%3D%225.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22715.8%22%20cy%3D%22221.4%22%20r%3D%227.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22454.6%22%20cy%3D%2217.8%22%20r%3D%228.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22454.5%22%20cy%3D%2263.6%22%20r%3D%227.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22526.4%22%20cy%3D%22240.8%22%20r%3D%228.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22509.0%22%20cy%3D%22197.6%22%20r%3D%2211.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22624.4%22%20cy%3D%22233.4%22%20r%3D%229.5%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%22579.0%22%20cy%3D%22-19.5%22%20r%3D%2214.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Cpath%20d%3D%22M689.1%2C95.0%20h16.0%20v164.1%20a8.0%2C8.0%200%200%201%20-16.0%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.43%22%2F%3E%3Cpath%20d%3D%22M624.1%2C95.0%20h18.6%20v114.7%20a9.3%2C9.3%200%200%201%20-18.6%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.43%22%2F%3E%3Cpath%20d%3D%22M618.9%2C95.0%20h13.2%20v187.0%20a6.6%2C6.6%200%200%201%20-13.2%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.43%22%2F%3E%3Cpath%20d%3D%22M688.3%2C95.0%20h21.8%20v112.8%20a10.9%2C10.9%200%200%201%20-21.8%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.43%22%2F%3E%3Cpath%20d%3D%22M490.3%2C340.0%20Q493.5%2C387.5%20500.5%2C391.7%20Q475.6%2C411.8%20453.7%2C413.9%20Q407.2%2C435.4%20405.7%2C439.6%20Q403.0%2C430.0%20352.9%2C417.4%20Q375.1%2C397.6%20366.2%2C355.8%20Q340.2%2C357.2%20370.4%2C325.4%20Q361.8%2C274.6%20341.5%2C249.4%20Q345.4%2C282.5%20409.7%2C268.7%20Q427.7%2C286.6%20449.1%2C276.3%20Q514.9%2C286.0%20531.9%2C268.1%20Q538.2%2C297.3%20490.3%2C340.0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.62%22%2F%3E%3Ccircle%20cx%3D%22309.1%22%20cy%3D%22267.0%22%20r%3D%2222.2%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22218.0%22%20cy%3D%22227.6%22%20r%3D%2222.1%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22281.9%22%20cy%3D%22294.4%22%20r%3D%2218.2%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22241.1%22%20cy%3D%22282.3%22%20r%3D%2221.1%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22592.4%22%20cy%3D%22582.4%22%20r%3D%2211.6%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22443.6%22%20cy%3D%22203.2%22%20r%3D%2223.1%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22471.9%22%20cy%3D%2268.6%22%20r%3D%229.1%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.51%22%2F%3E%3Ccircle%20cx%3D%22583.1%22%20cy%3D%22250.5%22%20r%3D%2219.6%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22389.1%22%20cy%3D%22116.9%22%20r%3D%2223.2%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22344.8%22%20cy%3D%22424.7%22%20r%3D%2213.7%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22294.4%22%20cy%3D%22104.4%22%20r%3D%2221.0%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22532.5%22%20cy%3D%22145.6%22%20r%3D%2214.5%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22439.4%22%20cy%3D%22514.4%22%20r%3D%2222.2%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22377.1%22%20cy%3D%22567.2%22%20r%3D%2217.8%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22319.4%22%20cy%3D%22533.3%22%20r%3D%2215.3%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22287.5%22%20cy%3D%22143.7%22%20r%3D%2223.7%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22565.9%22%20cy%3D%22484.8%22%20r%3D%2216.6%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.48%22%2F%3E%3Cpath%20d%3D%22M461.5%2C340.0%20h17.5%20v185.9%20a8.7%2C8.7%200%200%201%20-17.5%2C0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.56%22%2F%3E%3Cpath%20d%3D%22M391.6%2C340.0%20h30.8%20v251.9%20a15.4%2C15.4%200%200%201%20-30.8%2C0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.56%22%2F%3E%3Cpath%20d%3D%22M357.1%2C340.0%20h15.5%20v223.5%20a7.8%2C7.8%200%200%201%20-15.5%2C0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.56%22%2F%3E%3Cpath%20d%3D%22M831.2%2C300.0%20Q816.7%2C297.0%20819.2%2C318.8%20Q799.9%2C320.9%20810.3%2C344.5%20Q813.7%2C353.1%20784.7%2C336.9%20Q788.2%2C342.2%20768.4%2C324.9%20Q744.0%2C312.2%20742.8%2C313.9%20Q735.5%2C305.2%20718.7%2C279.1%20Q745.3%2C278.0%20745.1%2C248.2%20Q747.2%2C245.0%20780.5%2C233.8%20Q800.1%2C248.7%20806.8%2C263.2%20Q809.7%2C265.5%20836.9%2C269.8%20Q818.5%2C301.3%20831.2%2C300.0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22740.8%22%20cy%3D%22441.4%22%20r%3D%227.8%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%22917.9%22%20cy%3D%22316.0%22%20r%3D%225.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22906.9%22%20cy%3D%22345.3%22%20r%3D%226.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22833.6%22%20cy%3D%22216.8%22%20r%3D%2213.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22730.6%22%20cy%3D%22227.5%22%20r%3D%225.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22748.7%22%20cy%3D%22462.3%22%20r%3D%2213.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22675.4%22%20cy%3D%22418.4%22%20r%3D%226.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22790.7%22%20cy%3D%22392.1%22%20r%3D%225.5%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22863.1%22%20cy%3D%22139.2%22%20r%3D%2212.1%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.23%22%2F%3E%3Ccircle%20cx%3D%22751.5%22%20cy%3D%22442.6%22%20r%3D%225.9%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22828.4%22%20cy%3D%22406.9%22%20r%3D%225.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22799.9%22%20cy%3D%22393.1%22%20r%3D%2211.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%22611.7%22%20cy%3D%22342.6%22%20r%3D%228.3%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22765.8%22%20cy%3D%22224.0%22%20r%3D%2210.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22909.2%22%20cy%3D%22228.0%22%20r%3D%227.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22667.0%22%20cy%3D%22352.4%22%20r%3D%229.7%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22716.9%22%20cy%3D%22446.9%22%20r%3D%2210.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.28%22%2F%3E%3Cpath%20d%3D%22M799.3%2C300.0%20h12.2%20v90.4%20a6.1%2C6.1%200%200%201%20-12.2%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Cpath%20d%3D%22M763.9%2C300.0%20h9.1%20v114.4%20a4.6%2C4.6%200%200%201%20-9.1%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Cpath%20d%3D%22M806.0%2C300.0%20h19.0%20v161.6%20a9.5%2C9.5%200%200%201%20-19.0%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Cpath%20d%3D%22M809.0%2C300.0%20h8.8%20v168.5%20a4.4%2C4.4%200%200%201%20-8.8%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Cpath%20d%3D%22M177.7%2C470.0%20Q155.8%2C491.5%20171.7%2C516.1%20Q141.8%2C535.5%20136.8%2C550.6%20Q115.1%2C534.9%2086.1%2C566.9%20Q51.3%2C539.8%2044.3%2C534.3%20Q46.2%2C528.8%207.3%2C497.2%20Q17.6%2C492.5%2061.3%2C458.6%20Q40.7%2C444.4%2055.6%2C418.7%20Q52.5%2C371.5%2086.1%2C373.1%20Q127.7%2C371.2%20133.0%2C397.8%20Q142.6%2C431.8%20180.1%2C418.5%20Q197.2%2C433.9%20177.7%2C470.0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.55%22%2F%3E%3Ccircle%20cx%3D%2295.3%22%20cy%3D%22606.9%22%20r%3D%2213.4%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.51%22%2F%3E%3Ccircle%20cx%3D%225.3%22%20cy%3D%22336.1%22%20r%3D%2215.7%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22100.5%22%20cy%3D%22558.7%22%20r%3D%225.2%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22195.2%22%20cy%3D%22366.7%22%20r%3D%224.4%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.36%22%2F%3E%3Ccircle%20cx%3D%2282.9%22%20cy%3D%22326.2%22%20r%3D%225.6%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22-54.0%22%20cy%3D%22598.4%22%20r%3D%223.9%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%224.7%22%20cy%3D%22504.4%22%20r%3D%2217.8%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22134.2%22%20cy%3D%22240.8%22%20r%3D%225.4%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%2256.5%22%20cy%3D%22573.0%22%20r%3D%2216.3%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22197.0%22%20cy%3D%22681.9%22%20r%3D%225.8%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%2237.7%22%20cy%3D%22526.2%22%20r%3D%229.2%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.53%22%2F%3E%3Ccircle%20cx%3D%2288.5%22%20cy%3D%22602.3%22%20r%3D%2215.4%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22-58.1%22%20cy%3D%22361.1%22%20r%3D%223.8%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%2234.4%22%20cy%3D%22648.5%22%20r%3D%225.6%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22154.1%22%20cy%3D%22578.1%22%20r%3D%2217.3%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%229.8%22%20cy%3D%22582.4%22%20r%3D%2211.3%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22-51.9%22%20cy%3D%22619.3%22%20r%3D%229.8%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22-64.5%22%20cy%3D%22308.1%22%20r%3D%224.6%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.36%22%2F%3E%3Ccircle%20cx%3D%22164.8%22%20cy%3D%22331.1%22%20r%3D%2210.7%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%2299.1%22%20cy%3D%22623.4%22%20r%3D%2211.9%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.50%22%2F%3E%3Ccircle%20cx%3D%2214.6%22%20cy%3D%22564.1%22%20r%3D%229.5%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.54%22%2F%3E%3Ccircle%20cx%3D%22141.6%22%20cy%3D%22625.8%22%20r%3D%228.4%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%2269.3%22%20cy%3D%22658.7%22%20r%3D%224.2%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.47%22%2F%3E%3Cpath%20d%3D%22M66.1%2C470.0%20h13.3%20v94.9%20a6.6%2C6.6%200%200%201%20-13.3%2C0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.50%22%2F%3E%3Cpath%20d%3D%22M119.9%2C470.0%20h13.5%20v223.5%20a6.7%2C6.7%200%200%201%20-13.5%2C0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.50%22%2F%3E%3Cpath%20d%3D%22M52.6%2C470.0%20h18.7%20v222.1%20a9.3%2C9.3%200%200%201%20-18.7%2C0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.50%22%2F%3E%3Cpath%20d%3D%22M796.2%2C570.0%20Q806.4%2C612.8%20781.1%2C628.6%20Q747.7%2C639.2%20724.4%2C645.4%20Q713.2%2C622.3%20680.6%2C635.3%20Q673.3%2C638.1%20659.7%2C604.9%20Q614.9%2C618.9%20597.6%2C597.1%20Q615.5%2C592.3%20611.6%2C547.0%20Q607.2%2C495.4%20622.1%2C491.7%20Q668.4%2C511.9%20679.4%2C496.3%20Q703.2%2C461.8%20733.4%2C475.0%20Q722.0%2C512.4%20746.2%2C533.9%20Q758.9%2C578.5%20796.2%2C570.0%20Z%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22772.2%22%20cy%3D%22400.6%22%20r%3D%228.2%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%22593.4%22%20cy%3D%22411.7%22%20r%3D%2217.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22708.7%22%20cy%3D%22423.0%22%20r%3D%2218.2%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22519.9%22%20cy%3D%22672.0%22%20r%3D%2216.0%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22455.2%22%20cy%3D%22487.8%22%20r%3D%228.3%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22589.3%22%20cy%3D%22334.5%22%20r%3D%229.6%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22767.3%22%20cy%3D%22333.6%22%20r%3D%2211.6%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22760.6%22%20cy%3D%22774.8%22%20r%3D%228.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%22575.7%22%20cy%3D%22498.9%22%20r%3D%2215.5%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22934.9%22%20cy%3D%22459.9%22%20r%3D%2212.9%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22610.0%22%20cy%3D%22334.4%22%20r%3D%2221.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%22554.5%22%20cy%3D%22730.9%22%20r%3D%229.0%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22912.3%22%20cy%3D%22710.5%22%20r%3D%2213.1%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22608.9%22%20cy%3D%22437.2%22%20r%3D%227.0%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%22778.1%22%20cy%3D%22674.0%22%20r%3D%2219.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22932.9%22%20cy%3D%22589.2%22%20r%3D%223.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22866.4%22%20cy%3D%22449.2%22%20r%3D%229.0%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22597.5%22%20cy%3D%22647.3%22%20r%3D%2221.8%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22479.7%22%20cy%3D%22680.7%22%20r%3D%2210.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22698.3%22%20cy%3D%22851.6%22%20r%3D%2219.8%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22829.2%22%20cy%3D%22454.1%22%20r%3D%2218.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22505.4%22%20cy%3D%22550.6%22%20r%3D%2216.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22893.9%22%20cy%3D%22692.2%22%20r%3D%228.3%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.35%22%2F%3E%3Cpath%20d%3D%22M629.3%2C570.0%20h17.7%20v191.2%20a8.8%2C8.8%200%200%201%20-17.7%2C0%20Z%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.41%22%2F%3E%3Cpath%20d%3D%22M728.0%2C570.0%20h21.9%20v132.3%20a10.9%2C10.9%200%200%201%20-21.9%2C0%20Z%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.41%22%2F%3E%3Cpath%20d%3D%22M328.8%2C660.0%20Q304.5%2C667.7%20313.5%2C681.5%20Q323.7%2C685.4%20307.4%2C719.9%20Q279.9%2C712.8%20274.9%2C695.3%20Q276.0%2C703.4%20240.8%2C705.2%20Q231.7%2C709.1%20231.1%2C674.4%20Q220.4%2C676.8%20246.5%2C650.2%20Q235.6%2C618.6%20241.8%2C615.9%20Q243.0%2C613.4%20275.2%2C626.5%20Q301.8%2C605.5%20302.7%2C610.4%20Q309.6%2C631.2%20309.9%2C640.8%20Q314.2%2C652.3%20328.8%2C660.0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.4%22%2F%3E%3Ccircle%20cx%3D%22391.9%22%20cy%3D%22622.0%22%20r%3D%222.9%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22398.5%22%20cy%3D%22739.6%22%20r%3D%2213.9%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22384.0%22%20cy%3D%22722.4%22%20r%3D%225.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22410.9%22%20cy%3D%22711.0%22%20r%3D%2214.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22215.2%22%20cy%3D%22622.8%22%20r%3D%229.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.23%22%2F%3E%3Ccircle%20cx%3D%22305.2%22%20cy%3D%22797.1%22%20r%3D%224.0%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22143.4%22%20cy%3D%22624.3%22%20r%3D%229.5%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22392.7%22%20cy%3D%22745.2%22%20r%3D%224.7%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22246.9%22%20cy%3D%22523.6%22%20r%3D%2210.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22115.2%22%20cy%3D%22626.7%22%20r%3D%228.3%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22216.1%22%20cy%3D%22735.7%22%20r%3D%224.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Ccircle%20cx%3D%22372.2%22%20cy%3D%22712.1%22%20r%3D%228.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22141.3%22%20cy%3D%22706.2%22%20r%3D%223.3%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22336.7%22%20cy%3D%22755.8%22%20r%3D%2214.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22354.7%22%20cy%3D%22641.8%22%20r%3D%229.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Ccircle%20cx%3D%22326.3%22%20cy%3D%22559.0%22%20r%3D%226.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22302.0%22%20cy%3D%22587.6%22%20r%3D%223.5%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22255.4%22%20cy%3D%22588.9%22%20r%3D%2211.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22142.7%22%20cy%3D%22586.8%22%20r%3D%228.0%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.35%22%2F%3E%3Cpath%20d%3D%22M266.7%2C660.0%20h13.4%20v178.7%20a6.7%2C6.7%200%200%201%20-13.4%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Cpath%20d%3D%22M289.7%2C660.0%20h11.8%20v126.9%20a5.9%2C5.9%200%200%201%20-11.8%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Cpath%20d%3D%22M261.5%2C660.0%20h13.9%20v155.3%20a6.9%2C6.9%200%200%201%20-13.9%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Cpath%20d%3D%22M316.3%2C660.0%20h11.2%20v127.2%20a5.6%2C5.6%200%200%201%20-11.2%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Cpath%20d%3D%22M595.8%2C780.0%20Q611.7%2C792.4%20628.2%2C836.7%20Q611.4%2C809.4%20560.4%2C824.7%20Q530.2%2C820.8%20527.5%2C866.7%20Q506.5%2C836.1%20509.6%2C815.0%20Q518.2%2C799.3%20485.1%2C796.1%20Q441.1%2C760.4%20437.1%2C749.8%20Q496.1%2C721.6%20504.2%2C738.7%20Q522.4%2C711.7%20528.1%2C697.4%20Q557.2%2C697.9%20569.6%2C715.2%20Q594.5%2C728.3%20599.6%2C741.7%20Q605.5%2C781.6%20595.8%2C780.0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.5%22%2F%3E%3Ccircle%20cx%3D%22438.7%22%20cy%3D%22887.3%22%20r%3D%226.1%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22683.7%22%20cy%3D%22946.8%22%20r%3D%2211.2%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22703.2%22%20cy%3D%22811.5%22%20r%3D%229.3%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22661.6%22%20cy%3D%22688.5%22%20r%3D%2210.9%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22488.1%22%20cy%3D%22616.3%22%20r%3D%2210.7%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22510.6%22%20cy%3D%22586.7%22%20r%3D%224.5%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22371.3%22%20cy%3D%22926.2%22%20r%3D%224.7%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22549.7%22%20cy%3D%22879.0%22%20r%3D%2217.7%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22597.4%22%20cy%3D%22992.1%22%20r%3D%2212.8%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22736.4%22%20cy%3D%22827.1%22%20r%3D%225.4%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22364.4%22%20cy%3D%22829.5%22%20r%3D%2210.2%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22635.7%22%20cy%3D%22656.7%22%20r%3D%225.5%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22405.4%22%20cy%3D%22752.7%22%20r%3D%228.8%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22351.1%22%20cy%3D%22786.4%22%20r%3D%228.0%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.36%22%2F%3E%3Ccircle%20cx%3D%22498.3%22%20cy%3D%22970.0%22%20r%3D%2216.1%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22690.2%22%20cy%3D%22688.7%22%20r%3D%228.6%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.48%22%2F%3E%3Ccircle%20cx%3D%22505.5%22%20cy%3D%22896.7%22%20r%3D%223.5%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.33%22%2F%3E%3Cpath%20d%3D%22M577.1%2C780.0%20h14.4%20v220.7%20a7.2%2C7.2%200%200%201%20-14.4%2C0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.45%22%2F%3E%3Cpath%20d%3D%22M528.5%2C780.0%20h21.7%20v113.4%20a10.8%2C10.8%200%200%201%20-21.7%2C0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.45%22%2F%3E%3Cpath%20d%3D%22M592.7%2C780.0%20h23.2%20v118.7%20a11.6%2C11.6%200%200%201%20-23.2%2C0%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%220.45%22%2F%3E%3Cpath%20d%3D%22M143.3%2C800.0%20Q133.6%2C819.1%20132.3%2C823.9%20Q119.0%2C835.2%20109.0%2C830.7%20Q85.3%2C839.1%2085.5%2C865.8%20Q67.6%2C843.6%2076.8%2C821.0%20Q76.7%2C820.7%2046.9%2C814.1%20Q48.0%2C793.4%2029.8%2C780.9%20Q60.8%2C764.7%2074.6%2C776.5%20Q73.8%2C768.4%2087.5%2C748.1%20Q110.6%2C746.2%20118.0%2C749.7%20Q104.4%2C758.8%20119.7%2C784.1%20Q121.4%2C784.4%20143.3%2C800.0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%2228.7%22%20cy%3D%22742.8%22%20r%3D%224.0%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%2237.2%22%20cy%3D%22893.2%22%20r%3D%228.7%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22220.5%22%20cy%3D%22747.0%22%20r%3D%2210.0%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22250.2%22%20cy%3D%22745.5%22%20r%3D%226.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22163.7%22%20cy%3D%22822.9%22%20r%3D%2211.6%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%22219.4%22%20cy%3D%22852.3%22%20r%3D%2210.7%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22165.3%22%20cy%3D%22760.7%22%20r%3D%224.5%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22206.0%22%20cy%3D%22707.7%22%20r%3D%2212.0%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%2261.0%22%20cy%3D%22852.3%22%20r%3D%229.8%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22-39.3%22%20cy%3D%22883.8%22%20r%3D%2211.3%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22106.7%22%20cy%3D%22939.8%22%20r%3D%2211.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.43%22%2F%3E%3Ccircle%20cx%3D%22238.4%22%20cy%3D%22803.5%22%20r%3D%224.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%2218.7%22%20cy%3D%22938.3%22%20r%3D%223.5%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22-27.0%22%20cy%3D%22799.4%22%20r%3D%227.9%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22166.8%22%20cy%3D%22833.2%22%20r%3D%2210.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22194.7%22%20cy%3D%22929.2%22%20r%3D%229.9%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%2278.2%22%20cy%3D%22933.3%22%20r%3D%2211.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%2284.9%22%20cy%3D%22678.2%22%20r%3D%222.4%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22-35.4%22%20cy%3D%22891.8%22%20r%3D%223.8%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%2281.6%22%20cy%3D%22648.0%22%20r%3D%227.7%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.35%22%2F%3E%3Ccircle%20cx%3D%2235.8%22%20cy%3D%22656.6%22%20r%3D%223.2%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.42%22%2F%3E%3Cpath%20d%3D%22M91.3%2C800.0%20h17.9%20v100.2%20a8.9%2C8.9%200%200%201%20-17.9%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.40%22%2F%3E%3Cpath%20d%3D%22M100.6%2C800.0%20h16.0%20v61.8%20a8.0%2C8.0%200%200%201%20-16.0%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.40%22%2F%3E%3Cpath%20d%3D%22M82.2%2C800.0%20h10.1%20v103.4%20a5.1%2C5.1%200%200%201%20-10.1%2C0%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%220.40%22%2F%3E%3Cpath%20d%3D%22M828.1%2C840.0%20Q839.5%2C878.4%20810.4%2C872.4%20Q779.0%2C903.5%20788.5%2C902.3%20Q775.5%2C889.1%20753.3%2C886.6%20Q720.1%2C902.1%20706.3%2C902.0%20Q691.6%2C891.0%20680.7%2C863.3%20Q692.7%2C824.9%20690.1%2C819.5%20Q722.5%2C834.6%20730.9%2C806.4%20Q761.8%2C796.0%20750.7%2C775.5%20Q746.2%2C760.9%20782.5%2C790.8%20Q775.7%2C821.8%20801.7%2C813.2%20Q806.1%2C820.6%20828.1%2C840.0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.52%22%2F%3E%3Ccircle%20cx%3D%22900.1%22%20cy%3D%22869.1%22%20r%3D%222.8%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22646.6%22%20cy%3D%22846.2%22%20r%3D%2214.0%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22675.6%22%20cy%3D%22845.3%22%20r%3D%2216.0%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.46%22%2F%3E%3Ccircle%20cx%3D%22673.7%22%20cy%3D%22942.7%22%20r%3D%224.5%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22590.4%22%20cy%3D%22931.5%22%20r%3D%226.3%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22718.8%22%20cy%3D%22958.9%22%20r%3D%229.0%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.49%22%2F%3E%3Ccircle%20cx%3D%22769.1%22%20cy%3D%22976.6%22%20r%3D%227.8%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.42%22%2F%3E%3Ccircle%20cx%3D%22769.2%22%20cy%3D%22941.3%22%20r%3D%2215.4%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22774.9%22%20cy%3D%22732.9%22%20r%3D%2211.9%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22595.3%22%20cy%3D%22871.4%22%20r%3D%227.1%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22876.7%22%20cy%3D%22661.5%22%20r%3D%225.9%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22709.1%22%20cy%3D%22992.7%22%20r%3D%223.6%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.50%22%2F%3E%3Ccircle%20cx%3D%22872.6%22%20cy%3D%22902.8%22%20r%3D%2215.9%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.50%22%2F%3E%3Ccircle%20cx%3D%22885.2%22%20cy%3D%221011.6%22%20r%3D%2213.4%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22860.4%22%20cy%3D%22828.6%22%20r%3D%227.5%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.51%22%2F%3E%3Ccircle%20cx%3D%22598.3%22%20cy%3D%22897.5%22%20r%3D%224.6%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.41%22%2F%3E%3Ccircle%20cx%3D%22834.0%22%20cy%3D%22755.9%22%20r%3D%226.8%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.44%22%2F%3E%3Ccircle%20cx%3D%22852.4%22%20cy%3D%22805.4%22%20r%3D%225.0%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22710.2%22%20cy%3D%22933.3%22%20r%3D%2210.2%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22846.6%22%20cy%3D%22774.5%22%20r%3D%226.2%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22872.4%22%20cy%3D%221012.8%22%20r%3D%229.5%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.50%22%2F%3E%3Ccircle%20cx%3D%22741.4%22%20cy%3D%22624.3%22%20r%3D%226.4%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.40%22%2F%3E%3Ccircle%20cx%3D%22662.5%22%20cy%3D%22840.1%22%20r%3D%2212.1%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.50%22%2F%3E%3Cpath%20d%3D%22M752.4%2C840.0%20h17.1%20v151.7%20a8.6%2C8.6%200%200%201%20-17.1%2C0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.47%22%2F%3E%3Cpath%20d%3D%22M759.0%2C840.0%20h15.9%20v98.0%20a7.9%2C7.9%200%200%201%20-15.9%2C0%20Z%22%20fill%3D%22%237b1fa2%22%20fill-opacity%3D%220.47%22%2F%3E%3Cpath%20d%3D%22M420.2%2C60.0%20Q412.9%2C59.9%20417.2%2C83.9%20Q419.8%2C104.0%20404.1%2C112.8%20Q375.7%2C120.7%20374.2%2C100.3%20Q376.9%2C100.7%20352.3%2C92.0%20Q347.8%2C72.3%20336.5%2C72.8%20Q329.6%2C63.0%20351.1%2C51.5%20Q338.7%2C30.6%20352.2%2C27.9%20Q355.2%2C6.9%20373.3%2C13.6%20Q386.6%2C10.9%20402.0%2C11.7%20Q412.3%2C29.2%20402.4%2C45.6%20Q415.4%2C52.8%20420.2%2C60.0%20Z%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.38%22%2F%3E%3Ccircle%20cx%3D%22465.9%22%20cy%3D%22-36.6%22%20r%3D%228.9%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22420.6%22%20cy%3D%227.7%22%20r%3D%229.1%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22330.3%22%20cy%3D%2216.7%22%20r%3D%225.8%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.23%22%2F%3E%3Ccircle%20cx%3D%22251.5%22%20cy%3D%2228.1%22%20r%3D%227.5%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22307.6%22%20cy%3D%22115.3%22%20r%3D%228.5%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22289.2%22%20cy%3D%22-28.7%22%20r%3D%222.3%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.22%22%2F%3E%3Ccircle%20cx%3D%22456.3%22%20cy%3D%22-12.1%22%20r%3D%228.9%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22323.9%22%20cy%3D%2223.9%22%20r%3D%223.8%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22436.3%22%20cy%3D%2261.6%22%20r%3D%227.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22250.7%22%20cy%3D%2216.8%22%20r%3D%222.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%22384.9%22%20cy%3D%22-36.6%22%20r%3D%222.0%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22425.5%22%20cy%3D%2296.7%22%20r%3D%224.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.22%22%2F%3E%3Ccircle%20cx%3D%22492.4%22%20cy%3D%2272.0%22%20r%3D%223.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22459.3%22%20cy%3D%2287.0%22%20r%3D%228.2%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22318.7%22%20cy%3D%2232.9%22%20r%3D%227.9%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22361.3%22%20cy%3D%22106.1%22%20r%3D%225.5%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.37%22%2F%3E%3Ccircle%20cx%3D%22456.3%22%20cy%3D%22146.2%22%20r%3D%221.8%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.29%22%2F%3E%3Ccircle%20cx%3D%22267.6%22%20cy%3D%2269.3%22%20r%3D%223.4%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22500.5%22%20cy%3D%2248.8%22%20r%3D%225.6%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.27%22%2F%3E%3Ccircle%20cx%3D%22268.0%22%20cy%3D%22147.1%22%20r%3D%221.7%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.36%22%2F%3E%3Ccircle%20cx%3D%22483.0%22%20cy%3D%2243.6%22%20r%3D%2210.9%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.21%22%2F%3E%3Cpath%20d%3D%22M373.3%2C60.0%20h12.1%20v122.2%20a6.1%2C6.1%200%200%201%20-12.1%2C0%20Z%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Cpath%20d%3D%22M354.8%2C60.0%20h8.5%20v133.5%20a4.3%2C4.3%200%200%201%20-8.5%2C0%20Z%22%20fill%3D%22%23b464ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Cpath%20d%3D%22M237.1%2C300.0%20Q241.1%2C302.3%20236.5%2C323.5%20Q225.7%2C322.6%20218.1%2C339.7%20Q218.0%2C320.9%20196.3%2C325.5%20Q199.7%2C309.5%20186.1%2C316.1%20Q181.8%2C308.5%20167.6%2C309.5%20Q166.8%2C309.6%20171.0%2C291.5%20Q156.8%2C265.7%20168.2%2C263.3%20Q192.0%2C259.8%20193.7%2C255.9%20Q194.6%2C272.1%20217.2%2C262.3%20Q237.3%2C260.0%20233.6%2C278.4%20Q233.3%2C279.5%20237.1%2C300.0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22189.4%22%20cy%3D%22388.3%22%20r%3D%224.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.25%22%2F%3E%3Ccircle%20cx%3D%22284.9%22%20cy%3D%22298.2%22%20r%3D%226.9%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22241.6%22%20cy%3D%22252.4%22%20r%3D%221.5%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22274.4%22%20cy%3D%22289.7%22%20r%3D%224.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.22%22%2F%3E%3Ccircle%20cx%3D%22146.1%22%20cy%3D%22272.0%22%20r%3D%225.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22153.3%22%20cy%3D%22198.3%22%20r%3D%222.3%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.33%22%2F%3E%3Ccircle%20cx%3D%22242.5%22%20cy%3D%22209.1%22%20r%3D%223.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22127.5%22%20cy%3D%22337.6%22%20r%3D%227.0%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%2284.5%22%20cy%3D%22270.7%22%20r%3D%226.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Ccircle%20cx%3D%22268.6%22%20cy%3D%22240.0%22%20r%3D%225.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.20%22%2F%3E%3Ccircle%20cx%3D%22121.3%22%20cy%3D%22237.0%22%20r%3D%225.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22104.8%22%20cy%3D%22274.8%22%20r%3D%222.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.22%22%2F%3E%3Ccircle%20cx%3D%22215.3%22%20cy%3D%22235.7%22%20r%3D%229.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22147.2%22%20cy%3D%22346.2%22%20r%3D%223.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.24%22%2F%3E%3Ccircle%20cx%3D%22136.0%22%20cy%3D%22367.1%22%20r%3D%227.9%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.21%22%2F%3E%3Ccircle%20cx%3D%22114.1%22%20cy%3D%22379.7%22%20r%3D%221.8%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.19%22%2F%3E%3Ccircle%20cx%3D%22178.6%22%20cy%3D%22257.7%22%20r%3D%223.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.28%22%2F%3E%3Ccircle%20cx%3D%22201.3%22%20cy%3D%22237.4%22%20r%3D%222.2%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.23%22%2F%3E%3Ccircle%20cx%3D%22121.1%22%20cy%3D%22335.0%22%20r%3D%226.6%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.30%22%2F%3E%3Ccircle%20cx%3D%22125.1%22%20cy%3D%22293.4%22%20r%3D%224.4%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.26%22%2F%3E%3Ccircle%20cx%3D%22161.8%22%20cy%3D%22189.6%22%20r%3D%223.5%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.34%22%2F%3E%3Cpath%20d%3D%22M224.2%2C300.0%20h7.5%20v73.3%20a3.8%2C3.8%200%200%201%20-7.5%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Cpath%20d%3D%22M214.2%2C300.0%20h6.1%20v114.9%20a3.1%2C3.1%200%200%201%20-6.1%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Cpath%20d%3D%22M186.8%2C300.0%20h8.7%20v104.2%20a4.3%2C4.3%200%200%201%20-8.7%2C0%20Z%22%20fill%3D%22%23e0b3ff%22%20fill-opacity%3D%220.31%22%2F%3E%3Cpath%20d%3D%22M-40%2C210%20C200%2C168%20320%2C296%20560%2C244%20C700%2C212%20780%2C264%20900%2C232%20L900%2C296%20C760%2C332%20700%2C274%20560%2C306%20C320%2C360%20200%2C232%20-40%2C274%20Z%22%20fill%3D%22%239b3fd4%22%20fill-opacity%3D%22.28%22%2F%3E%3Cpath%20d%3D%22M-40%2C700%20C160%2C656%20300%2C762%20500%2C714%20C660%2C678%20760%2C730%20900%2C698%20L900%2C742%20C760%2C776%20660%2C724%20500%2C758%20C300%2C806%20160%2C700%20-40%2C744%20Z%22%20fill%3D%22%23c77dff%22%20fill-opacity%3D%22.24%22%2F%3E%3C%2Fsvg%3E") no-repeat center/100% 100%,
+    linear-gradient(180deg,#3a1250,#22092f 60%,#160620);
+}
+[data-style="graffiti"] .squad-canvas::before{display:none}
+[data-style="graffiti"] .sq-title-img{width:80cqw}
+[data-style="graffiti"] .sq-subtitle{
+  background:#7b1fa2;color:#f3e6ff;font-weight:900;letter-spacing:.06em;
+  display:inline-block;padding:.6cqw 2.4cqw;transform:rotate(-1.2deg);
+  box-shadow:.8cqw .8cqw 0 #160620;
+}
+[data-style="graffiti"] .sq-rule{display:none}
+[data-style="graffiti"] .pitch{box-shadow:0 0 0 .8cqw #160620, 0 0 24px rgba(0,0,0,.6)}
+[data-style="graffiti"] .sq-footer{background:#160620;border-top:.8cqw solid #9b3fd4}
+[data-style="graffiti"] .meta-row dt,[data-style="graffiti"] .formation-badge .num{color:#c77dff}
+[data-style="graffiti"] .bench-chip{
+  border-radius:0;background:#f3e6ff;color:#2b0a3d;font-weight:900;border:2px solid #160620;
+  box-shadow:.4cqw .4cqw 0 #9b3fd4;
+}
+[data-style="graffiti"] .bench-chip b{color:#7b1fa2}
+[data-style="graffiti"] .pos-pill{
+  border-radius:0;background:#9b3fd4;color:#160620;border:2px solid #160620;font-weight:900;
+}
+
+/* ---------- サイバーコア ---------- */
+[data-style="cyber"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cg%20stroke%3D%22%23c77dff%22%20stroke-opacity%3D%22.18%22%20stroke-width%3D%221%22%3E%3Cpath%20d%3D%22M0%2C0%20H60%20M0%2C30%20H60%20M0%2C0%20V60%20M30%2C0%20V60%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/9cqw auto,
+    repeating-linear-gradient(0deg, rgba(199,125,255,.06) 0 1px, transparent 1px 4px),
+    linear-gradient(180deg,#160726,#0a0312);
+}
+[data-style="cyber"] .squad-canvas::before{display:none}
+[data-style="cyber"] .sq-title-img{width:74cqw}
+[data-style="cyber"] .sq-subtitle{
+  font-family:"DejaVu Sans Mono",monospace;color:#c77dff;letter-spacing:.16em;
+}
+[data-style="cyber"] .sq-rule{background:linear-gradient(90deg,transparent,#c77dff,transparent)}
+[data-style="cyber"] .pitch{box-shadow:0 0 0 1px #9b3fd4, 0 0 30px rgba(155,63,212,.35)}
+[data-style="cyber"] .sq-footer{background:#12061f;border-top:1px solid #9b3fd4}
+[data-style="cyber"] .meta-row dt,[data-style="cyber"] .formation-badge .num{color:#c77dff}
+[data-style="cyber"] .formation-badge .fig,
+[data-style="cyber"] .formation-badge .fig::before,
+[data-style="cyber"] .formation-badge .fig::after{border-color:#9b3fd4}
+[data-style="cyber"] .bench-chip,[data-style="cyber"] .pos-pill{
+  border-radius:0;background:rgba(155,63,212,.14);border:1px solid rgba(199,125,255,.6);
+  color:#eadcff;font-family:"DejaVu Sans Mono",monospace;
+}
+[data-style="cyber"] .bench-chip b{color:#c77dff}
+
+/* ---------- ヴェイパーウェーブ ---------- */
+[data-style="vapor"]{
+  background:linear-gradient(180deg,#d9a6f0 0%,#b579e8 34%,#8a4fd6 62%,#c9a3e8 100%);
+}
+[data-style="vapor"] .squad-canvas::before{
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 2px, transparent 2px 7px);
+}
+[data-style="vapor"] .sq-title-img{width:76cqw}
+[data-style="vapor"] .sq-subtitle{
+  color:#fff;letter-spacing:.22em;text-shadow:.3cqw .3cqw 0 #6a1b9a,-.2cqw -.2cqw 0 #efd8ff;
+}
+[data-style="vapor"] .sq-rule{background:linear-gradient(90deg,transparent,#fff,transparent)}
+[data-style="vapor"] .pitch{box-shadow:0 0 0 2px rgba(255,255,255,.85), 0 0 24px rgba(106,27,154,.5)}
+[data-style="vapor"] .sq-footer{
+  background:linear-gradient(180deg,rgba(45,10,66,.88),rgba(24,5,36,.94));
+  border-top:2px solid #efd8ff;
+}
+[data-style="vapor"] .meta-row dt,[data-style="vapor"] .formation-badge .num{color:#e2c4ff}
+[data-style="vapor"] .bench-chip,[data-style="vapor"] .pos-pill{
+  border-radius:0;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.7);color:#fff;
+}
+[data-style="vapor"] .bench-chip b{color:#efd8ff}
+
+/* ---------- シンセウェーブ ---------- */
+[data-style="synth"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20preserveAspectRatio%3D%22none%22%3E%3Cg%20stroke%3D%22%23c77dff%22%20stroke-opacity%3D%22.5%22%20stroke-width%3D%22.4%22%3E%3Cpath%20d%3D%22M0%2C60%20H100%20M0%2C68%20H100%20M0%2C78%20H100%20M0%2C90%20H100%22%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%22%239b3fd4%22%20stroke-opacity%3D%22.5%22%20stroke-width%3D%22.4%22%3E%3Cpath%20d%3D%22M50%2C60%20L-40%2C100%20M50%2C60%20L0%2C100%20M50%2C60%20L25%2C100%20M50%2C60%20L50%2C100%20M50%2C60%20L75%2C100%20M50%2C60%20L100%2C100%20M50%2C60%20L140%2C100%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/100% 100%,
+    linear-gradient(180deg,#1b0733 0%,#3d0f5e 40%,#57157a 62%,#150621 100%);
+}
+[data-style="synth"] .squad-canvas::before{display:none}
+[data-style="synth"] .sq-title-img{width:78cqw}
+[data-style="synth"] .sq-subtitle{color:#e2c4ff;letter-spacing:.2em;text-shadow:0 0 1.4cqw #9b3fd4}
+[data-style="synth"] .sq-rule{
+  background:linear-gradient(90deg,transparent,#9b3fd4,#e2c4ff,transparent);
+  box-shadow:0 0 1.4cqw #9b3fd4;
+}
+[data-style="synth"] .pitch{box-shadow:0 0 0 2px #9b3fd4, 0 0 3cqw rgba(155,63,212,.6)}
+[data-style="synth"] .sq-footer{background:#120520;border-top:2px solid #c77dff}
+[data-style="synth"] .meta-row dt,[data-style="synth"] .formation-badge .num{color:#c77dff}
+[data-style="synth"] .bench-chip,[data-style="synth"] .pos-pill{
+  border-radius:0;background:rgba(155,63,212,.18);border:1px solid #b464ff;color:#f2e4ff;
+}
+[data-style="synth"] .bench-chip b{color:#e2c4ff}
+
+/* ---------- スクラップブック ---------- */
+[data-style="scrap"]{
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Cg%20fill%3D%22%235b1a7d%22%20fill-opacity%3D%22.12%22%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2230%22%20r%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%2218%22%20r%3D%221.2%22%2F%3E%3Ccircle%20cx%3D%22140%22%20cy%3D%2260%22%20r%3D%221.8%22%2F%3E%3Ccircle%20cx%3D%2246%22%20cy%3D%2296%22%20r%3D%221.3%22%2F%3E%3Ccircle%20cx%3D%22112%22%20cy%3D%22128%22%20r%3D%221.6%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%22140%22%20r%3D%221.1%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat 0 0/22cqw auto,
+    linear-gradient(180deg,#efe4f7,#ddc9ec 60%,#cbb2e2);
+}
+[data-style="scrap"] .squad-canvas::before{display:none}
+[data-style="scrap"] .sq-title-img{width:82cqw}
+[data-style="scrap"] .sq-subtitle{
+  display:inline-block;background:#4a1466;color:#f3ecff;padding:.5cqw 2cqw;
+  transform:rotate(-1deg);letter-spacing:.1em;
+}
+[data-style="scrap"] .sq-rule{display:none}
+[data-style="scrap"] .pitch{
+  box-shadow:0 0 0 1.2cqw #f3ecff, .6cqw .8cqw 1.6cqw rgba(43,10,61,.4);
+  transform:rotate(-.6deg);
+}
+[data-style="scrap"] .sq-footer{
+  background:#f3ecff;border:none;color:#2b0a3d;
+  margin:2cqw 3cqw 3cqw;transform:rotate(.5deg);
+  box-shadow:.5cqw .6cqw 1.2cqw rgba(43,10,61,.35);
+}
+[data-style="scrap"] .meta-row dt{color:#7b1fa2}
+[data-style="scrap"] .meta-row dd{color:#2b0a3d}
+[data-style="scrap"] .formation-badge .num{color:#2b0a3d}
+[data-style="scrap"] .formation-badge .fig,
+[data-style="scrap"] .formation-badge .fig::before,
+[data-style="scrap"] .formation-badge .fig::after{border-color:#4a1466}
+[data-style="scrap"] .bench-chip{
+  border-radius:0;background:#fff;border:1px solid #4a1466;color:#2b0a3d;
+  box-shadow:.2cqw .3cqw 0 rgba(43,10,61,.35);
+}
+[data-style="scrap"] .bench-chip b{color:#7b1fa2}
+[data-style="scrap"] .pos-pill{
+  border-radius:0;background:#c9a3e8;border:1px solid #4a1466;color:#2b0a3d;
+}
+[data-style="scrap"] .disclaimer{color:#6a5580;border-top-color:rgba(43,10,61,.2)}
+
+/* ---- ヘッダー ---- */
+.sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
+.sq-title-img{
+  display:block;width:62cqw;max-width:100%;height:auto;margin:0 auto;
+  filter:drop-shadow(0 .6cqw 1.4cqw rgba(0,0,0,.5));
+}
+.sq-subtitle{
+  margin-top:.8cqw;font-size:3.1cqw;letter-spacing:.18em;color:#e6d7f0;font-weight:700;
+}
+.sq-rule{
+  margin:1.4cqw auto 0;width:34cqw;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold-500),transparent);
+}
+
+/* ---- ピッチ ---- */
+.pitch{
+  flex:1;min-height:0;margin:1.6cqw 3cqw;border-radius:8px;position:relative;z-index:1;
+  background:#0d2416;
+  box-shadow:0 0 30px rgba(0,0,0,.65);
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:1fr 1fr 1fr .9fr;
+  padding:2cqw 1cqw;
+  gap:.5cqw;
+}
+/* ピッチの描画レイヤー（パース付きSVG）とその上の空気感 */
+.pitch-art{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.pitch-glow{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(4,14,8,.75) 0%, rgba(4,14,8,.15) 18%, transparent 34%),
+    radial-gradient(55% 34% at 50% 30%, rgba(150,255,190,.14), transparent 72%),
+    radial-gradient(95% 60% at 50% 112%, rgba(2,10,5,.6), transparent 62%),
+    linear-gradient(105deg, rgba(255,255,255,.055) 0 9%, transparent 9% 27%, rgba(255,255,255,.04) 27% 31%, transparent 31%);
+}
+.pitch-vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  box-shadow:inset 0 0 12cqw 5cqw rgba(3,12,7,.85);
+}
+.line-row{display:flex;justify-content:space-evenly;align-items:center;position:relative;z-index:2}
+
+/* ---- 選手カード ---- */
+.player{display:flex;flex-direction:column;align-items:center;gap:.8cqw}
+.card{
+  height:var(--card-h, 24cqw);
+  width:auto;
+  aspect-ratio:47/64;
+  container-type:inline-size;
+  position:relative;
+  clip-path:var(--shield);
+  background:
+    linear-gradient(160deg,var(--gold-100) 0%,var(--gold-300) 18%,var(--gold-500) 48%,var(--gold-700) 78%,var(--gold-500) 100%);
+  padding:3.6%;
+  filter:drop-shadow(0 5cqw 9cqw rgba(0,0,0,.55));
+}
+/* カードの光沢 */
+.card::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,rgba(255,255,255,.55) 0 12%,transparent 26% 72%,rgba(255,255,255,.28) 88% 100%);
+  mix-blend-mode:screen;opacity:.6;
+}
+.card-inner{
+  height:100%;width:100%;clip-path:var(--shield);
+  background:linear-gradient(180deg,var(--purple-600),var(--purple-800) 70%,var(--purple-900));
+  position:relative;overflow:hidden;
+}
+/* 中面上部の斜めハッチと円のモチーフ */
+.card-inner::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:58%;pointer-events:none;
+  background:
+    radial-gradient(46% 42% at 62% 46%, rgba(255,255,255,.10), transparent 70%),
+    repeating-linear-gradient(58deg, rgba(255,255,255,.085) 0 1.5%, transparent 1.5% 5%);
+}
+/* 左端の明るい帯 */
+.card-inner::after{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:22%;pointer-events:none;
+  background:linear-gradient(90deg, rgba(255,255,255,.20), rgba(255,255,255,.04));
+}
+/* 斜めのスウッシュと、中面を上下に分ける線 */
+.card-split{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20130%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%221%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23d4af37%22%20stop-opacity%3D%22.18%22%2F%3E%3Cstop%20offset%3D%22.45%22%20stop-color%3D%22%23fff6cf%22%20stop-opacity%3D%22.62%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23f4dc8a%22%20stop-opacity%3D%22.30%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22h%22%20x1%3D%220%22%20y1%3D%221%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23fff6cf%22%20stop-opacity%3D%22.10%22%2F%3E%3Cstop%20offset%3D%22.6%22%20stop-color%3D%22%23fff6cf%22%20stop-opacity%3D%22.55%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23d4af37%22%20stop-opacity%3D%22.18%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22shard%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23fff6cf%22%20stop-opacity%3D%22.34%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%239c7a1c%22%20stop-opacity%3D%22.10%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22sheen%22%20x1%3D%220%22%20y1%3D%221%22%20x2%3D%221%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22%2F%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.14%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Cpath%20fill%3D%22url%28%23sheen%29%22%20d%3D%22M-20%2C130%20L28%2C-10%20L52%2C-10%20L4%2C130%20Z%22%2F%3E%3Cpath%20fill%3D%22url%28%23g%29%22%20d%3D%22M6%2C60%20C28%2C52%2058%2C32%20100%2C4%20L100%2C17%20C62%2C42%2032%2C57%2012%2C65%20Z%22%2F%3E%3Cpath%20fill%3D%22url%28%23h%29%22%20d%3D%22M22%2C66%20C46%2C56%2074%2C38%20100%2C21%20L100%2C28%20C76%2C43%2050%2C59%2030%2C68%20Z%22%2F%3E%3Cpath%20fill%3D%22url%28%23h%29%22%20d%3D%22M42%2C71%20C62%2C63%2082%2C51%20100%2C39%20L100%2C43%20C84%2C53%2064%2C65%2046%2C72%20Z%22%2F%3E%3Cg%20fill%3D%22url%28%23shard%29%22%3E%3Cpolygon%20points%3D%223%2C42%2012%2C36%2015%2C50%207%2C58%22%2F%3E%3Cpolygon%20points%3D%2211%2C60%2018%2C56%2019%2C68%2013%2C71%22%2F%3E%3Cpolygon%20points%3D%2287%2C20%2096%2C15%2098%2C31%2089%2C36%22%2F%3E%3Cpolygon%20points%3D%2281%2C37%2088%2C34%2090%2C45%2083%2C47%22%2F%3E%3Cpolygon%20points%3D%2288%2C84%2095%2C79%2094%2C92%2087%2C94%22%2F%3E%3Cpolygon%20points%3D%225%2C86%2011%2C82%2012%2C94%206%2C95%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23f4dc8a%22%3E%3Cpath%20stroke-opacity%3D%22.5%22%20stroke-width%3D%221%22%20transform%3D%22translate%2850%2C67.5%29%20scale%28.915%2C.9%29%20translate%28-50%2C-65%29%22%20d%3D%22M0%2C11.4%20C0%2C4.9%202.6%2C1.8%207.6%2C1.6%20C20%2C0%2036%2C0.5%2044.6%2C1.8%20L50%2C10.7%20L55.4%2C1.8%20C64%2C0.5%2080%2C0%2092.4%2C1.6%20C97.4%2C1.8%20100%2C4.9%20100%2C11.4%20L100%2C91%20C100%2C98.8%2097.2%2C105%2091.6%2C110%20C84.4%2C116.2%2070%2C121.2%2059.6%2C126.4%20C54%2C128.7%2051.4%2C129.2%2050%2C130%20C48.6%2C129.2%2046%2C128.7%2040.4%2C126.4%20C30%2C121.2%2015.6%2C116.2%208.4%2C110%20C2.8%2C105%200%2C98.8%200%2C91%20Z%22%2F%3E%3Cpath%20stroke-opacity%3D%22.24%22%20stroke-width%3D%220.55%22%20transform%3D%22translate%2850%2C69.5%29%20scale%28.865%2C.855%29%20translate%28-50%2C-65%29%22%20d%3D%22M0%2C11.4%20C0%2C4.9%202.6%2C1.8%207.6%2C1.6%20C20%2C0%2036%2C0.5%2044.6%2C1.8%20L50%2C10.7%20L55.4%2C1.8%20C64%2C0.5%2080%2C0%2092.4%2C1.6%20C97.4%2C1.8%20100%2C4.9%20100%2C11.4%20L100%2C91%20C100%2C98.8%2097.2%2C105%2091.6%2C110%20C84.4%2C116.2%2070%2C121.2%2059.6%2C126.4%20C54%2C128.7%2051.4%2C129.2%2050%2C130%20C48.6%2C129.2%2046%2C128.7%2040.4%2C126.4%20C30%2C121.2%2015.6%2C116.2%208.4%2C110%20C2.8%2C105%200%2C98.8%200%2C91%20Z%22%2F%3E%3C%2Fg%3E%3Crect%20x%3D%228%22%20y%3D%2266%22%20width%3D%2284%22%20height%3D%220.7%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.26%22%2F%3E%3Cpolygon%20points%3D%2250%2C63.4%2053.4%2C66.4%2050%2C69.4%2046.6%2C66.4%22%20fill%3D%22%23f4dc8a%22%20opacity%3D%22.75%22%2F%3E%3Cg%20fill%3D%22%23f4dc8a%22%20opacity%3D%22.45%22%3E%3Cpolygon%20points%3D%2250%2C111%2054%2C117%2050%2C115.4%2046%2C117%22%2F%3E%3Cpolygon%20points%3D%2243%2C113%2046%2C117.6%2043%2C116.8%22%2F%3E%3Cpolygon%20points%3D%2257%2C113%2054%2C117.6%2057%2C116.8%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") no-repeat center/100% 100%;
+}
+/* 左肩：背番号（レーティング枠の代用）とポジション */
+.card-meta{
+  z-index:3;position:absolute;top:.8cqw;left:.9cqw;text-align:center;line-height:1;z-index:3;
+  text-shadow:0 .2cqw .4cqw rgba(0,0,0,.6);
+}
+.card-num{font-size:21cqw;font-weight:900;color:var(--gold-100);letter-spacing:-.02em}
+.card-pos{font-size:10.3cqw;font-weight:800;color:var(--gold-300);letter-spacing:.06em;margin-top:1.6cqw}
+.card-meta::after{
+  content:"";display:block;width:20cqw;height:1px;margin:2.8cqw auto 0;
+  background:linear-gradient(90deg,transparent,var(--gold-500),transparent);
+}
+/* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
+.card-photo{
+  z-index:2;position:absolute;top:5%;left:13%;right:13%;height:40%;
+  display:flex;align-items:center;justify-content:center;
+}
+.tile{
+  height:100%;aspect-ratio:1/1;border-radius:.6cqw;
+  background:linear-gradient(180deg,#7a2394,#5d1a75);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.tile b{
+  font-size:31cqw;font-weight:900;color:#fff;line-height:.9;font-style:italic;
+  text-shadow:.25cqw .25cqw 0 rgba(0,0,0,.5);
+}
+.tile span{font-size:8cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:2.2cqw;max-width:96%}
+/* 下部：名前 */
+.card-name{
+  z-index:3;position:absolute;top:48%;left:12%;right:12%;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;padding:3.3cqw 0 6.6cqw;overflow:hidden;
+}
+/* 長い名前は枠幅に合わせて自動縮小する（JSで font-size を調整） */
+.name-en,.name-ja,.tile span{display:inline-block;white-space:nowrap}
+.name-en{font-size:11.7cqw;font-weight:800;letter-spacing:.03em}
+.name-ja{font-size:9.7cqw;font-weight:600;color:#e9d8f5;margin-top:1.1cqw}
+body:not(.show-ja) .name-ja{display:none}
+
+/* 名前の下に置く国籍の旗 */
+.flag{
+  width:20%;aspect-ratio:3/2;margin-top:3.3cqw;border-radius:1.6cqw;
+  background-size:100% 100%;background-repeat:no-repeat;
+  background-origin:border-box;background-clip:border-box;
+  border:1px solid rgba(255,255,255,.85);
+  filter:drop-shadow(0 1.1cqw 1.9cqw rgba(0,0,0,.5));
+}
+.flag-jp{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%2212%22%20fill%3D%22%23bc002d%22%2F%3E%3C%2Fsvg%3E")}
+.flag-br{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23009b3a%22%2F%3E%3Cpolygon%20points%3D%2230%2C4%2056%2C20%2030%2C36%204%2C20%22%20fill%3D%22%23fedf00%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%229%22%20fill%3D%22%23002776%22%2F%3E%3Cpath%20d%3D%22M21.5%2C17.5%20A11%2C11%200%200%200%2038.6%2C23.4%20L38.2%2C25.6%20A11%2C11%200%200%201%2021.2%2C19.6%20Z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E")}
+.flag-kr{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22M30%2C10%20a10%2C10%200%200%201%200%2C20%20a5%2C5%200%200%201%200%2C-10%20a5%2C5%200%200%200%200%2C-10%22%20fill%3D%22%23cd2e3a%22%2F%3E%3Cpath%20d%3D%22M30%2C10%20a10%2C10%200%200%200%200%2C20%20a5%2C5%200%200%200%200%2C-10%20a5%2C5%200%200%201%200%2C-10%22%20fill%3D%22%230047a0%22%2F%3E%3Cg%20fill%3D%22%23000%22%3E%3Crect%20x%3D%227%22%20y%3D%229%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%2212%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%227%22%20y%3D%2215%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%2244%22%20y%3D%2224%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%2244%22%20y%3D%2227%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3Crect%20x%3D%2244%22%20y%3D%2230%22%20width%3D%229%22%20height%3D%221.6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")}
+
+
+/* ポジションのピル */
+.pos-pill{
+  font-size:1.8cqw;font-weight:800;letter-spacing:.08em;
+  background:linear-gradient(180deg,#5b1a7d,#2b0a3d);
+  color:#eadcff;border:1px solid rgba(255,255,255,.28);
+  border-radius:99px;padding:.35cqw 1.6cqw;
+  box-shadow:0 .3cqw .6cqw rgba(0,0,0,.45);
+}
+body:not(.show-pill) .pos-pill{visibility:hidden}
+
+/* マスコットのネタ枠 */
+.card.mascot .card-inner{background:linear-gradient(180deg,#b4232e,#6d1119 70%,#3c0a0f)}
+.card.mascot .tile{background:linear-gradient(180deg,#c9303c,#8b1a23)}
+
+/* ---- 下部帯 ---- */
+.sq-footer{
+  position:relative;z-index:2;flex:0 0 auto;
+  background:linear-gradient(180deg,#180722,#0e0415);
+  border-top:2px solid var(--gold-500);
+  padding:2cqw 4cqw 2cqw;
+}
+.footer-top{display:flex;align-items:center;gap:3cqw}
+.formation-badge{
+  flex:0 0 auto;text-align:center;
+}
+.formation-badge .fig{
+  width:13cqw;height:8.5cqw;border:1.5px solid var(--gold-300);border-radius:1px;
+  position:relative;margin:0 auto;
+}
+.formation-badge .fig::before,.formation-badge .fig::after{
+  content:"";position:absolute;top:50%;transform:translateY(-50%);
+  width:2.4cqw;height:4.2cqw;border:1.5px solid var(--gold-300);
+}
+.formation-badge .fig::before{left:-1.5px;border-left:none}
+.formation-badge .fig::after{right:-1.5px;border-right:none}
+.formation-badge .num{
+  margin-top:1cqw;font-size:4.4cqw;font-weight:900;letter-spacing:.04em;color:var(--gold-100);
+}
+.footer-meta{flex:1;min-width:0}
+.meta-row{display:flex;gap:1.4cqw;align-items:baseline;font-size:2.3cqw;line-height:1.5}
+.meta-row dt{flex:0 0 auto;color:var(--gold-300);font-weight:800;letter-spacing:.08em}
+.meta-row dd{font-weight:700;color:#f2e9f8}
+.bench{
+  margin-top:1.4cqw;display:flex;flex-wrap:wrap;gap:.8cqw 1.2cqw;
+}
+.bench-chip{
+  font-size:1.9cqw;font-weight:700;color:#e6d7f0;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+  border-radius:99px;padding:.4cqw 1.4cqw;white-space:nowrap;
+}
+.bench-chip b{color:var(--gold-300);margin-right:.5cqw}
+.disclaimer{
+  margin-top:1.6cqw;padding-top:1.2cqw;border-top:1px solid rgba(255,255,255,.14);
+  font-size:1.75cqw;line-height:1.5;color:#a894b6;text-align:center;white-space:nowrap;
+}
+
+/* ==================================================================
+   プロトタイプ追加分（ここから下は design-mockup.html にはない）
+   ================================================================== */
+
+/* ---- 全体レイアウト ---- */
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#14061d;
+  color:#fff;
+  font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  display:flex;flex-direction:column;align-items:center;gap:16px;padding:16px 12px 60px;
+}
+h1.proto-title{font-size:16px;margin:0}
+.proto-layout{
+  width:100%;max-width:1100px;
+  display:grid;grid-template-columns:minmax(280px,420px) 1fr;gap:20px;align-items:start;
+}
+@media (max-width:860px){
+  .proto-layout{grid-template-columns:1fr}
+}
+.panel{
+  background:#200c2c;border:1px solid #3d1155;border-radius:12px;padding:14px 16px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.panel h2{font-size:14px;margin:0;color:#e6d7f0;border-bottom:1px solid #3d1155;padding-bottom:6px}
+.field-row{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.field-row label{color:#c9b6d6}
+.field-row input[type="text"],.field-row select{
+  background:#2b1238;border:1px solid #4a1e63;color:#fff;border-radius:6px;padding:8px 10px;font-size:14px;
+  min-height:40px;
+}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.toggle-row{display:flex;flex-wrap:wrap;gap:10px}
+.toggle-row label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
+button{
+  font:inherit;cursor:pointer;
+}
+.btn{
+  background:#3d1155;color:#fff;border:1px solid #5b1a7d;border-radius:8px;
+  padding:10px 14px;font-size:13px;min-height:40px;
+}
+.btn:hover{background:#4b1667}
+.btn.primary{background:linear-gradient(180deg,#9c7a1c,#d4af37);color:#2b0a3d;font-weight:800;border-color:#d4af37}
+.btn.danger{background:#5c1420;border-color:#8a2434}
+.btn:focus-visible,.player:focus-visible,.bench-slot:focus-visible,select:focus-visible,input:focus-visible,.picker-item:focus-visible{
+  outline:3px solid #ffd76a;outline-offset:2px;
+}
+.formation-grid{display:flex;flex-wrap:wrap;gap:8px}
+.formation-grid .btn{flex:1 1 auto;min-width:90px}
+.formation-grid .btn[aria-pressed="true"]{background:linear-gradient(180deg,#9c7a1c,#d4af37);color:#2b0a3d;border-color:#d4af37}
+
+/* 保存一覧 */
+.save-list{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto}
+.save-item{
+  display:flex;align-items:center;gap:6px;background:#2b1238;border:1px solid #4a1e63;
+  border-radius:8px;padding:6px 8px;font-size:12px;
+}
+.save-item span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.save-item button{padding:4px 8px;font-size:11px;min-height:30px}
+
+/* ---- 出力プレビュー側 ---- */
+.canvas-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.canvas-shell{width:min(420px,100%)}
+
+/* ---- ピッチ：フォーメーションのプリセット座標に基づく自由配置レイアウト ---- */
+.pitch{
+  display:block; /* design-mockup.html のグリッド行レイアウトから、絶対配置に変更 */
+}
+.line-row{display:contents} /* 行の概念をやめ、直下の .player を絶対配置にする */
+.player{
+  position:absolute;
+  left:0;top:0;
+  z-index:2; /* ピッチの光と周辺減光の層より前に出す */
+  transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.8cqw;
+  touch-action:none; /* ポインタでドラッグするため、ブラウザ既定のスクロール/ズームを止める */
+  cursor:grab;
+  padding:2px;
+  border-radius:8px;
+}
+.player:active{cursor:grabbing}
+.player.dragging{z-index:20;filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
+.player.is-empty .card-inner{
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.05) 0 10px,transparent 10px 20px),
+             linear-gradient(180deg,#5b1a7d,#2b0a3d);
+}
+.player.is-empty .card{filter:none;opacity:.86}
+.player.is-empty .card-split{opacity:.45}
+.player.is-empty .card-photo,.player.is-empty .card-name .name-en,.player.is-empty .card-name .name-ja,.player.is-empty .flag{display:none}
+.player.is-empty .card-meta{left:0;right:0;top:12%;text-align:center}
+.player.is-empty .card-num{font-size:30cqw}
+.player.is-empty .card-pos{font-size:12cqw}
+.player.is-empty .card-meta::after{display:none}
+.player .empty-hint{
+  position:absolute;left:0;right:0;top:38%;bottom:14%;z-index:3;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:11cqw;line-height:1.35;font-weight:800;
+  color:rgba(255,255,255,.72);padding:0 12%;
+  pointer-events:none; /* タップは常に上に重ねた select-btn が受け取る */
+}
+.player:not(.is-empty) .empty-hint{display:none}
+.player .select-btn{
+  position:absolute;inset:0;z-index:5;width:100%;height:100%;background:transparent;border:0;padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+/* ---- ベンチ：選択式のスロットに変更 ---- */
+.bench{display:flex;flex-wrap:wrap;gap:6px}
+.bench-slot{
+  font-size:12px;font-weight:700;color:#e6d7f0;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);
+  border-radius:99px;padding:6px 12px;min-height:34px;
+}
+.bench-slot.is-empty{color:#a894b6;border-style:dashed}
+.bench-slot b{color:var(--gold-300);margin-right:4px}
+
+/* ---- 選手選択モーダル ---- */
+.picker-backdrop{
+  position:fixed;inset:0;background:rgba(10,3,18,.7);display:none;
+  align-items:flex-end;justify-content:center;z-index:100;
+}
+.picker-backdrop.open{display:flex}
+.picker{
+  background:#1b0b26;border:1px solid #4a1e63;border-radius:16px 16px 0 0;
+  width:min(560px,100%);max-height:85vh;display:flex;flex-direction:column;
+  padding:14px 14px calc(14px + env(safe-area-inset-bottom));
+}
+@media (min-width:640px){
+  .picker-backdrop{align-items:center}
+  .picker{border-radius:16px;max-height:80vh}
+}
+.picker-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.picker-head h2{font-size:15px;margin:0}
+.picker-filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.picker-filters button{
+  background:#2b1238;border:1px solid #4a1e63;color:#e6d7f0;border-radius:99px;
+  padding:6px 12px;font-size:12px;min-height:32px;
+}
+.picker-filters button[aria-pressed="true"]{background:#d4af37;color:#2b0a3d;border-color:#d4af37;font-weight:800}
+.picker-list{overflow-y:auto;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
+.picker-item{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  background:#2b1238;border:1px solid #4a1e63;border-radius:10px;padding:8px 10px;min-height:48px;color:#fff;
+}
+.picker-item:hover{background:#38195055}
+.picker-item .num{font-weight:900;color:var(--gold-300);width:2.4em;text-align:right}
+.picker-item .names{flex:1;min-width:0}
+.picker-item .names .en{font-weight:700}
+.picker-item .names .ja{font-size:11px;color:#c9b6d6}
+.picker-item .pos-tag{font-size:11px;background:#4a1e63;padding:2px 8px;border-radius:99px}
+.picker-item.is-used{opacity:.5}
+.picker-item.is-used::after{content:"配置済み";font-size:10px;color:var(--gold-300);margin-left:6px}
+.picker-empty{font-size:13px;color:#c9b6d6;padding:12px}
+
+/* ---- PNG生成プレビュー ---- */
+.export-preview{display:flex;flex-direction:column;gap:8px;align-items:center;width:100%}
+.export-preview img{max-width:min(420px,100%);border-radius:10px;border:1px solid #4a1e63}
+.export-status{font-size:12px;color:#c9b6d6;text-align:center;max-width:420px}
+.export-save-help{font-size:12px;color:#c9b6d6;text-align:center;max-width:420px;margin:0}
+
+.visually-hidden{
+  position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;
+}
+
+/* タップ判定を select-btn に一本化するため、カード本体はポインタイベントを受けない */
+.player .card{pointer-events:none;position:relative;z-index:0}

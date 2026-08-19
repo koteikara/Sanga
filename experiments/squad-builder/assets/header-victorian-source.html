@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>victorian header source</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:transparent}
+.banner{
+  width:960px;height:300px;position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:"Liberation Serif","Times New Roman",serif;
+}
+/* 外周の二重罫と角飾り */
+.frame{position:absolute;inset:14px 8px;border:2px solid #c9a227}
+.frame::after{content:"";position:absolute;inset:6px;border:1px solid rgba(201,162,39,.6)}
+.corner{position:absolute;width:44px;height:44px;border:0}
+.corner svg{width:100%;height:100%;display:block}
+.corner.tl{top:6px;left:0}
+.corner.tr{top:6px;right:0;transform:scaleX(-1)}
+.corner.bl{bottom:6px;left:0;transform:scaleY(-1)}
+.corner.br{bottom:6px;right:0;transform:scale(-1,-1)}
+
+.rule{display:flex;align-items:center;justify-content:center;gap:14px;width:660px}
+.rule .l{flex:1;height:1px;background:linear-gradient(90deg,transparent,#c9a227)}
+.rule .r{flex:1;height:1px;background:linear-gradient(90deg,#c9a227,transparent)}
+.rule .d{width:9px;height:9px;background:#e8cc72;transform:rotate(45deg)}
+
+.eyebrow{
+  font-size:26px;letter-spacing:.62em;text-indent:.62em;color:#e8cc72;
+  font-style:italic;margin:14px 0 6px;
+}
+.main{
+  font-size:96px;line-height:1;letter-spacing:.06em;font-weight:700;
+  background:linear-gradient(180deg,#fff4d0 0%,#e8cc72 40%,#b8912a 70%,#f0dc9a 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.45));
+  padding:0 10px;
+}
+.sub{
+  font-size:30px;letter-spacing:.44em;text-indent:.44em;color:#f2e6c4;
+  margin:10px 0 12px;font-variant:small-caps;
+}
+.flourish{width:300px;height:34px;margin-top:2px}
+.flourish svg{width:100%;height:100%;display:block}
+</style>
+</head>
+<body>
+<div class="banner" id="banner">
+
+
+  <div class="rule"><span class="l"></span><span class="d"></span><span class="r"></span></div>
+  <div class="eyebrow">PREDICTED</div>
+  <div class="main">Starting XI</div>
+  <div class="sub">Kyoto</div>
+  <div class="flourish"><svg viewBox="0 0 300 34" fill="none" stroke="#c9a227" stroke-width="1.6">
+    <path d="M150,17 C130,4 96,4 80,14 C68,21 74,30 84,27 C94,24 92,12 74,12 C56,12 40,18 20,17"/>
+    <path d="M150,17 C170,4 204,4 220,14 C232,21 226,30 216,27 C206,24 208,12 226,12 C244,12 260,18 280,17"/>
+    <circle cx="150" cy="17" r="3.4" fill="#e8cc72" stroke="none"/>
+  </svg></div>
+</div>
+</body>
+</html>

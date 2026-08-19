@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>header source</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:transparent}
+.banner{
+  width:900px;height:300px;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Helvetica Neue",Arial,sans-serif;
+}
+/* 斜めに切った濃紺のリボン */
+.ribbon{
+  position:absolute;inset:26px 10px 30px;
+  background:linear-gradient(180deg,#132a52,#0b1b38);
+  clip-path:polygon(2% 6%,99% 0%,97% 92%,1% 100%);
+  box-shadow:0 10px 26px rgba(0,0,0,.55);
+}
+.ribbon::after{
+  content:"";position:absolute;inset:6px;
+  border:2px solid rgba(212,175,55,.55);
+  clip-path:polygon(2% 6%,99% 0%,97% 92%,1% 100%);
+}
+.text{position:relative;text-align:center;transform:rotate(-1.1deg)}
+.main{
+  font-size:118px;font-weight:900;font-style:italic;letter-spacing:.04em;line-height:.92;
+  background:linear-gradient(180deg,#fff6cf 0%,#f4dc8a 34%,#d4af37 62%,#9c7a1c 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,.5)) drop-shadow(0 0 18px rgba(212,175,55,.35));
+}
+.sub{
+  margin-top:6px;font-size:44px;font-weight:700;font-style:italic;letter-spacing:.42em;
+  color:#fff;text-indent:.42em;
+  text-shadow:0 3px 0 rgba(0,0,0,.45);
+}
+</style>
+</head>
+<body>
+<div class="banner" id="banner">
+  <div class="ribbon"></div>
+  <div class="text">
+    <div class="main">STARTING XI</div>
+    <div class="sub">PREDICTED</div>
+  </div>
+</div>
+</body>
+</html>
