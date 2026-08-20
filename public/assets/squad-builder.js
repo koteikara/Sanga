@@ -202,23 +202,28 @@ function matchLabel(match) {
 async function loadMatchOptions() {
   const select = $("#field-match");
   if (!select) return;
-  try {
-    const res = await fetch("/data/matches.json", { cache: "no-cache" });
-    if (!res.ok) throw new Error(String(res.status));
-    const data = await res.json();
-    const matches = (data.matches || []).filter((m) => m.is_visible !== false);
-    matches.forEach((m) => {
-      const label = matchLabel(m);
-      if (!label) return;
-      const option = document.createElement("option");
-      option.value = label;
-      option.textContent = label;
-      select.appendChild(option);
-    });
-  } catch (err) {
-    // 日程が読めなくても、指定しないまま作成はできる
-    console.info("[squad-builder] data/matches.json を読み込めないため、試合の選択肢は空です。", err);
+  const candidates = ["/data/matches.json", "data/matches.json"];
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { cache: "no-cache" });
+      if (!res.ok) continue;
+      const data = await res.json();
+      const matches = (data.matches || []).filter((m) => m.is_visible !== false);
+      matches.forEach((m) => {
+        const label = matchLabel(m);
+        if (!label) return;
+        const option = document.createElement("option");
+        option.value = label;
+        option.textContent = label;
+        select.appendChild(option);
+      });
+      return;
+    } catch (err) {
+      continue;
+    }
   }
+  // すべてのURLで読み込み失敗
+  console.info("[squad-builder] data/matches.json を読み込めないため、試合の選択肢は空です。");
 }
 
 /** 保存データから復元するとき、一覧に無い文字列でも選べるようにする */
