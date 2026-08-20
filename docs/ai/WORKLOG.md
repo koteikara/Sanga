@@ -2171,3 +2171,49 @@ PR #122 のホテル連携スキャフォールドを次へ進めるため、空
 
 - 公開スケジュールページ上からホテルプレビューが消えているか。
 - 裏側のホテル生成・検証足場を残す方針で問題ないか。
+
+## 2026-08-20 PR #146 カード高さ上限の修正
+
+### 作業テーマ
+
+PR #146 相当のスカッドカード高さ変更をレビューし、カードの最大高さ指定が下限として働いていた回帰を修正した。
+
+### 変更ファイル
+
+- `public/assets/squad-builder.js`
+- `docs/ai/PLAN.md`
+- `docs/ai/GOAL.md`
+- `docs/ai/WORKLOG.md`
+
+### 変更内容
+
+- `Math.max(cardH, 75.1)` を、既存下限 `24px` と新しい上限 `75.1px` を順に適用する処理へ変更した。
+- 衝突回避・ピッチ境界の計算結果が75.1px未満の場合に、その計算結果を上書きしないようにした。
+- `ResizeObserver` による再計算のたびに出ていた開発用 `console.log` を削除した。
+- 日程データ、HTML、CSS、LocalStorage仕様は変更していない。
+
+### 確認結果
+
+- `node --check public/assets/squad-builder.js` 成功。
+- `node tools/validate-players.js` 成功（39件）。
+- `node tools/validate-matches.js` 成功（57件）。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node tools/validate-app-contract.js` 成功。
+- `git diff --check` 成功。
+- 変更禁止対象の `public/sanga202627season.html`、`public/assets/style.css`、`public/data/matches.json`、`.github/workflows/static-checks.yml` に差分がないことを確認した。
+
+### 未確認項目
+
+- 実ブラウザでのPC幅・スマートフォン幅および全フォーメーションの目視確認は、利用可能なブラウザ実行環境がないため未実施。
+- `--expected-count 49` の検証は現在の57件と一致せず失敗したため、現行データ件数57件で再実行して成功した。
+
+### 残課題
+
+- 320px、375px、420px幅で、ピル表示ON/OFFそれぞれについて全フォーメーションのカード・ピルが重ならないことを実ブラウザで確認する。
+- PR #146 相当で安全余白が縮小されているため、サブピクセル丸めによる視覚的な接触がないか人間の目視確認を行う。
+
+### 人間が確認すべき点
+
+- 特に `4-2-3-1`、`4-1-2-1-2`、`4-4-1-1`、`4-1-4-1` の狭幅表示でカードとポジションピルが重ならないこと。
+- 最大75.1pxを維持しつつ、密な配置では安全なサイズまで縮小する仕様で問題ないこと。

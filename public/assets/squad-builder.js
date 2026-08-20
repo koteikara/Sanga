@@ -397,9 +397,9 @@ function fitCards() {
   // ピッチ自体に収まる上限（安全マージン込み。ピルと余白の分だけ縦に余分がいる）
   cardH = Math.min(cardH, availH - pillH - playerPadY);
   cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
-  cardH = Math.max(cardH, 75.1); // 全フォーメーション統一：最大サイズ75.1px
+  cardH = Math.max(cardH, 24);
+  cardH = Math.min(cardH, 75.1); // カードが重ならない範囲で最大75.1pxに制限する
   pitch.style.setProperty("--card-h", cardH + "px");
-  console.log(`[squad] ${state.formationKey}: cardH=${cardH.toFixed(1)}px, pairBound=${pairBound.toFixed(1)}px`);
 }
 
 /** 1行に収まらない見出しを、収まるまで文字サイズを下げる */
