@@ -926,7 +926,7 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
   }
 
   async function fetchJsonPreviewData(){
-    const dataPath='data/matches.json?v=20260820-2';
+    const dataPath='data/matches.json?v=20260820-3';
     const response=await fetch(dataPath);
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
