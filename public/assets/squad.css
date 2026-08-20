@@ -673,6 +673,13 @@ button{
 .bench-edit-slot b{color:var(--gold-300);margin-right:6px}
 .bench-edit-slot:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px}
 
+/* ---- 画像生成の診断モード（?diag=1）。原因特定後に削除する ---- */
+.diag-panel{margin-top:16px}
+.diag-case{border-top:1px solid #3d1f52;padding:12px 0}
+.diag-case h3{font-size:15px;margin:0 0 2px}
+.diag-out{font-size:13px;color:#b9a3cc}
+.diag-out img{width:min(320px,100%);height:auto;border:1px solid #4a1e63;border-radius:6px;display:block}
+
 /* ---- 選手選択モーダル ---- */
 .picker-backdrop{
   position:fixed;inset:0;background:rgba(10,3,18,.7);display:none;
