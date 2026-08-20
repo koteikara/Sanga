@@ -936,12 +936,5 @@ async function init() {
     }).observe(pitchEl);
   }
   document.fonts && document.fonts.ready.then(() => requestAnimationFrame(layoutPitch));
-
-  // 画像生成の崩れを切り分けるための診断モード。?diag=1 のときだけ読み込む。
-  // 原因が特定できたら、この分岐と squad-export-diag.js は削除する。
-  if (new URLSearchParams(location.search).get("diag") === "1") {
-    const { setupExportDiag } = await import("./squad-export-diag.js?v=20260820-9");
-    setupExportDiag(canvas);
-  }
 }
 init();

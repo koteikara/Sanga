@@ -339,7 +339,11 @@ body{
 }
 .pitch-vignette{
   position:absolute;inset:0;z-index:1;pointer-events:none;
-  box-shadow:inset 0 0 12cqw 5cqw rgba(3,12,7,.85);
+  /* もとは inset の box-shadow だったが、iOS Safari で画像化すると影が
+     大きくずれるため、同じ見え方になるグラデーションで描き直している。 */
+  background:
+    linear-gradient(to right, rgba(3,12,7,.85), rgba(3,12,7,0) 14%, rgba(3,12,7,0) 86%, rgba(3,12,7,.85)),
+    linear-gradient(to bottom, rgba(3,12,7,.85), rgba(3,12,7,0) 9%, rgba(3,12,7,0) 91%, rgba(3,12,7,.85));
 }
 .line-row{display:flex;justify-content:space-evenly;align-items:center;position:relative;z-index:2}
 
@@ -355,7 +359,9 @@ body{
   background:
     linear-gradient(160deg,var(--gold-100) 0%,var(--gold-300) 18%,var(--gold-500) 48%,var(--gold-700) 78%,var(--gold-500) 100%);
   padding:3.6%;
-  filter:drop-shadow(0 5cqw 9cqw rgba(0,0,0,.55));
+  /* 影は付けない。iOS Safari で画像化すると drop-shadow / box-shadow が
+     大きくずれて描画されるため（実機検証で確認）。カードは暗いピッチの上に
+     置かれるので、影を外しても見え方はほとんど変わらない。 */
 }
 /* カードの光沢 */
 .card::after{
@@ -439,7 +445,7 @@ body:not(.show-ja) .name-ja{display:none}
   background-size:100% 100%;background-repeat:no-repeat;
   background-origin:border-box;background-clip:border-box;
   border:1px solid rgba(255,255,255,.85);
-  filter:drop-shadow(0 1.1cqw 1.9cqw rgba(0,0,0,.5));
+  /* 影は付けない。理由は .card と同じ */
 }
 .flag-jp{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23fff%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%2212%22%20fill%3D%22%23bc002d%22%2F%3E%3C%2Fsvg%3E")}
 .flag-br{background-image:url("data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2240%22%20viewBox%3D%220%200%2060%2040%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%2260%22%20height%3D%2240%22%20fill%3D%22%23009b3a%22%2F%3E%3Cpolygon%20points%3D%2230%2C4%2056%2C20%2030%2C36%204%2C20%22%20fill%3D%22%23fedf00%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2220%22%20r%3D%229%22%20fill%3D%22%23002776%22%2F%3E%3Cpath%20d%3D%22M21.5%2C17.5%20A11%2C11%200%200%200%2038.6%2C23.4%20L38.2%2C25.6%20A11%2C11%200%200%201%2021.2%2C19.6%20Z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fsvg%3E")}
@@ -456,7 +462,7 @@ body:not(.show-ja) .name-ja{display:none}
   background:linear-gradient(180deg,#5b1a7d,#2b0a3d);
   color:#eadcff;border:1px solid rgba(255,255,255,.28);
   border-radius:99px;padding:.35cqw 1.6cqw;
-  box-shadow:0 .3cqw .6cqw rgba(0,0,0,.45);
+  /* 影は付けない。理由は .card と同じ */
 }
 body:not(.show-pill) .pos-pill{visibility:hidden}
 
@@ -672,13 +678,6 @@ button{
 .bench-edit-slot.is-empty{color:#d8b8ff;border-style:dashed}
 .bench-edit-slot b{color:var(--gold-300);margin-right:6px}
 .bench-edit-slot:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px}
-
-/* ---- 画像生成の診断モード（?diag=1）。原因特定後に削除する ---- */
-.diag-panel{margin-top:16px}
-.diag-case{border-top:1px solid #3d1f52;padding:12px 0}
-.diag-case h3{font-size:15px;margin:0 0 2px}
-.diag-out{font-size:13px;color:#b9a3cc}
-.diag-out img{width:min(320px,100%);height:auto;border:1px solid #4a1e63;border-radius:6px;display:block}
 
 /* ---- 選手選択モーダル ---- */
 .picker-backdrop{
