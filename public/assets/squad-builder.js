@@ -397,7 +397,7 @@ function fitCards() {
   // ピッチ自体に収まる上限（安全マージン込み。ピルと余白の分だけ縦に余分がいる）
   cardH = Math.min(cardH, availH - pillH - playerPadY);
   cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
-  cardH = Math.max(cardH, 64.5); // 全フォーメーション統一：最小64.5px
+  cardH = Math.max(cardH, 75.1); // 全フォーメーション統一：最大サイズ75.1px
   pitch.style.setProperty("--card-h", cardH + "px");
   console.log(`[squad] ${state.formationKey}: cardH=${cardH.toFixed(1)}px, pairBound=${pairBound.toFixed(1)}px`);
 }
