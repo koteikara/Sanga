@@ -106,4 +106,4 @@ export const FORMATIONS = {
 };
 
 /** ベンチの枠数 */
-export const BENCH_SIZE = 7;
+export const BENCH_SIZE = 9;
