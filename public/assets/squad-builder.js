@@ -665,6 +665,10 @@ function openPicker(target) {
     target.kind === "slot"
       ? `${state.slots[target.index].posLabel} に選手を選ぶ`
       : "控えに追加する選手を選ぶ";
+  // 枠を空ける操作はピッチのときだけ意味がある（控えは追加専用のため）
+  const placed = target.kind === "slot" && state.slots[target.index].playerNumber;
+  pickerClear.hidden = !placed;
+  pickerClear.textContent = "この枠を空けて控えに移す";
   pickerBackdrop.classList.add("open");
   pickerClose.focus();
 }
@@ -736,8 +740,9 @@ function assignPlayer(number) {
 pickerClear.addEventListener("click", () => {
   if (!pickerTarget) return;
   if (pickerTarget.kind === "slot") {
-    const number = state.slots[pickerTarget.index].playerNumber;
-    if (number) removeFromSquad(number);
+    // ピッチの枠を空けるだけ。登録は残すので、その選手は控えに回る。
+    // 完全に外したいときは、控えの編集UIから削除する。
+    state.slots[pickerTarget.index].playerNumber = null;
   }
   closePicker();
   renderAll();
