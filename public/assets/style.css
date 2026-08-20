@@ -491,6 +491,16 @@
   .logo-fagiano .meta::after{background-position:-448px -256px;}
   .logo-machida .meta::after{background-position:0px -128px;}
   .logo-fctokyo .meta::after{background-position:-64px -576px;}
+  /* ACL teams and new opponents - emblem images to be integrated */
+  .logo-fc-maruyasu .meta::after{background-position:0px 0px;}
+  .logo-ota-hanasichien .meta::after{background-position:0px 0px;}
+  .logo-rajaburi .meta::after{background-position:0px 0px;}
+  .logo-newcastle-jets .meta::after{background-position:0px 0px;}
+  .logo-hoang-anh-hanoi .meta::after{background-position:0px 0px;}
+  .logo-pohang-steelers .meta::after{background-position:0px 0px;}
+  .logo-buriram-united .meta::after{background-position:0px 0px;}
+  .logo-jeonbuk-hyundai .meta::after{background-position:0px 0px;}
+  .logo-port-fc .meta::after{background-position:0px 0px;}
 
 
   /* opponent logo size adjustment */
