@@ -666,12 +666,32 @@ function openPicker(target) {
       ? `${state.slots[target.index].posLabel} に選手を選ぶ`
       : "控えに追加する選手を選ぶ";
   pickerBackdrop.classList.add("open");
+  lockBackgroundScroll();
   pickerClose.focus();
 }
 
 function closePicker() {
   pickerBackdrop.classList.remove("open");
+  unlockBackgroundScroll();
   pickerTarget = null;
+}
+
+/* モーダルを開いている間、背面の画面が動かないようにする。
+   iOS Safari は overflow:hidden だけでは背面がスクロールしてしまうため、
+   body を position:fixed で止めて、閉じるときに元の位置へ戻す。 */
+let lockedScrollY = 0;
+
+function lockBackgroundScroll() {
+  lockedScrollY = window.scrollY;
+  document.body.style.top = `-${lockedScrollY}px`;
+  document.body.classList.add("picker-open");
+}
+
+function unlockBackgroundScroll() {
+  if (!document.body.classList.contains("picker-open")) return;
+  document.body.classList.remove("picker-open");
+  document.body.style.top = "";
+  window.scrollTo(0, lockedScrollY);
 }
 
 function buildPickerFilters() {

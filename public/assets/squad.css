@@ -702,6 +702,8 @@ button{
 .picker-backdrop{
   position:fixed;inset:0;background:rgba(10,3,18,.7);display:none;
   align-items:flex-end;justify-content:center;z-index:100;
+  /* 背面の画面へスクロールが伝わらないようにする */
+  overscroll-behavior:contain;
 }
 .picker-backdrop.open{display:flex}
 .picker{
@@ -721,7 +723,12 @@ button{
   padding:6px 12px;font-size:12px;min-height:32px;
 }
 .picker-filters button[aria-pressed="true"]{background:#d4af37;color:#2b0a3d;border-color:#d4af37;font-weight:800}
-.picker-list{overflow-y:auto;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0}
+.picker-list{
+  overflow-y:auto;display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;
+  /* 一覧の端まで来ても、背面の画面をスクロールさせない */
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
 .picker-item{
   display:flex;align-items:center;gap:10px;width:100%;text-align:left;
   background:#2b1238;border:1px solid #4a1e63;border-radius:10px;padding:8px 10px;min-height:48px;color:#fff;
@@ -734,6 +741,11 @@ button{
 .picker-item .pos-tag{font-size:11px;background:#4a1e63;padding:2px 8px;border-radius:99px}
 .picker-item.is-used{opacity:.5}
 .picker-item.is-used::after{content:"配置済み";font-size:10px;color:var(--gold-300);margin-left:6px}
+/* 選手選択モーダルを開いている間、背面の画面を固定する。
+   iOS Safari は overflow:hidden だけでは背面がスクロールするため、
+   position:fixed で位置ごと止める（元のスクロール位置はJS側で復元する）。 */
+body.picker-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
+
 .field-note{font-size:12px;color:#c9b6d6;margin-top:4px;line-height:1.5}
 .picker-empty{font-size:13px;color:#c9b6d6;padding:12px}
 
