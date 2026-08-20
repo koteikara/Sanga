@@ -2244,3 +2244,59 @@
   .cup-match .date.tentative-date .sub.sun{
     background:#fff;
   }
+
+  /* Individual emblem images for new opponents */
+  .logo-fc-maruyasu .meta::after {
+    background-image: url('logos/fc-maruyasu.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-ota-hanasichien .meta::after {
+    background-image: url('logos/ota-hanasichien.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-rajaburi .meta::after {
+    background-image: url('logos/rajaburi.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-newcastle-jets .meta::after {
+    background-image: url('logos/newcastle-jets.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-hoang-anh-hanoi .meta::after {
+    background-image: url('logos/hoang-anh-hanoi.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-pohang-steelers .meta::after {
+    background-image: url('logos/pohang-steelers.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-buriram-united .meta::after {
+    background-image: url('logos/buriram-united.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-jeonbuk-hyundai .meta::after {
+    background-image: url('logos/jeonbuk-hyundai.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-port-fc .meta::after {
+    background-image: url('logos/port-fc.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
