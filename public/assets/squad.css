@@ -28,6 +28,7 @@ body{
   color:#fff;
   font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
   display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 12px 60px;
+  scrollbar-gutter:stable;
 }
 
 /* ---- 画面上の操作（見本確認用。実装では設定パネルに入る） ---- */
