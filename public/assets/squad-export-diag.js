@@ -3,7 +3,7 @@
 // squad.html に ?diag=1 を付けて開いたときだけ読み込まれる。
 // 実際のキャンバスに対して、条件を1つずつ変えながらPNGを生成し、結果を並べて表示する。
 // 原因が特定できたら、このファイルと squad.html 側の読み込み分岐は削除する。
-import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs?v=20260820-8";
+import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs?v=20260820-9";
 
 /** 切り分けたい条件。css は生成の間だけ適用する */
 const CASES = [
@@ -59,6 +59,16 @@ const CASES = [
               linear-gradient(to bottom, rgba(3,12,7,.85), rgba(3,12,7,0) 9%, rgba(3,12,7,0) 91%, rgba(3,12,7,.85));
           }`,
   },
+  {
+    id: "H",
+    name: "キャンバス内の影を総当たりで消す（最終手段）",
+    why: "G でも崩れる場合に、まだ他の影が残っていないかを確かめる。スタイルごとの装飾影（グラフィティのずらし影、スクラップブックの紙の影、シンセの発光など）も含めて全部消す",
+    css: `#canvas, #canvas *, #canvas *::before, #canvas *::after{
+            box-shadow:none !important;
+            filter:none !important;
+            text-shadow:none !important;
+          }`,
+  },
 ];
 
 export function setupExportDiag(canvasEl) {
@@ -70,7 +80,7 @@ export function setupExportDiag(canvasEl) {
       同じ内容を、CSSの条件だけ変えて生成します。生成された画像を見比べて、
       崩れていないものの記号を教えてください。スタイルと選手は、いまの画面の設定がそのまま使われます。
     </p>
-    <button type="button" class="btn primary" id="diag-run">8通りの画像を生成する</button>
+    <button type="button" class="btn primary" id="diag-run">9通りの画像を生成する</button>
     <p class="export-status" id="diag-status" role="status"></p>
     <div id="diag-cases"></div>`;
   document.querySelector(".canvas-wrap").appendChild(panel);
