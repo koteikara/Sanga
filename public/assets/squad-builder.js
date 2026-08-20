@@ -399,6 +399,7 @@ function fitCards() {
   cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
   cardH = Math.max(cardH, 24);
   pitch.style.setProperty("--card-h", cardH + "px");
+  console.log(`[squad] ${state.formationKey}: cardH=${cardH.toFixed(1)}px, pairBound=${pairBound.toFixed(1)}px`);
 }
 
 /** 1行に収まらない見出しを、収まるまで文字サイズを下げる */
