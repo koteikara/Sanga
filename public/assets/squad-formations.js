@@ -23,10 +23,10 @@ function build(...lines) {
 const Y = {
   gk: 90,
   df: 70,
-  dm: 54,
+  dm: 52,
   mf: 44,
-  am: 29,
-  fw: 14,
+  am: 28,
+  fw: 11,
 };
 
 const FOUR_BACK = line("DF", Y.df, [16, 38, 62, 84]);
@@ -41,11 +41,11 @@ export const FORMATIONS = {
   },
   "4-4-1-1": {
     label: "4-4-1-1",
-    slots: build(GK, FOUR_BACK, line("MF", Y.mf, [16, 38, 62, 84]), line("MF", Y.am, [50]), line("FW", 12, [50])),
+    slots: build(GK, FOUR_BACK, line("MF", 46, [16, 38, 62, 84]), line("MF", Y.am, [50]), line("FW", 10, [50])),
   },
   "4-2-3-1": {
     label: "4-2-3-1",
-    slots: build(GK, FOUR_BACK, line("MF", Y.dm, [37, 63]), line("MF", Y.am, [18, 50, 82]), line("FW", 12, [50])),
+    slots: build(GK, FOUR_BACK, line("MF", Y.dm, [37, 63]), line("MF", Y.am, [18, 50, 82]), line("FW", 10, [50])),
   },
   "4-3-3": {
     label: "4-3-3",
@@ -53,15 +53,15 @@ export const FORMATIONS = {
   },
   "4-1-4-1": {
     label: "4-1-4-1",
-    slots: build(GK, FOUR_BACK, line("MF", 56, [50]), line("MF", 38, [16, 38, 62, 84]), line("FW", 13, [50])),
+    slots: build(GK, FOUR_BACK, line("MF", 52, [50]), line("MF", 34, [16, 38, 62, 84]), line("FW", 11, [50])),
   },
   "4-3-1-2": {
     label: "4-3-1-2",
-    slots: build(GK, FOUR_BACK, line("MF", 50, [26, 50, 74]), line("MF", 30, [50]), line("FW", 13, [37, 63])),
+    slots: build(GK, FOUR_BACK, line("MF", 50, [26, 50, 74]), line("MF", 30, [50]), line("FW", 11, [37, 63])),
   },
   "4-1-2-1-2": {
     label: "4-1-2-1-2",
-    slots: build(GK, FOUR_BACK, line("MF", 56, [50]), line("MF", Y.mf, [24, 76]), line("MF", 30, [50]), line("FW", 13, [37, 63])),
+    slots: build(GK, FOUR_BACK, line("MF", 52, [50]), line("MF", Y.mf, [24, 76]), line("MF", 28, [50]), line("FW", 10, [37, 63])),
   },
   "4-2-2-2": {
     label: "4-2-2-2",
