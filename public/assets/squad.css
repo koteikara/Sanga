@@ -615,11 +615,11 @@ button{
 /* ---- ベンチ：選択式のスロットに変更 ---- */
 .bench{display:flex;flex-wrap:wrap;gap:6px}
 .bench-slot{
-  font-size:12px;font-weight:700;color:#e6d7f0;
+  font-size:13px;font-weight:700;color:#e6d7f0;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);
-  border-radius:99px;padding:6px 12px;min-height:34px;
+  border-radius:99px;padding:8px 12px;min-height:44px;display:flex;align-items:center;
 }
-.bench-slot.is-empty{color:#a894b6;border-style:dashed}
+.bench-slot.is-empty{color:#d8b8ff;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);border-style:solid;font-style:italic}
 .bench-slot b{color:var(--gold-300);margin-right:4px}
 
 /* ---- 選手選択モーダル ---- */
