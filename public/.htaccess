@@ -1,0 +1,4 @@
+# .mjs ファイルの MIME type を設定
+<FilesMatch "\.mjs$">
+  AddType application/javascript .mjs
+</FilesMatch>
