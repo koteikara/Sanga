@@ -40,7 +40,7 @@ function cloneSlots(slots) {
    その場合は同梱のサンプル配列にフォールバックし、理由をコンソールに出す。
 ------------------------------------------------------------------ */
 async function loadPlayers() {
-  const candidates = ["data/players.json"];
+  const candidates = ["/data/players.json", "data/players.json"];
   for (const url of candidates) {
     try {
       const res = await fetch(url, { cache: "no-store" });
@@ -203,7 +203,7 @@ async function loadMatchOptions() {
   const select = $("#field-match");
   if (!select) return;
   try {
-    const res = await fetch("data/matches.json", { cache: "no-cache" });
+    const res = await fetch("/data/matches.json", { cache: "no-cache" });
     if (!res.ok) throw new Error(String(res.status));
     const data = await res.json();
     const matches = (data.matches || []).filter((m) => m.is_visible !== false);
