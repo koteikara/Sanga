@@ -358,14 +358,14 @@ const CARD_ASPECT = 64 / 47; // height / width
 function fitCards() {
   const pitch = pitchEl;
   const pillEl = $(".pos-pill", pitch);
-  const pillH = state.showPill && pillEl ? pillEl.getBoundingClientRect().height + 4 : 4;
+  const pillH = state.showPill && pillEl ? pillEl.getBoundingClientRect().height : 0;
   // .player 自体の余白（CSSのpaddingぶん）も占有矩形に含める。値をCSSから直接測ることで、
   // squad.css 側の余白が変わっても追随する。
   const samplePlayer = $(".player", pitch);
   const playerCs = samplePlayer ? getComputedStyle(samplePlayer) : null;
   const playerPadX = playerCs ? parseFloat(playerCs.paddingLeft) + parseFloat(playerCs.paddingRight) : 4;
-  const playerPadY = playerCs ? parseFloat(playerCs.paddingTop) + parseFloat(playerCs.paddingBottom) : 4;
-  const margin = 4; // 上下左右の安全マージン
+  const playerPadY = playerCs ? parseFloat(playerCs.paddingTop) + parseFloat(playerCs.paddingBottom) : 2;
+  const margin = 1; // 上下左右の安全マージン
   const availH = pitch.clientHeight - margin;
   const availW = pitch.clientWidth - margin;
   const pitchW = pitch.clientWidth;
@@ -399,6 +399,7 @@ function fitCards() {
   cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
   cardH = Math.max(cardH, 24);
   pitch.style.setProperty("--card-h", cardH + "px");
+  console.log(`[squad] ${state.formationKey}: cardH=${cardH.toFixed(1)}px, pairBound=${pairBound.toFixed(1)}px`);
 }
 
 /** 1行に収まらない見出しを、収まるまで文字サイズを下げる */
