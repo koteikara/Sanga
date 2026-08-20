@@ -554,8 +554,11 @@ h1.proto-title{font-size:16px;margin:0}
      押し広げられて横スクロールの原因になるため、縮められるようにする */
   min-width:0;
 }
-.panel h2{font-size:14px;margin:0;color:#e6d7f0;border-bottom:1px solid #3d1155;padding-bottom:6px}
-.field-row{display:flex;flex-direction:column;gap:4px;font-size:13px;min-width:0}
+/* セクション内の間隔。見出し・ラベル・入力枠が詰まって見えないよう、
+   セクション単位でまとめて余白を持たせる */
+.panel section{display:flex;flex-direction:column;gap:10px}
+.panel h2{font-size:14px;margin:0;color:#e6d7f0;border-bottom:1px solid #3d1155;padding-bottom:8px}
+.field-row{display:flex;flex-direction:column;gap:6px;font-size:13px;min-width:0}
 .field-row label{color:#c9b6d6}
 .field-row input[type="text"],.field-row select{
   background:#2b1238;border:1px solid #4a1e63;color:#fff;border-radius:6px;padding:8px 10px;
