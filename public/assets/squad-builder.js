@@ -82,6 +82,7 @@ const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 const canvas = $("#canvas");
 const pitchEl = $("#pitch");
 const benchEl = $("#bench");
+const benchEditorEl = $("#bench-editor");
 const formationGrid = $("#formation-grid");
 const subtitleEl = $("#sq-subtitle");
 const titleTextEl = $("#sq-title-text");
@@ -306,24 +307,66 @@ function renderPitch() {
   });
 }
 
-function renderBench() {
+/* ベンチは「画像に載る表示」と「編集用の操作」を分ける。
+   キャンバス内（#bench）は表示専用のチップにして、寸法をキャンバス基準（cqw）で
+   縮められるようにする。タップ領域44pxが必要な編集用ボタンは、キャンバスの外
+   （#bench-editor）に置く。こうしないと編集用のpx寸法がフッターを押し広げ、
+   ピッチが薄くなってカードが重なる。 */
+
+/** ベンチチップの縮小率の下限 */
+const BENCH_SCALE_MIN = 0.6;
+let benchScale = 1;
+
+/** 画像に載るベンチ人数から、基準の縮小率を決める */
+function baseBenchScale() {
+  const count = state.bench.filter(Boolean).length;
+  if (count <= 6) return 1;
+  if (count <= 9) return 0.86;
+  return 0.74;
+}
+
+function applyBenchScale() {
+  benchEl.style.setProperty("--bench-scale", String(benchScale));
+}
+
+/** キャンバス内のベンチ（表示専用）。選手が入っている枠だけを出す */
+function renderBenchDisplay() {
   benchEl.innerHTML = "";
+  state.bench.forEach((number) => {
+    const player = number ? findPlayer(number) : null;
+    if (!player) return;
+    const chip = document.createElement("span");
+    chip.className = "bench-slot";
+    chip.innerHTML = `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`;
+    benchEl.appendChild(chip);
+  });
+  applyBenchScale();
+}
+
+/** キャンバス外のベンチ編集UI。タップ領域を十分にとる */
+function renderBenchEditor() {
+  if (!benchEditorEl) return;
+  benchEditorEl.innerHTML = "";
   state.bench.forEach((number, index) => {
     const player = number ? findPlayer(number) : null;
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "bench-slot" + (player ? "" : " is-empty");
-    // 空き枠は画像の中で場所を取らないよう、記号だけにする
+    btn.className = "bench-edit-slot" + (player ? "" : " is-empty");
     btn.innerHTML = player
       ? `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`
-      : "＋";
+      : `<span class="bench-edit-empty">控え${index + 1}を選ぶ</span>`;
     btn.setAttribute(
       "aria-label",
       player ? `控え${index + 1}：${player.nameEn} を変更` : `控え${index + 1} に選手を選ぶ`
     );
     btn.addEventListener("click", () => openPicker({ kind: "bench", index }));
-    benchEl.appendChild(btn);
+    benchEditorEl.appendChild(btn);
   });
+}
+
+function renderBench() {
+  renderBenchDisplay();
+  renderBenchEditor();
 }
 
 function renderMeta() {
@@ -354,6 +397,10 @@ function renderAll() {
 ------------------------------------------------------------------ */
 /** カードの縦横比（.card の aspect-ratio と同じ） */
 const CARD_ASPECT = 64 / 47; // height / width
+/** カード高さの下限。重ならない範囲でのみ効かせる（幾何的な上限を超えない） */
+const CARD_H_MIN = 70;
+/** カード高さの上限。420px幅キャンバスでの見え方に合わせた値 */
+const CARD_H_MAX = 75.1;
 
 function fitCards() {
   const pitch = pitchEl;
@@ -397,9 +444,13 @@ function fitCards() {
   // ピッチ自体に収まる上限（安全マージン込み。ピルと余白の分だけ縦に余分がいる）
   cardH = Math.min(cardH, availH - pillH - playerPadY);
   cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
-  cardH = Math.max(cardH, 75.1); // 全フォーメーション統一：最大サイズ75.1px
+  // ここまでで求めた値は「これ以上大きくすると重なる／はみ出す」という幾何的な上限。
+  // 下限 CARD_H_MIN はこの上限を超えない範囲でだけ効かせる。上限を無視して下限を
+  // 優先すると、カードどうしが重なる（a808f1a の不具合はこれが原因）。
+  const idealH = cardH;
+  cardH = Math.min(Math.max(cardH, CARD_H_MIN), CARD_H_MAX, idealH);
   pitch.style.setProperty("--card-h", cardH + "px");
-  console.log(`[squad] ${state.formationKey}: cardH=${cardH.toFixed(1)}px, pairBound=${pairBound.toFixed(1)}px`);
+  return { cardH, idealH, clamped: idealH < CARD_H_MIN };
 }
 
 /** 1行に収まらない見出しを、収まるまで文字サイズを下げる */
@@ -445,7 +496,17 @@ function fitNames() {
 
 // 各 .player をピッチ内に収まるようクランプして配置する。
 function layoutPitch() {
-  fitCards();
+  // ベンチの行数が増えるとフッターが伸び、ピッチが薄くなってカードが重なる。
+  // まず枚数に応じた基準の縮小率を当て、それでもカードが下限に張り付く場合は
+  // ベンチ側をもう一段縮めて、ピッチの取り分を増やす。
+  benchScale = baseBenchScale();
+  applyBenchScale();
+  let fitted = fitCards();
+  for (let i = 0; i < 2 && fitted.clamped && benchScale > BENCH_SCALE_MIN; i++) {
+    benchScale = Math.max(BENCH_SCALE_MIN, benchScale - 0.1);
+    applyBenchScale();
+    fitted = fitCards();
+  }
   const pitchRect = pitchEl.getBoundingClientRect();
   $$(".player", pitchEl).forEach((el) => {
     const index = Number(el.dataset.slotIndex);

@@ -315,7 +315,10 @@ body{
 
 /* ---- ピッチ ---- */
 .pitch{
-  flex:1;min-height:0;margin:1.6cqw 3cqw;border-radius:8px;position:relative;z-index:1;
+  /* ピッチの取り分を先に確保する。フッター（ベンチ）が伸びても
+     ここを下回らないので、カードが重なるほど薄くならない。
+     60% はヘッダー約16%＋フッター上限24%から決めた値。 */
+  flex:1 1 auto;min-height:60%;margin:1.6cqw 3cqw;border-radius:8px;position:relative;z-index:1;
   background:#0d2416;
   box-shadow:0 0 30px rgba(0,0,0,.65);
   overflow:hidden;
@@ -463,7 +466,9 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
 
 /* ---- 下部帯 ---- */
 .sq-footer{
-  position:relative;z-index:2;flex:0 0 auto;
+  /* ピッチの取り分を削らないよう上限を設ける。ベンチが収まらない場合は
+     squad-builder.js 側が --bench-scale を下げて縮める。 */
+  position:relative;z-index:2;flex:0 1 auto;max-height:24%;overflow:hidden;
   background:linear-gradient(180deg,#180722,#0e0415);
   border-top:2px solid var(--gold-500);
   padding:1.6cqw 4cqw 1.6cqw;
@@ -639,17 +644,34 @@ button{
   -webkit-tap-highlight-color:transparent;
 }
 
-/* ---- ベンチ：選択式のスロットに変更 ---- */
-.bench{display:flex;flex-wrap:wrap;gap:.7cqw 1cqw}
-/* ベンチはキャンバス内にあるため、寸法もキャンバス基準にする。
-   空き枠は記号だけにして、画像の中で場所を取らないようにする */
+/* ---- ベンチ（キャンバス内）：表示専用のチップ ----
+   編集用のボタンはキャンバス外（.bench-editor）にある。ここをpx寸法にすると
+   フッターが伸びてピッチが薄くなり、カードが重なるため、キャンバス基準（cqw）で
+   持ち、枚数に応じて --bench-scale で縮める。 */
+.bench{display:flex;flex-wrap:wrap;gap:.7cqw 1cqw;--bench-scale:1}
 .bench-slot{
-  font-size:13px;font-weight:700;color:#e6d7f0;
+  font-size:calc(2.2cqw * var(--bench-scale));
+  font-weight:700;color:#e6d7f0;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);
-  border-radius:99px;padding:8px 12px;min-height:44px;display:flex;align-items:center;
+  border-radius:99px;
+  padding:calc(.9cqw * var(--bench-scale)) calc(2.2cqw * var(--bench-scale));
+  min-height:calc(5.2cqw * var(--bench-scale));
+  display:flex;align-items:center;white-space:nowrap;
 }
-.bench-slot.is-empty{color:#d8b8ff;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);border-style:solid;font-style:italic}
-.bench-slot b{color:var(--gold-300);margin-right:4px}
+.bench-slot b{color:var(--gold-300);margin-right:.5cqw}
+
+/* ---- ベンチ編集UI（キャンバス外）----
+   画像には出ない。タップ領域を44px以上確保するのはこちらの役目。 */
+.bench-editor{display:flex;flex-wrap:wrap;gap:8px}
+.bench-edit-slot{
+  font-size:13px;font-weight:700;color:#e6d7f0;cursor:pointer;
+  background:#2b1238;border:1px solid #4a1e63;
+  border-radius:99px;padding:10px 14px;min-height:44px;
+  display:flex;align-items:center;
+}
+.bench-edit-slot.is-empty{color:#d8b8ff;border-style:dashed}
+.bench-edit-slot b{color:var(--gold-300);margin-right:6px}
+.bench-edit-slot:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px}
 
 /* ---- 選手選択モーダル ---- */
 .picker-backdrop{
