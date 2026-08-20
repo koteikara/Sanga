@@ -1016,7 +1016,10 @@
       "competition_label": "明治安田J1リーグ",
       "round": "第20節",
       "match_date": "",
-      "date_candidates": [],
+      "date_candidates": [
+        "2026-12-19",
+        "2026-12-20"
+      ],
       "kickoff_time": "",
       "home_away": "H",
       "home_away_label": "ホーム",
