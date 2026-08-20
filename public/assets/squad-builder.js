@@ -346,60 +346,15 @@ function renderAll() {
 }
 
 /* ------------------------------------------------------------------
-   寸法計算（design-mockup.html の fitCards / fitNames と同じ考え方）
-   スタイルによって余白やヘッダー高さが変わるため、毎回測り直す。
-   自由配置レイアウトのため「行」の概念がなく、
-   ピッチの実寸から上限を算出したうえで、各カードの位置を
-   ピッチ内に収まるようクランプする。
+   カード・見出しの寸法調整
+   カード高はフォーメーションによらず統一し、自由配置の座標は
+   positionPlayer() でピッチ内へクランプする。
 ------------------------------------------------------------------ */
-/** カードの縦横比（.card の aspect-ratio と同じ） */
-const CARD_ASPECT = 64 / 47; // height / width
+/** 全フォーメーションで共通のカード高さ */
+const UNIFORM_CARD_HEIGHT_PX = 75.1;
 
 function fitCards() {
-  const pitch = pitchEl;
-  const pillEl = $(".pos-pill", pitch);
-  const pillH = state.showPill && pillEl ? pillEl.getBoundingClientRect().height : 0;
-  // .player 自体の余白（CSSのpaddingぶん）も占有矩形に含める。値をCSSから直接測ることで、
-  // squad.css 側の余白が変わっても追随する。
-  const samplePlayer = $(".player", pitch);
-  const playerCs = samplePlayer ? getComputedStyle(samplePlayer) : null;
-  const playerPadX = playerCs ? parseFloat(playerCs.paddingLeft) + parseFloat(playerCs.paddingRight) : 4;
-  const playerPadY = playerCs ? parseFloat(playerCs.paddingTop) + parseFloat(playerCs.paddingBottom) : 2;
-  const margin = 1; // 上下左右の安全マージン
-  const availH = pitch.clientHeight - margin;
-  const availW = pitch.clientWidth - margin;
-  const pitchW = pitch.clientWidth;
-  const pitchH = pitch.clientHeight;
-
-  // 縦：ピッチ高さの目安比率（design-mockup.htmlの4行構成に近い密度）。見やすさの上限として使う。
-  let cardH = pitch.clientHeight * 0.225;
-
-  // フォーメーションごとの実際のスロット間隔から、カードどうしが重ならない上限を求める。
-  // .player はカード＋ピルの縦積みなので、占有矩形は 幅=カード幅、高さ=カード高さ+ピル高さ とみなす。
-  // 2枚の矩形が重ならないためには、中心間の横距離がカード幅以上、または
-  // 中心間の縦距離が「カード高さ+ピル高さ」以上あればよい（軸分離の判定）。
-  // どちらか一方の条件を満たせばよいので、各組について許容できるカード高さの上限は
-  // 「横方向だけで満たす場合の上限」と「縦方向だけで満たす場合の上限」の大きい方になる。
-  // 全ペアのうち一番厳しい（小さい）上限が、このフォーメーションで安全な最大カード高さ。
-  const slots = state.slots;
-  let pairBound = Infinity;
-  for (let i = 0; i < slots.length; i++) {
-    for (let j = i + 1; j < slots.length; j++) {
-      const dx = (Math.abs(slots[i].x - slots[j].x) / 100) * pitchW;
-      const dy = (Math.abs(slots[i].y - slots[j].y) / 100) * pitchH;
-      const boundByWidth = (dx - playerPadX) * CARD_ASPECT; // 横方向だけで dx >= カード幅+余白 を満たす上限
-      const boundByHeight = dy - pillH - playerPadY; // 縦方向だけで dy >= カード高さ+ピル高さ+余白 を満たす上限
-      pairBound = Math.min(pairBound, Math.max(boundByWidth, boundByHeight));
-    }
-  }
-  if (Number.isFinite(pairBound)) cardH = Math.min(cardH, pairBound);
-
-  // ピッチ自体に収まる上限（安全マージン込み。ピルと余白の分だけ縦に余分がいる）
-  cardH = Math.min(cardH, availH - pillH - playerPadY);
-  cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
-  cardH = Math.max(cardH, 24);
-  cardH = Math.min(cardH, 75.1); // カードが重ならない範囲で最大75.1pxに制限する
-  pitch.style.setProperty("--card-h", cardH + "px");
+  pitchEl.style.setProperty("--card-h", `${UNIFORM_CARD_HEIGHT_PX}px`);
 }
 
 /** 1行に収まらない見出しを、収まるまで文字サイズを下げる */

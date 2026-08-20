@@ -910,3 +910,25 @@ PR #146 相当のカード高さ統一処理を確認し、最大値として追
 - `node tools/validate-matches.js`
 - `git diff --check`
 - 差分でカード高さが `24px` 以上 `75.1px` 以下に制限されることを確認する。
+
+## 2026-08-20 PR #146 レビュー指摘対応
+
+### レビュー指摘
+
+前回の `24px` 以上 `75.1px` 以下というクランプでは、衝突回避計算によってフォーメーションごとにカード高が縮小されるため、PR #146 の「全フォーメーションを75.1pxへ統一する」という意図を満たしていなかった。
+
+### 修正方針
+
+- カード高を `UNIFORM_CARD_HEIGHT_PX` 定数で `75.1` に固定する。
+- 固定値で最終的に上書きされる衝突回避・ピッチ寸法計算を削除し、実装と仕様を一致させる。
+- リサイズ時の再適用経路と既存のカード配置処理は維持する。
+- `squad-builder.js` の更新が公開時に反映されるよう、HTMLのJavaScriptバージョンクエリだけを更新する。
+- CSS、日程・選手データ、LocalStorage仕様は変更しない。
+
+### 確認方法
+
+- `node --check public/assets/squad-builder.js`
+- 全フォーメーション定義を使った静的検証で、カード高の設定値が常に `75.1px` になることを確認する。
+- `node tools/validate-players.js`
+- `node tools/validate-matches.js`
+- `git diff --check`

@@ -2217,3 +2217,51 @@ PR #146 相当のスカッドカード高さ変更をレビューし、カード
 
 - 特に `4-2-3-1`、`4-1-2-1-2`、`4-4-1-1`、`4-1-4-1` の狭幅表示でカードとポジションピルが重ならないこと。
 - 最大75.1pxを維持しつつ、密な配置では安全なサイズまで縮小する仕様で問題ないこと。
+
+## 2026-08-20 PR #146 レビュー指摘対応
+
+### 指摘内容
+
+前回の修正は `Math.max(cardH, 24)` と `Math.min(cardH, 75.1)` を適用したため、密なフォーメーションでは従来どおりカード高が75.1px未満になり、PR #146 の全フォーメーション統一という意図を満たしていなかった。
+
+### 変更内容
+
+- 共通カード高を `UNIFORM_CARD_HEIGHT_PX = 75.1` として定数化した。
+- `fitCards()` は全フォーメーションで共通値を `--card-h` へ設定する処理に限定した。
+- 固定値によって結果が使用されない衝突回避・ピッチ寸法計算を削除し、コード上の処理と統一仕様を一致させた。
+- 前回削除した開発用コンソールログは、引き続き追加していない。
+- 更新後のJavaScriptを確実に読み込めるよう、`squad.html` のモジュール参照を `v=20260820-5` へ更新した。
+- CSS、日程・選手データ、LocalStorage仕様は変更していない。
+
+### 確認予定
+
+- JavaScript構文検証。
+- 選手・日程・アプリ契約の既存静的検証。
+- 全フォーメーションで共通カード高が設定されることの静的検証。
+- 実ブラウザ環境が利用できる場合はスカッド画面の目視確認とスクリーンショット取得。
+
+### 確認結果
+
+- `node --check public/assets/squad-builder.js` 成功。
+- `node --check public/assets/squad-formations.js` 成功。
+- `node --check public/assets/squad-sample-players.js` 成功。
+- `node tools/validate-players.js` 成功（39件）。
+- `node tools/validate-matches.js` 成功（57件）。
+- `node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict` 成功。
+- `node tools/validate-hotels.js` 成功。
+- `node --check public/assets/app.js` 成功。
+- `node tools/validate-app-contract.js` 成功。
+- Node.jsの静的検証で、共通定数が `75.1`、`--card-h` がその定数から設定され、フォーメーション別の `pairBound` / `CARD_ASPECT` / `cardH` クランプが残っていないことを確認した。
+- `public/assets/squad.css` と `public/assets/style.css` の波括弧数が一致することを確認した。
+- `git diff --check` 成功。
+- `public/squad.html` はJavaScriptのバージョンクエリ以外に差分がなく、`public/assets/squad.css`、日程・選手データ、Static Checksワークフローに差分がないことを確認した。
+
+### 未確認項目
+
+- GitHub CLIが未認証でremoteも未設定のため、PR #146のレビューコメント本文をGitHubから直接再取得できなかった。コミット本文に明記された「全フォーメーションを75.1pxへ統一する」という意図と、提示されたレビュー対応依頼に基づいて修正した。
+- Chromium / Playwrightがなく、`npx playwright install chromium` もnpmレジストリの403で実行できなかったため、実ブラウザの目視確認とスクリーンショット取得は未実施。
+
+### 残課題・人間が確認すべき点
+
+- 実ブラウザで全17フォーメーションを切り替え、カード高さが同一であることを確認する。
+- 特に密な `4-2-3-1`、`4-1-2-1-2`、`4-4-1-1`、`4-1-4-1` について、固定高75.1pxで意図した配置になっていることを確認する。
