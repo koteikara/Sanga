@@ -668,16 +668,32 @@ button{
 
 /* ---- ベンチ編集UI（キャンバス外）----
    画像には出ない。タップ領域を44px以上確保するのはこちらの役目。 */
-.bench-editor{display:flex;flex-wrap:wrap;gap:8px}
+.bench-editor{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .bench-edit-slot{
-  font-size:13px;font-weight:700;color:#e6d7f0;cursor:pointer;
+  font-size:13px;font-weight:700;color:#e6d7f0;
   background:#2b1238;border:1px solid #4a1e63;
-  border-radius:99px;padding:10px 14px;min-height:44px;
+  border-radius:99px;padding:3px 3px 3px 14px;min-height:44px;
+  display:flex;align-items:center;gap:6px;
+}
+.bench-edit-slot b{color:var(--gold-300);margin-right:-4px}
+.bench-edit-remove{
+  position:relative;
+  width:38px;height:38px;flex:0 0 auto;border-radius:99px;cursor:pointer;
+  background:#4a1e63;border:1px solid #6a2f8a;color:#f0e2fa;
+  font-size:15px;line-height:1;display:flex;align-items:center;justify-content:center;
+}
+/* 見た目は小さめでも、指で押せる範囲は44px以上を確保する。
+   はみ出す範囲はチップの内側に収まるので、隣のチップとは重ならない */
+.bench-edit-remove::after{content:"";position:absolute;inset:-4px;border-radius:99px}
+.bench-edit-add{
+  font-size:13px;font-weight:700;color:#d8b8ff;cursor:pointer;
+  background:rgba(255,255,255,.06);border:1px dashed rgba(216,184,255,.6);
+  border-radius:99px;padding:10px 16px;min-height:44px;
   display:flex;align-items:center;
 }
-.bench-edit-slot.is-empty{color:#d8b8ff;border-style:dashed}
-.bench-edit-slot b{color:var(--gold-300);margin-right:6px}
-.bench-edit-slot:focus-visible{outline:2px solid var(--gold-300);outline-offset:2px}
+.bench-edit-remove:focus-visible,.bench-edit-add:focus-visible{
+  outline:2px solid var(--gold-300);outline-offset:2px;
+}
 
 /* ---- 選手選択モーダル ---- */
 .picker-backdrop{

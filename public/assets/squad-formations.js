@@ -104,6 +104,3 @@ export const FORMATIONS = {
     slots: build(GK, FOUR_BACK, line("MF", Y.mf, [16, 38, 62, 84]), line("FW", Y.fw, [37, 63])),
   },
 };
-
-/** ベンチの枠数 */
-export const BENCH_SIZE = 9;
