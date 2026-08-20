@@ -365,7 +365,7 @@ function fitCards() {
   const playerCs = samplePlayer ? getComputedStyle(samplePlayer) : null;
   const playerPadX = playerCs ? parseFloat(playerCs.paddingLeft) + parseFloat(playerCs.paddingRight) : 4;
   const playerPadY = playerCs ? parseFloat(playerCs.paddingTop) + parseFloat(playerCs.paddingBottom) : 4;
-  const margin = 6; // 上下左右の安全マージン
+  const margin = 4; // 上下左右の安全マージン
   const availH = pitch.clientHeight - margin;
   const availW = pitch.clientWidth - margin;
   const pitchW = pitch.clientWidth;
@@ -387,9 +387,8 @@ function fitCards() {
     for (let j = i + 1; j < slots.length; j++) {
       const dx = (Math.abs(slots[i].x - slots[j].x) / 100) * pitchW;
       const dy = (Math.abs(slots[i].y - slots[j].y) / 100) * pitchH;
-      // 判定用の安全マージン（サブピクセルの誤差で接触判定にならないよう1px引く）
-      const boundByWidth = (dx - playerPadX) * CARD_ASPECT - 1; // 横方向だけで dx >= カード幅+余白 を満たす上限
-      const boundByHeight = dy - pillH - playerPadY - 1; // 縦方向だけで dy >= カード高さ+ピル高さ+余白 を満たす上限
+      const boundByWidth = (dx - playerPadX) * CARD_ASPECT; // 横方向だけで dx >= カード幅+余白 を満たす上限
+      const boundByHeight = dy - pillH - playerPadY; // 縦方向だけで dy >= カード高さ+ピル高さ+余白 を満たす上限
       pairBound = Math.min(pairBound, Math.max(boundByWidth, boundByHeight));
     }
   }
