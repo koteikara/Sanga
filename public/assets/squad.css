@@ -644,21 +644,11 @@ button{
 /* ベンチはキャンバス内にあるため、寸法もキャンバス基準にする。
    空き枠は記号だけにして、画像の中で場所を取らないようにする */
 .bench-slot{
-  font-size:1.9cqw;font-weight:700;color:#e6d7f0;line-height:1.3;
+  font-size:13px;font-weight:700;color:#e6d7f0;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);
-  border-radius:99px;padding:.55cqw 1.6cqw;
+  border-radius:99px;padding:8px 12px;min-height:44px;display:flex;align-items:center;
 }
-.bench-slot.is-empty{
-  color:#b79ec9;padding:.55cqw 2.2cqw;border-style:dashed;
-}
-.bench-slot b{color:var(--gold-300);margin-right:.5cqw}
-/* 見た目は小さいままで、指で押せるだけの当たり判定を確保する */
-.bench-slot{position:relative}
-.bench-slot::after{
-  content:"";position:absolute;left:0;right:0;top:50%;
-  height:44px;transform:translateY(-50%);
-}
-.bench-slot.is-empty{color:#a894b6;border-style:dashed}
+.bench-slot.is-empty{color:#d8b8ff;background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);border-style:solid;font-style:italic}
 .bench-slot b{color:var(--gold-300);margin-right:4px}
 
 /* ---- 選手選択モーダル ---- */
