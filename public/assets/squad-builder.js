@@ -2,7 +2,8 @@
 // design-mockup.html の見た目（盾型カード、装飾、7スタイル、寸法計算の考え方）を引き継ぎ、
 // フォーメーション選択・選手選択・位置の微調整・画像化導線・保存呼び出しを実装する。
 // design-mockup.html 自体は変更していない。
-import { FORMATIONS, BENCH_SIZE } from "./squad-formations.js";
+// 静的importにはHTML側のバージョンクエリが効かないため、更新時はここのクエリも上げる。
+import { FORMATIONS, BENCH_SIZE } from "./squad-formations.js?v=20260820-6";
 import { SAMPLE_PLAYERS } from "./squad-sample-players.js";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
 // public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
