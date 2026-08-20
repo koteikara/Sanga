@@ -940,7 +940,7 @@ async function init() {
   // 画像生成の崩れを切り分けるための診断モード。?diag=1 のときだけ読み込む。
   // 原因が特定できたら、この分岐と squad-export-diag.js は削除する。
   if (new URLSearchParams(location.search).get("diag") === "1") {
-    const { setupExportDiag } = await import("./squad-export-diag.js?v=20260820-6");
+    const { setupExportDiag } = await import("./squad-export-diag.js?v=20260820-8");
     setupExportDiag(canvas);
   }
 }
