@@ -28,6 +28,7 @@ body{
   color:#fff;
   font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
   display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 12px 60px;
+  scrollbar-gutter:stable;
 }
 
 /* ---- 画面上の操作（見本確認用。実装では設定パネルに入る） ---- */
@@ -127,7 +128,7 @@ body{
 [data-style="victorian"] .bench-chip b{color:#e8cc72}
 [data-style="victorian"] /* 投稿者名。誰の予想かを画像に残す */
 .poster-name{
-  margin-top:1.6cqw;text-align:center;
+  margin-top:1.2cqw;text-align:center;
   font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
   color:var(--gold-300);
 }
@@ -276,9 +277,16 @@ body{
 [data-style="scrap"] .pos-pill{
   border-radius:0;background:#c9a3e8;border:1px solid #4a1466;color:#2b0a3d;
 }
+/* ベンチ枠。下部帯が明るい紙色のため、暗い文字色に切り替えてコントラストを確保する
+   （文字 #2b0a3d と背景の合成色でコントラスト比 15:1 以上） */
+[data-style="scrap"] .bench-slot{
+  color:#2b0a3d;background:#fff;border:1px solid #4a1466;
+}
+[data-style="scrap"] .bench-slot.is-empty{color:#6a4f82}
+[data-style="scrap"] .bench-slot b{color:#7b1fa2}
 [data-style="scrap"] /* 投稿者名。誰の予想かを画像に残す */
 .poster-name{
-  margin-top:1.6cqw;text-align:center;
+  margin-top:1.2cqw;text-align:center;
   font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
   color:var(--gold-300);
 }
@@ -297,6 +305,7 @@ body{
   filter:drop-shadow(0 .6cqw 1.4cqw rgba(0,0,0,.5));
 }
 .sq-subtitle{
+  white-space:nowrap;
   margin-top:.8cqw;font-size:3.1cqw;letter-spacing:.18em;color:#e6d7f0;font-weight:700;
 }
 .sq-rule{
@@ -387,11 +396,12 @@ body{
 }
 /* 中央：背番号タイル画像が入る枠（見本ではCSSで再現） */
 .card-photo{
-  z-index:2;position:absolute;top:8%;left:11%;right:11%;height:44%;
+  z-index:2;position:absolute;top:6%;left:7%;right:7%;height:48%;
   display:flex;align-items:center;justify-content:center;
 }
 /* 切り出したタイル画像。読み込めたときはプレースホルダーを隠す */
 .tile-img{
+  /* 背番号とローマ字名の両方が収まるように、枠内へ全体を入れる */
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
   border-radius:3.3cqw;
 }
@@ -410,19 +420,19 @@ body{
 .tile span{font-size:8cqw;font-weight:800;color:#fff;letter-spacing:.04em;margin-top:2.2cqw;max-width:96%}
 /* 下部：名前 */
 .card-name{
-  z-index:3;position:absolute;top:55%;left:12%;right:12%;
+  z-index:3;position:absolute;top:57%;left:10%;right:10%;
   display:flex;flex-direction:column;align-items:center;
   text-align:center;padding:3.3cqw 0 6.6cqw;overflow:hidden;
 }
 /* 長い名前は枠幅に合わせて自動縮小する（JSで font-size を調整） */
 .name-en,.name-ja,.tile span{display:inline-block;white-space:nowrap}
 .name-en{font-size:11.7cqw;font-weight:800;letter-spacing:.03em}
-.name-ja{font-size:9.7cqw;font-weight:600;color:#e9d8f5;margin-top:1.1cqw}
+.name-ja{font-size:13cqw;font-weight:600;color:#e9d8f5;margin-top:1.1cqw}
 body:not(.show-ja) .name-ja{display:none}
 
 /* 名前の下に置く国籍の旗 */
 .flag{
-  width:20%;aspect-ratio:3/2;margin-top:3.3cqw;border-radius:1.6cqw;
+  width:24%;aspect-ratio:3/2;margin-top:2.6cqw;border-radius:1.6cqw;
   background-size:100% 100%;background-repeat:no-repeat;
   background-origin:border-box;background-clip:border-box;
   border:1px solid rgba(255,255,255,.85);
@@ -456,41 +466,41 @@ body:not(.show-pill) .pos-pill{visibility:hidden}
   position:relative;z-index:2;flex:0 0 auto;
   background:linear-gradient(180deg,#180722,#0e0415);
   border-top:2px solid var(--gold-500);
-  padding:2cqw 4cqw 2cqw;
+  padding:1.6cqw 4cqw 1.6cqw;
 }
 .footer-top{display:flex;align-items:center;gap:3cqw}
 .formation-badge{
   flex:0 0 auto;text-align:center;
 }
 .formation-badge .fig{
-  width:13cqw;height:8.5cqw;border:1.5px solid var(--gold-300);border-radius:1px;
+  width:9cqw;height:6cqw;border:1.2px solid var(--gold-300);border-radius:1px;
   position:relative;margin:0 auto;
 }
 .formation-badge .fig::before,.formation-badge .fig::after{
   content:"";position:absolute;top:50%;transform:translateY(-50%);
-  width:2.4cqw;height:4.2cqw;border:1.5px solid var(--gold-300);
+  width:1.7cqw;height:3cqw;border:1.2px solid var(--gold-300);
 }
-.formation-badge .fig::before{left:-1.5px;border-left:none}
-.formation-badge .fig::after{right:-1.5px;border-right:none}
+.formation-badge .fig::before{left:-1.2px;border-left:none}
+.formation-badge .fig::after{right:-1.2px;border-right:none}
 .formation-badge .num{
-  margin-top:1cqw;font-size:4.4cqw;font-weight:900;letter-spacing:.04em;color:var(--gold-100);
+  margin-top:.6cqw;font-size:3cqw;font-weight:900;letter-spacing:.04em;color:var(--gold-100);
 }
 .footer-meta{flex:1;min-width:0}
 .meta-row{display:flex;gap:1.4cqw;align-items:baseline;font-size:2.3cqw;line-height:1.5}
 .meta-row dt{flex:0 0 auto;color:var(--gold-300);font-weight:800;letter-spacing:.08em}
 .meta-row dd{font-weight:700;color:#f2e9f8}
 .bench{
-  margin-top:1.4cqw;display:flex;flex-wrap:wrap;gap:.8cqw 1.2cqw;
+  margin-top:1cqw;display:flex;flex-wrap:wrap;gap:.8cqw 1.2cqw;
 }
 .bench-chip{
-  font-size:1.9cqw;font-weight:700;color:#e6d7f0;
+  font-size:1.6cqw;font-weight:700;color:#e6d7f0;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
-  border-radius:99px;padding:.4cqw 1.4cqw;white-space:nowrap;
+  border-radius:99px;padding:.25cqw 1.1cqw;white-space:nowrap;
 }
 .bench-chip b{color:var(--gold-300);margin-right:.5cqw}
 /* 投稿者名。誰の予想かを画像に残す */
 .poster-name{
-  margin-top:1.6cqw;text-align:center;
+  margin-top:1.2cqw;text-align:center;
   font-size:2.4cqw;font-weight:800;letter-spacing:.06em;
   color:var(--gold-300);
 }
@@ -529,13 +539,30 @@ h1.proto-title{font-size:16px;margin:0}
 .panel{
   background:#200c2c;border:1px solid #3d1155;border-radius:12px;padding:14px 16px;
   display:flex;flex-direction:column;gap:14px;
+  /* グリッド項目は既定でmin-width:autoとなり、内容（長い選択肢を持つselectなど）で
+     押し広げられて横スクロールの原因になるため、縮められるようにする */
+  min-width:0;
 }
 .panel h2{font-size:14px;margin:0;color:#e6d7f0;border-bottom:1px solid #3d1155;padding-bottom:6px}
-.field-row{display:flex;flex-direction:column;gap:4px;font-size:13px}
+.field-row{display:flex;flex-direction:column;gap:4px;font-size:13px;min-width:0}
 .field-row label{color:#c9b6d6}
 .field-row input[type="text"],.field-row select{
-  background:#2b1238;border:1px solid #4a1e63;color:#fff;border-radius:6px;padding:8px 10px;font-size:14px;
+  background:#2b1238;border:1px solid #4a1e63;color:#fff;border-radius:6px;padding:8px 10px;
+  /* 16px未満だと、スマートフォンでフォーカスしたときに画面が拡大され、
+     表示幅がずれてしまう。フォーム部品は16px以上にする */
+  font-size:16px;
   min-height:40px;
+  /* #field-match は日程データ由来の長い選択肢を持つ。selectは既定で
+     min-width:autoとなり、内容の幅に合わせて親を押し広げてしまうため、
+     幅を親要素に合わせて縮められるようにする */
+  width:100%;
+  max-width:100%;
+  min-width:0;
+}
+.field-row select{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 .chip-row{display:flex;flex-wrap:wrap;gap:8px}
 .toggle-row{display:flex;flex-wrap:wrap;gap:10px}
@@ -613,7 +640,9 @@ button{
 }
 
 /* ---- ベンチ：選択式のスロットに変更 ---- */
-.bench{display:flex;flex-wrap:wrap;gap:6px}
+.bench{display:flex;flex-wrap:wrap;gap:.7cqw 1cqw}
+/* ベンチはキャンバス内にあるため、寸法もキャンバス基準にする。
+   空き枠は記号だけにして、画像の中で場所を取らないようにする */
 .bench-slot{
   font-size:13px;font-weight:700;color:#e6d7f0;
   background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.24);

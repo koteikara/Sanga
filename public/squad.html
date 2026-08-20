@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>京都サンガF.C. 予想スカッド作成</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
 <link rel="stylesheet" href="assets/squad.css">
 </head>
 <body class="show-ja show-pill">
@@ -22,22 +23,16 @@
     </section>
 
     <section>
-      <h2>タイトル・日付・監督</h2>
+      <h2>タイトル・試合・投稿者</h2>
       <div class="field-row">
         <label for="field-title">タイトル</label>
         <input type="text" id="field-title" value="予想スタメン">
       </div>
       <div class="field-row">
-        <label for="field-match">試合情報（大会・節・対戦相手）</label>
-        <input type="text" id="field-match" value="2026 明治安田J1リーグ 第10節 vs ○○">
-      </div>
-      <div class="field-row">
-        <label for="field-coach">監督名</label>
-        <input type="text" id="field-coach" value="チョウ キジェ">
-      </div>
-      <div class="field-row">
-        <label for="field-kickoff">日付・キックオフ・会場</label>
-        <input type="text" id="field-kickoff" value="2026.05.02 SAT 14:00 / サンガS">
+        <label for="field-match">試合（年間スケジュールから選ぶ）</label>
+        <select id="field-match">
+          <option value="">指定しない（表示しない）</option>
+        </select>
       </div>
       <div class="field-row">
         <label for="field-poster">投稿者名（画像に表示されます）</label>
@@ -77,12 +72,6 @@
       <div class="save-list" id="save-list"></div>
     </section>
 
-    <section>
-      <h2>4. 画像を作成する</h2>
-      <button type="button" class="btn primary" id="export-btn">画像を作成する（PNG）</button>
-      <p class="export-status" id="export-status"></p>
-      <div class="export-preview" id="export-preview"></div>
-    </section>
   </div>
 
   <!-- ===================== 出力キャンバス ===================== -->
@@ -170,8 +159,6 @@
               <div class="num" id="formation-num">4-4-2</div>
             </div>
             <div class="footer-meta">
-              <dl class="meta-row"><dt>監督</dt><dd id="meta-coach">チョウ キジェ</dd></dl>
-              <dl class="meta-row"><dt>KICK OFF</dt><dd id="meta-kickoff">2026.05.02 SAT 14:00 / サンガS</dd></dl>
               <div class="bench" id="bench"></div>
             </div>
           </div>
@@ -183,8 +170,15 @@
       </div>
     </div>
     <p class="export-status">
-      2. ピッチ上の空きスロットやベンチをタップすると選手一覧が開きます。3. 配置済みのカードはドラッグ（タッチ操作可）で動かせます。
+      ピッチ上の空きスロットやベンチをタップすると選手一覧が開きます。配置済みのカードはドラッグ（タッチ操作可）で動かせます。
     </p>
+
+    <section class="export-section">
+      <h2>画像を作成する</h2>
+      <button type="button" class="btn primary" id="export-btn">画像を作成する（PNG）</button>
+      <p class="export-status" id="export-status"></p>
+      <div class="export-preview" id="export-preview"></div>
+    </section>
   </div>
 </div>
 

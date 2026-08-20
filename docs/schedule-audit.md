@@ -92,6 +92,7 @@ node tools/export-matches-review.js > /tmp/sanga-matches-review.md
 | 2026-06-18 | sec34 | date_candidates | 2027-05-09 / 2027-04-21 / 2027-05-12 / 2027-05-19 / 2027-06-02 | 2027-05-09（4/21、5/12、5/19、6/2は注記のみ） | https://www.sanga-fc.jp/news/detail/21152 | 修正済み | 注記内の日付を候補日から除外し、昇順不整合も解消。 |
 | 2026-06-18 | JSON由来表示 | 年見出し | JSON表示に2026/2027の年区切りなし | 手書き表示と同じく2026/2027の年見出しを表示 | https://www.sanga-fc.jp/news/detail/21152 | 修正済み | JSON由来カード生成時に開催年ごとの `.year` 見出しを挿入するよう修正。 |
 | 2026-06-18 | sec16 | validate-matches | tentativeなら日付なしでも検証通過 | tentative・日付なし・※数字注記ありの場合だけ未定日程として検証通過 | https://www.sanga-fc.jp/news/detail/21152 | 修正済み | 第16節のような公式表「未定」日程を許容しつつ、注記なしの未定データは検出できるよう調整。 |
+| 2026-08-20 | sec20 | match_date / date_candidates / status | 2026-09-19 / confirmed | 未定（2026-12-19 候補） / tentative | https://www.jleague-ticket.jp/sales/perform/2630702/001 | 修正済み | 誤った日付で確定状態になっていたため、正しい状態に修正。date_candidates に2026-12-19を設定し、statusをtentativeに戻す。matches.jsonの配列も日付順にソート。 |
 
 ## 修正時の注意
 

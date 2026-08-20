@@ -20,9 +20,7 @@ const state = {
   slots: cloneSlots(FORMATIONS["4-4-2"].slots), // 各要素に playerNumber を持たせる
   bench: new Array(BENCH_SIZE).fill(null),
   title: "予想スタメン",
-  matchInfo: "2026 明治安田J1リーグ 第10節 vs ○○",
-  coach: "チョウ キジェ",
-  kickoff: "2026.05.02 SAT 14:00 / サンガS",
+  matchInfo: "", // 年間スケジュールから選んだ試合の表示文。未選択なら空
   poster: "", // 投稿者名。誰の予想かを画像に残すために使う
   style: "modern",
   showJa: true,
@@ -42,7 +40,7 @@ function cloneSlots(slots) {
    その場合は同梱のサンプル配列にフォールバックし、理由をコンソールに出す。
 ------------------------------------------------------------------ */
 async function loadPlayers() {
-  const candidates = ["data/players.json"];
+  const candidates = ["/data/players.json", "data/players.json"];
   for (const url of candidates) {
     try {
       const res = await fetch(url, { cache: "no-store" });
@@ -87,8 +85,6 @@ const benchEl = $("#bench");
 const formationGrid = $("#formation-grid");
 const subtitleEl = $("#sq-subtitle");
 const titleTextEl = $("#sq-title-text");
-const coachEl = $("#meta-coach");
-const kickoffEl = $("#meta-kickoff");
 const posterEl = $("#meta-poster");
 const formationNumEl = $("#formation-num");
 
@@ -179,6 +175,65 @@ function cardMarkup(player, posLabelFallback) {
 /** 背番号タイル画像の場所。公開ページへ移す際はここだけ変える */
 const PLAYER_IMAGE_BASE = "assets/players/";
 
+/* ------------------------------------------------------------------
+   試合の選択肢。年間スケジュールの公開JSONから作る
+------------------------------------------------------------------ */
+
+/** 大会名を短くするための対応表。無い大会は competition_label をそのまま使う */
+const COMPETITION_SHORT_LABELS = {
+  J1: "J1",
+  LEV: "ルヴァン杯",
+  EMP: "天皇杯",
+};
+
+/** 試合1件を、画像に載せる1行の文にする */
+function matchLabel(match) {
+  // 1行に収めたいので、月日までにして時刻は入れない
+  const date = match.match_date
+    ? `${Number(match.match_date.slice(5, 7))}/${Number(match.match_date.slice(8, 10))}`
+    : "";
+  const competition = COMPETITION_SHORT_LABELS[match.competition] || match.competition_label;
+  const head = [competition, match.round].filter(Boolean).join(" ");
+  const versus = match.opponent ? `vs ${match.opponent}` : "";
+  return [date, head, versus].filter(Boolean).join(" ");
+}
+
+/** 年間スケジュールを読んで、試合の選択肢を並べる */
+async function loadMatchOptions() {
+  const select = $("#field-match");
+  if (!select) return;
+  try {
+    const res = await fetch("/data/matches.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error(String(res.status));
+    const data = await res.json();
+    const matches = (data.matches || []).filter((m) => m.is_visible !== false);
+    matches.forEach((m) => {
+      const label = matchLabel(m);
+      if (!label) return;
+      const option = document.createElement("option");
+      option.value = label;
+      option.textContent = label;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    // 日程が読めなくても、指定しないまま作成はできる
+    console.info("[squad-builder] data/matches.json を読み込めないため、試合の選択肢は空です。", err);
+  }
+}
+
+/** 保存データから復元するとき、一覧に無い文字列でも選べるようにする */
+function setMatchSelectValue(value) {
+  const select = $("#field-match");
+  if (!select) return;
+  if (value && ![...select.options].some((o) => o.value === value)) {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = value;
+    select.appendChild(option);
+  }
+  select.value = value || "";
+}
+
 function playerImageSrc(player) {
   if (player.image) {
     // players.json の image は public/ からの相対で持つため、その分をさかのぼる
@@ -253,9 +308,10 @@ function renderBench() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "bench-slot" + (player ? "" : " is-empty");
+    // 空き枠は画像の中で場所を取らないよう、記号だけにする
     btn.innerHTML = player
       ? `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`
-      : `控え${index + 1}：未選択`;
+      : "＋";
     btn.setAttribute(
       "aria-label",
       player ? `控え${index + 1}：${player.nameEn} を変更` : `控え${index + 1} に選手を選ぶ`
@@ -268,8 +324,6 @@ function renderBench() {
 function renderMeta() {
   titleTextEl.textContent = state.title;
   subtitleEl.textContent = state.matchInfo;
-  coachEl.textContent = state.coach;
-  kickoffEl.textContent = state.kickoff;
   // 投稿者名は入力があるときだけ出す
   const poster = state.poster.trim();
   posterEl.textContent = poster ? `予想: ${poster}` : "";
@@ -293,42 +347,74 @@ function renderAll() {
    ピッチの実寸から上限を算出したうえで、各カードの位置を
    ピッチ内に収まるようクランプする。
 ------------------------------------------------------------------ */
+/** カードの縦横比（.card の aspect-ratio と同じ） */
+const CARD_ASPECT = 64 / 47; // height / width
+
 function fitCards() {
   const pitch = pitchEl;
   const pillEl = $(".pos-pill", pitch);
   const pillH = state.showPill && pillEl ? pillEl.getBoundingClientRect().height + 4 : 4;
-  const gap = 6; // .player の gap 相当（px換算の目安）
-  const availH = pitch.clientHeight - pillH - gap - 6; // 上下の安全マージン
-  const availW = pitch.clientWidth - 6;
+  // .player 自体の余白（CSSのpaddingぶん）も占有矩形に含める。値をCSSから直接測ることで、
+  // squad.css 側の余白が変わっても追随する。
+  const samplePlayer = $(".player", pitch);
+  const playerCs = samplePlayer ? getComputedStyle(samplePlayer) : null;
+  const playerPadX = playerCs ? parseFloat(playerCs.paddingLeft) + parseFloat(playerCs.paddingRight) : 4;
+  const playerPadY = playerCs ? parseFloat(playerCs.paddingTop) + parseFloat(playerCs.paddingBottom) : 4;
+  const margin = 6; // 上下左右の安全マージン
+  const availH = pitch.clientHeight - margin;
+  const availW = pitch.clientWidth - margin;
+  const pitchW = pitch.clientWidth;
+  const pitchH = pitch.clientHeight;
 
-  // 縦：ピッチ高さの目安比率（design-mockup.htmlの4行構成に近い密度）
+  // 縦：ピッチ高さの目安比率（design-mockup.htmlの4行構成に近い密度）。見やすさの上限として使う。
   let cardH = pitch.clientHeight * 0.225;
-  // 横：1行に並びうる最大列数（同じy帯にある枚数の最大値）を目安にする
-  const rowCounts = countRows(state.slots);
-  const maxCols = Math.max(1, ...rowCounts);
-  const maxCardW = (availW - 8 * (maxCols - 1)) / maxCols;
-  cardH = Math.min(cardH, (maxCardW * 64) / 47);
-  // ピッチ自体に収まる上限（安全マージン込み）
-  cardH = Math.min(cardH, availH);
+
+  // フォーメーションごとの実際のスロット間隔から、カードどうしが重ならない上限を求める。
+  // .player はカード＋ピルの縦積みなので、占有矩形は 幅=カード幅、高さ=カード高さ+ピル高さ とみなす。
+  // 2枚の矩形が重ならないためには、中心間の横距離がカード幅以上、または
+  // 中心間の縦距離が「カード高さ+ピル高さ」以上あればよい（軸分離の判定）。
+  // どちらか一方の条件を満たせばよいので、各組について許容できるカード高さの上限は
+  // 「横方向だけで満たす場合の上限」と「縦方向だけで満たす場合の上限」の大きい方になる。
+  // 全ペアのうち一番厳しい（小さい）上限が、このフォーメーションで安全な最大カード高さ。
+  const slots = state.slots;
+  let pairBound = Infinity;
+  for (let i = 0; i < slots.length; i++) {
+    for (let j = i + 1; j < slots.length; j++) {
+      const dx = (Math.abs(slots[i].x - slots[j].x) / 100) * pitchW;
+      const dy = (Math.abs(slots[i].y - slots[j].y) / 100) * pitchH;
+      // 判定用の安全マージン（サブピクセルの誤差で接触判定にならないよう1px引く）
+      const boundByWidth = (dx - playerPadX) * CARD_ASPECT - 1; // 横方向だけで dx >= カード幅+余白 を満たす上限
+      const boundByHeight = dy - pillH - playerPadY - 1; // 縦方向だけで dy >= カード高さ+ピル高さ+余白 を満たす上限
+      pairBound = Math.min(pairBound, Math.max(boundByWidth, boundByHeight));
+    }
+  }
+  if (Number.isFinite(pairBound)) cardH = Math.min(cardH, pairBound);
+
+  // ピッチ自体に収まる上限（安全マージン込み。ピルと余白の分だけ縦に余分がいる）
+  cardH = Math.min(cardH, availH - pillH - playerPadY);
+  cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
   cardH = Math.max(cardH, 24);
   pitch.style.setProperty("--card-h", cardH + "px");
 }
 
-function countRows(slots) {
-  // yがおおむね近い（±6%）ものを同じ帯として数える簡易カウント
-  const bands = [];
-  slots.forEach((s) => {
-    let band = bands.find((b) => Math.abs(b.y - s.y) < 6);
-    if (!band) {
-      band = { y: s.y, count: 0 };
-      bands.push(band);
-    }
-    band.count += 1;
-  });
-  return bands.map((b) => b.count);
+/** 1行に収まらない見出しを、収まるまで文字サイズを下げる */
+function fitOneLine(el) {
+  el.style.fontSize = "";
+  const base = parseFloat(getComputedStyle(el).fontSize);
+  const avail = el.parentElement.clientWidth;
+  if (!avail) return;
+  let size = base;
+  const min = base * 0.6;
+  while (el.scrollWidth > avail && size > min) {
+    size -= base * 0.04;
+    el.style.fontSize = `${size}px`;
+  }
 }
 
 function fitNames() {
+  [subtitleEl, titleTextEl].forEach((el) => {
+    if (el) fitOneLine(el);
+  });
   $$(".name-en,.name-ja,.tile span", pitchEl).forEach((el) => {
     el.style.fontSize = "";
     el.style.transform = "";
@@ -633,8 +719,6 @@ function saveSquad(name) {
     bench: state.bench,
     title: state.title,
     matchInfo: state.matchInfo,
-    coach: state.coach,
-    kickoff: state.kickoff,
     poster: state.poster,
     style: state.style,
     showJa: state.showJa,
@@ -658,8 +742,6 @@ function loadSquad(name) {
   state.bench = data.bench;
   state.title = data.title;
   state.matchInfo = data.matchInfo;
-  state.coach = data.coach;
-  state.kickoff = data.kickoff;
   state.poster = data.poster || "";
   state.style = data.style;
   state.showJa = data.showJa;
@@ -667,9 +749,7 @@ function loadSquad(name) {
   state.showMascot = data.showMascot;
 
   $("#field-title").value = state.title;
-  $("#field-match").value = state.matchInfo;
-  $("#field-coach").value = state.coach;
-  $("#field-kickoff").value = state.kickoff;
+  setMatchSelectValue(state.matchInfo);
   $("#field-poster").value = state.poster;
   $("#field-style").value = state.style;
   $("#tg-ja").checked = state.showJa;
@@ -726,16 +806,8 @@ function wireControls() {
     state.title = e.target.value;
     renderMeta();
   });
-  $("#field-match").addEventListener("input", (e) => {
+  $("#field-match").addEventListener("change", (e) => {
     state.matchInfo = e.target.value;
-    renderMeta();
-  });
-  $("#field-coach").addEventListener("input", (e) => {
-    state.coach = e.target.value;
-    renderMeta();
-  });
-  $("#field-kickoff").addEventListener("input", (e) => {
-    state.kickoff = e.target.value;
     renderMeta();
   });
   $("#field-poster").addEventListener("input", (e) => {
@@ -777,11 +849,25 @@ function wireControls() {
 ------------------------------------------------------------------ */
 async function init() {
   players = await loadPlayers();
+  await loadMatchOptions();
   buildFormationButtons();
   wireControls();
   renderSaveList();
   renderAll();
   window.addEventListener("resize", () => requestAnimationFrame(layoutPitch));
+  // ベンチの行数や見出しの行数が変わるとピッチの高さも変わる。
+  // そのたびにカードの寸法を計算し直す。
+  if (window.ResizeObserver) {
+    let scheduled = false;
+    new ResizeObserver(() => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        layoutPitch();
+      });
+    }).observe(pitchEl);
+  }
   document.fonts && document.fonts.ready.then(() => requestAnimationFrame(layoutPitch));
 }
 init();

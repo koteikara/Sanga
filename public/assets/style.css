@@ -491,6 +491,22 @@
   .logo-fagiano .meta::after{background-position:-448px -256px;}
   .logo-machida .meta::after{background-position:0px -128px;}
   .logo-fctokyo .meta::after{background-position:-64px -576px;}
+  /* ACL teams and new opponents - emblem images to be integrated */
+  /* Individual logo support for FC Maruyasu and ACL teams */
+  .logo-fc-maruyasu .meta::after,
+  .logo-ota-hanasichien .meta::after,
+  .logo-rajaburi .meta::after,
+  .logo-newcastle-jets .meta::after,
+  .logo-hoang-anh-hanoi .meta::after,
+  .logo-pohang-steelers .meta::after,
+  .logo-buriram-united .meta::after,
+  .logo-jeonbuk-hyundai .meta::after,
+  .logo-port-fc .meta::after {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: rgba(200,200,200,0.2);
+  }
 
 
   /* opponent logo size adjustment */
@@ -518,6 +534,31 @@
   .logo-cerezo .meta::after{background-position:-205px -205px;}
   .logo-verdy .meta::after{background-position:-358px -51px;}
   .logo-jef .meta::after{background-position:-205px -51px;}
+
+  /* Layout variants for new teams (ACL and FC Maruyasu) */
+  .phone.layout-3 .logo-fc-maruyasu .meta::after,
+  .phone.layout-3 .logo-ota-hanasichien .meta::after,
+  .phone.layout-3 .logo-rajaburi .meta::after,
+  .phone.layout-3 .logo-newcastle-jets .meta::after,
+  .phone.layout-3 .logo-hoang-anh-hanoi .meta::after,
+  .phone.layout-3 .logo-pohang-steelers .meta::after,
+  .phone.layout-3 .logo-buriram-united .meta::after,
+  .phone.layout-3 .logo-jeonbuk-hyundai .meta::after,
+  .phone.layout-3 .logo-port-fc .meta::after {
+    background-size: contain;
+  }
+
+  .phone.layout-4 .logo-fc-maruyasu .meta::after,
+  .phone.layout-4 .logo-ota-hanasichien .meta::after,
+  .phone.layout-4 .logo-rajaburi .meta::after,
+  .phone.layout-4 .logo-newcastle-jets .meta::after,
+  .phone.layout-4 .logo-hoang-anh-hanoi .meta::after,
+  .phone.layout-4 .logo-pohang-steelers .meta::after,
+  .phone.layout-4 .logo-buriram-united .meta::after,
+  .phone.layout-4 .logo-jeonbuk-hyundai .meta::after,
+  .phone.layout-4 .logo-port-fc .meta::after {
+    background-size: contain;
+  }
 
 
   /* year section heading redesign */
@@ -2243,4 +2284,60 @@
   .cup-match .date.tentative-date .sub.sat,
   .cup-match .date.tentative-date .sub.sun{
     background:#fff;
+  }
+
+  /* Individual emblem images for new opponents */
+  .logo-fc-maruyasu .meta::after {
+    background-image: url('logos/fc-maruyasu.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-ota-hanasichien .meta::after {
+    background-image: url('logos/ota-hanasichien.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-rajaburi .meta::after {
+    background-image: url('logos/rajaburi.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-newcastle-jets .meta::after {
+    background-image: url('logos/newcastle-jets.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-hoang-anh-hanoi .meta::after {
+    background-image: url('logos/hoang-anh-hanoi.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-pohang-steelers .meta::after {
+    background-image: url('logos/pohang-steelers.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-buriram-united .meta::after {
+    background-image: url('logos/buriram-united.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-jeonbuk-hyundai .meta::after {
+    background-image: url('logos/jeonbuk-hyundai.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-port-fc .meta::after {
+    background-image: url('logos/port-fc.webp');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
   }
