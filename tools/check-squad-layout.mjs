@@ -29,7 +29,7 @@ try {
 const BASE_URL = process.env.BASE_URL || "http://127.0.0.1:8123/squad.html";
 const FORMS = process.env.FORMS ? process.env.FORMS.split(",") : null;
 const WIDTHS = [320, 375, 420];
-const BENCH_COUNTS = [0, 5, 9];
+const BENCH_COUNTS = [0, 5, 9, 12];
 /** カード高さの下限（squad-builder.js の CARD_H_MIN と合わせる） */
 const CARD_H_MIN = 70;
 
@@ -46,16 +46,16 @@ for (const width of WIDTHS) {
 
   for (const count of BENCH_COUNTS) {
     await page.evaluate((n) => {
-      const slots = [...document.querySelectorAll("#bench-editor .bench-edit-slot")];
-      slots.forEach((slot, i) => {
-        slot.click();
-        if (i < n) {
-          const item = document.querySelector("#picker-list .picker-item:not(.is-used)");
-          if (item) item.click();
-        } else {
-          document.querySelector("#picker-clear").click();
-        }
-      });
+      // いったん控えを空にしてから、n人ぶん追加する
+      let guard = 0;
+      while (document.querySelector(".bench-edit-remove") && guard++ < 50) {
+        document.querySelector(".bench-edit-remove").click();
+      }
+      for (let i = 0; i < n; i++) {
+        document.querySelector(".bench-edit-add").click();
+        const item = document.querySelector("#picker-list .picker-item:not(.is-used)");
+        if (item) item.click();
+      }
     }, count);
     await page.waitForTimeout(150);
 

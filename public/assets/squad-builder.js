@@ -3,7 +3,7 @@
 // フォーメーション選択・選手選択・位置の微調整・画像化導線・保存呼び出しを実装する。
 // design-mockup.html 自体は変更していない。
 // 静的importにはHTML側のバージョンクエリが効かないため、更新時はここのクエリも上げる。
-import { FORMATIONS, BENCH_SIZE } from "./squad-formations.js?v=20260820-6";
+import { FORMATIONS } from "./squad-formations.js?v=20260820-6";
 import { SAMPLE_PLAYERS } from "./squad-sample-players.js";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
 // public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
@@ -19,7 +19,9 @@ const STORAGE_INDEX_KEY = STORAGE_PREFIX + "index";
 const state = {
   formationKey: "4-4-2",
   slots: cloneSlots(FORMATIONS["4-4-2"].slots), // 各要素に playerNumber を持たせる
-  bench: new Array(BENCH_SIZE).fill(null),
+  // 登録メンバー（背番号の配列）。人数は自由。ピッチに置いていない人が控えになる。
+  // 「登録」と「配置」を分けることで、控えの枠数に縛られずに扱える。
+  squad: [],
   title: "予想スタメン",
   matchInfo: "", // 年間スケジュールから選んだ試合の表示文。未選択なら空
   poster: "", // 投稿者名。誰の予想かを画像に残すために使う
@@ -68,10 +70,31 @@ function findPlayer(number) {
 }
 
 function isAssigned(number) {
-  return (
-    state.slots.some((s) => s.playerNumber === number) ||
-    state.bench.some((n) => n === number)
-  );
+  return state.squad.includes(number);
+}
+
+/** ピッチに置かれている背番号 */
+function placedNumbers() {
+  return state.slots.map((s) => s.playerNumber).filter(Boolean);
+}
+
+/** 控え（登録メンバーのうち、ピッチに置かれていない人）。登録順に並ぶ */
+function getBench() {
+  const placed = placedNumbers();
+  return state.squad.filter((n) => !placed.includes(n));
+}
+
+/** 登録メンバーに加える（すでにいる場合は何もしない） */
+function addToSquad(number) {
+  if (!state.squad.includes(number)) state.squad.push(number);
+}
+
+/** 登録メンバーから外す。ピッチに置かれていれば、その枠も空ける */
+function removeFromSquad(number) {
+  state.squad = state.squad.filter((n) => n !== number);
+  state.slots.forEach((slot) => {
+    if (slot.playerNumber === number) slot.playerNumber = null;
+  });
 }
 
 /* ------------------------------------------------------------------
@@ -84,6 +107,7 @@ const canvas = $("#canvas");
 const pitchEl = $("#pitch");
 const benchEl = $("#bench");
 const benchEditorEl = $("#bench-editor");
+const benchCountEl = $("#bench-count");
 const formationGrid = $("#formation-grid");
 const subtitleEl = $("#sq-subtitle");
 const titleTextEl = $("#sq-title-text");
@@ -320,7 +344,7 @@ let benchScale = 1;
 
 /** 画像に載るベンチ人数から、基準の縮小率を決める */
 function baseBenchScale() {
-  const count = state.bench.filter(Boolean).length;
+  const count = getBench().length;
   if (count <= 6) return 1;
   if (count <= 9) return 0.86;
   return 0.74;
@@ -330,11 +354,11 @@ function applyBenchScale() {
   benchEl.style.setProperty("--bench-scale", String(benchScale));
 }
 
-/** キャンバス内のベンチ（表示専用）。選手が入っている枠だけを出す */
+/** キャンバス内のベンチ（表示専用） */
 function renderBenchDisplay() {
   benchEl.innerHTML = "";
-  state.bench.forEach((number) => {
-    const player = number ? findPlayer(number) : null;
+  getBench().forEach((number) => {
+    const player = findPlayer(number);
     if (!player) return;
     const chip = document.createElement("span");
     chip.className = "bench-slot";
@@ -348,21 +372,38 @@ function renderBenchDisplay() {
 function renderBenchEditor() {
   if (!benchEditorEl) return;
   benchEditorEl.innerHTML = "";
-  state.bench.forEach((number, index) => {
-    const player = number ? findPlayer(number) : null;
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "bench-edit-slot" + (player ? "" : " is-empty");
-    btn.innerHTML = player
-      ? `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`
-      : `<span class="bench-edit-empty">控え${index + 1}を選ぶ</span>`;
-    btn.setAttribute(
-      "aria-label",
-      player ? `控え${index + 1}：${player.nameEn} を変更` : `控え${index + 1} に選手を選ぶ`
-    );
-    btn.addEventListener("click", () => openPicker({ kind: "bench", index }));
-    benchEditorEl.appendChild(btn);
+  const bench = getBench();
+
+  bench.forEach((number) => {
+    const player = findPlayer(number);
+    if (!player) return;
+    const item = document.createElement("span");
+    item.className = "bench-edit-slot";
+    item.innerHTML = `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`;
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "bench-edit-remove";
+    remove.textContent = "×";
+    remove.setAttribute("aria-label", `${player.nameEn} を控えから外す`);
+    remove.addEventListener("click", () => {
+      removeFromSquad(number);
+      renderAll();
+    });
+    item.appendChild(remove);
+    benchEditorEl.appendChild(item);
   });
+
+  const add = document.createElement("button");
+  add.type = "button";
+  add.className = "bench-edit-add";
+  add.textContent = "＋ 控えを追加";
+  add.addEventListener("click", () => openPicker({ kind: "bench" }));
+  benchEditorEl.appendChild(add);
+
+  benchCountEl.textContent = bench.length
+    ? `控え ${bench.length}人`
+    : "控えはまだ登録されていません";
 }
 
 function renderBench() {
@@ -623,7 +664,7 @@ function openPicker(target) {
   pickerTitle.textContent =
     target.kind === "slot"
       ? `${state.slots[target.index].posLabel} に選手を選ぶ`
-      : `控え ${target.index + 1} に選手を選ぶ`;
+      : "控えに追加する選手を選ぶ";
   pickerBackdrop.classList.add("open");
   pickerClose.focus();
 }
@@ -682,17 +723,22 @@ function renderPickerList() {
 function assignPlayer(number) {
   if (!pickerTarget) return;
   if (pickerTarget.kind === "slot") {
+    // すでに他の枠にいる場合は、そちらを空けてから置く（重複を作らない）
+    state.slots.forEach((slot) => {
+      if (slot.playerNumber === number) slot.playerNumber = null;
+    });
     state.slots[pickerTarget.index].playerNumber = number;
-  } else {
-    state.bench[pickerTarget.index] = number;
   }
+  addToSquad(number);
   renderAll();
 }
 
 pickerClear.addEventListener("click", () => {
   if (!pickerTarget) return;
-  if (pickerTarget.kind === "slot") state.slots[pickerTarget.index].playerNumber = null;
-  else state.bench[pickerTarget.index] = null;
+  if (pickerTarget.kind === "slot") {
+    const number = state.slots[pickerTarget.index].playerNumber;
+    if (number) removeFromSquad(number);
+  }
   closePicker();
   renderAll();
 });
@@ -783,7 +829,7 @@ function saveSquad(name) {
     slots: state.slots.map(({ id, posGroup, posLabel, x, y, playerNumber }) => ({
       id, posGroup, posLabel, x, y, playerNumber,
     })),
-    bench: state.bench,
+    squad: state.squad,
     title: state.title,
     matchInfo: state.matchInfo,
     poster: state.poster,
@@ -806,7 +852,22 @@ function loadSquad(name) {
   const data = JSON.parse(raw);
   state.formationKey = data.formationKey;
   state.slots = data.slots;
-  state.bench = data.bench;
+  // 旧形式（bench が9枠固定の配列）も読めるようにする。書き戻しは新形式のみ。
+  // 背番号は文字列で扱う（players.json が文字列のため）。古い保存データに
+  // 数値が入っていても照合できるようにそろえる。
+  state.squad = (
+    Array.isArray(data.squad)
+      ? data.squad
+      : [
+          ...data.slots.map((slot) => slot.playerNumber),
+          ...(data.bench || []),
+        ]
+  )
+    .filter(Boolean)
+    .map(String);
+  state.slots.forEach((slot) => {
+    if (slot.playerNumber) slot.playerNumber = String(slot.playerNumber);
+  });
   state.title = data.title;
   state.matchInfo = data.matchInfo;
   state.poster = data.poster || "";
@@ -936,12 +997,5 @@ async function init() {
     }).observe(pitchEl);
   }
   document.fonts && document.fonts.ready.then(() => requestAnimationFrame(layoutPitch));
-
-  // 画像生成の崩れを切り分けるための診断モード。?diag=1 のときだけ読み込む。
-  // 原因が特定できたら、この分岐と squad-export-diag.js は削除する。
-  if (new URLSearchParams(location.search).get("diag") === "1") {
-    const { setupExportDiag } = await import("./squad-export-diag.js?v=20260820-9");
-    setupExportDiag(canvas);
-  }
 }
 init();

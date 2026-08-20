@@ -224,6 +224,30 @@ public/assets/vendor/modern-screenshot/    画像生成ライブラリ
 - 投稿者名の表示
 - `public/squad.html` としての公開
 
+## 画像化するときの制約（iOS Safari）
+
+画像生成は `modern-screenshot` がDOMを複製してSVGの `foreignObject` に描き込む方式のため、
+一部のCSSがブラウザによって正しく再現されない。
+
+**キャンバス（`#canvas`）の中では `box-shadow` と `filter: drop-shadow` を使わない。**
+
+iPhone Safari で画像化すると、これらの影が大きくずれて描画され、
+「カードの右側に大きな影が出る」「ポジション表示の影が右に寄る」という崩れになる。
+実機での切り分け（2026-08-20）で、影を消した場合だけ崩れないことを確認した。
+単位の問題ではない（`cqw` を px に変えても再現した）。
+
+そのため以下のようにしている。
+
+- `.card` / `.flag` / `.pos-pill` の影は付けない。
+  もともと暗いピッチの上に置かれており、消しても見え方はほとんど変わらない
+  （Chromiumでの画素差分 0.00%）
+- `.pitch-vignette` は `inset` の `box-shadow` をやめ、
+  同じ見え方になる `linear-gradient` 2枚で描いている
+
+影に相当する表現が必要な場合は、`background` のグラデーションなど、
+影以外の方法で描くこと。ピッチ外枠の `box-shadow`（スタイルごとに定義）は
+現状のまま残しているが、崩れが再発した場合はここも疑う。
+
 ## 次の作業
 
 1. GitHub Pagesと実機での操作確認を行う（`docs/ai/BROWSER_CHECKLIST.md` に沿って目視確認）
