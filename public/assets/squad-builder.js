@@ -5,6 +5,8 @@
 // 静的importにはHTML側のバージョンクエリが効かないため、更新時はここのクエリも上げる。
 import { FORMATIONS } from "./squad-formations.js?v=20260820-6";
 import { SAMPLE_PLAYERS } from "./squad-sample-players.js";
+// 背番号タイル画像の中身のずれ（tools/measure-tile-offsets.mjs で生成）
+import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=20260821-1";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
 // public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
 // 「画像化（PNG出力）」セクションのコメントを参照。
@@ -188,6 +190,7 @@ function cardMarkup(player, posLabelFallback) {
       <div class="card-photo">
         <div class="tile"><b>${escapeHtml(player.number)}</b><span>${escapeHtml(player.nameEn)}</span></div>
         <img class="tile-img" src="${escapeHtml(tileSrc)}" alt=""
+             style="--tile-dx:${tileOffsetX(player)}%"
              onerror="this.closest('.card-photo').classList.add('no-image')">
       </div>
       <div class="card-name">
@@ -196,6 +199,17 @@ function cardMarkup(player, posLabelFallback) {
         <div class="flag flag-${escapeHtml(player.nationality || "jp")}"></div>
       </div>
     </div></div>`;
+}
+
+/**
+ * 背番号タイル画像の中身を中央へ寄せる量（画像幅に対する%）。
+ * 画像ごとに中身が最大±5%ほど左右へずれており、円だけで見せる
+ * シンプルスタイルではそのまま「中央でない」と見えるため補正する。
+ * 盾型カードのスタイルではCSS側でこの値を使わない。
+ */
+function tileOffsetX(player) {
+  const dx = TILE_OFFSETS[player.number];
+  return typeof dx === "number" ? dx : 0;
 }
 
 /** 背番号タイル画像の場所。公開ページへ移す際はここだけ変える */

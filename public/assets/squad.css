@@ -303,7 +303,9 @@ body{
    構成要素（見出し・ピッチ・カード・ベンチ）は他のスタイルと同じで、
    背景・枠・光沢・盾型などの装飾だけを外している。 */
 [data-style="simple"]{
-  background:#f7f6f8;
+  /* ピッチ（濃い緑）から浮かないよう、白ではなく緑に寄せた淡い地色にする。
+     上をわずかに明るくして、平坦になりすぎないようにしている。 */
+  background:linear-gradient(180deg,#e7ede4 0%,#d7e0d3 58%,#c6d2c2 100%);
   color:#1b1420;
   box-shadow:0 8px 24px rgba(0,0,0,.35);
 }
@@ -315,30 +317,30 @@ body{
 [data-style="simple"] #sq-title-text{
   font-size:5.2cqw;font-weight:800;letter-spacing:.08em;color:#1b1420;
 }
-[data-style="simple"] .sq-subtitle{color:#4d4457;font-weight:600;letter-spacing:.06em}
+[data-style="simple"] .sq-subtitle{color:#414a3f;font-weight:600;letter-spacing:.06em}
 [data-style="simple"] .sq-rule{
-  margin-top:1.8cqw;width:20cqw;height:1px;background:#c9c2d0;
+  margin-top:1.8cqw;width:20cqw;height:1px;background:#b6c0b4;
 }
 [data-style="simple"] .pitch{border-radius:4px;box-shadow:none}
 
 /* 下部帯。地色が明るいので文字は暗い色に寄せる */
 [data-style="simple"] .sq-footer{
-  background:#fff;border-top:1px solid #ddd7e2;color:#1b1420;
+  background:#eff3ec;border-top:1px solid #b9c5b6;color:#1b1420;
 }
-[data-style="simple"] .meta-row dt{color:#6b6175}
+[data-style="simple"] .meta-row dt{color:#5b6459}
 [data-style="simple"] .meta-row dd{color:#1b1420}
 [data-style="simple"] .formation-badge .num{color:#1b1420}
 [data-style="simple"] .formation-badge .fig,
 [data-style="simple"] .formation-badge .fig::before,
-[data-style="simple"] .formation-badge .fig::after{border-color:#8b8394}
+[data-style="simple"] .formation-badge .fig::after{border-color:#7e887c}
 [data-style="simple"] .bench-chip,
 [data-style="simple"] .bench-slot{
-  background:#fff;border:1px solid #c9c2d0;color:#1b1420;
+  background:#fff;border:1px solid #c2ccc0;color:#1b1420;
 }
-[data-style="simple"] .bench-slot.is-empty{color:#7b7286}
-[data-style="simple"] .bench-chip b,[data-style="simple"] .bench-slot b{color:#6b6175}
-[data-style="simple"] .poster-name{color:#4d4457}
-[data-style="simple"] .disclaimer{color:#7b7286;border-top-color:#ddd7e2}
+[data-style="simple"] .bench-slot.is-empty{color:#6b7469}
+[data-style="simple"] .bench-chip b,[data-style="simple"] .bench-slot b{color:#5b6459}
+[data-style="simple"] .poster-name{color:#414a3f}
+[data-style="simple"] .disclaimer{color:#6b7469;border-top-color:#ccd4ca}
 
 /* ---- シンプルの選手カード ----
    盾型・金枠・光沢はすべて外し、背番号画像を入れた円だけにする。
@@ -369,6 +371,8 @@ body{
   /* 直径の80%に収め、上へ2%寄せる。タイル画像は下寄りにローマ字名が
      入っているため、そのまま中央に置くと長い名前が円の縁に迫る。 */
   border-radius:0;inset:auto;left:10%;top:8%;width:80%;height:80%;
+  /* 画像ごとの中身のずれを打ち消す（--tile-dx は squad-builder.js が付ける） */
+  translate:calc(var(--tile-dx, 0) * 0.8%) 0;
 }
 [data-style="simple"] .tile{border-radius:50%;background:#750069;box-shadow:none}
 [data-style="simple"] .card.mascot .tile{background:#8b1a23}
@@ -377,10 +381,19 @@ body{
 [data-style="simple"] .card-name{
   top:100%;left:-25%;right:-25%;padding:2.2cqw 0 0;overflow:visible;
 }
-/* 名前はピッチ（暗い緑）の上に出るため白字にする */
+/* 名前はピッチ（暗い緑）の上に出るため白字にする。
+   芝の白線と重なると白字が読めなくなるが、影は iOS Safari の画像化で
+   崩れるため使えない（docs/squad-builder.md「影を使わない理由」）。
+   代わりに、文字の背後だけを暗くするグラデーションの帯を敷く。
+   帯の左右は透明へ抜くので、四角い箱には見えない。 */
 [data-style="simple"] .name-ja{
   color:#fff;font-weight:700;margin-top:0;
-  text-shadow:0 .3cqw .8cqw rgba(0,0,0,.65);
+  padding:.6cqw 3cqw;
+  background:linear-gradient(90deg,
+    rgba(10,22,14,0) 0%,
+    rgba(10,22,14,.82) 14%,
+    rgba(10,22,14,.82) 86%,
+    rgba(10,22,14,0) 100%);
 }
 /* ポジション名は名前のさらに下。名前1行ぶんを空けて重なりを避ける */
 [data-style="simple"] .pos-pill{
