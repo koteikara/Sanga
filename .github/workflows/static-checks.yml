@@ -75,3 +75,6 @@ jobs:
 
           print('HTML asset references OK: ' + ', '.join(required_refs))
           PY
+
+  squad-checks:
+    uses: ./.github/workflows/squad-checks.yml

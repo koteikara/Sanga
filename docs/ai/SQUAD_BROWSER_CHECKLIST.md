@@ -4,7 +4,8 @@
 
 - [ ] スカッド用JavaScript3ファイルの `node --check` が成功する。
 - [ ] `node tools/validate-players.js` が成功し、39件と確認できる。
-- [ ] 実行可能なら `node tools/check-squad-layout.mjs` が成功する。
+- [ ] `node tools/validate-squad-contract.mjs` が成功する。
+- [ ] GitHub Actionsの「スカッド事前検証」が成功する（スタメン11人配置済み、3画面幅・控え4パターン・17フォーメーション・8スタイル）。
 - [ ] CSS/JS変更時に `public/squad.html` のバージョンクエリを更新した。
 
 ## 表示・操作
@@ -38,5 +39,7 @@
 - [ ] 状態やエラーが文字でも伝わる。
 - [ ] タップ対象がおおむね44pxある。
 - [ ] 200%拡大時にも操作できる。
+
+自動検証はChromium上の重なり・はみ出し・見切れを確認します。PNG生成結果、タッチ操作、iPhone Safari固有の描画は自動検証だけで保証しないため、変更内容に応じて実機で確認します。
 
 確認端末、ブラウザ、未確認項目、不具合、本番反映可否をPR本文または `docs/ai/WORKLOG.md` に記録します。

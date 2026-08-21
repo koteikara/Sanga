@@ -64,9 +64,10 @@ node --check public/assets/squad-builder.js
 node --check public/assets/squad-formations.js
 node --check public/assets/squad-sample-players.js
 node tools/validate-players.js
+node tools/validate-squad-contract.mjs
 ```
 
-実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。本番デプロイ前のスカッド検証をGitHub Actionsへ追加する作業は別PRで検討します。
+Playwrightを利用できる環境では `node tools/check-squad-layout.mjs` も実行します。GitHub Actionsでは、PR時と本番デプロイ前にスカッドの静的契約とChromiumレイアウトを自動検証し、失敗した場合は本番アップロードを開始しません。
 
 ## 本番反映
 

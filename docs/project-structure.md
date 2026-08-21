@@ -50,7 +50,7 @@
 | `pages.yml` | `public/` をGitHub Pagesへ配置 | `main` push、手動 |
 | `deploy-production.yml` | `public/` を本番へ配置 | `DEPLOY`確認付き手動 |
 
-Static Checksは現在、スカッド用JavaScriptの構文確認と `check-squad-layout.mjs` を自動実行していません。本番デプロイ前検証の強化は別PRで検討します。
+Static Checksと本番デプロイは、再利用可能な `squad-checks.yml` を通して、スカッド用JavaScript構文、選手JSON、静的契約、Chromiumレイアウトを共通検証します。レイアウト検証は幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルを対象にします。
 
 ## 現在の検証
 
@@ -64,10 +64,16 @@ node tools/validate-app-contract.js
 node --check public/assets/squad-builder.js
 node --check public/assets/squad-formations.js
 node --check public/assets/squad-sample-players.js
-node --check public/assets/squad-tile-offsets.js
+node tools/validate-squad-contract.mjs
 ```
 
-実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。UI変更は対象別ブラウザチェックリストで確認します。
+Playwrightを利用できる環境では、ローカルサーバーを起動して次も実行します。
+
+```bash
+node tools/check-squad-layout.mjs
+```
+
+GitHub Actionsでは `node tools/check-squad-layout.mjs` まで自動実行します。iPhone Safariを含むUI確認は対象別ブラウザチェックリストで確認します。
 
 ## 特に注意する範囲
 
@@ -80,5 +86,5 @@ node --check public/assets/squad-tile-offsets.js
 
 ## 次の構成改善
 
-1. 本番デプロイ前のスカッド検証をGitHub Actionsへ追加する。
-2. 公開中のロゴと背番号加工物について、利用許諾の確認または独自表現への差し替え方針を決める。
+1. 公開中のロゴと背番号加工物について、利用許諾の確認または独自表現への差し替え方針を決める。
+2. スカッド検証の実行時間と失敗傾向を運用後に確認し、必要なら対象の分割やキャッシュを検討する。

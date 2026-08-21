@@ -13,16 +13,18 @@
 
 ## 予想スカッド変更時の追加確認
 
-`public/squad.html`、スカッド用CSS/JavaScript、`players.json` を変更した場合は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に従います。現在の本番デプロイワークフローはスカッド用JavaScriptとレイアウトを自動検証しないため、自動化を別PRで検討するまでは次を手動実行します。
+`public/squad.html`、スカッド用CSS/JavaScript、`players.json` を変更した場合は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に従います。PR時と本番デプロイ前は `.github/workflows/squad-checks.yml` が次を自動実行します。
 
 ```bash
 node --check public/assets/squad-builder.js
 node --check public/assets/squad-formations.js
 node --check public/assets/squad-sample-players.js
 node tools/validate-players.js
+node tools/validate-squad-contract.mjs
+node tools/check-squad-layout.mjs
 ```
 
-実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。
+Chromiumレイアウトはスタメン11人を配置した状態で、幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルを検証します。いずれかが失敗した場合、本番デプロイはFTPアップロードへ進みません。iPhone SafariのPNG生成やタッチ操作は自動検証の対象外なので、変更内容に応じて実機確認します。
 
 ## 本番反映前の確認手順
 
@@ -192,14 +194,9 @@ GitHubのリポジトリ画面で、次のRepository Secretsを登録します�
 
 ### ワークフロー内の検証
 
-アップロード前に、ワークフロー内で次の検証を実行します。
+ワークフローは最初に、実行元が `main` であり、確認入力が `DEPLOY` であることを確認します。続いて再利用可能な `squad-checks.yml` でスカッドの構文、データ、静的契約、Chromiumレイアウトを検証し、最後に日程JSONと年間スケジュール用JavaScriptを検証します。
 
-```bash
-node tools/validate-matches.js
-node --check public/assets/app.js
-```
-
-どちらかが失敗した場合は、FTPアップロードのステップに進みません。
+いずれかの確認が失敗した場合は、FTPアップロードのジョブを開始しません。
 
 ### アップロード範囲
 
