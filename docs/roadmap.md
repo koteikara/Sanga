@@ -74,7 +74,7 @@
 
 | 項目 | 状態 | 関連ドキュメント | メモ |
 | --- | --- | --- | --- |
-| 予想スカッド作成ページ | 公開構成・継続改善 | `docs/squad-builder.md` / `docs/players-data-schema.md` / `docs/ai/SQUAD_BROWSER_CHECKLIST.md` | `public/squad.html` として実装済み。39選手、17フォーメーション、7スタイル、PNG生成、LocalStorage保存に対応。次は本番デプロイ前検証の自動化を別PRで検討する。 |
+| 予想スカッド作成ページ | 公開構成・継続改善 | `docs/squad-builder.md` / `docs/players-data-schema.md` / `docs/ai/SQUAD_BROWSER_CHECKLIST.md` | `public/squad.html` として実装済み。39選手、17フォーメーション、8スタイル、PNG生成、LocalStorage保存に対応。次は本番デプロイ前検証の自動化を別PRで検討する。 |
 
 ## 中期候補
 
