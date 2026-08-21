@@ -190,7 +190,7 @@ function cardMarkup(player, posLabelFallback) {
       <div class="card-photo">
         <div class="tile"><b>${escapeHtml(player.number)}</b><span>${escapeHtml(player.nameEn)}</span></div>
         <img class="tile-img" src="${escapeHtml(tileSrc)}" alt=""
-             style="--tile-dx:${tileOffsetX(player)}%"
+             style="--tile-dx:${tileOffsetX(player)}"
              onerror="this.closest('.card-photo').classList.add('no-image')">
       </div>
       <div class="card-name">
@@ -202,7 +202,8 @@ function cardMarkup(player, posLabelFallback) {
 }
 
 /**
- * 背番号タイル画像の中身を中央へ寄せる量（画像幅に対する%）。
+ * 背番号タイル画像の中身を中央へ寄せる量。画像幅に対する%の「数値だけ」を返す。
+ * CSS側で calc(var(--tile-dx) * 1%) として使うため、単位は付けない。
  * 画像ごとに中身が最大±5%ほど左右へずれており、円だけで見せる
  * シンプルスタイルではそのまま「中央でない」と見えるため補正する。
  * 盾型カードのスタイルではCSS側でこの値を使わない。

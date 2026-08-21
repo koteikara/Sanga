@@ -69,7 +69,7 @@ const offsets = await page.evaluate(async (nums) => {
     if (x1 < 0) continue;
     // 画像幅に対する比率で、中身の中心を画像の中心へ寄せる量
     const dx = (0.5 - (x0 + x1) / 2 / cv.width) * 100;
-    if (Math.abs(dx) >= 0.5) out[n] = Math.round(dx * 10) / 10;
+    out[n] = Math.round(dx * 10) / 10;
   }
   return out;
 }, numbers);
