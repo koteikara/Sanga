@@ -11,6 +11,19 @@
 * `.env`、秘密鍵、サービスアカウントJSONなどの機密ファイルは、リポジトリにも本番アップロード対象にも含めません。
 * 本番反映前に、直前の本番ファイルを必ずバックアップします。
 
+## 予想スカッド変更時の追加確認
+
+`public/squad.html`、スカッド用CSS/JavaScript、`players.json` を変更した場合は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に従います。現在の本番デプロイワークフローはスカッド用JavaScriptとレイアウトを自動検証しないため、自動化を別PRで検討するまでは次を手動実行します。
+
+```bash
+node --check public/assets/squad-builder.js
+node --check public/assets/squad-formations.js
+node --check public/assets/squad-sample-players.js
+node tools/validate-players.js
+```
+
+実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。
+
 ## 本番反映前の確認手順
 
 ### 1. ローカル検証
@@ -26,7 +39,7 @@ node --check public/assets/app.js
 確認観点:
 
 * `node tools/validate-matches.js` が成功する。
-* `public/data/matches.json` の日程データが49件である。
+* `public/data/matches.json` の日程データが57件である。
 * ID、日付形式、日付範囲、候補日の昇順、注記番号、必須項目に問題がない。
 * `node tools/export-matches-review.js` で確認用一覧を出力できる。
 * `node --check public/assets/app.js` でJavaScript構文エラーが出ない。

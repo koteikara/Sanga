@@ -4,7 +4,7 @@
 
 京都サンガF.C.の予想スカッド（予想スタメン）を利用者が作成し、SNS共有用の画像として保存できるページの設計を整理します。
 
-年間スケジュールページ（`public/sanga202627season.html`）とは独立した別ページとして作ります。既存ページのHTML、CSS、JavaScript、公開JSONは変更しません。
+年間スケジュールページ（`public/sanga202627season.html`）とは独立した公開済みページです。既存ページのHTML、CSS、JavaScript、公開JSONは変更しません。
 
 `public/squad.html` として公開しています。`experiments/squad-builder/` には、デザイン見本と検証用のプロトタイプを残しています。
 
@@ -74,7 +74,7 @@
 
 プリセットに加えて、枠にとらわれず自由に配置できるモードを用意します。
 
-プリセットは16種類です。4バック（4-4-2、4-4-1-1、4-2-3-1、4-3-3、4-1-4-1、4-3-1-2、4-1-2-1-2、4-2-2-2、4-5-1）、3バック（3-4-2-1、3-4-3、3-5-2、3-6-1）、5バック（5-3-2、5-4-1、5-2-3）を用意しています。
+プリセットは16種類に自由配置を加えた17種類です。4バック（4-4-2、4-4-1-1、4-2-3-1、4-3-3、4-1-4-1、4-3-1-2、4-1-2-1-2、4-2-2-2、4-5-1）、3バック（3-4-2-1、3-4-3、3-5-2、3-6-1）、5バック（5-3-2、5-4-1、5-2-3）を用意しています。
 
 座標は `public/assets/squad-formations.js` に持ちます。列を作る補助関数で組み立てるため、追加や調整は数値の変更だけで済みます。
 
@@ -218,7 +218,7 @@ public/assets/vendor/modern-screenshot/    画像生成ライブラリ
 ## 実装済み
 
 - 選手データのCSVと生成・検証ツール（`tools/generate-players-from-csv.js` / `tools/validate-players.js`）
-- 背番号タイルの切り出し（`tools/crop-player-numbers.js`、38件を `public/assets/players/` へ）
+- 背番号タイルの切り出し（`tools/crop-player-numbers.js` と `tools/compose-player-number.js`、39件を `public/assets/players/` へ）
 - 操作プロトタイプ（フォーメーション選択、選手選択、位置の微調整、保存と呼び出し）
 - `modern-screenshot` による9:16のPNG生成
 - 投稿者名の表示
@@ -250,9 +250,9 @@ iPhone Safari で画像化すると、これらの影が大きくずれて描画
 
 ## 次の作業
 
-1. GitHub Pagesと実機での操作確認を行う（`docs/ai/BROWSER_CHECKLIST.md` に沿って目視確認）
+1. GitHub Pagesと実機での操作確認を行う（`docs/ai/SQUAD_BROWSER_CHECKLIST.md` に沿って目視確認）
 2. 同じ選手を複数の位置に置けるかどうかを決める（現在は重複して置ける）
-3. 確認後、`docs/deploy-policy.md` に沿って本番サーバーへ手動反映する
+3. 本番デプロイ前のスカッド検証をGitHub Actionsへ組み込む変更を、別PRで検討する
 
 ### 選手データについて
 
