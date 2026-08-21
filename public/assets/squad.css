@@ -303,10 +303,10 @@ body{
    構成要素（見出し・ピッチ・カード・ベンチ）は他のスタイルと同じで、
    背景・枠・光沢・盾型などの装飾だけを外している。 */
 [data-style="simple"]{
-  /* ピッチ（濃い緑）から浮かないよう、白ではなく緑に寄せた淡い地色にする。
-     上をわずかに明るくして、平坦になりすぎないようにしている。 */
-  background:linear-gradient(180deg,#e7ede4 0%,#d7e0d3 58%,#c6d2c2 100%);
-  color:#1b1420;
+  /* ピッチ外は暗く落とし、いちばん明るいピッチへ視線が向くようにする。
+     緑をわずかに含んだ暗色にして、ピッチと地続きに見せる。 */
+  background:linear-gradient(180deg,#171c17 0%,#11150f 58%,#0b0e0a 100%);
+  color:#eef1ec;
   box-shadow:0 8px 24px rgba(0,0,0,.35);
 }
 /* 斜めストライプの装飾を止める */
@@ -315,32 +315,32 @@ body{
 /* 見出しは画像を使わず、文字だけで組む（is-simple の画像は用意しない） */
 [data-style="simple"] .sq-header{padding:3.4cqw 5cqw 2cqw}
 [data-style="simple"] #sq-title-text{
-  font-size:5.2cqw;font-weight:800;letter-spacing:.08em;color:#1b1420;
+  font-size:5.2cqw;font-weight:800;letter-spacing:.08em;color:#f2f5f1;
 }
-[data-style="simple"] .sq-subtitle{color:#414a3f;font-weight:600;letter-spacing:.06em}
+[data-style="simple"] .sq-subtitle{color:#b7c1b4;font-weight:600;letter-spacing:.06em}
 [data-style="simple"] .sq-rule{
-  margin-top:1.8cqw;width:20cqw;height:1px;background:#b6c0b4;
+  margin-top:1.8cqw;width:20cqw;height:1px;background:#3c463a;
 }
 [data-style="simple"] .pitch{border-radius:4px;box-shadow:none}
 
 /* 下部帯。地色が明るいので文字は暗い色に寄せる */
 [data-style="simple"] .sq-footer{
-  background:#eff3ec;border-top:1px solid #b9c5b6;color:#1b1420;
+  background:#12160f;border-top:1px solid #313a2f;color:#eef1ec;
 }
-[data-style="simple"] .meta-row dt{color:#5b6459}
-[data-style="simple"] .meta-row dd{color:#1b1420}
-[data-style="simple"] .formation-badge .num{color:#1b1420}
+[data-style="simple"] .meta-row dt{color:#a9b3a6}
+[data-style="simple"] .meta-row dd{color:#f2f5f1}
+[data-style="simple"] .formation-badge .num{color:#f2f5f1}
 [data-style="simple"] .formation-badge .fig,
 [data-style="simple"] .formation-badge .fig::before,
-[data-style="simple"] .formation-badge .fig::after{border-color:#7e887c}
+[data-style="simple"] .formation-badge .fig::after{border-color:#8a9487}
 [data-style="simple"] .bench-chip,
 [data-style="simple"] .bench-slot{
-  background:#fff;border:1px solid #c2ccc0;color:#1b1420;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);color:#eef1ec;
 }
-[data-style="simple"] .bench-slot.is-empty{color:#6b7469}
-[data-style="simple"] .bench-chip b,[data-style="simple"] .bench-slot b{color:#5b6459}
-[data-style="simple"] .poster-name{color:#414a3f}
-[data-style="simple"] .disclaimer{color:#6b7469;border-top-color:#ccd4ca}
+[data-style="simple"] .bench-slot.is-empty{color:#9aa497}
+[data-style="simple"] .bench-chip b,[data-style="simple"] .bench-slot b{color:#a9b3a6}
+[data-style="simple"] .poster-name{color:#b7c1b4}
+[data-style="simple"] .disclaimer{color:#8f9a8c;border-top-color:rgba(255,255,255,.14)}
 
 /* ---- シンプルの選手カード ----
    盾型・金枠・光沢はすべて外し、背番号画像を入れた円だけにする。
