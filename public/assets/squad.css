@@ -368,13 +368,15 @@ body{
   top:0;left:0;right:0;height:100%;border-radius:50%;overflow:hidden;
 }
 [data-style="simple"] .tile-img{
-  /* 直径の80%に収め、上へ2%寄せる。タイル画像は下寄りにローマ字名が
-     入っているため、そのまま中央に置くと長い名前が円の縁に迫る。 */
-  border-radius:0;inset:auto;left:10%;top:8%;width:80%;height:80%;
-  /* 画像ごとの中身のずれを打ち消す（--tile-dx は squad-builder.js が付ける）。
-     translate の % は画像自身の幅が基準なので、画像幅に対する補正量を
-     そのまま使う。カード幅に換算し直してはいけない。 */
-  transform:translateX(calc(var(--tile-dx, 0) * 1%));
+  /* 直径の80%に収め、円の中心へ置く */
+  border-radius:0;inset:auto;left:10%;top:10%;width:80%;height:80%;
+  /* 画像ごとの中身のずれを打ち消す（--tile-dx / --tile-dy は
+     squad-builder.js が付ける）。translate の % は画像自身の大きさが
+     基準なので、画像に対する補正量をそのまま使う。 */
+  transform:translate(
+    calc(var(--tile-dx, 0) * 1%),
+    calc(var(--tile-dy, 0) * 1%)
+  );
 }
 [data-style="simple"] .tile{border-radius:50%;background:#750069;box-shadow:none}
 [data-style="simple"] .card.mascot .tile{background:#8b1a23}

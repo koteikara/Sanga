@@ -1,9 +1,9 @@
 // 背番号タイル画像の「中身の中心」を測り、squad-tile-offsets.js を作り直す。
 //
 // タイル画像は背番号とローマ字名を焼き込んだ正方形で、画像ごとに中身が
-// わずかに左右へ寄っている（実測で最大 ±5%）。円だけで見せるシンプル
-// スタイルではこのずれがそのまま「中央でない」と見えるため、画像ごとの
-// 補正量を先に測って持たせる。
+// わずかに上下左右へ寄っている（実測で左右 最大±6%、上下 最大±3%）。
+// 円だけで見せるシンプルスタイルではこのずれがそのまま「中央でない」と
+// 見えるため、画像ごとの補正量を先に測って持たせる。
 //
 //   npx http-server public -p 8123 -s &
 //   node tools/measure-tile-offsets.mjs
@@ -55,7 +55,7 @@ const offsets = await page.evaluate(async (nums) => {
     const ctx = cv.getContext("2d");
     ctx.drawImage(img, 0, 0);
     const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
-    let x0 = Infinity, x1 = -1;
+    let x0 = Infinity, x1 = -1, y0 = Infinity, y1 = -1;
     for (let y = 0; y < cv.height; y++) {
       for (let x = 0; x < cv.width; x++) {
         const i = (y * cv.width + x) * 4;
@@ -63,13 +63,16 @@ const offsets = await page.evaluate(async (nums) => {
         if (diff > 60) {
           if (x < x0) x0 = x;
           if (x > x1) x1 = x;
+          if (y < y0) y0 = y;
+          if (y > y1) y1 = y;
         }
       }
     }
     if (x1 < 0) continue;
-    // 画像幅に対する比率で、中身の中心を画像の中心へ寄せる量
+    // 画像の幅・高さに対する比率で、中身の中心を画像の中心へ寄せる量
     const dx = (0.5 - (x0 + x1) / 2 / cv.width) * 100;
-    out[n] = Math.round(dx * 10) / 10;
+    const dy = (0.5 - (y0 + y1) / 2 / cv.height) * 100;
+    out[n] = { dx: Math.round(dx * 10) / 10, dy: Math.round(dy * 10) / 10 };
   }
   return out;
 }, numbers);
@@ -77,13 +80,13 @@ const offsets = await page.evaluate(async (nums) => {
 await browser.close();
 
 const body = Object.entries(offsets)
-  .map(([n, dx]) => `  ${JSON.stringify(n)}: ${dx},`)
+  .map(([n, o]) => `  ${JSON.stringify(n)}: { dx: ${o.dx}, dy: ${o.dy} },`)
   .join("\n");
 await writeFile(
   OUT,
   `// 自動生成: tools/measure-tile-offsets.mjs\n` +
-    `// 背番号タイル画像の中身が中央からずれている量（画像幅に対する%）。\n` +
-    `// 円だけで見せるシンプルスタイルで、この分だけ画像を横へ動かして中央に揃える。\n` +
+    `// 背番号タイル画像の中身が中央からずれている量（dx=画像幅比%、dy=画像高さ比%）。\n` +
+    `// 円だけで見せるシンプルスタイルで、この分だけ画像を動かして中央に揃える。\n` +
     `// 画像を差し替えたら再生成すること。\n` +
     `export const TILE_OFFSETS = {\n${body}\n};\n`
 );
