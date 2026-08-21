@@ -315,9 +315,16 @@ GitHub
 
 JSON更新時は、必要に応じて次を確認・更新します。
 
+年間スケジュール:
+
 * `public/assets/app.js` 内の `data/matches.json?v=...`
 * `public/sanga202627season.html` の `assets/app.js?v=...`
 * ページ下部のバージョン表記
+
+予想スカッド:
+
+* `public/assets/squad-builder.js` 冒頭の `DATA_VERSION`（`data/players.json` と `data/matches.json` の両方の読み込みクエリに使います）
+* `public/squad.html` の `assets/squad-builder.js?v=...`
 
 現在の例は次のとおりです。
 
