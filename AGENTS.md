@@ -31,7 +31,7 @@
 
 | 変更対象 | 必読文書 |
 | --- | --- |
-| 全般・PR | `README.md`、`docs/codex-workflow.md` |
+| 全般・PR | `README.md`、`docs/codex-workflow.md`、`docs/parallel-work-policy.md` |
 | 年間スケジュールUI | `docs/html-analysis.md`、`docs/css-inventory.md`、`docs/js-inventory.md`、`docs/ai/CHECKLIST.md`、`docs/ai/BROWSER_CHECKLIST.md` |
 | 日程データ・CSV | `docs/data-schema.md`、`docs/sheets/schedule-columns.md`、`docs/operation-flow.md`、`docs/schedule-audit.md` |
 | 予想スカッド | `docs/squad-builder.md`、`docs/players-data-schema.md`、`docs/ai/SQUAD_BROWSER_CHECKLIST.md` |
