@@ -465,27 +465,38 @@ const CARD_H_MAX = 75.1;
 
 function fitCards() {
   const pitch = pitchEl;
-  const pillEl = $(".pos-pill", pitch);
-  const pillH = state.showPill && pillEl ? pillEl.getBoundingClientRect().height : 0;
   // .player 自体の余白（CSSのpaddingぶん）も占有矩形に含める。値をCSSから直接測ることで、
   // squad.css 側の余白が変わっても追随する。
   const samplePlayer = $(".player", pitch);
   const playerCs = samplePlayer ? getComputedStyle(samplePlayer) : null;
   const playerPadX = playerCs ? parseFloat(playerCs.paddingLeft) + parseFloat(playerCs.paddingRight) : 4;
   const playerPadY = playerCs ? parseFloat(playerCs.paddingTop) + parseFloat(playerCs.paddingBottom) : 2;
+  const sampleCard = samplePlayer ? $(".card", samplePlayer) : null;
+  const playerRect = samplePlayer?.getBoundingClientRect();
+  const cardRect = sampleCard?.getBoundingClientRect();
+  // カード下に出る名前・ポジション表示まで含めた占有高さを、現在のDOMから比率で求める。
+  // シンプルのようにカード外へ名前を出すスタイルも、個別分岐なしで同じ計算へ反映する。
+  const belowCardRatio =
+    playerRect && cardRect && cardRect.height > 0
+      ? Math.max(0, playerRect.bottom - cardRect.bottom) / cardRect.height
+      : 0;
+  const playerHeightRatio = 1 + belowCardRatio;
   const margin = 1; // 上下左右の安全マージン
   const availH = pitch.clientHeight - margin;
   const availW = pitch.clientWidth - margin;
   const pitchW = pitch.clientWidth;
   const pitchH = pitch.clientHeight;
+  // シンプルは円形（1:1）、それ以外は盾型（47:64）。実際のCSSと同じ比率で
+  // 横方向の上限を求めないと、円形カードだけ隣のスロットへ重なる。
+  const cardAspect = state.style === "simple" ? 1 : CARD_ASPECT;
 
   // 縦：ピッチ高さの目安比率（design-mockup.htmlの4行構成に近い密度）。見やすさの上限として使う。
   let cardH = pitch.clientHeight * 0.225;
 
   // フォーメーションごとの実際のスロット間隔から、カードどうしが重ならない上限を求める。
-  // .player はカード＋ピルの縦積みなので、占有矩形は 幅=カード幅、高さ=カード高さ+ピル高さ とみなす。
+  // .player の占有矩形は、幅=カード幅、高さ=カード高さ×実測比率として扱う。
   // 2枚の矩形が重ならないためには、中心間の横距離がカード幅以上、または
-  // 中心間の縦距離が「カード高さ+ピル高さ」以上あればよい（軸分離の判定）。
+  // 中心間の縦距離がプレイヤー占有高さ以上あればよい（軸分離の判定）。
   // どちらか一方の条件を満たせばよいので、各組について許容できるカード高さの上限は
   // 「横方向だけで満たす場合の上限」と「縦方向だけで満たす場合の上限」の大きい方になる。
   // 全ペアのうち一番厳しい（小さい）上限が、このフォーメーションで安全な最大カード高さ。
@@ -495,16 +506,16 @@ function fitCards() {
     for (let j = i + 1; j < slots.length; j++) {
       const dx = (Math.abs(slots[i].x - slots[j].x) / 100) * pitchW;
       const dy = (Math.abs(slots[i].y - slots[j].y) / 100) * pitchH;
-      const boundByWidth = (dx - playerPadX) * CARD_ASPECT; // 横方向だけで dx >= カード幅+余白 を満たす上限
-      const boundByHeight = dy - pillH - playerPadY; // 縦方向だけで dy >= カード高さ+ピル高さ+余白 を満たす上限
+      const boundByWidth = (dx - playerPadX) * cardAspect; // 横方向だけで dx >= カード幅+余白 を満たす上限
+      const boundByHeight = (dy - playerPadY) / playerHeightRatio; // 縦方向だけで占有高さが中心間隔へ収まる上限
       pairBound = Math.min(pairBound, Math.max(boundByWidth, boundByHeight));
     }
   }
   if (Number.isFinite(pairBound)) cardH = Math.min(cardH, pairBound);
 
-  // ピッチ自体に収まる上限（安全マージン込み。ピルと余白の分だけ縦に余分がいる）
-  cardH = Math.min(cardH, availH - pillH - playerPadY);
-  cardH = Math.min(cardH, (availW - playerPadX) * CARD_ASPECT);
+  // ピッチ自体に収まる上限（安全マージンとカード下の表示領域を含む）
+  cardH = Math.min(cardH, (availH - playerPadY) / playerHeightRatio);
+  cardH = Math.min(cardH, (availW - playerPadX) * cardAspect);
   // ここまでで求めた値は「これ以上大きくすると重なる／はみ出す」という幾何的な上限。
   // 下限 CARD_H_MIN はこの上限を超えない範囲でだけ効かせる。上限を無視して下限を
   // 優先すると、カードどうしが重なる（a808f1a の不具合はこれが原因）。

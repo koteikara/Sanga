@@ -16,19 +16,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: スターレンタルサーバーへ手動デプロイ
+  confirm:
+    name: 実行条件を確認
     runs-on: ubuntu-latest
     steps:
-      - name: 確認入力を検証
+      - name: mainブランチと確認入力を検証
         env:
           CONFIRM: ${{ inputs.confirm }}
+          REF_NAME: ${{ github.ref_name }}
         run: |
+          if [ "$REF_NAME" != "main" ]; then
+            echo "本番デプロイは main ブランチからのみ実行できます。"
+            exit 1
+          fi
           if [ "$CONFIRM" != "DEPLOY" ]; then
             echo "confirm に DEPLOY と入力された場合のみデプロイします。"
             exit 1
           fi
 
+  squad-checks:
+    needs: confirm
+    uses: ./.github/workflows/squad-checks.yml
+
+  deploy:
+    name: スターレンタルサーバーへ手動デプロイ
+    needs: squad-checks
+    runs-on: ubuntu-latest
+    steps:
       - name: mainブランチをチェックアウト
         uses: actions/checkout@v4
         with:

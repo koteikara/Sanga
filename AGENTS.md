@@ -89,9 +89,10 @@ node --check public/assets/squad-builder.js
 node --check public/assets/squad-formations.js
 node --check public/assets/squad-sample-players.js
 node tools/validate-players.js
+node tools/validate-squad-contract.mjs
 ```
 
-実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。UI変更は静的検証だけで完了扱いにせず、対象のブラウザチェックリストを確認します。
+Playwrightを利用できる環境では `node tools/check-squad-layout.mjs` も実行します。GitHub ActionsはPR時と本番デプロイ前に、3画面幅・4種類の控え人数・17フォーメーション・8スタイルの組み合わせをChromiumで検証します。iPhone Safari等の実機確認は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に従います。
 
 ## 作業とPR
 

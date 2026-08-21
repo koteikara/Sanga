@@ -255,11 +255,25 @@ iPhone Safari で画像化すると、これらの影が大きくずれて描画
 影以外の方法で描くこと。ピッチ外枠の `box-shadow`（スタイルごとに定義）は
 現状のまま残しているが、崩れが再発した場合はここも疑う。
 
+## 自動検証
+
+PR時と本番デプロイ前は、`.github/workflows/squad-checks.yml` を共通利用して次を検証します。
+
+- スカッド用JavaScriptと検証スクリプトの構文
+- `tools/validate-players.js` による選手JSON
+- `tools/validate-squad-contract.mjs` による必須ファイル、DOM、参照、39選手、17フォーメーション、8スタイルの静的契約
+- `tools/check-squad-layout.mjs` によるChromium実レイアウト
+
+実ブラウザ検証はスタメン11人を配置した状態で、幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルの全組み合わせを対象にし、カードの重なり、ピッチ外へのはみ出し、ベンチの見切れ、ページ内JavaScriptエラーを確認します。失敗した場合、本番デプロイはFTPアップロードへ進みません。
+
+この検証はiPhone SafariのPNG生成やタッチ操作を代替しません。UI、CSS、画像生成を変更した場合は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に沿って実機確認を続けます。
+
+
 ## 次の作業
 
 1. GitHub Pagesと実機での操作確認を行う（`docs/ai/SQUAD_BROWSER_CHECKLIST.md` に沿って目視確認）
 2. 同じ選手を複数の位置に置けるかどうかを決める（現在は重複して置ける）
-3. 本番デプロイ前のスカッド検証をGitHub Actionsへ組み込む変更を、別PRで検討する
+3. 自動検証の実行時間と失敗傾向を運用後に確認し、必要なら対象分割やキャッシュを検討する
 
 ### 選手データについて
 
