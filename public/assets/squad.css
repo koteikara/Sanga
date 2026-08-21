@@ -298,6 +298,101 @@ body{
 
 .disclaimer{color:#6a5580;border-top-color:rgba(43,10,61,.2)}
 
+/* ================= シンプル =================
+   装飾を可能なかぎり削り、スカッドの内容だけを伝えるスタイル。
+   構成要素（見出し・ピッチ・カード・ベンチ）は他のスタイルと同じで、
+   背景・枠・光沢・盾型などの装飾だけを外している。 */
+[data-style="simple"]{
+  background:#f7f6f8;
+  color:#1b1420;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+/* 斜めストライプの装飾を止める */
+[data-style="simple"]::before{display:none}
+
+/* 見出しは画像を使わず、文字だけで組む（is-simple の画像は用意しない） */
+[data-style="simple"] .sq-header{padding:3.4cqw 5cqw 2cqw}
+[data-style="simple"] #sq-title-text{
+  font-size:5.2cqw;font-weight:800;letter-spacing:.08em;color:#1b1420;
+}
+[data-style="simple"] .sq-subtitle{color:#4d4457;font-weight:600;letter-spacing:.06em}
+[data-style="simple"] .sq-rule{
+  margin-top:1.8cqw;width:20cqw;height:1px;background:#c9c2d0;
+}
+[data-style="simple"] .pitch{border-radius:4px;box-shadow:none}
+
+/* 下部帯。地色が明るいので文字は暗い色に寄せる */
+[data-style="simple"] .sq-footer{
+  background:#fff;border-top:1px solid #ddd7e2;color:#1b1420;
+}
+[data-style="simple"] .meta-row dt{color:#6b6175}
+[data-style="simple"] .meta-row dd{color:#1b1420}
+[data-style="simple"] .formation-badge .num{color:#1b1420}
+[data-style="simple"] .formation-badge .fig,
+[data-style="simple"] .formation-badge .fig::before,
+[data-style="simple"] .formation-badge .fig::after{border-color:#8b8394}
+[data-style="simple"] .bench-chip,
+[data-style="simple"] .bench-slot{
+  background:#fff;border:1px solid #c9c2d0;color:#1b1420;
+}
+[data-style="simple"] .bench-slot.is-empty{color:#7b7286}
+[data-style="simple"] .bench-chip b,[data-style="simple"] .bench-slot b{color:#6b6175}
+[data-style="simple"] .poster-name{color:#4d4457}
+[data-style="simple"] .disclaimer{color:#7b7286;border-top-color:#ddd7e2}
+
+/* ---- シンプルの選手カード ----
+   盾型・金枠・光沢はすべて外し、背番号画像を入れた円だけにする。
+   日本語名とポジション名は円の下に併記する（トグルに従う）。 */
+[data-style="simple"] .card{
+  aspect-ratio:1/1;clip-path:none;background:none;padding:0;
+}
+[data-style="simple"] .card::after{display:none}
+[data-style="simple"] .card-inner{
+  clip-path:none;border-radius:50%;overflow:visible;
+  background:#2b0a3d;
+}
+[data-style="simple"] .card-inner::before,
+[data-style="simple"] .card-inner::after,
+[data-style="simple"] .card-split,
+[data-style="simple"] .flag{display:none}
+/* 背番号画像は円いっぱいに置く */
+[data-style="simple"] .card-photo{
+  top:0;left:0;right:0;height:100%;border-radius:50%;overflow:hidden;
+}
+[data-style="simple"] .tile-img{border-radius:0}
+[data-style="simple"] .tile{border-radius:50%;background:#3d1155;box-shadow:none}
+[data-style="simple"] .card.mascot .tile{background:#8b1a23}
+[data-style="simple"] .card.mascot .card-inner{background:#8b1a23}
+/* 名前は円の外（下）へ。円の幅より広く使えるよう左右へ張り出す */
+[data-style="simple"] .card-name{
+  top:100%;left:-25%;right:-25%;padding:2.2cqw 0 0;overflow:visible;
+}
+/* 名前はピッチ（暗い緑）の上に出るため白字にする */
+[data-style="simple"] .name-ja{
+  color:#fff;font-weight:700;margin-top:0;
+  text-shadow:0 .3cqw .8cqw rgba(0,0,0,.65);
+}
+/* ポジション名は名前のさらに下。名前1行ぶんを空けて重なりを避ける */
+[data-style="simple"] .pos-pill{
+  top:0;margin-top:4.2cqw;
+  background:#2b0a3d;border:none;color:#fff;
+}
+body:not(.show-ja) [data-style="simple"] .pos-pill{margin-top:1cqw}
+/* 空きスロット。円の中に「?」と案内文が収まるよう寸法を詰める */
+[data-style="simple"] .player.is-empty .card-inner{
+  background:rgba(255,255,255,.16);
+}
+[data-style="simple"] .card-num,[data-style="simple"] .card-pos{color:#fff}
+[data-style="simple"] .card-meta::after{display:none}
+[data-style="simple"] .player.is-empty .card-meta{top:9%}
+[data-style="simple"] .player.is-empty .card-num{font-size:24cqw}
+[data-style="simple"] .player.is-empty .card-pos{font-size:10cqw;margin-top:.6cqw}
+[data-style="simple"] .player.is-empty .empty-hint{
+  top:58%;bottom:4%;font-size:8.5cqw;padding:0 6%;
+}
+/* 名前が無いぶん、ポジション名は円のすぐ下に置く */
+[data-style="simple"] .player.is-empty .pos-pill{margin-top:1.2cqw}
+
 /* ---- ヘッダー ---- */
 .sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
 .sq-title-img{
