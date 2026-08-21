@@ -349,18 +349,28 @@ body{
 [data-style="simple"] .card::after{display:none}
 [data-style="simple"] .card-inner{
   clip-path:none;border-radius:50%;overflow:visible;
-  background:#2b0a3d;
+  /* 背番号タイル画像の地色（#750069）に合わせる。円と画像の境目が出ない */
+  background:#750069;
 }
 [data-style="simple"] .card-inner::before,
 [data-style="simple"] .card-inner::after,
 [data-style="simple"] .card-split,
 [data-style="simple"] .flag{display:none}
-/* 背番号画像は円いっぱいに置く */
+/* 背番号画像は円の中に収める。
+   タイル画像は正方形で、背番号とローマ字名が端近くまで入っている。
+   円へそのまま貼ると四隅と数字の左右が円からはみ出すため、
+   内容が円の内側に収まる大きさ（直径の84%）に置く。
+   84% は「数字の左右端 0.38・ローマ字名の下端 0.40（画像幅比）」から、
+   中心からの最遠点が半径を超えない値として決めた。 */
 [data-style="simple"] .card-photo{
   top:0;left:0;right:0;height:100%;border-radius:50%;overflow:hidden;
 }
-[data-style="simple"] .tile-img{border-radius:0}
-[data-style="simple"] .tile{border-radius:50%;background:#3d1155;box-shadow:none}
+[data-style="simple"] .tile-img{
+  /* 直径の80%に収め、上へ2%寄せる。タイル画像は下寄りにローマ字名が
+     入っているため、そのまま中央に置くと長い名前が円の縁に迫る。 */
+  border-radius:0;inset:auto;left:10%;top:8%;width:80%;height:80%;
+}
+[data-style="simple"] .tile{border-radius:50%;background:#750069;box-shadow:none}
 [data-style="simple"] .card.mascot .tile{background:#8b1a23}
 [data-style="simple"] .card.mascot .card-inner{background:#8b1a23}
 /* 名前は円の外（下）へ。円の幅より広く使えるよう左右へ張り出す */
@@ -384,11 +394,11 @@ body:not(.show-ja) [data-style="simple"] .pos-pill{margin-top:1cqw}
 }
 [data-style="simple"] .card-num,[data-style="simple"] .card-pos{color:#fff}
 [data-style="simple"] .card-meta::after{display:none}
-[data-style="simple"] .player.is-empty .card-meta{top:9%}
-[data-style="simple"] .player.is-empty .card-num{font-size:24cqw}
-[data-style="simple"] .player.is-empty .card-pos{font-size:10cqw;margin-top:.6cqw}
+[data-style="simple"] .player.is-empty .card-meta{top:13%}
+[data-style="simple"] .player.is-empty .card-num{font-size:22cqw}
+[data-style="simple"] .player.is-empty .card-pos{font-size:9.5cqw;margin-top:.6cqw}
 [data-style="simple"] .player.is-empty .empty-hint{
-  top:58%;bottom:4%;font-size:8.5cqw;padding:0 6%;
+  top:52%;bottom:14%;font-size:8cqw;padding:0 10%;
 }
 /* 名前が無いぶん、ポジション名は円のすぐ下に置く */
 [data-style="simple"] .player.is-empty .pos-pill{margin-top:1.2cqw}
