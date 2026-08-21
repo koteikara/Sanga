@@ -7,7 +7,7 @@
 | ページ | HTML | 実装 | データ |
 | --- | --- | --- | --- |
 | 年間スケジュール | `public/sanga202627season.html` | `public/assets/style.css`、`public/assets/app.js` | `public/data/matches.json`（57件） |
-| 予想スカッド | `public/squad.html` | `public/assets/squad.css`、`public/assets/squad-builder.js`、`public/assets/squad-formations.js` | `public/data/players.json`（39件）、`matches.json` |
+| 予想スカッド | `public/squad.html` | `public/assets/squad.css`、`public/assets/squad-builder.js`、`public/assets/squad-formations.js`、`public/assets/squad-tile-offsets.js` | `public/data/players.json`（39件）、`matches.json` |
 | 確認用トップ | `public/index.html` | 公開2ページへの導線 | なし |
 
 ## ディレクトリ
@@ -64,6 +64,7 @@ node tools/validate-app-contract.js
 node --check public/assets/squad-builder.js
 node --check public/assets/squad-formations.js
 node --check public/assets/squad-sample-players.js
+node --check public/assets/squad-tile-offsets.js
 ```
 
 実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。UI変更は対象別ブラウザチェックリストで確認します。
