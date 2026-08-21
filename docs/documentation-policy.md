@@ -11,7 +11,7 @@
 | プロジェクト概要 | 公開サービスと現在構成を把握する | `README.md`、`docs/project-structure.md` | 公開ページ、主要データ、構成が変わったとき |
 | 実装ルール | 制約と作業手順を定める | `AGENTS.md`、`docs/codex-workflow.md` | 開発・PRルールが変わったとき |
 | 現行仕様 | 現在の画面、データ、保存形式を説明する | `docs/data-schema.md`、`docs/squad-builder.md` | 実装や利用者向け挙動が変わったとき |
-| 運用手順 | 更新・検証・本番反映を再現可能にする | `docs/operation-flow.md`、`docs/deploy-policy.md` | コマンド、件数、Actions、手順が変わったとき |
+| 運用手順 | 更新・検証・本番反映を再現可能にする | `docs/operation-flow.md`、`docs/deploy-policy.md`、`docs/parallel-work-policy.md` | コマンド、件数、Actions、手順が変わったとき |
 | チェックリスト | 完了条件と人間の確認項目を示す | `docs/ai/CHECKLIST.md`、ブラウザチェックリスト | UI、検証対象、対応環境が変わったとき |
 | 目標・計画 | 今回の範囲と完了条件を固定する | `docs/ai/GOAL.md`、`docs/ai/PLAN.md` | 作業開始・計画変更時 |
 | 作業記録 | 実施内容、確認結果、残課題を残す | `docs/ai/WORKLOG.md` | 将来の保守に必要な作業完了時 |
