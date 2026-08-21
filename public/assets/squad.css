@@ -367,17 +367,8 @@ body{
 [data-style="simple"] .card-photo{
   top:0;left:0;right:0;height:100%;border-radius:50%;overflow:hidden;
 }
-[data-style="simple"] .tile-img{
-  /* 直径の80%に収め、円の中心へ置く */
-  border-radius:0;inset:auto;left:10%;top:10%;width:80%;height:80%;
-  /* 画像ごとの中身のずれを打ち消す（--tile-dx / --tile-dy は
-     squad-builder.js が付ける）。translate の % は画像自身の大きさが
-     基準なので、画像に対する補正量をそのまま使う。 */
-  transform:translate(
-    calc(var(--tile-dx, 0) * 1%),
-    calc(var(--tile-dy, 0) * 1%)
-  );
-}
+/* 円の中では直径の80%に収める。横位置と中央寄せの補正は共通指定のまま */
+[data-style="simple"] .tile-img{border-radius:0;top:10%;height:80%}
 [data-style="simple"] .tile{border-radius:50%;background:#750069;box-shadow:none}
 [data-style="simple"] .card.mascot .tile{background:#8b1a23}
 [data-style="simple"] .card.mascot .card-inner{background:#8b1a23}
@@ -532,9 +523,18 @@ body:not(.show-ja) [data-style="simple"] .pos-pill{margin-top:1cqw}
 }
 /* 切り出したタイル画像。読み込めたときはプレースホルダーを隠す */
 .tile-img{
-  /* 背番号とローマ字名の両方が収まるように、枠内へ全体を入れる */
-  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  /* 背番号とローマ字名の両方が収まるように、枠の高さに合わせて全体を入れる。
+     幅は画像の縦横比まかせ（width:auto）にして、要素の大きさを実際に
+     描かれる画像と一致させている。こうしておくと、下の translate の
+     パーセントが「画像に対する割合」になり、補正量をそのまま使える。 */
+  position:absolute;inset:auto;top:0;left:50%;height:100%;width:auto;max-width:none;
   border-radius:3.3cqw;
+  /* 画像ごとに焼き込み位置がずれているぶんを打ち消して中央へ揃える。
+     --tile-dx / --tile-dy は squad-builder.js が付ける（無ければ0）。 */
+  transform:translate(
+    calc(-50% + var(--tile-dx, 0) * 1%),
+    calc(var(--tile-dy, 0) * 1%)
+  );
 }
 .card-photo.no-image .tile-img{display:none}
 .card-photo:not(.no-image) .tile{visibility:hidden}
