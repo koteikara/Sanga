@@ -29,7 +29,7 @@
 
 ### `docs/`
 
-仕様、運用、チェックリスト、調査、作業記録です。必読順と更新条件は `docs/documentation-policy.md` を参照してください。完了済み計画と過去の作業記録は `docs/archive/` に置き、通常の必読対象から外します。
+仕様、運用、チェックリスト、調査、作業記録です。必読順と更新条件は `docs/documentation-policy.md` を参照してください。出典と権利状態は `docs/source-and-license.md`、第三者製ソフトウェアは `THIRD_PARTY_NOTICES.md` を正とします。完了済み計画と過去の作業記録は `docs/archive/` に置き、通常の必読対象から外します。
 
 ## データと保存
 
@@ -81,4 +81,4 @@ node --check public/assets/squad-tile-offsets.js
 ## 次の構成改善
 
 1. 本番デプロイ前のスカッド検証をGitHub Actionsへ追加する。
-2. 公式由来素材と外部ライブラリの出典・ライセンスを整理する。
+2. 公開中のロゴと背番号加工物について、利用許諾の確認または独自表現への差し替え方針を決める。
