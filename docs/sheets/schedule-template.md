@@ -205,6 +205,9 @@ ID,表示順,大会,大会表示,節,開催年,開催日,候補日,キックオ�
 | sec05 | 5 | J1 | 明治安田J1リーグ | 第5節 | 2026 | 2026-09-02 |  | 19:00 | 確定 | 試合前 | H | ホーム | FC東京 | fctokyo | サンガスタジアム |  |  |  | https://www.sanga-fc.jp/ |  | DAZN |  |  |  | チケット情報確認中 | 京都 vs FC東京 | 表示 | https://www.sanga-fc.jp/news/detail/21152 | 2026-06-18 | 公式発表を確認済み |
 | sec16 | 16 | J1 | 明治安田J1リーグ | 第16節 | 2026 |  | 2026-12-16\|2027-04-14 |  | 未確定 | 未定 | H | ホーム | 神戸 | vissel | サンガスタジアム |  |  | 未定 |  |  |  |  | ※1 | ※1: 26/12/16(水)もしくは27/4/14(水)のいずれかで開催予定です。 | 日程変更の可能性あり | 京都 vs 神戸 | 表示 | https://www.sanga-fc.jp/news/detail/21152 | 2026-06-18 | 候補日あり |
 
+> [!IMPORTANT]
+> `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットです。現在の公開データは57件のため、`public/data/matches.json` から再生成して差分を確認してください。
+
 ## 8. 初期データ作成手順
 
 38件分の試合行を最初から手入力せず、現在の正本である `public/data/matches.json` から、Googleスプレッドシートの `試合` シートへ取り込む初期CSVを作成できます。生成済みの初期取り込み用CSVとして `docs/sheets/schedule.initial.csv` を利用できます。このCSVは拡張後の列順で出力され、現時点で空欄の拡張列は後から手入力・自動更新で埋めていきます。
@@ -257,10 +260,10 @@ node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matc
 node tools/validate-generated-matches.js tmp/matches.generated.json
 ```
 
-本番用49件として確認する場合は、件数チェックも指定します。
+現在の公開用57件として確認する場合は、件数チェックも指定します。
 
 ```bash
-node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 49
+node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 57
 ```
 
 Googleスプレッドシートから出力したCSVは、公開JSONへ反映する前に必ず生成・検証します。検証観点と初期CSVの確認結果は `docs/sheets/spreadsheet-export-check.md` を参照してください。検証後に問題がなければ、次のPRで `public/data/matches.json` への反映を検討します。

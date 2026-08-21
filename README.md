@@ -1,220 +1,92 @@
 # Sanga
 
-京都サンガF.C.の年間スケジュールを管理・生成・公開するための非公式サイト運用リポジトリです。
+京都サンガF.C.に関する非公式ファン向けWebツールを管理するリポジトリです。
 
 ## 公開サイト
 
-* https://sangasanga.stars.ne.jp/sanga202627season.html
+- 年間スケジュール: https://sangasanga.stars.ne.jp/sanga202627season.html
+- 予想スカッド作成: https://sangasanga.stars.ne.jp/squad.html
 
-## 目的
+いずれも非公式ページです。正確な日程・選手情報は公式情報を確認してください。
 
-このリポジトリでは、京都サンガF.C.の年間スケジュール公開サイトを継続的に運用するために、以下を管理します。
+## 現在の状態
 
-* 公開用HTML
-* CSS / JavaScript
-* 日程データの定義
-* Googleスプレッドシート連携の設計
-* JSON生成処理
-* 将来的な自動更新・自動デプロイ処理
+確認基準日: 2026-08-21
 
-## 基本方針
+- 年間スケジュールは `public/data/matches.json` の57試合を表示します。
+- 予想スカッドは `public/data/players.json` の39件を使い、9:16のPNGをブラウザ内で生成します。
+- `public/data/hotel-index.json` と `tools/hotels/` はホテル候補連携の基盤ですが、実データ公開と画面表示は未実装です。
+- `experiments/` は公開前の検証用、`public/` は本番公開物の正本です。
+- GitHub Pagesは本番反映前の確認環境です。
+- 本番反映はGitHub Actionsの手動ワークフローから行い、自動デプロイはしません。
 
-* 公開サイトはスターレンタルサーバーで運用する
-* このリポジトリは開発・管理用として使う
-* 日程データの正本は、将来的にGoogleスプレッドシートへ集約する
-* 当面の公開表示では `public/data/matches.json` を日程データの正本として扱い、手書きHTMLカードは移行確認用の比較対象にする
-* 公開用HTMLに直接データを書き続けるのではなく、JSON等のデータファイルから表示する構成を目指す
-* 毎年の更新作業をできるだけ自動化する
-* アクセシビリティとスマートフォンでの使いやすさを重視する
-
-## 想定ディレクトリ構成
+## 主な構成
 
 ```text
 /
-├─ README.md
-├─ AGENTS.md
-├─ docs/
-│  ├─ data-schema.md
-│  ├─ operation-policy.md
-│  └─ deploy-policy.md
-├─ public/
-│  ├─ sanga202627season.html
-│  ├─ assets/
-│  │  ├─ style.css
-│  │  └─ app.js
-│  └─ data/
-│     └─ matches.sample.json
-├─ tools/
-│  ├─ generate-json.js
-│  └─ validate-data.js
-└─ sheets/
-   └─ schedule-columns.md
+├─ .github/workflows/      静的検証、Pages、手動本番デプロイ
+├─ docs/                   仕様、運用、チェックリスト、調査・履歴
+├─ experiments/            公開前のプロトタイプ
+├─ public/                 本番公開するHTML、CSS、JS、JSON、画像
+└─ tools/                  生成・検証・画像加工スクリプト
 ```
 
-## 初期段階の運用
+詳細は `docs/project-structure.md` を参照してください。
 
-当面は、現在公開しているHTMLを `public/sanga202627season.html` に取り込みます。
+## 実装前の必読文書
 
-その後、段階的に以下を進めます。
+実装者は最初に次を読みます。
 
-1. 既存HTMLの構造を整理する
-2. CSS / JavaScriptを分離する
-3. 日程データをJSON化する
-4. Googleスプレッドシートの列設計を確定する
-5. スプレッドシートからJSONを生成する
-6. 生成したHTML / JSONをスターレンタルサーバーへ反映する
+1. `AGENTS.md`
+2. `docs/documentation-policy.md`
+3. `docs/project-structure.md`
+4. `AGENTS.md` が変更対象別に指定する仕様書・手順書・チェックリスト
 
+実装や運用を変更した場合は、同じPRで現行文書も更新します。
 
-## 運用手順
+## 日程データ更新
 
-スプレッドシート更新から本番反映までの標準手順は `docs/operation-flow.md` を参照してください。日程更新や公開JSON反映時は、この手順に従ってCSV出力、JSON生成、検証、GitHub Pages確認、本番デプロイ、本番確認を行います。
-
-## GitHub Pages確認環境
-
-本番サーバーへ反映する前の簡易確認環境として、GitHub Pagesで `public/` ディレクトリ配下を公開できます。
-
-`.github/workflows/pages.yml` は、`main` ブランチへのpush時とGitHub Actions画面からの手動実行時に、`public/` をPagesへデプロイします。確認用トップページは `public/index.html` で、公開スケジュールページ `sanga202627season.html` へのリンクを置いています。
-
-### 一時Public運用時の注意
-
-* GitHub Freeでは、PrivateリポジトリのGitHub Pagesが使えない場合があります。
-* その場合は、確認時のみ一時的にリポジトリをPublicにしてGitHub Pagesを有効化します。
-* Publicにした間は、リポジトリ内のファイル、Actions履歴、ログが第三者に見える可能性があります。
-* 認証情報、FTP情報、APIキー、`.env`、サービスアカウントJSONなどは絶対に入れないでください。
-* 確認後にPrivateへ戻すと、GitHub Pagesはunpublishされる可能性があります。
-* 一時Public運用は簡易確認用です。継続運用では、公開専用リポジトリの分離も検討してください。
-
-## 本番反映手順
-
-スターレンタルサーバーへの本番デプロイは、GitHub Actionsの `本番サーバー手動デプロイ` ワークフローを手動実行して行います。自動デプロイは行わず、`confirm` に `DEPLOY` と入力された場合のみ、Repository Secretsに登録したFTP情報を使って `public/` 配下の公開用ファイルだけをアップロードします。
-
-スターレンタルサーバーへ反映する前後の確認手順、GitHub Secrets登録手順、アップロード対象、アップロードしてはいけないファイル、ロールバック方針は `docs/deploy-policy.md` にまとめています。デプロイ時のエラーや公開URLへ反映されない場合の確認方法も、同じ手順書のトラブル対応メモを参照してください。
-
-
-## キャッシュ更新方針
-
-スマートフォンなどで古いCSSやJavaScript、JSONが残ることを避けるため、公開HTMLではCSS / JavaScriptのURLにバージョンクエリを付けます。
-
-```html
-<link rel="stylesheet" href="assets/style.css?v=20260618-2">
-<script src="assets/app.js?v=20260618-2"></script>
-```
-
-`public/assets/app.js` から `public/data/matches.json` を読み込む場合も、同じ更新単位が分かるバージョンクエリを付けます。
-
-```js
-const dataPath = 'data/matches.json?v=20260618-2';
-```
-
-CSS / JavaScript / JSONのいずれかを本番反映する場合は、必要に応じて同じバージョン値を更新し、ページ最下部のバージョン情報もあわせて更新します。
-
-## 年間スケジュールページとニュース連動カレンダーの役割
-
-今後の開発予定、完了済み機能、次に取り組む候補は `docs/roadmap.md` を参照してください。
-
-年間スケジュールページの目的と将来拡張方針は `docs/service-scope.md` を参照してください。年間スケジュールページは、試合予定の確認、LocalStorageを使ったパーソナライズ、SNS共有を中心にしたスマートフォン最優先ページとして扱います。
-
-ニュース連動カレンダーは、公式ニュースに分散しているチケット販売開始、イベント申込締切、イベント開催日時などを一元確認するための別サービスとして考えます。ただし、試合ID、大会、対戦相手、会場、関連URLなどは将来連動できるようにします。
-
-スプレッドシート列を完成させる前に、`docs/service-scope.md` の方針に沿って、年間スケジュールページ用の試合シートへ入れる列と、ニュース連動カレンダー側または別の日程イベントデータへ分ける列を検討します。
-
-## パーソナライズ状態と色設定
-
-閲覧者ごとのカード状態、色、ラベル設定の方針は `docs/personalization.md` を参照してください。状態の意味はページ側で固定せず、利用者が自由に決める方針です。これらの個人設定はスプレッドシートや公開JSONではなくLocalStorageで扱い、SNS投稿、スクショ用表示、フィルタリング、カレンダー連携の土台として検討します。
-
-## フィルタリング機能の設計
-
-フィルタリング機能の設計は `docs/filtering.md` を参照してください。フィルタは、試合データ由来の条件とLocalStorage由来の個人状態の両方を扱います。色枠の意味は固定せず、利用者側で自由に決める方針を維持します。フィルタリングは、SNS投稿、スクショ用表示、共有URL、カレンダー連携の土台として検討します。
-
-## 表示モード切替の設計
-
-表示モード切替の設計は `docs/display-modes.md` を参照してください。通常カード表示、コンパクト表示、リスト表示、スクショ用表示を将来候補として整理しています。
-
-スクショ用表示 / SNS投稿補助の設計は `docs/screenshot-social-share.md` を参照してください。フィルタ結果やカード状態をSNSで共有しやすくするための方針を整理しています。
-
-## スプレッドシート連携準備
-
-将来的にはGoogleスプレッドシートを日程データの正本にしますが、現段階ではGoogle Sheets APIの自動連携や認証情報の作成は行いません。まずはスプレッドシートからCSVを書き出し、確認用JSONを生成する準備段階です。
-
-列定義と入力ルールは `docs/sheets/schedule-columns.md` にまとめています。年間スケジュールページの「試合」シートは、フィルタリング、表示モード切替、フルページスクショ用表示、SNS投稿補助、戦績更新、カップ戦・ACL戦追加などの将来拡張を見据えて列拡張します。年間スケジュールページとニュース連動カレンダーの役割分担は `docs/service-scope.md` を参照してください。実際のGoogleスプレッドシート作成時は、シート構成、入力ルール、プルダウン候補、CSV出力手順を整理した `docs/sheets/schedule-template.md` を参照してください。ヘッダー行テンプレートは `docs/sheets/schedule.template.csv`、検証用サンプルCSVは `docs/sheets/schedule.sample.csv` です。
-
-49件分のCSVを最初から手入力せず、現在の正本である `public/data/matches.json` からGoogleスプレッドシート用の初期CSVを生成できます。生成済みの初期取り込み用CSVは `docs/sheets/schedule.initial.csv` です。このファイルは、現在の `public/data/matches.json` から生成した49件分の初期データで、拡張後の31列に対応済みです。Googleスプレッドシートを新規作成するときに「試合」シートへ取り込んで使います。既存 `matches.json` から再生成する場合も、`docs/sheets/schedule.template.csv` と同じ拡張後の列順で出力されます。
-
-```bash
-node tools/export-matches-to-sheet-csv.js public/data/matches.json tmp/schedule-from-current-json.csv
-```
-
-Googleスプレッドシートへ `docs/sheets/schedule.initial.csv` を取り込んだ後は、状態、試合状態、表示フラグ、ホームアウェイ、ホームアウェイ表示、開催年、注記番号、対戦相手コードなどのプルダウンを設定し、「注記」「設定」「確認」シートも追加します。取り込み時は拡張後の列を削除せず、現時点で空欄のキックオフ時刻、得点、チケットURL、イベントURL、放送配信URL、公開メモ、SNS用短縮タイトルなどは、後から手入力または自動更新で埋めます。`メモ` は運用者向け非公開メモであり、CSVからJSONを生成しても公開用JSONへ出力しません。個人メモ、参戦予定、視聴予定、気になる試合、チケット購入済みなど閲覧者ごとの情報は、引き続きLocalStorage側で扱います。
-
-`tmp/` 配下はCSV生成・検証用の一時作業ディレクトリです。Googleスプレッドシートへ取り込む初期CSVや、Googleスプレッドシートから出力したCSVは `tmp/schedule-from-current-json.csv`、`tmp/schedule-from-sheet.csv` などに置きます。生成結果確認用のJSONは `tmp/matches.generated.json` に出力します。`tmp/` 配下は `.gitignore` により原則コミットしません。
-
-スプレッドシートで内容を確認・修正した後は、CSVでダウンロードし、`tmp/schedule-from-sheet.csv` として扱います。そのCSVから `tools/generate-matches-from-csv.js` で `matches.json` 形式の確認用JSONを生成して、`tools/validate-generated-matches.js` で検証します。CSVからJSONを生成する処理は、旧列構成のCSVと拡張列構成のCSVの両方を扱えます。拡張列がある場合は、大会、キックオフ時刻、試合状態、得点、各種URL、公開メモ、SNS用短縮タイトル、表示フラグをJSONへ反映します。
-
-```bash
-node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matches.generated.json
-node tools/validate-generated-matches.js tmp/matches.generated.json
-```
-
-本番用49件として確認する場合は、件数チェックも指定します。
-
-```bash
-node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 49
-```
-
-生成直後に公開用の `public/data/matches.json` を直接上書きしないでください。まず `tmp/matches.generated.json` を検証し、件数、ID重複、必須項目、日付形式、候補日、状態値、注記番号などを確認します。検証後に内容を目視確認し、問題がない場合だけ `public/data/matches.json` へ手作業で反映します。
-
-本番反映前には、従来どおり公開用JSON向けの検証も実行します。
+標準手順は `docs/operation-flow.md`、列定義は `docs/sheets/schedule-columns.md` を参照してください。
 
 ```bash
 node tools/validate-matches.js
+node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict
 ```
 
-## Codex作業共通ルール
+`docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットです。現在データとしてそのまま使わず、`public/data/matches.json` から再生成してください。
 
-Codexへ作業依頼する際の共通ルール、PR作成ルール、変更禁止事項、確認項目は `docs/codex-workflow.md` を参照してください。
+## 予想スカッド
 
-UIを伴う新機能や大きな見た目変更を検討する場合は、先に `docs/ui-prototype-workflow.md` を参照し、プロトタイプで見た目・操作感を固めてから本番実装へ進みます。
-
-## Codex作業時のトークン削減検討
-
-Codex作業時のトークン削減策として、`headroom` 導入可能性を調査中です。現時点では導入・設定変更は行わず、詳細は `docs/headroom-research.md` を参照してください。
-
-## 注意事項
-
-* 本番サーバーへのアップロードは、明示的に指示した場合のみ行う
-* FTPパスワード、SSH秘密鍵、APIキー、トークンなどの認証情報はリポジトリに保存しない
-* `.env` やサービスアカウントJSONなどの機密ファイルをコミットしない
-* 公式サイト等の文章や画像を必要以上に転載しない
-* 公開情報を利用する場合は、可能な限り出典URLを記録する
-
-## 検証コマンド
-
-日程JSONと既存HTML内の手書き日程カードを確認する場合は、次のコマンドを実行します。
+現在仕様は `docs/squad-builder.md`、選手データは `docs/players-data-schema.md`、ブラウザ確認は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` を参照してください。
 
 ```bash
-node tools/validate-matches.js
+node --check public/assets/squad-builder.js
+node --check public/assets/squad-formations.js
+node --check public/assets/squad-sample-players.js
+node tools/validate-players.js
 ```
 
-この検証では、`public/data/matches.json` の件数・ID・必須項目・状態値に加えて、日付形式、日付範囲、候補日の昇順、注記番号を確認します。`public/sanga202627season.html` 内に手書き日程カードが残っている場合は、主要項目の一致もあわせて確認します。手書き日程カードを削除した後は、HTML照合をスキップし、`matches.json` 単体の検証結果を成功条件にします。
+実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。本番デプロイ前のスカッド検証をGitHub Actionsへ追加する作業は別PRで検討します。
 
-日程データを目視確認しやすい一覧として出力する場合は、次のコマンドを実行します。
+## 本番反映
 
-```bash
-node tools/export-matches-review.js
-```
+`docs/deploy-policy.md` に従います。本番デプロイは明示的な指示がある場合だけ実行し、`public/` 配下だけをアップロードします。認証情報はGitHub Secretsで管理し、リポジトリやログへ書きません。
 
-Markdownファイルとして保存して確認する場合は、次のように実行します。
+## 主要文書
 
-```bash
-node tools/export-matches-review.js > /tmp/sanga-matches-review.md
-```
+- プロジェクト構成: `docs/project-structure.md`
+- 開発ロードマップ: `docs/roadmap.md`
+- ドキュメント管理方針: `docs/documentation-policy.md`
+- 実装共通ルール: `docs/codex-workflow.md`
+- 日程データ定義: `docs/data-schema.md`
+- 日程更新手順: `docs/operation-flow.md`
+- 本番反映手順: `docs/deploy-policy.md`
+- 予想スカッド仕様: `docs/squad-builder.md`
 
-日程データ監査の観点や、誤りが見つかった場合の記録欄は `docs/schedule-audit.md` にまとめています。
+## 基本方針
 
-## ライセンス・位置づけ
-
-このサイトは非公式の京都サンガF.C.年間スケジュールサイトです。
-
-掲載内容には誤りが含まれる可能性があります。正確な情報は、京都サンガF.C.公式サイト、Jリーグ公式サイト、各大会公式サイト等を確認してください。
-
-公開ページ下部には作成者表記として `Kou from OSAKA` のXリンクを掲載します。この表記は非公式ページの作成者を示すものであり、掲載データの正確性・完全性・最新性を保証するものではありません。
+- スマートフォンでの使いやすさとアクセシビリティを重視します。
+- 個人状態はLocalStorageに保存し、公開JSONへ含めません。
+- 公開情報には可能な限り出典URLと確認日を残します。
+- 認証情報、秘密鍵、`.env`、サービスアカウントJSONをコミットしません。
+- 公式サイト等の文章や画像を必要以上に転載しません。

@@ -2,249 +2,105 @@
 
 ## プロジェクト概要
 
-このリポジトリは、京都サンガF.C.の年間スケジュールを管理・生成・公開するための非公式サイト運用リポジトリです。
+京都サンガF.C.に関する次の非公式Webツールを管理します。
 
-公開サイト:
+- 年間スケジュール: `public/sanga202627season.html`
+- 予想スカッド作成: `public/squad.html`
+- 将来機能のプロトタイプ・生成・検証ツール
 
-* https://sangasanga.stars.ne.jp/sanga202627season.html
+本番公開先はスターレンタルサーバーです。GitHub Pagesは確認環境、本番反映はGitHub Actionsの手動ワークフローです。
 
-主な目的:
+## 最重要ルール
 
-* 京都サンガF.C.の年間スケジュールを継続的に公開する
-* 毎年の運用をしやすくする
-* Googleスプレッドシートで日程データを一元管理する
-* スプレッドシートのデータから公開用HTML / JSONを生成できるようにする
-* 将来的に自動更新・自動デプロイ・機能拡充を行う
+- 日程、節番号、対戦相手、会場、時刻、選手データを明示的な依頼なしに変更しない。
+- LocalStorageの既存キー・保存形式を移行方針なしに変更しない。
+- 既存利用者の表示設定、カード状態、スカッド保存データを壊さない。
+- スマートフォン表示とアクセシビリティを悪化させない。
+- 変更は小さく分け、無関係な整形や全面書き換えを避ける。
+- 本番デプロイは明示的な指示がある場合だけ実行する。
+- 認証情報、`.env`、秘密鍵、サービスアカウントJSONを保存・公開しない。
 
-## 基本方針
+## 作業前の必読文書
 
-* このリポジトリは開発・運用管理用であり、本番公開サーバーを直接編集する場所ではない
-* まずは安全で小さな変更を優先する
-* 大きな改修を行う前には、必ず作業方針を整理する
-* 既存の表示・機能・データを壊さないことを優先する
-* ユーザー向けの文言は日本語で作成する
-* アクセシビリティを常に考慮する
-* スマートフォンでの閲覧性を重視する
+すべての実装者は最初に次を読みます。
 
-## 作業ルール
+1. `AGENTS.md`
+2. `docs/documentation-policy.md`
+3. `docs/project-structure.md`
+4. 下表の変更対象に対応する文書
 
-* 本番サーバーへのアップロードは、明示的な指示がある場合のみ行う
-* FTP / SSH / サーバーパスワード / APIキー / トークンなどの認証情報を作成・保存・変更しない
-* `.env`、秘密鍵、サービスアカウントJSONなどの機密ファイルをリポジトリに追加しない
-* 認証情報が必要な処理は、仮の変数名や設定例のみを作成する
-* 不要な大規模リファクタリングは行わない
-* ファイル削除は慎重に行い、削除理由を明確にする
-* 既存HTMLを変更する場合は、変更前後で表示崩れが起きないように確認する
-* 自動化処理を追加する場合は、手動実行でも確認できるようにする
+| 変更対象 | 必読文書 |
+| --- | --- |
+| 全般・PR | `README.md`、`docs/codex-workflow.md` |
+| 年間スケジュールUI | `docs/html-analysis.md`、`docs/css-inventory.md`、`docs/js-inventory.md`、`docs/ai/CHECKLIST.md`、`docs/ai/BROWSER_CHECKLIST.md` |
+| 日程データ・CSV | `docs/data-schema.md`、`docs/sheets/schedule-columns.md`、`docs/operation-flow.md`、`docs/schedule-audit.md` |
+| 予想スカッド | `docs/squad-builder.md`、`docs/players-data-schema.md`、`docs/ai/SQUAD_BROWSER_CHECKLIST.md` |
+| LocalStorage | 対象機能の仕様書、`docs/personalization.md`、関連チェックリスト |
+| Actions・本番反映 | `docs/deploy-policy.md`、`docs/operation-flow.md` |
+| 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
 
+## ドキュメント更新ルール
 
-## PR作成ルール
+- 実装や運用を変更した場合は、同じPRで対応する現行文書を更新する。
+- 数値、ファイル名、コマンド、状態は実装と自動検証を確認して記載する。
+- 過去のWORKLOGや完了済み計画は、当時の記録として書き換えない。
+- 古い仕様を残す場合は「履歴」「廃止」「置き換え済み」を冒頭で明示する。
+- 現在仕様を末尾への追記だけで表現せず、冒頭の概要・状態も更新する。
+- 新規文書の前に既存文書へ統合できないか確認する。
+- PR完了時に、文書更新の有無と理由を報告する。
 
-CodexがPull Requestを作成する場合は、以下の内容を日本語で記載します。
+詳細は `docs/documentation-policy.md` を正とします。
 
-* PRタイトル
-* PR本文
-* Summary
-* Testing
-* 作業後の報告
+## 現在の正本
 
-Conventional Commits風の接頭辞を使う場合でも、説明部分は日本語にします。
+- 日程: `public/data/matches.json`（57件）
+- 選手: `public/data/players.json`（39件）
+- `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットであり、現在値ではない。
+- 公開情報更新時は可能な限り出典URLと確認日を残す。
+- 不確定情報は `tentative`、候補日、注記で明示する。
+- 公開JSONへ個人メモ、運用者メモ、認証情報を含めない。
 
-例:
+## 実装上の保護事項
 
-* `docs: AGENTSにPR作成ルールを追記`
-* `data: 全試合分のJSONデータを追加`
-* `feat: JSON由来の日程表示を改善`
+- class名、id名、data属性は参照箇所を確認してから変更する。
+- CSSの統合・並べ替えは既存上書きの意図を確認する。
+- JavaScript変更は既存LocalStorageデータとの互換性を保つ。
+- 公開CSS/JS変更時は対象HTMLのバージョンクエリを確認する。
+- スカッドの画像化対象 `#canvas` 内では、iOS Safari対策として `box-shadow` と `filter: drop-shadow` を追加しない。
+- 意味のあるHTML要素を使い、キーボード操作とフォーカス表示を保つ。
+- 色だけに依存せず、操作対象は原則44px程度を確保する。
+- ダイアログはフォーカス、Esc、背景操作、背面スクロールを確認する。
 
-ただし、ファイル名、関数名、コマンド、コード、ブランチ名は英語のままで構いません。
+## 基本検証
 
-## データ管理方針
+日程ページ:
 
-日程データの正本は、将来的にGoogleスプレッドシートに置く想定です。
-
-スプレッドシートで管理する主な項目:
-
-* season
-* competition
-* round
-* match_date
-* kickoff_time
-* home_away
-* opponent
-* venue
-* result
-* ticket_url
-* broadcast
-* source_url
-* status
-* note
-* updated_at
-
-公開サイト側では、可能な限りHTMLに日程データを直接埋め込まず、JSONなどのデータファイルから表示する構成を目指します。
-
-## 公開情報の扱い
-
-* 公開されている情報を元にする場合は、可能な限り出典URLを残す
-* 公式サイト等の本文・画像・独自表現を必要以上に転載しない
-* 日付、時刻、対戦相手、会場、URLなどの事実情報を中心に扱う
-* 情報が未確定の場合は、`tentative` や `確認中` などの状態を明示できるようにする
-* 自動取得を行う場合は、取得頻度を抑え、相手サイトへ過度な負荷をかけない
-
-## アクセシビリティ方針
-
-* HTMLは意味のある要素を使う
-* 見出し構造を崩さない
-* テーブルを使う場合は、caption、thead、th、scopeを適切に設定する
-* ボタンやリンクは、見た目だけでなく役割が分かる文言にする
-* キーボード操作で利用できる状態を保つ
-* フォーカスインジケータを消さない
-* 色だけに依存した情報伝達を避ける
-* コントラストに注意する
-* スマートフォン表示でも操作しやすいサイズを確保する
-
-## 想定ディレクトリ構成
-
-基本的には、次の構成を目指す。
-
-```text
-/
-├─ README.md
-├─ AGENTS.md
-├─ docs/
-│  ├─ data-schema.md
-│  ├─ operation-policy.md
-│  └─ deploy-policy.md
-├─ public/
-│  ├─ sanga202627season.html
-│  ├─ assets/
-│  │  ├─ style.css
-│  │  └─ app.js
-│  └─ data/
-│     └─ matches.sample.json
-├─ tools/
-│  ├─ generate-json.js
-│  └─ validate-data.js
-└─ sheets/
-   └─ schedule-columns.md
+```bash
+node tools/validate-matches.js
+node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict
+node --check public/assets/app.js
+node tools/validate-app-contract.js
 ```
 
-## 実装方針
+予想スカッド:
 
-* まずは既存HTMLを安全に管理できる状態にする
-* 次に、CSSとJavaScriptの分離を検討する
-* その後、日程データをJSON化する
-* 最終的に、GoogleスプレッドシートからJSONまたはHTMLを生成できる構成にする
-* 毎年の更新時に、HTML全体を作り直さなくてよい構成を目指す
+```bash
+node --check public/assets/squad-builder.js
+node --check public/assets/squad-formations.js
+node --check public/assets/squad-sample-players.js
+node tools/validate-players.js
+```
 
-## テスト・確認
+実行可能な環境では `node tools/check-squad-layout.mjs` も実行します。UI変更は静的検証だけで完了扱いにせず、対象のブラウザチェックリストを確認します。
 
-変更後は、最低限以下を確認する。
+## 作業とPR
 
-* HTMLに明らかな構文エラーがない
-* PC表示で大きな崩れがない
-* スマートフォン幅で表示が破綻しない
-* 既存のボタンや表示切替が動作する
-* LocalStorageを使う機能がある場合は、保存・復元・削除が動作する
-* JSONを使う場合は、データ欠損時にも画面が破綻しない
-* 日程、対戦相手、会場、時刻の表示が意図通りである
+1. 必読文書を確認する。
+2. 変更対象、影響範囲、変更しないものを整理する。
+3. 必要に応じて `docs/ai/GOAL.md` と `docs/ai/PLAN.md` を更新する。
+4. 小さな単位で変更し、対象別検証を行う。
+5. 実装と現行文書を同期する。
+6. 必要に応じて `docs/ai/WORKLOG.md` に記録する。
+7. 変更ファイル、確認結果、未確認事項、残課題、人間が確認すべき点を報告する。
 
-## デプロイ方針
-
-* 当面はスターレンタルサーバーへの手動アップロードを前提とする
-* GitHub Pagesでの公開は、明示的に方針変更があるまで使わない
-* 自動デプロイは後の段階で検討する
-* 自動デプロイを行う場合も、認証情報はGitHub Secrets等で管理し、リポジトリには保存しない
-* 本番反映前に、生成されたファイルを確認できる手順を用意する
-
-## Codexへの依頼時の期待動作
-
-* 作業前に、変更対象と方針を簡潔に説明する
-* 複数案がある場合は、推奨案を示す
-* 変更は小さな単位に分ける
-* 既存機能を壊す可能性がある場合は、先に注意点を説明する
-* 作業後に、変更したファイルと確認方法をまとめる
-* 不明点がある場合でも、危険な変更を避けられる範囲で安全側に倒して進める
-
-## データ管理方針
-
-日程データの正本は、将来的にGoogleスプレッドシートに置く想定です。
-
-スプレッドシートの列名は、日本語で分かりやすくします。
-JSONやJavaScriptなどの内部処理では、英語のキー名に変換して扱います。
-
-詳細な列定義、入力ルール、JSON変換ルールは `docs/data-schema.md` を参照してください。
-
-## AI開発運用基盤
-
-### Project
-
-このリポジトリは、京都サンガF.C.の2026-2027シーズン日程表HTMLを管理するプロジェクトです。
-
-主な対象ファイル:
-
-- `public/sanga202627season.html`
-- `docs/html-analysis.md`
-- `docs/ai/GOAL.md`
-- `docs/ai/PLAN.md`
-- `docs/ai/CHECKLIST.md`
-- `docs/ai/WORKLOG.md`
-
-### 最重要ルール
-
-- 試合日程データ、節番号、対戦相手、会場、キックオフ時刻を、明示的な依頼なしに変更しない。
-- LocalStorage の既存キーを、明示的な依頼なしに変更しない。
-- 既存の表示設定、列表示、メモ、チェック状態の保存仕様を壊さない。
-- スマートフォン表示を優先する。
-- アクセシビリティを悪化させない。
-- ボタン、ダイアログ、表示列変更、LocalStorage削除ボタンはキーボード操作できる状態を保つ。
-- フォーカス表示を消さない。
-- 免責事項、使い方、LocalStorage説明文を勝手に簡略化しない。
-- 変更はできるだけ小さくし、無関係な整形や全面書き換えを避ける。
-
-### 作業前に必ず読むファイル
-
-- `docs/html-analysis.md`
-- `docs/ai/GOAL.md`
-- `docs/ai/PLAN.md`
-- `docs/ai/CHECKLIST.md`
-
-### 作業時の基本手順
-
-1. 変更対象と影響範囲を確認する。
-2. まず `/plan` で計画を作る。
-3. 必要に応じて `docs/ai/PLAN.md` を更新する。
-4. `/goal` で今回の作業目的と完了条件を固定する。
-5. 変更は小さい単位で行う。
-6. 変更後に `docs/ai/CHECKLIST.md` の項目を確認する。
-7. `docs/ai/WORKLOG.md` に変更内容、確認結果、残課題を記録する。
-
-### 完了報告の形式
-
-完了時は以下を必ず報告する。
-
-- 変更ファイル
-- 変更内容
-- 確認した項目
-- 確認できなかった項目
-- 残課題
-- 人間が確認すべき点
-
-### HTML/CSS/JavaScript方針
-
-- 既存HTMLを全面的に作り直さない。
-- class名やid名は、影響範囲を確認してから変更する。
-- CSS変更は、既存表示への影響を最小化する。
-- JavaScript変更は、既存LocalStorageデータとの互換性を保つ。
-- インライン実装を分離する場合は、段階的に行う。
-- まずは安全な小変更を優先し、大規模リファクタは別作業に分ける。
-
-### アクセシビリティ方針
-
-- button要素を使える箇所はbutton要素を優先する。
-- クリック可能なdivやspanを安易に追加しない。
-- ダイアログは開閉、フォーカス移動、Escキー、背景クリックの影響を確認する。
-- 見出し構造を不自然にしない。
-- 文字サイズを極端に小さくしない。
-- 色だけで状態を伝えない。
-- フォーカスインジケータを非表示にしない。
-- `aria-label` や `aria-describedby` は、必要な場合だけ追加する。
+PRタイトル、本文、Summary、Testing、作業後の報告は日本語で記載します。ドキュメントのみのPRでは `public/` を変更しません。本番反映はPRマージと分けます。
