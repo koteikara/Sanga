@@ -28,8 +28,8 @@ const TILE_OFFSETS_URL = "../../assets/squad-tile-offsets.js";
 const VARIANTS = [
   { format: "chip", emphasis: "standard", title: "A. チップ × 標準（現行）", desc: "いまの見え方。比較の基準にする。" },
   { format: "chip", emphasis: "large", title: "B. チップ × 大きめ", desc: "文字と余白を1.35倍。1行あたりの人数が減り、背番号と名前が読みやすくなる。" },
-  { format: "tile", emphasis: "standard", title: "C. 背番号タイル × 標準", desc: "スタメンと同じ背番号画像を円で並べる。名前は省略名。" },
-  { format: "tile", emphasis: "large", title: "D. 背番号タイル × 大きめ", desc: "Cを1.35倍。もっとも目立つが、ピッチの取り分が減る。" },
+  { format: "tile", emphasis: "standard", title: "C. 背番号タイル × 標準", desc: "スタメンと同じ背番号画像を角丸の四角で並べる。名前は省略名。" },
+  { format: "tile", emphasis: "large", title: "D. 背番号タイル × 大きめ", desc: "Cを1.9倍。ベンチを主役にした見せ方。そのぶんスタメンのカードは小さくなる。" },
 ];
 
 /**
