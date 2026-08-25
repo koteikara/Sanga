@@ -13,7 +13,8 @@
   ベンチの見せ方（チップ／背番号タイル）と大きさ（標準／大きめ）を組み合わせた4通りを並べます。
   キャンバスは本番ページ <code>squad.html</code> をそのまま読み込み、ベンチだけを差し替えています。
   配置計算・画像・スタイル切替は本番のコードが動くので、移植したときの見え方と一致します。
-  控えは見分けにくい組み合わせ（マセイオ／ウェベルトン、福田／福岡、平岡／平賀／平戸、加藤／加藤蓮）を意図的に含めています。
+  控えの顔ぶれは切り替えられます。「見分けにくい組み合わせ」（マセイオ／ウェベルトン、福田／福岡、平岡／平賀／平戸、加藤／加藤蓮）と、
+  チップ表示の折り返しが最も厳しくなる「ローマ字名が長い順」の2つを用意しています。
 </p>
 
 <div class="controls">
@@ -31,6 +32,13 @@
       <option value="6">6人</option>
       <option value="9" selected>9人</option>
       <option value="12">12人</option>
+    </select>
+  </div>
+  <div class="control">
+    <label for="field-preset">控えの顔ぶれ</label>
+    <select id="field-preset">
+      <option value="confusing" selected>見分けにくい組み合わせ</option>
+      <option value="long">ローマ字名が長い順</option>
     </select>
   </div>
   <div class="control">

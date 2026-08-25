@@ -32,8 +32,17 @@ const VARIANTS = [
   { format: "tile", emphasis: "large", title: "D. 背番号タイル × 大きめ", desc: "Cを1.35倍。もっとも目立つが、ピッチの取り分が減る。" },
 ];
 
-/** 見分けにくい組み合わせを意図的に含めた控えの並び */
-const BENCH_PRESET = ["38", "43", "2", "10", "16", "31", "39", "23", "26", "9", "34", "36"];
+/**
+ * 控えの並び。確認したい観点ごとに用意する。
+ * 短い名前ばかりだと折り返しがたまたまきれいに収まるため、
+ * 名前が長い組み合わせも必ず見る。
+ */
+const BENCH_PRESETS = {
+  // 見分けにくい組み合わせ（マセイオ／ウェベルトン、福田／福岡、平岡／平賀／平戸、加藤／加藤蓮）
+  confusing: ["38", "43", "2", "10", "16", "31", "39", "23", "26", "9", "34", "36"],
+  // ローマ字名が長い順。チップ表示の折り返しが最も厳しくなる
+  long: ["6", "34", "17", "94", "93", "8", "60", "43", "38", "36", "11", "10"],
+};
 
 const $ = (sel) => document.querySelector(sel);
 const statusEl = $("#status");
@@ -53,6 +62,7 @@ function currentSettings() {
     style: $("#field-style").value,
     showName: $("#field-name").value,
     priority: $("#field-priority").value,
+    preset: $("#field-preset").value,
   };
 }
 
@@ -77,7 +87,8 @@ async function waitFor(check, label) {
 }
 
 /** iframeの中の本番UIを操作して、スタメンと控えを埋める */
-async function fillSquad(doc, { style, benchCount }) {
+async function fillSquad(doc, { style, benchCount, preset }) {
+  const benchNumbers = BENCH_PRESETS[preset] || BENCH_PRESETS.confusing;
   await waitFor(() => doc.querySelectorAll("#pitch .player .select-btn").length === 11, "ピッチの枠");
   await waitFor(() => doc.querySelectorAll(".picker-item").length > 0 || true, "選手一覧");
 
@@ -98,12 +109,12 @@ async function fillSquad(doc, { style, benchCount }) {
     await waitFor(() => doc.querySelectorAll(".picker-item").length > 0, "選手一覧");
     pickItem((el) => {
       const num = el.querySelector(".num").textContent.trim();
-      return !el.classList.contains("is-used") && !BENCH_PRESET.includes(num);
+      return !el.classList.contains("is-used") && !benchNumbers.includes(num);
     });
   }
 
-  // 控えは見分けにくい組み合わせを含む固定の並びで埋める
-  for (const num of BENCH_PRESET.slice(0, benchCount)) {
+  // 控えは選んだ並びで埋める
+  for (const num of benchNumbers.slice(0, benchCount)) {
     doc.querySelector(".bench-edit-add").click();
     await waitFor(() => doc.querySelectorAll(".picker-item").length > 0, "選手一覧");
     pickItem((el) => el.querySelector(".num").textContent.trim() === num);
@@ -260,7 +271,7 @@ async function render() {
   }
 }
 
-["#field-width", "#field-bench", "#field-style", "#field-name", "#field-priority"].forEach((sel) => {
+["#field-width", "#field-bench", "#field-style", "#field-name", "#field-priority", "#field-preset"].forEach((sel) => {
   $(sel).addEventListener("change", render);
 });
 
