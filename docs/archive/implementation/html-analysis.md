@@ -1,5 +1,10 @@
 # `public/sanga202627season.html` 分析メモ
 
+> **履歴文書です。現行の参照先ではありません。**
+> `public/sanga202627season.html` からCSS・JavaScript・日程データを分離する前の分析メモです。
+> 記載されている「分離できそうな部分」「JSON化するときの注意点」は、すでに実施済みです。
+> 現在の構成は `docs/project-structure.md`、DOM識別子は `docs/dom-inventory.md` を参照します。
+
 ## 1. 現在のHTML構造の概要
 
 対象ファイルは、京都サンガF.C. 2026/27シーズンの年間日程を、スマートフォン幅を主軸にしたカード型UIで表示する単一HTMLです。

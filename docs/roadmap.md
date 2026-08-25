@@ -45,7 +45,7 @@
 | デプロイ | 本番サーバー手動デプロイ運用 | 運用済み | `docs/deploy-policy.md` / `docs/operation-flow.md` | 自動デプロイではなく手動実行を基本にする。 |
 | 運用 | スプレッドシート更新から本番反映までの運用整理 | 整理済み | `docs/operation-flow.md` | CSV出力、JSON生成、検証、PR、確認、本番反映の流れを整理。 |
 | 運用 | UIプロトタイプ運用ルール | 整理済み | `docs/ui-prototype-workflow.md` | UIを伴う変更は先にプロトタイプで確認する。 |
-| 保守 | CSS棚卸し・確認観点整理 | 整理済み | `docs/css-inventory.md` / `docs/ai/BROWSER_CHECKLIST.md` | 今後のCSS整理前の確認材料として扱う。 |
+| 保守 | CSS棚卸し・確認観点整理 | 整理済み | `docs/archive/implementation/css-inventory.md` / `docs/ai/BROWSER_CHECKLIST.md` | 今後のCSS整理前の確認材料として扱う。 |
 | 文書管理 | 完了済み計画・AI作業ログのアーカイブ整理 | PR #156で完了 | `docs/documentation-policy.md` / `docs/archive/` | 現行文書と過去の記録を分離。 |
 | 権利管理 | 出典・ライセンス棚卸し | PR #157で完了 / 未確認素材あり | `docs/source-and-license.md` / `THIRD_PARTY_NOTICES.md` | 外部ライブラリのMIT表記を集約。公式由来画像の判断は保留中。 |
 | 検証 | 予想スカッドの本番デプロイ前検証 | PR #158で完了 | `docs/squad-builder.md` / `docs/deploy-policy.md` | 11人配置済みの1,824組み合わせ（うち192件はベンチの見せ方）をChromiumで検証し、失敗時は本番アップロードを開始しない。 |

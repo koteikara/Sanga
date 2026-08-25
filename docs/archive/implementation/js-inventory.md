@@ -1,5 +1,11 @@
 # js-inventory.md
 
+> **履歴文書です。現行の参照先ではありません。**
+> 2026年6月時点の `public/assets/app.js` 整理前の棚卸しと、その後の整理メモです。
+> 現在のDOM識別子一覧は `docs/dom-inventory.md`（実装から自動生成）、
+> LocalStorageの保存形式は `docs/personalization.md` を正本とします。
+> ここに書かれた「次に整理できそうな候補」は当時の検討であり、現在の計画ではありません。
+
 ## 目的
 
 このドキュメントは、`public/assets/app.js` のJavaScript整理に入る前の棚卸しです。

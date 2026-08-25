@@ -119,6 +119,11 @@ const checks = [
     ],
   },
   {
+    label: 'Panel close delay contract in public/assets/app.js',
+    source: appJs,
+    required: ['PANEL_CLOSE_DELAY_MS=240'],
+  },
+  {
     label: 'JSON loading path in public/assets/app.js',
     source: appJs,
     required: ['data/matches.json'],

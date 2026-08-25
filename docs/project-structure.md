@@ -22,6 +22,7 @@
 - 選手生成・検証: `generate-players-from-csv.js`、`validate-players.js`
 - スカッド: `check-squad-layout.mjs`、背番号画像加工ツール
 - 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照）
+- 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
 - ホテル: `tools/hotels/`、`validate-hotels.js`
 
 ### ルート直下 `package.json`
@@ -34,7 +35,7 @@
 
 ### `docs/`
 
-仕様、運用、チェックリスト、調査、作業記録です。必読順と更新条件は `docs/documentation-policy.md` を参照してください。出典と権利状態は `docs/source-and-license.md`、第三者製ソフトウェアは `THIRD_PARTY_NOTICES.md` を正とします。完了済み計画と過去の作業記録は `docs/archive/` に置き、通常の必読対象から外します。
+仕様、運用、チェックリスト、調査、作業記録です。`docs/dom-inventory.md` は実装から自動生成する一覧で、手で編集しません。必読順と更新条件は `docs/documentation-policy.md` を参照してください。出典と権利状態は `docs/source-and-license.md`、第三者製ソフトウェアは `THIRD_PARTY_NOTICES.md` を正とします。完了済み計画と過去の作業記録は `docs/archive/` に置き、通常の必読対象から外します。
 
 ## データと保存
 
