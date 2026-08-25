@@ -48,7 +48,7 @@
 | 保守 | CSS棚卸し・確認観点整理 | 整理済み | `docs/css-inventory.md` / `docs/ai/BROWSER_CHECKLIST.md` | 今後のCSS整理前の確認材料として扱う。 |
 | 文書管理 | 完了済み計画・AI作業ログのアーカイブ整理 | PR #156で完了 | `docs/documentation-policy.md` / `docs/archive/` | 現行文書と過去の記録を分離。 |
 | 権利管理 | 出典・ライセンス棚卸し | PR #157で完了 / 未確認素材あり | `docs/source-and-license.md` / `THIRD_PARTY_NOTICES.md` | 外部ライブラリのMIT表記を集約。公式由来画像の判断は保留中。 |
-| 検証 | 予想スカッドの本番デプロイ前検証 | PR #158で完了 | `docs/squad-builder.md` / `docs/deploy-policy.md` | 11人配置済みの1,632組み合わせをChromiumで検証し、失敗時は本番アップロードを開始しない。 |
+| 検証 | 予想スカッドの本番デプロイ前検証 | PR #158で完了 | `docs/squad-builder.md` / `docs/deploy-policy.md` | 11人配置済みの1,824組み合わせ（うち192件はベンチの見せ方）をChromiumで検証し、失敗時は本番アップロードを開始しない。 |
 
 ## 進行中・確認中
 
@@ -79,7 +79,7 @@
 
 | 項目 | 状態 | 関連ドキュメント | メモ |
 | --- | --- | --- | --- |
-| 予想スカッド作成ページ | 公開構成・事前検証自動化済み / 継続改善 | `docs/squad-builder.md` / `docs/players-data-schema.md` / `docs/ai/SQUAD_BROWSER_CHECKLIST.md` | `public/squad.html` として実装済み。39選手、17フォーメーション、8スタイル、PNG生成、LocalStorage保存に対応。PR #158でPR時・本番デプロイ前の静的契約とChromiumレイアウト検証を追加済み。 |
+| 予想スカッド作成ページ | 公開構成・事前検証自動化済み / 継続改善 | `docs/squad-builder.md` / `docs/players-data-schema.md` / `docs/ai/SQUAD_BROWSER_CHECKLIST.md` | `public/squad.html` として実装済み。39選手、17フォーメーション、8スタイル、ベンチ表示オプション（見せ方2×大きさ2）、PNG生成、LocalStorage保存に対応。PR #158でPR時・本番デプロイ前の静的契約とChromiumレイアウト検証を追加済み。 |
 
 ## 中期候補
 

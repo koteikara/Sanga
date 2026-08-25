@@ -13,7 +13,7 @@ import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=20260821-1";
 import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs";
 
 // JSONデータのブラウザキャッシュ対策。data/*.json を更新したらここを上げる。
-const DATA_VERSION = "20260821-1";
+const DATA_VERSION = "20260825-1";
 
 const STORAGE_PREFIX = "sanga-squad-";
 const STORAGE_INDEX_KEY = STORAGE_PREFIX + "index";
@@ -31,6 +31,9 @@ const state = {
   matchInfo: "", // 年間スケジュールから選んだ試合の表示文。未選択なら空
   poster: "", // 投稿者名。誰の予想かを画像に残すために使う
   style: "modern",
+  // ベンチの見せ方（chip=チップ / tile=背番号タイル）と大きさ（standard / large）
+  benchFormat: "chip",
+  benchEmphasis: "standard",
   showJa: true,
   showPill: true,
   showMascot: false,
@@ -388,12 +391,33 @@ function renderBenchDisplay() {
   getBench().forEach((number) => {
     const player = findPlayer(number);
     if (!player) return;
-    const chip = document.createElement("span");
-    chip.className = "bench-slot";
-    chip.innerHTML = `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`;
-    benchEl.appendChild(chip);
+    const slot = document.createElement("span");
+    slot.className = "bench-slot";
+    slot.innerHTML = state.benchFormat === "tile" ? benchTileMarkup(player) : benchChipMarkup(player);
+    benchEl.appendChild(slot);
   });
   applyBenchScale();
+}
+
+/** チップ（現行の見せ方）。背番号＋ローマ字名 */
+function benchChipMarkup(player) {
+  return `<b>${escapeHtml(player.number)}</b>${escapeHtml(player.nameEn)}`;
+}
+
+/**
+ * 背番号タイル。スタメンと同じ画像を角丸の四角で並べ、下に省略名を出す。
+ * 名前は players.json の nameShort（無ければローマ字名）を使う。
+ */
+function benchTileMarkup(player) {
+  const tile = tileOffset(player);
+  const name = player.nameShort || player.nameEn || "";
+  return (
+    `<span class="bench-face">` +
+    `<img src="${escapeHtml(playerImageSrc(player))}" alt=""` +
+    ` style="--tile-dx:${tile.dx};--tile-dy:${tile.dy}"` +
+    ` onerror="this.style.display='none'"></span>` +
+    `<span class="bench-name">${escapeHtml(name)}</span>`
+  );
 }
 
 /** キャンバス外のベンチ編集UI。タップ領域を十分にとる */
@@ -447,6 +471,8 @@ function renderMeta() {
   posterEl.textContent = poster ? `予想: ${poster}` : "";
   posterEl.hidden = !poster;
   canvas.dataset.style = state.style;
+  canvas.dataset.benchFormat = state.benchFormat;
+  canvas.dataset.benchEmphasis = state.benchEmphasis;
   document.body.classList.toggle("show-ja", state.showJa);
   document.body.classList.toggle("show-pill", state.showPill);
 }
@@ -548,6 +574,22 @@ function fitOneLine(el) {
   }
 }
 
+/**
+ * ベンチの省略名が枠に収まらない場合だけ、横方向へ圧縮する。
+ * カードの名前（fitNames）と同じ考え方。タイル表示のときだけ意味を持つ。
+ */
+function fitBenchNames() {
+  $$(".bench-slot .bench-name", benchEl).forEach((name) => {
+    name.style.transform = "";
+    const avail = name.parentElement.getBoundingClientRect().width;
+    const width = name.getBoundingClientRect().width;
+    if (avail > 0 && width > avail) {
+      name.style.transformOrigin = "center";
+      name.style.transform = `scaleX(${(avail / width).toFixed(3)})`;
+    }
+  });
+}
+
 function fitNames() {
   [subtitleEl, titleTextEl].forEach((el) => {
     if (el) fitOneLine(el);
@@ -596,6 +638,7 @@ function layoutPitch() {
     positionPlayer(el, slot, pitchRect);
   });
   fitNames();
+  fitBenchNames();
 }
 
 function positionPlayer(el, slot, pitchRectArg) {
@@ -893,6 +936,8 @@ function saveSquad(name) {
     matchInfo: state.matchInfo,
     poster: state.poster,
     style: state.style,
+    benchFormat: state.benchFormat,
+    benchEmphasis: state.benchEmphasis,
     showJa: state.showJa,
     showPill: state.showPill,
     showMascot: state.showMascot,
@@ -931,6 +976,9 @@ function loadSquad(name) {
   state.matchInfo = data.matchInfo;
   state.poster = data.poster || "";
   state.style = data.style;
+  // ベンチの見せ方は後から追加した項目。旧い保存データには無いので既定へ倒す
+  state.benchFormat = data.benchFormat === "tile" ? "tile" : "chip";
+  state.benchEmphasis = data.benchEmphasis === "large" ? "large" : "standard";
   state.showJa = data.showJa;
   state.showPill = data.showPill;
   state.showMascot = data.showMascot;
@@ -939,6 +987,8 @@ function loadSquad(name) {
   setMatchSelectValue(state.matchInfo);
   $("#field-poster").value = state.poster;
   $("#field-style").value = state.style;
+  $("#field-bench-format").value = state.benchFormat;
+  $("#field-bench-emphasis").value = state.benchEmphasis;
   $("#tg-ja").checked = state.showJa;
   $("#tg-pill").checked = state.showPill;
   $("#tg-mascot").checked = state.showMascot;
@@ -1003,6 +1053,17 @@ function wireControls() {
   });
   $("#field-style").addEventListener("change", (e) => {
     state.style = e.target.value;
+    renderMeta();
+    requestAnimationFrame(layoutPitch);
+  });
+  $("#field-bench-format").addEventListener("change", (e) => {
+    state.benchFormat = e.target.value;
+    renderMeta();
+    renderBench();
+    requestAnimationFrame(layoutPitch);
+  });
+  $("#field-bench-emphasis").addEventListener("change", (e) => {
+    state.benchEmphasis = e.target.value;
     renderMeta();
     requestAnimationFrame(layoutPitch);
   });

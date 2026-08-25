@@ -35,6 +35,17 @@ const BENCH_COUNTS = [0, 5, 9, 12];
 const EXPECTED_FORMATION_COUNT = 17;
 const EXPECTED_STYLE_COUNT = 8;
 const EXPECTED_PITCH_PLAYER_COUNT = 11;
+/** ベンチの見せ方（chip=チップ / tile=背番号タイル）と大きさ（standard / large） */
+const BENCH_FORMATS = ["chip", "tile"];
+const BENCH_EMPHASES = ["standard", "large"];
+/** ベンチの見せ方を確認するときの控え人数。いちばん厳しい条件だけを見る */
+const BENCH_OPTION_COUNT = 12;
+/**
+ * ベンチの見せ方を確認するフォーメーション。
+ * ベンチの寸法は人数と幅で決まり、フォーメーションとはほぼ独立なので、
+ * 全17件へ掛けずに代表2件（横に広い4-4-2と縦に密な4-1-4-1）で確認する。
+ */
+const BENCH_OPTION_FORMS = ["4-4-2", "4-1-4-1"];
 /** カード高さの下限（squad-builder.js の CARD_H_MIN と合わせる） */
 const CARD_H_MIN = 70;
 
@@ -50,6 +61,39 @@ function assertRequestedValues(label, requested, available) {
   if (missing.length > 0) {
     throw new Error(`${label} に存在しない値が指定されました: ${missing.join(", ")}`);
   }
+}
+
+/** 控えの人数を設定する */
+async function setBenchCount(page, count) {
+  await page.evaluate((n) => {
+    let guard = 0;
+    while (document.querySelector(".bench-edit-remove") && guard++ < 50) {
+      document.querySelector(".bench-edit-remove").click();
+    }
+    for (let i = 0; i < n; i++) {
+      document.querySelector(".bench-edit-add").click();
+      const item = document.querySelector("#picker-list .picker-item:not(.is-used)");
+      if (!item) throw new Error(`控え${n}人を設定できませんでした`);
+      item.click();
+    }
+  }, count);
+  await waitForLayout(page);
+
+  const actual = await page.locator(".bench-edit-remove").count();
+  if (actual !== count) {
+    throw new Error(`控え人数が一致しません: 期待=${count}, 実際=${actual}`);
+  }
+}
+
+/** フォーメーションを選ぶ */
+async function selectFormation(page, label) {
+  await page.evaluate((formationLabel) => {
+    const button = [...document.querySelectorAll("#formation-grid .btn")]
+      .find((candidate) => candidate.textContent.trim() === formationLabel);
+    if (!button) throw new Error(`フォーメーションが見つかりません: ${formationLabel}`);
+    button.click();
+  }, label);
+  await waitForLayout(page);
 }
 
 async function waitForLayout(page) {
@@ -77,6 +121,121 @@ async function fillStartingEleven(page) {
       `スタメン人数が一致しません: 期待=${EXPECTED_PITCH_PLAYER_COUNT}, 実際=${filled}`
     );
   }
+}
+
+/**
+ * いまの画面を測り、重なり・はみ出し・見切れを判定して記録する。
+ * 主検証（全フォーメーション）と、ベンチの見せ方の検証で共有する。
+ */
+async function measureAndJudge(page, { width, count, style, key, benchLabel = "" }) {
+        const result = await page.evaluate(() => {
+          const pitchEl = document.querySelector("#pitch");
+          // scrapbook はピッチ全体を回転する。画面座標の外接矩形同士を比べると、
+          // 内部に収まっているカードも「はみ出し」と誤判定するため、ピッチの
+          // ローカル座標系（回転なし）でカードの収まりを測る。
+          const inlineTransform = pitchEl.style.getPropertyValue("transform");
+          const inlineTransformPriority = pitchEl.style.getPropertyPriority("transform");
+          pitchEl.style.setProperty("transform", "none", "important");
+          const pitch = pitchEl.getBoundingClientRect();
+          const footer = document.querySelector(".sq-footer").getBoundingClientRect();
+          const canvas = document.querySelector("#canvas").getBoundingClientRect();
+          const cardH = parseFloat(getComputedStyle(pitchEl).getPropertyValue("--card-h"));
+          const players = [...document.querySelectorAll("#pitch .player")];
+          const visibleRects = players.map((player, playerIndex) =>
+            [...player.querySelectorAll(".card, .name-ja, .pos-pill")]
+              .filter((element) => {
+                const style = getComputedStyle(element);
+                return (
+                  style.display !== "none" &&
+                  style.visibility !== "hidden" &&
+                  Number.parseFloat(style.opacity || "1") > 0
+                );
+              })
+              .map((element) => {
+                const bounds = element.getBoundingClientRect();
+                return {
+                  playerIndex,
+                  kind: element.className,
+                  l: bounds.left,
+                  r: bounds.right,
+                  t: bounds.top,
+                  b: bounds.bottom,
+                };
+              })
+              .filter((rect) => rect.r - rect.l > 0 && rect.b - rect.t > 0)
+          );
+          let overlaps = 0;
+          for (let i = 0; i < visibleRects.length; i++) {
+            for (let j = i + 1; j < visibleRects.length; j++) {
+              if (
+                visibleRects[i].some((first) =>
+                  visibleRects[j].some(
+                    (second) =>
+                      Math.min(first.r, second.r) - Math.max(first.l, second.l) > 1 &&
+                      Math.min(first.b, second.b) - Math.max(first.t, second.t) > 1
+                  )
+                )
+              ) {
+                overlaps++;
+              }
+            }
+          }
+          const outsideDetails = visibleRects
+            .flat()
+            .map((rect) => ({
+              playerIndex: rect.playerIndex,
+              kind: rect.kind,
+              left: +(pitch.left - rect.l).toFixed(1),
+              right: +(rect.r - pitch.right).toFixed(1),
+              top: +(pitch.top - rect.t).toFixed(1),
+              bottom: +(rect.b - pitch.bottom).toFixed(1),
+            }))
+            .filter(
+              (delta) =>
+                delta.left > 1 ||
+                delta.right > 1 ||
+                delta.top > 1 ||
+                delta.bottom > 1
+            );
+          const outside = outsideDetails.length;
+          if (inlineTransform) {
+            pitchEl.style.setProperty("transform", inlineTransform, inlineTransformPriority);
+          } else {
+            pitchEl.style.removeProperty("transform");
+          }
+          return {
+            cardH,
+            playerCount: players.length,
+            overlaps,
+            outside,
+            outsideDetails,
+            benchClipped: document.querySelector("#bench").scrollHeight > footer.height + 1,
+            pitchPct: +((pitch.height / canvas.height) * 100).toFixed(1),
+            footPct: +((footer.height / canvas.height) * 100).toFixed(1),
+          };
+        });
+
+        checked++;
+        const failed =
+          result.playerCount !== EXPECTED_PITCH_PLAYER_COUNT ||
+          !Number.isFinite(result.cardH) ||
+          result.overlaps > 0 ||
+          result.outside > 0 ||
+          result.benchClipped;
+        if (failed) ng++;
+        if (failed || process.env.VERBOSE) {
+          const note =
+            result.cardH < CARD_H_MIN - 0.1
+              ? " [下限70px未達＝そのフォーメーションの幾何的上限]"
+              : "";
+          console.log(
+            `${failed ? "NG" : "ok"} w=${width} bench=${count}${benchLabel} style=${style.padEnd(10)} ` +
+              `${key.padEnd(9)} cardH=${result.cardH.toFixed(1)} players=${result.playerCount} ` +
+              `重なり=${result.overlaps} はみ出し=${result.outside} 見切れ=${result.benchClipped} ` +
+              `pitch=${result.pitchPct}% footer=${result.footPct}%${note}` +
+              (result.outsideDetails.length > 0 ? ` outside=${JSON.stringify(result.outsideDetails)}` : "")
+          );
+        }
 }
 
 const browser = await chromium.launch({ headless: true });
@@ -122,149 +281,50 @@ try {
     await fillStartingEleven(page);
 
     for (const count of BENCH_COUNTS) {
-      await page.evaluate((n) => {
-        let guard = 0;
-        while (document.querySelector(".bench-edit-remove") && guard++ < 50) {
-          document.querySelector(".bench-edit-remove").click();
-        }
-        for (let i = 0; i < n; i++) {
-          document.querySelector(".bench-edit-add").click();
-          const item = document.querySelector("#picker-list .picker-item:not(.is-used)");
-          if (!item) throw new Error(`控え${n}人を設定できませんでした`);
-          item.click();
-        }
-      }, count);
-      await waitForLayout(page);
-
-      const actualBenchCount = await page.locator(".bench-edit-remove").count();
-      if (actualBenchCount !== count) {
-        throw new Error(`控え人数が一致しません: 期待=${count}, 実際=${actualBenchCount}`);
-      }
+      await setBenchCount(page, count);
 
       for (const style of styles) {
         await page.selectOption("#field-style", style);
         await waitForLayout(page);
 
         for (const key of forms) {
-          await page.evaluate((formationLabel) => {
-            const button = [...document.querySelectorAll("#formation-grid .btn")]
-              .find((candidate) => candidate.textContent.trim() === formationLabel);
-            if (!button) throw new Error(`フォーメーションが見つかりません: ${formationLabel}`);
-            button.click();
-          }, key);
+          await selectFormation(page, key);
+
+          await measureAndJudge(page, { width, count, style, key });
+        }
+      }
+    }
+
+    // ---- ベンチの見せ方の検証 ----
+    // 全組み合わせへ掛けると数が跳ね上がるため、控え最大人数と代表
+    // フォーメーションに絞る。ベンチの寸法は人数と幅で決まり、
+    // フォーメーションとはほぼ独立なので、この範囲で十分に確認できる。
+    assertRequestedValues("FORMS", BENCH_OPTION_FORMS, inventory.forms);
+    await setBenchCount(page, BENCH_OPTION_COUNT);
+    for (const format of BENCH_FORMATS) {
+      await page.selectOption("#field-bench-format", format);
+      for (const emphasis of BENCH_EMPHASES) {
+        await page.selectOption("#field-bench-emphasis", emphasis);
+        await waitForLayout(page);
+        for (const style of styles) {
+          await page.selectOption("#field-style", style);
           await waitForLayout(page);
-
-          const result = await page.evaluate(() => {
-            const pitchEl = document.querySelector("#pitch");
-            // scrapbook はピッチ全体を回転する。画面座標の外接矩形同士を比べると、
-            // 内部に収まっているカードも「はみ出し」と誤判定するため、ピッチの
-            // ローカル座標系（回転なし）でカードの収まりを測る。
-            const inlineTransform = pitchEl.style.getPropertyValue("transform");
-            const inlineTransformPriority = pitchEl.style.getPropertyPriority("transform");
-            pitchEl.style.setProperty("transform", "none", "important");
-            const pitch = pitchEl.getBoundingClientRect();
-            const footer = document.querySelector(".sq-footer").getBoundingClientRect();
-            const canvas = document.querySelector("#canvas").getBoundingClientRect();
-            const cardH = parseFloat(getComputedStyle(pitchEl).getPropertyValue("--card-h"));
-            const players = [...document.querySelectorAll("#pitch .player")];
-            const visibleRects = players.map((player, playerIndex) =>
-              [...player.querySelectorAll(".card, .name-ja, .pos-pill")]
-                .filter((element) => {
-                  const style = getComputedStyle(element);
-                  return (
-                    style.display !== "none" &&
-                    style.visibility !== "hidden" &&
-                    Number.parseFloat(style.opacity || "1") > 0
-                  );
-                })
-                .map((element) => {
-                  const bounds = element.getBoundingClientRect();
-                  return {
-                    playerIndex,
-                    kind: element.className,
-                    l: bounds.left,
-                    r: bounds.right,
-                    t: bounds.top,
-                    b: bounds.bottom,
-                  };
-                })
-                .filter((rect) => rect.r - rect.l > 0 && rect.b - rect.t > 0)
-            );
-            let overlaps = 0;
-            for (let i = 0; i < visibleRects.length; i++) {
-              for (let j = i + 1; j < visibleRects.length; j++) {
-                if (
-                  visibleRects[i].some((first) =>
-                    visibleRects[j].some(
-                      (second) =>
-                        Math.min(first.r, second.r) - Math.max(first.l, second.l) > 1 &&
-                        Math.min(first.b, second.b) - Math.max(first.t, second.t) > 1
-                    )
-                  )
-                ) {
-                  overlaps++;
-                }
-              }
-            }
-            const outsideDetails = visibleRects
-              .flat()
-              .map((rect) => ({
-                playerIndex: rect.playerIndex,
-                kind: rect.kind,
-                left: +(pitch.left - rect.l).toFixed(1),
-                right: +(rect.r - pitch.right).toFixed(1),
-                top: +(pitch.top - rect.t).toFixed(1),
-                bottom: +(rect.b - pitch.bottom).toFixed(1),
-              }))
-              .filter(
-                (delta) =>
-                  delta.left > 1 ||
-                  delta.right > 1 ||
-                  delta.top > 1 ||
-                  delta.bottom > 1
-              );
-            const outside = outsideDetails.length;
-            if (inlineTransform) {
-              pitchEl.style.setProperty("transform", inlineTransform, inlineTransformPriority);
-            } else {
-              pitchEl.style.removeProperty("transform");
-            }
-            return {
-              cardH,
-              playerCount: players.length,
-              overlaps,
-              outside,
-              outsideDetails,
-              benchClipped: document.querySelector("#bench").scrollHeight > footer.height + 1,
-              pitchPct: +((pitch.height / canvas.height) * 100).toFixed(1),
-              footPct: +((footer.height / canvas.height) * 100).toFixed(1),
-            };
-          });
-
-          checked++;
-          const failed =
-            result.playerCount !== EXPECTED_PITCH_PLAYER_COUNT ||
-            !Number.isFinite(result.cardH) ||
-            result.overlaps > 0 ||
-            result.outside > 0 ||
-            result.benchClipped;
-          if (failed) ng++;
-          if (failed || process.env.VERBOSE) {
-            const note =
-              result.cardH < CARD_H_MIN - 0.1
-                ? " [下限70px未達＝そのフォーメーションの幾何的上限]"
-                : "";
-            console.log(
-              `${failed ? "NG" : "ok"} w=${width} bench=${count} style=${style.padEnd(10)} ` +
-                `${key.padEnd(9)} cardH=${result.cardH.toFixed(1)} players=${result.playerCount} ` +
-                `重なり=${result.overlaps} はみ出し=${result.outside} 見切れ=${result.benchClipped} ` +
-                `pitch=${result.pitchPct}% footer=${result.footPct}%${note}` +
-                (result.outsideDetails.length > 0 ? ` outside=${JSON.stringify(result.outsideDetails)}` : "")
-            );
+          for (const key of BENCH_OPTION_FORMS) {
+            await selectFormation(page, key);
+            await measureAndJudge(page, {
+              width,
+              count: BENCH_OPTION_COUNT,
+              style,
+              key,
+              benchLabel: ` bench表示=${format}/${emphasis}`,
+            });
           }
         }
       }
     }
+    // 次の幅へ移る前に既定へ戻す
+    await page.selectOption("#field-bench-format", "chip");
+    await page.selectOption("#field-bench-emphasis", "standard");
 
     if (pageErrors.length > 0) {
       ng += pageErrors.length;
