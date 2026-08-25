@@ -808,9 +808,7 @@
       "competition_label": "明治安田J1リーグ",
       "round": "第20節",
       "match_date": "",
-      "date_candidates": [
-        "2026-12-19"
-      ],
+      "date_candidates": [],
       "kickoff_time": "",
       "home_away": "H",
       "home_away_label": "ホーム",
@@ -820,12 +818,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "DAZN",
-      "source_url": "https://www.jleague-ticket.jp/sales/perform/2630702/001",
-      "source_checked_at": "2026-08-20",
+      "source_url": "https://sanga-fc.jp/news/detail/21194",
+      "source_checked_at": "2026-08-25",
       "status": "tentative",
-      "status_label": "未確定",
+      "status_label": "未定",
       "note": "",
-      "updated_at": "2026-08-20 00:00",
+      "updated_at": "2026-08-25 00:00",
       "match_status": "試合前",
       "is_visible": true
     },
