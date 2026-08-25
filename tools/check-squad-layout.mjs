@@ -210,6 +210,15 @@ async function measureAndJudge(page, { width, count, style, key, benchLabel = ""
             outside,
             outsideDetails,
             benchClipped: document.querySelector("#bench").scrollHeight > footer.height + 1,
+            // 下部帯からはみ出した中身。ベンチだけを見ていると、投稿者名や
+            // 注記（非公式である旨）が切れていることを見逃す。
+            footerClipped: [".poster-name", ".sq-footer .disclaimer"].filter((selector) => {
+              const el = document.querySelector(selector);
+              if (!el) return true; // 必須要素が無いのは異常として扱う
+              const rect = el.getBoundingClientRect();
+              if (rect.height === 0) return false; // 投稿者名は未入力なら出ない
+              return rect.bottom > footer.bottom + 1;
+            }),
             pitchPct: +((pitch.height / canvas.height) * 100).toFixed(1),
             footPct: +((footer.height / canvas.height) * 100).toFixed(1),
           };
@@ -221,7 +230,8 @@ async function measureAndJudge(page, { width, count, style, key, benchLabel = ""
           !Number.isFinite(result.cardH) ||
           result.overlaps > 0 ||
           result.outside > 0 ||
-          result.benchClipped;
+          result.benchClipped ||
+          result.footerClipped.length > 0;
         if (failed) ng++;
         if (failed || process.env.VERBOSE) {
           const note =
@@ -232,6 +242,7 @@ async function measureAndJudge(page, { width, count, style, key, benchLabel = ""
             `${failed ? "NG" : "ok"} w=${width} bench=${count}${benchLabel} style=${style.padEnd(10)} ` +
               `${key.padEnd(9)} cardH=${result.cardH.toFixed(1)} players=${result.playerCount} ` +
               `重なり=${result.overlaps} はみ出し=${result.outside} 見切れ=${result.benchClipped} ` +
+              `帯の切れ=${result.footerClipped.length ? result.footerClipped.join(",") : "なし"} ` +
               `pitch=${result.pitchPct}% footer=${result.footPct}%${note}` +
               (result.outsideDetails.length > 0 ? ` outside=${JSON.stringify(result.outsideDetails)}` : "")
           );
@@ -278,6 +289,9 @@ try {
 
     // 空スロットでは名前やポジション表示の寸法が実利用時と異なるため、
     // 11人を配置してから全レイアウトを検証する。
+    // 投稿者名も入れる。下部帯の中身が最も多い状態にしないと、
+    // 投稿者名や注記が切れていることに気づけない。
+    await page.fill("#field-poster", "さんが太郎");
     await fillStartingEleven(page);
 
     for (const count of BENCH_COUNTS) {

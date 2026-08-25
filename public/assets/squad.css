@@ -855,6 +855,13 @@ button{
 /* 見せ方ごとのフッター上限。ピッチの取り分（min-height:60%）は変えない */
 [data-bench-format="tile"] .sq-footer{max-height:32%}
 
+/* タイルの「大きめ」だけは、ベンチが下部帯の高さを使い切ってしまい、
+   投稿者名と注記（非公式である旨）がはみ出して切れる。ベンチを大きくすると
+   決めた以上ここはピッチを譲る側なので、ピッチの下限を下げて場所を作る。
+   カードはそのぶん小さくなる（420px・控え6人で75.1px→55.6px）。 */
+[data-bench-format="tile"][data-bench-emphasis="large"] .pitch{min-height:52%}
+[data-bench-format="tile"][data-bench-emphasis="large"] .sq-footer{max-height:38%}
+
 /* 明るい地色のスタイルでは、名前も暗い側へ寄せる */
 [data-style="scrap"][data-bench-format="tile"] .bench-name{color:#2b0a3d}
 
