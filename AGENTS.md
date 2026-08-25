@@ -20,24 +20,29 @@
 - 本番デプロイは明示的な指示がある場合だけ実行する。
 - 認証情報、`.env`、秘密鍵、サービスアカウントJSONを保存・公開しない。
 
-## 作業前の必読文書
+## 文書の引き方
 
-すべての実装者は最初に次を読みます。
+無条件で読むのは次の3つだけです。
 
 1. `AGENTS.md`
 2. `docs/documentation-policy.md`
 3. `docs/project-structure.md`
-4. 下表の変更対象に対応する文書
 
-| 変更対象 | 必読文書 |
+それ以外は**全文を読まず、必要な節を引きます。** 主要な文書は冒頭に索引を置いてあります。
+変更対象別の引き先は次のとおりです。
+
+| 変更対象 | 引く文書 |
 | --- | --- |
 | 全般・PR | `README.md`、`docs/codex-workflow.md`、`docs/parallel-work-policy.md` |
-| 年間スケジュールUI | `docs/html-analysis.md`、`docs/css-inventory.md`、`docs/js-inventory.md`、`docs/ai/CHECKLIST.md`、`docs/ai/BROWSER_CHECKLIST.md` |
+| 年間スケジュールUI | `docs/dom-inventory.md`、`docs/display-modes.md`、`docs/filtering.md`、`docs/ai/JS_CHANGE_CHECKLIST.md`、`docs/ai/BROWSER_CHECKLIST.md` |
 | 日程データ・CSV | `docs/data-schema.md`、`docs/sheets/schedule-columns.md`、`docs/operation-flow.md`、`docs/schedule-audit.md` |
 | 予想スカッド | `docs/squad-builder.md`、`docs/players-data-schema.md`、`docs/ai/SQUAD_BROWSER_CHECKLIST.md` |
-| LocalStorage | 対象機能の仕様書、`docs/personalization.md`、関連チェックリスト |
+| LocalStorage | `docs/personalization.md`、`docs/dom-inventory.md`、対象機能の仕様書 |
 | Actions・本番反映 | `docs/deploy-policy.md`、`docs/operation-flow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
+
+`docs/dom-inventory.md` は `tools/generate-dom-inventory.mjs` が実装から生成します。
+class名、id名、data属性の参照箇所は、文書を読むよりこの一覧と `grep` で確認するほうが確実です。
 
 `docs/archive/` は当時の記録であり、現行仕様ではありません。仕様や現状を調べるときの検索対象から
 外し、参照する場合も「過去の経緯」としてのみ扱います。現行の答えは必ず現行文書か実装で確認します。
@@ -51,6 +56,8 @@
 - 現在仕様を末尾への追記だけで表現せず、冒頭の概要・状態も更新する。
 - 新規文書の前に既存文書へ統合できないか確認する。
 - PR完了時に、文書更新の有無と理由を報告する。
+
+- 自動生成される文書（`docs/dom-inventory.md`）は手で編集せず、生成コマンドを実行して結果をコミットする。
 
 詳細は `docs/documentation-policy.md` を正とします。
 

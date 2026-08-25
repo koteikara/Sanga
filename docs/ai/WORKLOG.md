@@ -76,3 +76,50 @@ GitHub Actions上での実行結果。3ワークフローすべてでステッ�
 
 `--expected-count 57` の定義箇所が `package.json` へ移った点。日程件数を変える際はここを更新する。
 
+## 2026-08-25 文書構成の整理（インベントリ自動生成・索引方式・チェックリスト圧縮）
+
+### 変更ファイル
+
+`tools/generate-dom-inventory.mjs`（新規）、`docs/dom-inventory.md`（新規・自動生成）、
+`tools/validate-app-contract.js`、`package.json`、`AGENTS.md`、`docs/project-structure.md`、
+`docs/ai/JS_CHANGE_CHECKLIST.md`、`docs/parallel-work-policy.md`、`docs/roadmap.md`、
+`docs/ai/EFFICIENCY-BACKLOG.md`、索引を追加した7文書（`data-schema` / `filtering` / `squad-builder` /
+`display-modes` / `operation-flow` / `deploy-policy` / `personalization`）、
+`docs/archive/implementation/` へ移動した3文書（`js-inventory` / `css-inventory` / `html-analysis`）
+
+### 変更内容
+
+`docs/ai/EFFICIENCY-BACKLOG.md` の課題3〜6を実施した。
+
+DOM識別子の一覧を手書きから自動生成へ変えた。`tools/generate-dom-inventory.mjs` が
+`app.js` と `squad-builder.js` からid・class・data属性・aria属性・LocalStorageキーを抽出し、
+`npm run check:static` が `--check` で実装との差分を検出する。
+
+`JS_CHANGE_CHECKLIST.md` は199行から121行へ縮小した。`validate-app-contract.js` が既に
+検証している項目を文書から削り、自動化されていなかった `PANEL_CLOSE_DELAY_MS=240` は
+契約チェックへ追加した。残したのは実ブラウザ確認と人間の判断が必要な項目だけ。
+
+`AGENTS.md` の「作業前の必読文書」を「文書の引き方」へ変更し、主要7文書の冒頭へ索引表を置いた。
+整理作業前の棚卸し3本は履歴として `docs/archive/implementation/` へ移した。
+
+公開物（`public/` 配下）の変更はない。
+
+### 確認結果
+
+`npm run check` が全項目成功。`generate-dom-inventory.mjs --check` の差分検出は、
+生成結果を意図的に書き換えて失敗することを確認済み。
+
+### 未確認項目
+
+GitHub Actions上での実行結果。`check:static` に生成物の差分検出を追加したため、PR上のCIで確認が必要。
+実ブラウザでの表示・操作（今回はJavaScriptの挙動を変更していないため影響しない想定）。
+
+### 残課題
+
+なし。新しい効率改善の課題は `docs/ai/EFFICIENCY-BACKLOG.md` の「今後の課題」へ追記する。
+
+### 人間が確認すべき点
+
+棚卸し3本をアーカイブへ移した判断。現行情報として必要なものは `docs/dom-inventory.md` と
+`docs/personalization.md` が持っているが、当時の調査内容を現行文書として残したい場合は差し戻す。
+
