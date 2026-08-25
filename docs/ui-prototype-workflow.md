@@ -89,6 +89,12 @@ https://koteikara.github.io/Sanga/experiments/image-generation/prototype.html
 
 プロトタイプ確認用URLは、本番ページの通常導線には追加しません。
 
+Pagesは `main` への push でのみデプロイされます（`.github/workflows/pages.yml`）。
+PRブランチの内容は公開されないため、マージ前に確認用URLを開くと404になります。
+確認するには、プロトタイプのPRを先に `main` へマージするか、Actionsの
+「GitHub Pages確認環境」を `workflow_dispatch` で対象ブランチを指定して実行します。
+後者の場合、次に `main` へpushされるまでPagesはそのブランチの内容になります。
+
 ## 本番移植の流れ
 
 本番移植時は、次の方針を守ります。
