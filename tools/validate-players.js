@@ -10,6 +10,10 @@ const repoRoot = path.resolve(__dirname, '..');
 const playersPath = path.join(repoRoot, 'public', 'data', 'players.json');
 const publicDir = path.join(repoRoot, 'public');
 const ALLOWED_POSITIONS = new Set(['GK', 'DF', 'MF', 'FW']);
+// ベンチ表示用の省略名の上限。全角1文字＝1、半角1文字＝0.5として数える。
+// 表示枠に入るのは約4.2文字ぶんで、これを超える分は横方向に圧縮して収める。
+// 6を超えると圧縮が強くなりすぎて読みにくいため、ここで止める。
+const NAME_SHORT_MAX_WIDTH = 6;
 
 // 国旗のCSS定義を探すファイル。squad.css は今後 public/assets/ に追加される予定だが、
 // 本タスクでは public/assets/ に触れないため、現時点で国旗が定義済みの
@@ -25,6 +29,11 @@ const warnings = [];
 
 function addError(location, field, message) {
   errors.push(`${location}: ${field} - ${message}`);
+}
+
+/** 表示幅の目安。全角1文字＝1、半角1文字＝0.5として数える */
+function displayWidth(text) {
+  return Array.from(text).reduce((total, char) => total + (char.codePointAt(0) < 0x3000 ? 0.5 : 1), 0);
 }
 
 function addWarning(location, field, message) {
@@ -93,6 +102,8 @@ function validatePlayers(data) {
 
   const seenNumbers = new Map();
 
+  const seenShortNames = new Map();
+
   data.players.forEach((player, index) => {
     const location = isNonEmptyString(player && player.number) ? `#${player.number}` : `players[${index}]`;
 
@@ -111,6 +122,24 @@ function validatePlayers(data) {
 
     if (!isNonEmptyString(player.nameEn)) {
       addError(location, 'nameEn', '空でない文字列である必要があります');
+    }
+
+    if (!isNonEmptyString(player.nameShort)) {
+      addError(location, 'nameShort', '空でない文字列である必要があります（ベンチ表示用の省略名）');
+    } else {
+      if (seenShortNames.has(player.nameShort)) {
+        addError(
+          location,
+          'nameShort',
+          `${seenShortNames.get(player.nameShort)} と重複しています。姓が重なる場合はユニフォーム表記に合わせて区別してください`
+        );
+      } else {
+        seenShortNames.set(player.nameShort, location);
+      }
+      const width = displayWidth(player.nameShort);
+      if (width > NAME_SHORT_MAX_WIDTH) {
+        addError(location, 'nameShort', `全角${NAME_SHORT_MAX_WIDTH}文字ぶん以内にしてください（現在 ${width}）`);
+      }
     }
 
     const isMascot = player.isMascot === true;
@@ -157,7 +186,7 @@ if (errors.length > 0) {
 }
 
 console.log(`選手データの検証に成功しました。players.json は${players.length}件です。`);
-console.log('背番号重複・position・nationality・nameEn・画像の存在チェックを確認しました。');
+console.log('背番号重複・position・nationality・nameEn・nameShort（重複と長さ）・画像の存在チェックを確認しました。');
 if (warnings.length > 0) {
   console.log('警告:');
   warnings.forEach((warning) => console.log(`- ${warning}`));

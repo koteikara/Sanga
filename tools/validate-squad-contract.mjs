@@ -56,12 +56,55 @@ const FORMATIONS = formationsModule.FORMATIONS || {};
   "pitch",
   "canvas",
   "picker-list",
+  "field-bench-format",
+  "field-bench-emphasis",
 ].forEach((id) => requireText(html, `id="${id}"`, "public/squad.html"));
 
 [
   "assets/squad.css",
   "assets/squad-builder.js",
 ].forEach((asset) => requireText(html, asset, "public/squad.html"));
+
+// キャッシュ用のバージョンクエリ。付け忘れると、更新しても古いCSS/JSが読まれる。
+[
+  ["assets/squad.css", /assets\/squad\.css\?v=[\w-]+/],
+  ["assets/squad-builder.js", /assets\/squad-builder\.js\?v=[\w-]+/],
+].forEach(([label, pattern]) => {
+  if (!pattern.test(html)) {
+    addError(`public/squad.html: ${label} にキャッシュ用のバージョンクエリ（?v=）がありません`);
+  }
+});
+
+// 静的importにはHTML側のバージョンクエリが効かないため、import指定にも付ける
+[
+  ["./squad-formations.js", /\.\/squad-formations\.js\?v=[\w-]+/],
+  ["./squad-tile-offsets.js", /\.\/squad-tile-offsets\.js\?v=[\w-]+/],
+].forEach(([label, pattern]) => {
+  if (!pattern.test(builder)) {
+    addError(`public/assets/squad-builder.js: ${label} のimportにバージョンクエリ（?v=）がありません`);
+  }
+});
+
+// 公開JSONの読み込みにもバージョンを付ける（データ更新が反映されなくなるため）
+if (!/const DATA_VERSION = "[\w-]+";/.test(builder)) {
+  addError("public/assets/squad-builder.js: DATA_VERSION の定義が見つかりません");
+}
+
+// ベンチの見せ方オプション。CSSとJSのどちらかだけ欠けると表示が壊れる
+[
+  ['[data-bench-format="tile"]', "タイル表示"],
+  ['[data-bench-format="chip"]', "チップ表示"],
+  ['[data-bench-emphasis="large"]', "大きめ"],
+].forEach(([selector, label]) => {
+  if (!css.includes(selector)) {
+    addError(`public/assets/squad.css: ベンチの${label}（${selector}）の指定がありません`);
+  }
+});
+["benchFormat", "benchEmphasis", "nameShort"].forEach((key) => {
+  if (!builder.includes(key)) {
+    addError(`public/assets/squad-builder.js: ベンチの見せ方に必要な ${key} を扱っていません`);
+  }
+});
 
 [
   './squad-formations.js',
@@ -140,5 +183,6 @@ if (errors.length > 0) {
 
 console.log(
   `スカッド静的契約の検証に成功しました。選手${EXPECTED_PLAYER_COUNT}件、` +
-    `フォーメーション${EXPECTED_FORMATION_COUNT}件、スタイル${EXPECTED_STYLES.length}件です。`
+    `フォーメーション${EXPECTED_FORMATION_COUNT}件、スタイル${EXPECTED_STYLES.length}件、` +
+    `バージョンクエリとベンチ表示オプションを確認しました。`
 );
