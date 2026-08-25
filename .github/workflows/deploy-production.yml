@@ -53,11 +53,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 日程JSONを検証
-        run: node tools/validate-matches.js
-
-      - name: JavaScript構文を検証
-        run: node --check public/assets/app.js
+      - name: 静的検証をまとめて実行
+        run: npm run check:static
 
       - name: public配下のみを本番サーバーへアップロード
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

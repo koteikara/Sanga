@@ -195,11 +195,15 @@ LocalStorageを扱う場合は、次の方針を守ります。
 共通検証コマンドは次のとおりです。
 
 ```bash
-node tools/validate-matches.js
+npm run check
+```
+
+日程データ生成ツールを変更した場合は、あわせて次も確認します。
+
+```bash
 node --check tools/generate-matches-from-csv.js
 node --check tools/validate-generated-matches.js
 node --check tools/export-matches-to-sheet-csv.js
-node --check public/assets/app.js
 ```
 
 ドキュメントのみのPRでは、環境や変更内容に応じて実行できる範囲で確認します。実行しない場合は、PR本文や作業後の報告に理由を記載します。

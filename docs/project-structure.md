@@ -1,6 +1,6 @@
 # プロジェクト構成
 
-確認基準日: 2026-08-21
+確認基準日: 2026-08-25
 
 ## 公開ページ
 
@@ -21,7 +21,12 @@
 - 日程生成・検証: `generate-matches-from-csv.js`、`validate-matches.js`、`validate-generated-matches.js`、`validate-app-contract.js`
 - 選手生成・検証: `generate-players-from-csv.js`、`validate-players.js`
 - スカッド: `check-squad-layout.mjs`、背番号画像加工ツール
+- 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照）
 - ホテル: `tools/hotels/`、`validate-hotels.js`
+
+### ルート直下 `package.json`
+
+検証コマンドの集約先です。依存パッケージは持たず、`tools/` 配下のスクリプトを `npm run check` 系にまとめています。手元とGitHub Actionsが同じスクリプトを実行します。
 
 ### `experiments/`
 
@@ -54,26 +59,22 @@ Static Checksと本番デプロイは、再利用可能な `squad-checks.yml` �
 
 ## 現在の検証
 
+検証コマンドは `package.json` に集約し、GitHub Actionsからも同じスクリプトを呼びます。
+
 ```bash
-node tools/validate-matches.js
-node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict
-node tools/validate-hotels.js
-node tools/validate-players.js
-node --check public/assets/app.js
-node tools/validate-app-contract.js
-node --check public/assets/squad-builder.js
-node --check public/assets/squad-formations.js
-node --check public/assets/squad-sample-players.js
-node tools/validate-squad-contract.mjs
+npm run check
 ```
+
+個別に実行する場合は `npm run check:static`（日程ページ）と `npm run check:squad`（予想スカッド）を使います。
+実体は `tools/` 配下の検証スクリプトで、追加の依存はありません。
 
 Playwrightを利用できる環境では、ローカルサーバーを起動して次も実行します。
 
 ```bash
-node tools/check-squad-layout.mjs
+npm run check:squad:browser
 ```
 
-GitHub Actionsでは `node tools/check-squad-layout.mjs` まで自動実行します。iPhone Safariを含むUI確認は対象別ブラウザチェックリストで確認します。
+GitHub Actionsでは `npm run check:squad:browser` まで自動実行します。iPhone Safariを含むUI確認は対象別ブラウザチェックリストで確認します。
 
 ## 特に注意する範囲
 

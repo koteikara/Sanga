@@ -22,19 +22,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: スカッド用JavaScript構文を検証
-        run: |
-          node --check public/assets/squad-builder.js
-          node --check public/assets/squad-formations.js
-          node --check public/assets/squad-sample-players.js
-          node --check tools/validate-squad-contract.mjs
-          node --check tools/check-squad-layout.mjs
-
-      - name: 選手JSONを検証
-        run: node tools/validate-players.js
-
-      - name: スカッド静的契約を検証
-        run: node tools/validate-squad-contract.mjs
+      - name: スカッド静的検証をまとめて実行
+        run: npm run check:squad
 
       - name: PlaywrightとChromiumを準備
         run: |
@@ -60,4 +49,4 @@ jobs:
             sleep 1
           done
 
-          BASE_URL=http://127.0.0.1:8123/squad.html node tools/check-squad-layout.mjs
+          BASE_URL=http://127.0.0.1:8123/squad.html npm run check:squad:browser
