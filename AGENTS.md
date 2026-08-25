@@ -39,6 +39,9 @@
 | Actions・本番反映 | `docs/deploy-policy.md`、`docs/operation-flow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
 
+`docs/archive/` は当時の記録であり、現行仕様ではありません。仕様や現状を調べるときの検索対象から
+外し、参照する場合も「過去の経緯」としてのみ扱います。現行の答えは必ず現行文書か実装で確認します。
+
 ## ドキュメント更新ルール
 
 - 実装や運用を変更した場合は、同じPRで対応する現行文書を更新する。
@@ -73,26 +76,22 @@
 
 ## 基本検証
 
-日程ページ:
+検証コマンドは `package.json` に集約しています。GitHub Actionsも同じスクリプトを呼ぶため、
+手元とCIで検証内容がずれません。追加の依存はなく、Node.js 20があれば実行できます。
 
-```bash
-node tools/validate-matches.js
-node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict
-node --check public/assets/app.js
-node tools/validate-app-contract.js
-```
+| コマンド | 対象 |
+| --- | --- |
+| `npm run check` | 下記すべて |
+| `npm run check:static` | 日程ページ（データ・JS契約・公開アセット） |
+| `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
+| `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
 
-予想スカッド:
+`npm run check:squad:browser` はPlaywrightを利用できる環境でのみ実行します。GitHub ActionsはPR時と
+本番デプロイ前に、3画面幅・4種類の控え人数・17フォーメーション・8スタイルの組み合わせをChromiumで
+検証します。iPhone Safari等の実機確認は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に従います。
 
-```bash
-node --check public/assets/squad-builder.js
-node --check public/assets/squad-formations.js
-node --check public/assets/squad-sample-players.js
-node tools/validate-players.js
-node tools/validate-squad-contract.mjs
-```
-
-Playwrightを利用できる環境では `node tools/check-squad-layout.mjs` も実行します。GitHub ActionsはPR時と本番デプロイ前に、3画面幅・4種類の控え人数・17フォーメーション・8スタイルの組み合わせをChromiumで検証します。iPhone Safari等の実機確認は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` に従います。
+検証内容を増減する場合は `package.json` のスクリプトを変更します。ワークフローYAMLへ検証コマンドを
+直接書き足さないでください。
 
 ## 作業とPR
 

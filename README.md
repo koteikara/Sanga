@@ -49,8 +49,7 @@
 標準手順は `docs/operation-flow.md`、列定義は `docs/sheets/schedule-columns.md` を参照してください。
 
 ```bash
-node tools/validate-matches.js
-node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict
+npm run check:static
 ```
 
 `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットです。現在データとしてそのまま使わず、`public/data/matches.json` から再生成してください。
@@ -60,14 +59,10 @@ node tools/validate-generated-matches.js public/data/matches.json --expected-cou
 現在仕様は `docs/squad-builder.md`、選手データは `docs/players-data-schema.md`、ブラウザ確認は `docs/ai/SQUAD_BROWSER_CHECKLIST.md` を参照してください。
 
 ```bash
-node --check public/assets/squad-builder.js
-node --check public/assets/squad-formations.js
-node --check public/assets/squad-sample-players.js
-node tools/validate-players.js
-node tools/validate-squad-contract.mjs
+npm run check:squad
 ```
 
-Playwrightを利用できる環境では `node tools/check-squad-layout.mjs` も実行します。GitHub Actionsでは、PR時と本番デプロイ前にスカッドの静的契約とChromiumレイアウトを自動検証し、失敗した場合は本番アップロードを開始しません。
+Playwrightを利用できる環境では `npm run check:squad:browser` も実行します。GitHub Actionsでは、PR時と本番デプロイ前にスカッドの静的契約とChromiumレイアウトを自動検証し、失敗した場合は本番アップロードを開始しません。
 
 ## 本番反映
 
