@@ -1,0 +1,51 @@
+/*
+ * ベンチ強調オプションのプロトタイプ
+ *
+ * 検証したいのはベンチ帯の見え方だけなので、キャンバス本体は本番ページ
+ * （squad.html）を同一オリジンのiframeで読み込み、ここではベンチに
+ * かぶせるCSSと、比較用の並べ方だけを持つ。
+ *
+ * ベンチにかぶせるCSSは #bench-overlay-css に入れており、prototype.js が
+ * iframeの中へ差し込む。本番へ移植するときは、この1ブロックを
+ * public/assets/squad.css へ移し、data属性と変数の初期値をJS側で持たせる。
+ */
+:root{
+  --ink:#f2e9f8;
+  --panel:#200c2c;
+  --line:#3d1155;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#14061d;color:var(--ink);
+  font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  padding:20px 12px 60px;
+}
+.proto-title{font-size:18px;margin-bottom:6px}
+.proto-note{font-size:13px;line-height:1.8;color:#c9b6d6;max-width:760px;margin-bottom:16px}
+.proto-note code{background:#2b1238;padding:.1em .4em;border-radius:4px}
+
+/* ---- 操作パネル ---- */
+.controls{
+  display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end;
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:12px 16px;margin-bottom:20px;
+}
+.control{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.control label{color:#c9b6d6}
+.control select{
+  background:#2b1238;border:1px solid #4a1e63;color:#fff;
+  border-radius:6px;padding:8px 10px;font-size:16px;min-height:40px;
+}
+.control-note{font-size:11px;line-height:1.6;color:#a58fb8;max-width:24em}
+.status{font-size:13px;color:#c9b6d6;margin-left:auto;align-self:center}
+
+/* ---- 4通りの比較 ---- */
+.variants{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start}
+.variant{display:flex;flex-direction:column;gap:8px}
+.variant h2{font-size:14px;font-weight:800;letter-spacing:.04em}
+.variant .desc{font-size:12px;color:#c9b6d6;line-height:1.6;max-width:26em}
+.variant iframe{
+  border:1px solid var(--line);border-radius:14px;background:#000;
+  display:block;
+  /* 幅はJS側で指定する。高さは9:16へ合わせる */
+}
