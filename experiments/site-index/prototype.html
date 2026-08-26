@@ -10,6 +10,8 @@
 </head>
 <body>
 
+<a class="skip-link" href="#works">本文へ移動</a>
+
 <!-- 背景。装飾専用なので支援技術からは隠す -->
 <div class="bg" aria-hidden="true">
   <!-- WebGLが使えないときは、この3つのぼかしがそのまま背景になる -->
@@ -19,7 +21,21 @@
   <canvas id="nebula" class="bg-nebula"></canvas>
 </div>
 
-<header class="hero">
+<header class="topbar">
+  <a class="topbar-mark" href="#top" aria-label="ページの先頭へ">
+    <span class="squircle squircle-sm" aria-hidden="true">
+      <span class="eye"></span>
+      <span class="eye"></span>
+    </span>
+  </a>
+  <nav class="topbar-nav" aria-label="サイト内">
+    <a href="#works">TOOLS</a>
+    <a href="#archive">ARCHIVE</a>
+    <a href="#about">ABOUT</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
   <!-- キャラクター。意味を持たない装飾 -->
   <div class="mates" aria-hidden="true">
     <div class="mate mate-pentagon">
@@ -47,26 +63,30 @@
     </div>
   </div>
 
-  <p class="eyebrow">非公式ファンサイト</p>
-  <h1 class="hero-title">京都サンガF.C.<br>サポーターのための道具箱</h1>
-  <p class="hero-lead">試合日程の確認、予想スカッド作り、交換募集の下書き。<br class="only-wide">サポーター有志が作った道具をまとめています。</p>
-</header>
+  <h1 class="hero-title">SANGA TOOLBOX</h1>
+  <p class="hero-lead">京都サンガF.C.のサポーター有志が作った、非公式の道具箱です。</p>
+</section>
 
-<main id="tools">
+<main class="works" id="works">
   <noscript>
-    <section class="section">
-      <h2 class="section-title">ツール</h2>
-      <ul class="fallback-list">
-        <li><a href="../../public/sanga202627season.html">年間スケジュール</a></li>
-        <li><a href="../../public/squad.html">予想スカッド作成</a></li>
-      </ul>
-    </section>
+    <ul class="fallback-list">
+      <li><a href="../../public/sanga202627season.html">年間スケジュール</a></li>
+      <li><a href="../../public/squad.html">予想スカッド作成</a></li>
+      <li><a href="../../public/TradePost/index-v1.html">求・譲 投稿フォーマット</a></li>
+      <li><a href="../../public/sanga2025season.html">2025シーズン日程</a></li>
+      <li><a href="../../public/sanga_slides.html">選手が思う"サンガのみりょく"</a></li>
+    </ul>
   </noscript>
 </main>
 
-<footer class="site-footer">
+<section class="about" id="about">
+  <h2 class="about-title">ABOUT</h2>
   <p>京都サンガF.C.の公式サイトではありません。サポーター有志による非公式のファン作成物です。</p>
-  <p>掲載内容の正確性について作成者は責任を負いません。最新の情報は公式発表を確認してください。</p>
+  <p>掲載内容の正確性について作成者は責任を負いません。日程・会場・対戦カードなどは、必ず公式発表を確認してください。</p>
+</section>
+
+<footer class="site-footer">
+  <p>SANGA TOOLBOX — unofficial fan tools</p>
 </footer>
 
 <script src="prototype.js"></script>
@@ -79,16 +99,16 @@
   if (new URLSearchParams(location.search).get("nebula") === "off") {
     console.info("[site-index] ?nebula=off のため、CSSの背景を使います。");
   } else {
-  // 先に表示状態にしてから初期化する。display:none のまま採寸すると
-  // canvasが0×0になり、動きを止めた設定のとき何も描かれない
-  document.body.classList.add("has-nebula");
-  try {
-    startNebula(canvas);
-  } catch (error) {
-    document.body.classList.remove("has-nebula");
-    console.info("[site-index] ネビュラ背景を使えないため、CSSの背景を使います:", error.message);
-  }
+    try {
+      // 先にクラスを付けてcanvasに大きさを与える。0×0では描けない
+      document.body.classList.add("has-nebula");
+      startNebula(canvas);
+    } catch (error) {
+      document.body.classList.remove("has-nebula");
+      console.info("[site-index] ネビュラを使えないため、CSSの背景に戻します:", error.message);
+    }
   }
 </script>
+
 </body>
 </html>
