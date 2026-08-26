@@ -203,11 +203,15 @@ body {
 .topbar-mark {
   display: flex;
   align-items: center;
-  /* 34pxの絵だけだとタップ領域が足りない。当たり判定は44pxにする */
+  justify-content: center;
+  /* 絵は34pxだが、外部サイトへ移動するリンクなので当たり判定は44px四方にする */
   min-height: var(--tap);
-  width: 34px;
+  width: var(--tap);
+  margin-left: -5px;
   flex: none;
 }
+
+.topbar-mark img { width: 34px; }
 
 .topbar-nav {
   display: flex;
@@ -217,7 +221,7 @@ body {
 /* 320px幅ではナビが収まらず、ページ全体が横に溢れていた。
    字間と間隔を詰めて収める。 */
 @media (max-width: 360px) {
-  .topbar { padding-left: 10px; padding-right: 10px; }
+  .topbar { padding-left: 6px; padding-right: 8px; }
   .topbar-nav { gap: 8px; }
   .topbar-nav a { letter-spacing: 0.08em; }
   .motion-toggle { margin-left: 0; }
@@ -436,7 +440,6 @@ body {
 /* 元画像は白地の正方形。丸く抜いて、暗い背景から浮くように縁を足す */
 .topbar-mark img {
   display: block;
-  width: 100%;
   height: auto;
   border-radius: 50%;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
