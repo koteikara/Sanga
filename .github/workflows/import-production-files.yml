@@ -1,0 +1,123 @@
+name: 本番サーバーからの取り込み
+
+# 本番サーバーにあってリポジトリに無いファイルを、GitHubで管理できる形に取り込む。
+# 認証情報はGitHub Secretsにのみ置き、ワークフローの外へ出さない。
+# 本番へは何も書き込まない読み取り専用の処理で、デプロイは行わない。
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: '一覧だけ作る(inventory) / 取り込みPRまで作る(import)'
+        required: true
+        default: inventory
+        type: choice
+        options:
+          - inventory
+          - import
+      include_review:
+        description: 'サーバー設定や動的スクリプト（.htaccess、.php等）も取り込む'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: production-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    name: 本番ファイルを取り込む
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.jsを設定
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 本番サーバーを走査して取り込む
+        env:
+          STAR_SERVER_HOST: ${{ secrets.STAR_SERVER_HOST }}
+          STAR_SERVER_USER: ${{ secrets.STAR_SERVER_USER }}
+          STAR_SERVER_PASSWORD: ${{ secrets.STAR_SERVER_PASSWORD }}
+          STAR_SERVER_REMOTE_DIR: ${{ secrets.STAR_SERVER_REMOTE_DIR }}
+          STAR_SERVER_PORT: ${{ secrets.STAR_SERVER_PORT }}
+          STAR_SERVER_PROTOCOL: ${{ secrets.STAR_SERVER_PROTOCOL }}
+          MODE: ${{ inputs.mode }}
+          INCLUDE_REVIEW: ${{ inputs.include_review }}
+        run: |
+          set -euo pipefail
+
+          args=()
+          if [ "$MODE" = "import" ]; then
+            args+=(--mode download --apply)
+          fi
+          if [ "$INCLUDE_REVIEW" = "true" ]; then
+            args+=(--include-review)
+          fi
+
+          node tools/fetch-production-files.mjs "${args[@]}"
+
+      - name: 取り込み一覧を成果物として保存
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-inventory
+          path: tmp/production-import/inventory.*
+          if-no-files-found: error
+
+      - name: 取り込み結果を検証
+        if: inputs.mode == 'import'
+        run: npm run check:static
+
+      - name: 取り込みPRを作成
+        if: inputs.mode == 'import'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$(git status --porcelain public/)" ]; then
+            echo "public/ に差分がないため、PRは作成しません。"
+            exit 0
+          fi
+
+          branch="import/production-$(date -u +%Y%m%d-%H%M%S)"
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git add public/
+          git commit -m "data: 本番サーバー上のプロジェクト外ファイルを取り込む"
+          git push -u origin "$branch"
+
+          {
+            echo '## Summary'
+            echo
+            echo '- 本番サーバーにあってリポジトリに無かったファイルを `public/` へ取り込みました。'
+            echo '- `tools/fetch-production-files.mjs` による自動取り込みです。手作業の編集は含みません。'
+            echo
+            echo '## 取り込み一覧'
+            echo
+            sed -n '/^## /,$p' tmp/production-import/inventory.md
+            echo
+            echo '## Testing'
+            echo
+            echo '- `npm run check:static`'
+            echo
+            echo '## 確認してほしいこと'
+            echo
+            echo '- 取り込んだファイルが公開して問題ない内容か（個人メモ、認証情報、未公開情報を含まないか）。'
+            echo '- 取り込み後に本番デプロイを実行すると、これらのファイルはリポジトリ側が正本になります。'
+          } > pr-body.md
+
+          gh pr create --draft --base main --head "$branch" \
+            --title "data: 本番サーバー上のプロジェクト外ファイルを取り込む" \
+            --body-file pr-body.md
+
+          rm -f pr-body.md
