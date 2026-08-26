@@ -57,7 +57,7 @@
    * `inventory`: 一覧だけ作る。まずこちらで内容を確認する。
    * `import`: 取り込んで `public/` へ配置し、ドラフトPRまで作る。
 5. 必要な場合だけ `include_review` を有効にする。
-6. 実行後、`production-inventory` 成果物から `inventory.md` を確認する。
+6. 実行後、実行ページのサマリーに表示された一覧を確認する。同じ内容は成果物 `production-inventory` （`inventory.md` と `inventory.json` を含むzip）からも取得できる。
 7. `import` を選んだ場合は、作成されたドラフトPRの差分を確認する。
 
 `import` は `npm run check:static` に成功した場合だけPRを作成します。`public/` に差分がない場合はPRを作りません。
