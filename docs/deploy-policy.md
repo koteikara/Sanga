@@ -235,6 +235,8 @@ GitHubのリポジトリ画面で、次のRepository Secretsを登録します�
 
 GitHub ActionsのFTPアップロードでは、`local-dir` を `./public/` に限定します。そのため、サーバーへ送る対象は `public/` 配下の公開用ファイルのみです。
 
+ただし `public/experiments/` は除外します。公開前の検証用であり本番の公開物ではないためです。GitHub Pagesは `public` をそのまま配信するので、確認環境では引き続き参照できます。除外設定はActionの既定除外を上書きするため、`.git` 系と `node_modules` も明示的に列挙しています。
+
 少なくとも次の公開用ファイルがアップロード対象に含まれます。
 
 * `public/sanga202627season.html`
