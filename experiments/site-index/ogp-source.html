@@ -1,0 +1,46 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><style>
+* { box-sizing: border-box; margin: 0; }
+body {
+  width: 1200px; height: 630px; overflow: hidden; position: relative;
+  background: radial-gradient(120% 110% at 50% 0%, #4a1150 0%, #2a0a2b 62%);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  color: #fff; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0;
+}
+.blob { position: absolute; border-radius: 50%; }
+.b1 { width: 900px; height: 900px; top: -320px; left: -240px;
+  background: radial-gradient(circle, rgba(168,36,140,0.55) 0%, rgba(168,36,140,0) 68%); }
+.b2 { width: 760px; height: 760px; bottom: -300px; right: -180px;
+  background: radial-gradient(circle, rgba(255,143,208,0.30) 0%, rgba(255,143,208,0) 68%); }
+.b3 { width: 560px; height: 560px; top: 40%; left: 55%;
+  background: radial-gradient(circle, rgba(111,214,232,0.18) 0%, rgba(111,214,232,0) 70%); }
+.mates { display: flex; align-items: flex-end; gap: 26px; margin-bottom: 34px; position: relative; }
+.pent { width: 118px; filter: drop-shadow(0 12px 20px rgba(0,0,0,0.34)); }
+.squircle { width: 94px; height: 94px; border-radius: 32%;
+  background: linear-gradient(155deg, #8fe3f5 0%, #3fa8d8 100%);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.34);
+  display: flex; align-items: center; justify-content: center; gap: 18%; }
+.eye { width: 11px; height: 26px; border-radius: 999px; background: #241a2e; }
+h1 { position: relative; font-size: 84px; font-weight: 700;
+  letter-spacing: 0.16em; text-indent: 0.16em; line-height: 1.1; }
+.lead { position: relative; margin-top: 26px; font-size: 30px; letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.88); }
+.note { position: relative; margin-top: 20px; font-size: 21px; letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6); }
+</style></head><body>
+<span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+<div class="mates">
+  <svg class="pent" viewBox="0 0 100 100">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#f2e4ff"/><stop offset="1" stop-color="#c99ae0"/>
+    </linearGradient></defs>
+    <path fill="url(#g)" d="M50 6c4 0 7 2 10 4l28 20c5 4 7 9 5 15l-11 33c-2 6-6 9-12 9H30c-6 0-10-3-12-9L7 45c-2-6 0-11 5-15l28-20c3-2 6-4 10-4z"/>
+    <rect x="35" y="46" width="8" height="17" rx="4" fill="#241a2e"/>
+    <rect x="57" y="46" width="8" height="17" rx="4" fill="#241a2e"/>
+  </svg>
+  <div class="squircle"><span class="eye"></span><span class="eye"></span></div>
+</div>
+<h1>SANGA TOOLBOX</h1>
+<p class="lead">観戦をちょっと楽しくする道具を、サンガを応援する人みんなに。</p>
+<p class="note">京都サンガF.C.の公式サイトではありません</p>
+</body></html>

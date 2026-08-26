@@ -39,7 +39,7 @@ https://koteikara.github.io/Sanga/experiments/site-index/prototype.html?nebula=o
 
 ツールの見た目を変えたら撮り直します。手順は `docs/ui-prototype-workflow.md` を参照してください。
 
-撮影時の注意が1点あります。`public/assets/app.js` は `https://esm.sh/modern-screenshot` をトップレベルで `import` しているため、CDNへ到達できない環境ではモジュール全体が評価されず、年間スケジュールの日程表が描画されません。撮影時はこのURLを差し替える必要があります。
+以前は `public/assets/app.js` が CDN からモジュールを読んでおり、CDNへ到達できない環境では日程表が描画されませんでした。リポジトリ内の静的配置へ切り替えたため、いまは差し替えなしで撮影できます。
 
 ## 動きの切り替え
 

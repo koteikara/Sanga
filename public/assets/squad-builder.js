@@ -855,11 +855,10 @@ document.addEventListener("keydown", (e) => {
 /* ------------------------------------------------------------------
    画像化（PNG出力）
    docs/image-generation-research.md の結論に従い、modern-screenshot@4.6.5 を使う。
-   年間スケジュールページ（public/assets/app.js）ではesm.sh CDN経由で同バージョンを
-   読み込んでいるが、本プロトタイプではCDNに依存せず、npm registryから取得した
-   modern-screenshot@4.6.5 の dist/index.mjs をそのまま
-   experiments/squad-builder/vendor/modern-screenshot/modern-screenshot.mjs に
-   静的配置して読み込む（MITライセンス表記は同ディレクトリのLICENSEを参照）。
+   CDNには依存せず、npm registryから取得した modern-screenshot@4.6.5 の
+   dist/index.mjs をそのまま public/assets/vendor/modern-screenshot/ へ静的配置して
+   読み込む（MITライセンス表記は同ディレクトリのLICENSEを参照）。
+   年間スケジュールページ（public/assets/app.js）も同じファイルを読み込む。
 ------------------------------------------------------------------ */
 async function exportPng(node) {
   // modern-screenshot はブラウザ内でDOMを解析してPNGのdata URLを返す。
