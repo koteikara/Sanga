@@ -251,10 +251,25 @@ body {
 }
 
 .hero-lead {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: clamp(0.9rem, 3.7vw, 1.05rem);
+  letter-spacing: 0.04em;
+}
+
+/* 公式でないことは見出しのすぐ下にも置く。ABOUTまで読まない人がいる */
+.hero-note {
   margin: 0;
   color: var(--ink-dim);
-  font-size: clamp(0.84rem, 3.4vw, 0.95rem);
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+/* 狭い画面では改行位置を指定しない。折り返しに任せる */
+.only-wide { display: none; }
+
+@media (min-width: 560px) {
+  .only-wide { display: inline; }
 }
 
 /* ---------------- 作品グリッド ---------------- */
@@ -432,15 +447,73 @@ body {
 
 /* ---------------- 動きを減らす設定 ---------------- */
 
-@media (prefers-reduced-motion: reduce) {
-  .bg-nebula,
-  .topbar-nav a,
-  .work-thumb img,
-  .archive .work-thumb { transition: none; }
-  .bg-blob,
-  .mate,
-  .eye,
-  .mate-eyes { animation: none; }
-  /* 出現の演出はやめる。ただし中身は必ず見えるようにする */
-  .reveal-ready .work { opacity: 1; transform: none; transition: none; }
+/* 止める指定はこの1か所だけ。data-motion は motion.js が
+   「OSの設定 + ページ内の切り替え」を見て決めた結果を入れる。 */
+:root[data-motion="off"] .bg-nebula,
+:root[data-motion="off"] .topbar-nav a,
+:root[data-motion="off"] .work-thumb img,
+:root[data-motion="off"] .archive .work-thumb { transition: none; }
+
+:root[data-motion="off"] .bg-blob,
+:root[data-motion="off"] .mate,
+:root[data-motion="off"] .eye,
+:root[data-motion="off"] .mate-eyes { animation: none; }
+
+/* 出現の演出はやめる。ただし中身は必ず見えるようにする */
+:root[data-motion="off"] .reveal-ready .work {
+  opacity: 1;
+  transform: none;
+  transition: none;
 }
+
+/* JavaScriptが動かない環境向けの保険。data-motion が付かないので、
+   OSの設定を直接見る。属性が付いていれば上の指定に任せる。 */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion]) .bg-nebula,
+  :root:not([data-motion]) .topbar-nav a,
+  :root:not([data-motion]) .work-thumb img,
+  :root:not([data-motion]) .archive .work-thumb { transition: none; }
+
+  :root:not([data-motion]) .bg-blob,
+  :root:not([data-motion]) .mate,
+  :root:not([data-motion]) .eye,
+  :root:not([data-motion]) .mate-eyes { animation: none; }
+}
+
+/* ---------------- 動きの切り替え ---------------- */
+
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: var(--tap);
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: var(--ink-dim);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.motion-toggle:hover,
+.motion-toggle:focus-visible { color: var(--ink); }
+
+/* 状態は色ではなく形でも分かるようにする。
+   動いているときは塗り、止めているときは輪郭だけ。 */
+.motion-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  background: currentColor;
+}
+
+.motion-toggle[aria-pressed="true"] .motion-dot { background: transparent; }
+
+/* JavaScriptが無いと切り替えられない。押せないボタンは出さない */
+.motion-toggle { display: none; }
+:root[data-motion] .motion-toggle { display: inline-flex; }

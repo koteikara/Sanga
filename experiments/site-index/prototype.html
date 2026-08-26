@@ -7,6 +7,19 @@
 <meta name="description" content="京都サンガF.C.の非公式ファンツール一覧。入口ページの見た目・動きの検証用プロトタイプです。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
 <link rel="stylesheet" href="prototype.css">
+
+<script>
+  // 描画が始まる前に決める。module は読み込みが後になるため、
+  // 動きを止める設定の人に一瞬だけ動きが見えてしまう。
+  // 判定の本体は motion.js にあり、ここはその結果を先出しするだけ。
+  (function () {
+    var mode = "auto";
+    try { mode = localStorage.getItem("site-index:motion") || "auto"; } catch (e) {}
+    var reduced = mode === "off" ||
+      (mode !== "on" && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    document.documentElement.dataset.motion = reduced ? "off" : "on";
+  })();
+</script>
 </head>
 <body>
 
@@ -30,6 +43,10 @@
     <a href="#works">TOOLS</a>
     <a href="#archive">ARCHIVE</a>
     <a href="#about">ABOUT</a>
+    <button type="button" class="motion-toggle" id="motion-toggle"
+            aria-pressed="false" aria-label="背景と装飾の動きを止める">
+      <span class="motion-dot" aria-hidden="true"></span>MOTION
+    </button>
   </nav>
 </header>
 
@@ -62,7 +79,8 @@
   </div>
 
   <h1 class="hero-title">SANGA TOOLBOX</h1>
-  <p class="hero-lead">京都サンガF.C.のサポーター有志が作った、非公式の道具箱です。</p>
+  <p class="hero-lead">観戦をちょっと楽しくする道具を、<br class="only-wide">サンガを応援する人みんなに。</p>
+  <p class="hero-note">京都サンガF.C.の公式サイトではありません</p>
 </section>
 
 <main class="works" id="works">
@@ -83,7 +101,7 @@
   <p class="about-bio">大阪から京都サンガを応援しています／2001年から観戦／主にゴール裏近くのバックスタンド2階／息子小4サッカーチーム所属／彦根出身</p>
   <p class="about-handle"><a href="https://x.com/kou_osakacity" target="_blank" rel="noopener noreferrer">@kou_osakacity</a></p>
 
-  <p>京都サンガF.C.の公式サイトではありません。サポーター有志による非公式のファン作成物です。</p>
+  <p>京都サンガF.C.の公式サイトではありません。ファンが個人で作っているものです。</p>
   <p>掲載内容の正確性について作成者は責任を負いません。日程・会場・対戦カードなどは、必ず公式発表を確認してください。</p>
 </section>
 
@@ -95,6 +113,20 @@
 <script type="module">
   // ネビュラは進行的強化として足す。失敗してもCSSの背景が残る
   import { startNebula } from "./nebula.js";
+  import { isReduced, toggle } from "./motion.js";
+
+  // 動きの切り替え。motion.js が <html data-motion> を書き、CSSとネビュラの
+  // 両方がそれを見る
+  const motionButton = document.querySelector("#motion-toggle");
+  const syncMotionButton = () => {
+    const reduced = isReduced();
+    motionButton.setAttribute("aria-pressed", String(reduced));
+    motionButton.setAttribute("aria-label", reduced ? "背景と装飾の動きを出す" : "背景と装飾の動きを止める");
+  };
+  motionButton.addEventListener("click", toggle);
+  window.addEventListener("motionchange", syncMotionButton);
+  syncMotionButton();
+
   const canvas = document.querySelector("#nebula");
 
   // 実機でCSS背景と見比べられるようにする。?nebula=off でCSSのぼかしに戻る
