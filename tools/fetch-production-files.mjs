@@ -105,6 +105,28 @@ function readCredentials() {
   };
 }
 
+// FTPのカレントディレクトリは接続内で持ち越される。相対パスでCWDを重ねると
+// 降りた先からの相対解決になるため、走査・取得で使うパスはすべて
+// ログイン直後のディレクトリを起点にした絶対パスへ解決しておく。
+async function resolveRemoteRoot(client, remoteDir) {
+  const loginDir = await client.pwd();
+  const absolute = remoteDir.startsWith("/")
+    ? remoteDir
+    : path.posix.join(loginDir, remoteDir);
+
+  const normalized = path.posix.normalize(absolute);
+  return normalized.length > 1 ? normalized.replace(/\/+$/, "") : normalized;
+}
+
+// サーバーが返した名前をそのままローカルパスへ使わない。
+// 区切り文字や上位参照を含む名前は、出力先の外へ書き出しうる。
+function isSafeEntryName(name) {
+  if (name === "" || name === "." || name === "..") return false;
+  if (name.includes("/") || name.includes("\\")) return false;
+  if (name.includes("\0")) return false;
+  return true;
+}
+
 function classify(relativePath) {
   const name = path.posix.basename(relativePath);
   const extension = name.startsWith(".") && !name.slice(1).includes(".") ? name : path.posix.extname(name);
@@ -115,10 +137,15 @@ function classify(relativePath) {
 }
 
 async function walk(client, remoteRoot, relativeDir, collected, options) {
-  const remoteDir = path.posix.join(remoteRoot, relativeDir);
+  const remoteDir = relativeDir ? path.posix.join(remoteRoot, relativeDir) : remoteRoot;
   const entries = await client.list(remoteDir);
 
   for (const entry of entries) {
+    if (!isSafeEntryName(entry.name)) {
+      collected.excluded.push({ path: `${relativeDir}/${entry.name}`, reason: "扱えない名前" });
+      continue;
+    }
+
     const relativePath = relativeDir ? path.posix.join(relativeDir, entry.name) : entry.name;
 
     if (entry.type === "dir") {
@@ -210,7 +237,8 @@ async function main() {
 
   await client.connect();
   try {
-    await walk(client, credentials.remoteDir, "", collected, options);
+    const remoteRoot = await resolveRemoteRoot(client, credentials.remoteDir);
+    await walk(client, remoteRoot, "", collected, options);
 
     if (options.mode === "download") {
       const targets = options.includeReview
@@ -218,7 +246,7 @@ async function main() {
         : collected.importable;
 
       for (const target of targets) {
-        const buffer = await client.download(path.posix.join(credentials.remoteDir, target.path));
+        const buffer = await client.download(path.posix.join(remoteRoot, target.path));
         writeFileEnsured(path.join(options.outDir, "files", target.path), buffer);
         console.log(`取得: ${target.path}（${buffer.length} bytes）`);
       }

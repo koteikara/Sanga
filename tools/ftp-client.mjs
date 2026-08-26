@@ -210,6 +210,20 @@ export class FtpClient {
     return Buffer.concat(chunks);
   }
 
+  // ログイン直後のディレクトリを絶対パスで返す。
+  // 走査中のCWDは接続内で持ち越されるため、以降のパスはすべてここを起点に
+  // 絶対パスへ解決する。相対パスのままCWDを重ねると、降りた先からの
+  // 相対解決になり、別のディレクトリを見てしまう。
+  async pwd() {
+    const response = await this.send("PWD");
+    // 257 "/home/user" is current directory. 引用符内の "" は " のエスケープ。
+    const quoted = /"((?:[^"]|"")*)"/.exec(response.text);
+    if (!quoted) {
+      throw new FtpError(`PWD応答を解釈できません: ${response.text}`);
+    }
+    return quoted[1].replace(/""/g, '"');
+  }
+
   async list(remoteDir) {
     await this.send(`CWD ${remoteDir}`);
 

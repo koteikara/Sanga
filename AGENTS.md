@@ -90,10 +90,10 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 | コマンド | 対象 |
 | --- | --- |
 | `npm run check` | 下記すべて |
-| `npm run check:static` | 日程ページ（データ・JS契約・公開アセット） |
+| `npm run check:static` | 日程ページ（データ・JS契約・公開アセット）と本番取り込みスクリプト |
 | `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
 | `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
-| `npm run check:tools` | 取り込みスクリプトのJS構文 |
+| `npm run check:tools` | 本番取り込みスクリプト（JS構文と、検証用FTPサーバーを使った動作確認）。`check:static` から呼ぶ |
 
 `npm run check:squad:browser` はPlaywrightを利用できる環境でのみ実行します。GitHub ActionsはPR時と
 本番デプロイ前に、3画面幅・4種類の控え人数・17フォーメーション・8スタイルの組み合わせをChromiumで
