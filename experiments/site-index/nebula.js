@@ -10,6 +10,8 @@
 // 進行的強化として作る。WebGLが使えない場合や初期化に失敗した場合は、
 // 何もせずCSSの背景をそのまま見せる。
 
+import { isReduced } from "./motion.js";
+
 const VERTEX_SHADER = `
 attribute vec2 aPosition;
 void main() {
@@ -128,7 +130,9 @@ export function startNebula(canvas) {
   const uPointer = gl.getUniformLocation(program, "uPointer");
   const uIntensity = gl.getUniformLocation(program, "uIntensity");
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // 動きを止めるかどうかは motion.js が決める。OSの設定と、ページ内の
+  // 切り替えの両方を見た結果がここへ来る
+  const reduceMotion = { get matches() { return isReduced(); } };
   const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
   let frame = 0;
   let running = false;
@@ -199,7 +203,7 @@ export function startNebula(canvas) {
 
   document.addEventListener("visibilitychange", onVisibilityChange);
   window.addEventListener("pointermove", onPointerMove, { passive: true });
-  reduceMotion.addEventListener("change", onMotionPreferenceChange);
+  window.addEventListener("motionchange", onMotionPreferenceChange);
 
   // 動きを減らす設定なら、静止画として1枚だけ描く
   if (reduceMotion.matches) draw(0);
@@ -212,7 +216,7 @@ export function startNebula(canvas) {
       observer.disconnect();
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("pointermove", onPointerMove);
-      reduceMotion.removeEventListener("change", onMotionPreferenceChange);
+      window.removeEventListener("motionchange", onMotionPreferenceChange);
     },
   };
 }

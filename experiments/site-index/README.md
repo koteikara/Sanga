@@ -31,6 +31,7 @@ https://koteikara.github.io/Sanga/experiments/site-index/prototype.html?nebula=o
 | `prototype.css` | 配色、背景、キャラクター、グリッド |
 | `prototype.js` | `tools.sample.json` からカードを組み立て、スクロールに合わせて出す |
 | `nebula.js` | 生WebGLの背景。進行的強化として足す |
+| `motion.js` | 動きを止めるかどうかの設定。OSの設定とページ内の切り替えをまとめる |
 | `tools.sample.json` | `public/data/tools.json` の下書き |
 | `thumbs/` | 各ツールのスクリーンショット（WebP） |
 
@@ -40,6 +41,18 @@ https://koteikara.github.io/Sanga/experiments/site-index/prototype.html?nebula=o
 
 撮影時の注意が1点あります。`public/assets/app.js` は `https://esm.sh/modern-screenshot` をトップレベルで `import` しているため、CDNへ到達できない環境ではモジュール全体が評価されず、年間スケジュールの日程表が描画されません。撮影時はこのURLを差し替える必要があります。
 
+## 動きの切り替え
+
+上部バーの `MOTION` で、背景とキャラクターの動きを止められます。**OSの「動きを減らす」設定を既定にしつつ、設定していない人にも手段を用意する**ためのものです。
+
+* 選んだ結果は `<html data-motion="on|off">` に入り、CSSとWebGLの両方がそれを見る
+* 選択は `localStorage` に残る。何も選んでいなければOSの設定に追随する
+* OSで「動きを減らす」にしている人が、このページだけ動かすこともできる
+* 止めるとWebGLの描画ループも停止する。CSSのアニメーションだけを止めても電池を使い続ける
+* 状態は色だけでなく、丸の塗り（動作中）と輪郭のみ（停止中）でも示す
+
+判定を先に出す小さなスクリプトを `<head>` に置いています。moduleの読み込みを待つと、止める設定の人に一瞬だけ動きが見えてしまうためです。
+
 ## 壊れたときにどうなるか
 
 * JavaScriptが無効 → `noscript` の素のリンク一覧が残る
@@ -47,5 +60,6 @@ https://koteikara.github.io/Sanga/experiments/site-index/prototype.html?nebula=o
 * `IntersectionObserver` が無い → 出現の演出をやめ、カードは最初から見えた状態にする
 * WebGLが使えない／初期化に失敗 → CSSのぼかし背景に戻る
 * `prefers-reduced-motion: reduce` → 背景・キャラクター・出現の演出をすべて止める
+* JavaScriptが無い → 動きの切り替えボタンは出さない。押せないボタンを置かない
 
 いずれの場合もツールへの導線は消えません。
