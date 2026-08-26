@@ -45,6 +45,7 @@ const remoteFiles = {
   [`${PUBLIC_DIR}/assets/extra.css`]: "CCCC",
   [`${PUBLIC_DIR}/assets/css/deep.css`]: "DDDDDD",
   [`${PUBLIC_DIR}/photos/a b.jpg`]: "EEE",
+  [`${PUBLIC_DIR}/.ftp-deploy-sync-state.json`]: "{}",
 };
 
 // 実サーバーと同じ相対解決。ここを絶対解決にすると検証の意味がなくなる。
@@ -124,10 +125,10 @@ function startFakeServer() {
 
 // 検証用サーバーは同じプロセスで動くため、子プロセスは非同期で起動する。
 // spawnSyncで待つとイベントループが止まり、サーバーが応答できない。
-async function runImport({ port, remoteDir, outDir, extraArgs = [] }) {
+async function runImport({ port, remoteDir, outDir, extraArgs = [], mode = "download" }) {
   const child = spawn(
     process.execPath,
-    [path.join(rootDir, "tools", "fetch-production-files.mjs"), "--mode", "download", "--out", outDir, ...extraArgs],
+    [path.join(rootDir, "tools", "fetch-production-files.mjs"), "--mode", mode, "--out", outDir, ...extraArgs],
     {
       cwd: rootDir,
       env: {
@@ -205,6 +206,38 @@ try {
   assert.equal(withReview.review.length, 1);
   assert.ok(fs.existsSync(path.join(outRoot, "review", "files", "legacy.php")));
   console.log("取り込みOK --include-review: 要判断1件を取得");
+
+  // バックアップは分類も除外もせず、サーバー上のすべてを取得する。
+  // ここが漏れると、本番デプロイ前の退避が「戻せないバックアップ」になる。
+  const backupDir = path.join(outRoot, "backup");
+  await runImport({ port, remoteDir: "public_html/", outDir: backupDir, mode: "backup" });
+
+  const backedUp = [];
+  (function collect(dir, prefix) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const next = path.join(dir, entry.name);
+      const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+      entry.isDirectory() ? collect(next, rel) : backedUp.push(rel);
+    }
+  })(path.join(backupDir, "files"), "");
+
+  assert.deepEqual(
+    backedUp.sort(),
+    [
+      ".ftp-deploy-sync-state.json",
+      "assets/css/deep.css",
+      "assets/extra.css",
+      "gallery.html",
+      "index.html",
+      "legacy.php",
+      "photos/a b.jpg",
+    ],
+    `バックアップの取得漏れがあります: ${backedUp.join(", ")}`,
+  );
+
+  // public/ を書き換えないことも確認する。バックアップは取得だけが仕事。
+  assert.equal(fs.readFileSync(path.join(rootDir, "public", "index.html"), "utf8").includes("AAAAA"), false);
+  console.log(`バックアップOK: ${backedUp.length}件をすべて取得し、public/ は変更なし`);
 } finally {
   server.close();
   fs.rmSync(outRoot, { recursive: true, force: true });

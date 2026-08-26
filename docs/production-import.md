@@ -56,6 +56,7 @@
 4. `mode` を選ぶ。
    * `inventory`: 一覧だけ作る。まずこちらで内容を確認する。
    * `import`: 取り込んで `public/` へ配置し、ドラフトPRまで作る。
+   * `backup`: サーバー上の全ファイルを取得し、成果物として残す。本番デプロイ前の退避用。
 5. 必要な場合だけ `include_review` を有効にする。
 6. 実行後、実行ページのサマリーに表示された一覧を確認する。同じ内容は成果物 `production-inventory` （`inventory.md` と `inventory.json` を含むzip）からも取得できる。
 7. `import` を選んだ場合は、作成されたドラフトPRの差分を確認する。
@@ -63,6 +64,16 @@
 `import` は `npm run check:static` に成功した場合だけPRを作成します。`public/` に差分がない場合はPRを作りません。
 
 PRの自動作成には、リポジトリ設定 Settings → Actions → General → Workflow permissions の「Allow GitHub Actions to create and approve pull requests」が必要です。無効の場合、取り込んだ内容は `import/production-<日時>` ブランチへpushされたうえで、実行サマリーにPR作成用のリンクが出ます。ジョブは失敗しません。この設定を有効にするかどうかは、リポジトリ所有者が判断します。
+
+## 本番デプロイ前のバックアップ
+
+`docs/deploy-policy.md` は本番反映前のバックアップを求めていますが、デプロイのワークフロー自体はバックアップを作りません。`mode: backup` がその退避を担います。
+
+`backup` は分類も除外も行わず、サーバー上のすべてのファイルを取得します。`.ftp-deploy-sync-state.json` も含めます。差分ではなく「その時点のサーバーの写し」を残すことが目的で、`public/` へは何も配置しません。
+
+成果物は `production-backup-<実行番号>` という名前で90日間保存されます。復元するときは、成果物を展開して `STAR_SERVER_REMOTE_DIR` 配下へアップロードします。
+
+取得中にファイルが取れなかった場合、処理は途中で失敗します。欠けたまま完成したように見えるバックアップを作らないためです。失敗した場合は原因を確認し、取り直してからデプロイしてください。
 
 ## 手元での実行
 
@@ -85,6 +96,7 @@ node tools/fetch-production-files.mjs --mode download --apply
 | --- | --- |
 | `--mode inventory`（既定） | 一覧のみ作る |
 | `--mode download` | 取り込み候補をダウンロードする |
+| `--mode backup` | サーバー上の全ファイルを取得する（分類・除外なし） |
 | `--apply` | ダウンロード物を `public/` へ配置する（`--mode download` と併用） |
 | `--include-review` | 「要判断」も対象に含める |
 | `--out <dir>` | 出力先（既定 `tmp/production-import`） |
