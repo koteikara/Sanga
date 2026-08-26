@@ -237,7 +237,7 @@ UI / HTML / CSS / JavaScript を変更した場合は、GitHub Pagesで次を確
 * 本番URLでGitHub Pagesと同じ項目を確認します。
 * スマホ実機確認を優先します。
 * 古いCSS / JavaScript / JSONが残る場合はキャッシュを疑います。
-* CSS / JavaScript / JSON変更時はバージョンクエリを確認します。
+* CSS / JavaScript変更時は `npm run fix:asset-versions` を実行し、JSONのバージョンは手で確認します。
 
 ## 作業種別ごとの短縮指示テンプレート
 

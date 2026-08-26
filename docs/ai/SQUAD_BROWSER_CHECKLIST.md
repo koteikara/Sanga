@@ -6,7 +6,7 @@
 - [ ] `node tools/validate-players.js` が成功し、39件と確認できる。
 - [ ] `node tools/validate-squad-contract.mjs` が成功する。
 - [ ] GitHub Actionsの「スカッド事前検証」が成功する（スタメン11人配置済み、3画面幅・控え4パターン・17フォーメーション・8スタイル）。
-- [ ] CSS/JS変更時に `public/squad.html` のバージョンクエリを更新した。
+- [ ] CSS/JS変更時に `npm run fix:asset-versions` を実行し、書き換わった参照をコミットした。
 
 ## 表示・操作
 

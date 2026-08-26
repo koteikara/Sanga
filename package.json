@@ -10,7 +10,8 @@
     "check:squad": "npm run check:squad:js && node tools/validate-players.js && node tools/validate-squad-contract.mjs",
     "check:squad:js": "node --check public/assets/squad-builder.js && node --check public/assets/squad-formations.js && node --check public/assets/squad-sample-players.js && node --check tools/validate-squad-contract.mjs && node --check tools/check-squad-layout.mjs",
     "check:squad:browser": "node tools/check-squad-layout.mjs",
-    "check:tools": "node --check tools/ftp-client.mjs && node --check tools/fetch-production-files.mjs && node --check tools/check-import-tools.mjs && node tools/check-import-tools.mjs",
-    "docs:dom-inventory": "node tools/generate-dom-inventory.mjs"
+    "check:tools": "node --check tools/asset-versions.mjs && node --check tools/ftp-client.mjs && node --check tools/fetch-production-files.mjs && node --check tools/check-import-tools.mjs && node tools/check-import-tools.mjs",
+    "docs:dom-inventory": "node tools/generate-dom-inventory.mjs",
+    "fix:asset-versions": "node tools/asset-versions.mjs"
   }
 }

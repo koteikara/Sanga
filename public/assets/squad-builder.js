@@ -3,14 +3,14 @@
 // フォーメーション選択・選手選択・位置の微調整・画像化導線・保存呼び出しを実装する。
 // design-mockup.html 自体は変更していない。
 // 静的importにはHTML側のバージョンクエリが効かないため、更新時はここのクエリも上げる。
-import { FORMATIONS } from "./squad-formations.js?v=20260820-6";
-import { SAMPLE_PLAYERS } from "./squad-sample-players.js";
+import { FORMATIONS } from "./squad-formations.js?v=5eaceca8";
+import { SAMPLE_PLAYERS } from "./squad-sample-players.js?v=9ed29a06";
 // 背番号タイル画像の中身のずれ（tools/measure-tile-offsets.mjs で生成）
-import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=20260821-1";
+import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=3629b247";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
 // public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
 // 「画像化（PNG出力）」セクションのコメントを参照。
-import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs";
+import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs?v=ddfabcc6";
 
 // JSONデータのブラウザキャッシュ対策。data/*.json を更新したらここを上げる。
 const DATA_VERSION = "20260825-1";

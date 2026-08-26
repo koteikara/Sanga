@@ -8,6 +8,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { collectAssetVersionIssues } from "./asset-versions.mjs";
+
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const errors = [];
@@ -97,23 +99,16 @@ function checkIndexNoscriptLinks() {
 // CSSとJavaScriptの参照にはバージョンクエリを必ず付ける。
 // 付け忘れると、中身を直しても再訪した人には古いファイルが使われ続ける。
 // 実際に app.js からCDN依存を外したとき、参照側を上げ忘れていた。
-function checkAssetVersionQuery(relativePath) {
-  const html = readPublicFile(relativePath);
-  if (html === null) return;
-
-  const refs = [...html.matchAll(/(?:href|src)="([^"]+\.(?:css|js|mjs)(?:\?[^"]*)?)"/g)]
-    .map((m) => m[1])
-    // 外部URLは対象外。こちらでキャッシュを制御できない
-    .filter((ref) => !/^[a-z][a-z0-9+.-]*:/i.test(ref) && !ref.startsWith("//"));
-
-  const missing = refs.filter((ref) => !/\?v=/.test(ref));
-
-  if (missing.length > 0) {
-    errors.push(`バージョンクエリがありません public/${relativePath}: ${missing.join(", ")}`);
+// 値は tools/asset-versions.mjs が内容ハッシュから決めるので、
+// 「付いているか」だけでなく「上げ忘れていないか」まで検出できる。
+function checkAssetVersions() {
+  const issues = collectAssetVersionIssues();
+  if (issues.length > 0) {
+    errors.push(...issues, "node tools/asset-versions.mjs を実行すると版数を揃えられます");
     return;
   }
 
-  console.log(`版数OK public/${relativePath}: ${refs.length}件すべてに ?v= が付いています`);
+  console.log("版数OK: CSS・JavaScriptの参照がすべて内容ハッシュと一致しています");
 }
 
 checkCssBraces("assets/style.css");
@@ -129,16 +124,7 @@ checkHtmlReferences("index.html", [
 ]);
 checkIndexNoscriptLinks();
 
-for (const page of [
-  "index.html",
-  "sanga202627season.html",
-  "squad.html",
-  "sanga2025season.html",
-  "sanga_slides.html",
-  "TradePost/index-v1.html",
-]) {
-  checkAssetVersionQuery(page);
-}
+checkAssetVersions();
 
 if (errors.length > 0) {
   for (const error of errors) {

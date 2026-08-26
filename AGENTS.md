@@ -78,7 +78,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 - class名、id名、data属性は参照箇所を確認してから変更する。
 - CSSの統合・並べ替えは既存上書きの意図を確認する。
 - JavaScript変更は既存LocalStorageデータとの互換性を保つ。
-- 公開CSS/JS変更時は対象HTMLのバージョンクエリを確認する。
+- 公開CSS/JS変更時は `npm run fix:asset-versions` で内容ハッシュ版数を揃える。
 - スカッドの画像化対象 `#canvas` 内では、iOS Safari対策として `box-shadow` と `filter: drop-shadow` を追加しない。
 - 意味のあるHTML要素を使い、キーボード操作とフォーカス表示を保つ。
 - 色だけに依存せず、操作対象は原則44px程度を確保する。
