@@ -251,10 +251,25 @@ body {
 }
 
 .hero-lead {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: clamp(0.9rem, 3.7vw, 1.05rem);
+  letter-spacing: 0.04em;
+}
+
+/* 公式でないことは見出しのすぐ下にも置く。ABOUTまで読まない人がいる */
+.hero-note {
   margin: 0;
   color: var(--ink-dim);
-  font-size: clamp(0.84rem, 3.4vw, 0.95rem);
-  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+/* 狭い画面では改行位置を指定しない。折り返しに任せる */
+.only-wide { display: none; }
+
+@media (min-width: 560px) {
+  .only-wide { display: inline; }
 }
 
 /* ---------------- 作品グリッド ---------------- */
