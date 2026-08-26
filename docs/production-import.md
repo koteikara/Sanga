@@ -16,7 +16,7 @@
 
 ## 目的と前提
 
-本番反映は `.github/workflows/deploy-production.yml` が `public/` 配下をFTP同期します。FTP-Deploy-Actionはサーバー上の `.ftp-deploy-sync-state.json` を基準に差分を反映するため、**リポジトリ外でサーバーへ直接置いたファイルは、同期の対象外のまま取り残されるか、状態ファイルの内容によっては削除される可能性があります。** 履歴もレビューも残らないため、リポジトリ側へ取り込んで正本を一本化します。
+本番反映は `.github/workflows/deploy-production.yml` が `public/` 配下をFTP同期します。FTP-Deploy-Actionはサーバー上の `.ftp-deploy-sync-state.json` に記録されたファイルだけを比較するため、**リポジトリ外でサーバーへ直接置いたファイルは同期の管理外に置かれたままになります。** 更新も削除もされない代わりに、履歴もレビューも残らず、変更や削除の判断材料がありません。リポジトリ側へ取り込んで正本を一本化します。
 
 前提:
 

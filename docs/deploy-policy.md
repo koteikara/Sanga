@@ -235,7 +235,9 @@ GitHubのリポジトリ画面で、次のRepository Secretsを登録します�
 
 GitHub ActionsのFTPアップロードでは、`local-dir` を `./public/` に限定します。そのため、サーバーへ送る対象は `public/` 配下の公開用ファイルのみです。
 
-ただし `public/experiments/` は除外します。公開前の検証用であり本番の公開物ではないためです。GitHub Pagesは `public` をそのまま配信するので、確認環境では引き続き参照できます。除外設定はActionの既定除外を上書きするため、`.git` 系と `node_modules` も明示的に列挙しています。
+検証用のプロトタイプは `public/` に置かず、リポジトリ直下の `experiments/` だけを正本にしています。`exclude` 設定はActionの既定除外を上書きするため、`.git` 系と `node_modules` を明示的に列挙しています。
+
+公開対象から外したいファイルは、`exclude` に足すのではなく `public/` から取り除きます。除外したファイルは同期の比較対象から外れるだけで、サーバー上の実物は残るためです。
 
 少なくとも次の公開用ファイルがアップロード対象に含まれます。
 
@@ -316,6 +318,12 @@ STAR_SERVER_REMOTE_DIR=public_html/
 * 初回デプロイ時にFTP Deploy Actionが同期状態管理用に作成するファイルです。
 * 次回以降は差分アップロードに使われます。
 * 原則として削除しません。
+
+### 同期が削除できるのは記録済みのファイルだけ
+
+FTP Deploy Actionは `.ftp-deploy-sync-state.json` に記録されたファイルだけを比較対象にします。このActionがアップロードしたことのないファイルは認識されず、リポジトリ側に無くても削除されません。ログの `Server Files:` はサーバー上の実ファイル数ではなく、記録済みの件数です。
+
+サーバーへ直接置いたファイルを消したい場合は、FTPで手動削除します。詳しい経緯と実測値は `docs/production-inventory-audit.md` の「FTP同期が削除できる範囲」を参照してください。
 
 ### Node 20 非推奨警告
 
