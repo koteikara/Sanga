@@ -84,6 +84,37 @@ SNSで強いのは「成果物が外へ出る」ツールです。多くの成�
 
 理由: 認証・サーバーDB・モデレーション・位置情報・運用負荷が増えるためです。
 
+## 既存資産との対応
+
+推奨案が、このリポジトリの何を流用できるかを整理します。
+
+| 案 | 流用できる既存資産 | 新規に必要なもの |
+| --- | --- | --- |
+| MY SANGA RECORD | `public/data/matches.json`（57件）、`sanga-schedule-button-states-v1` の観戦状態 | 観戦実績の集計、勝率・スタジアム数の算出 |
+| SANGA WRAPPED | 共有用画像生成（`docs/screenshot-social-share.md`）、上記の集計 | 縦長・正方形レイアウト、年度切り替え |
+| MATCH MEMORY | 画像生成、`matches.json` の結果列 | 写真・メモの保存領域（端末内） |
+| AWAY PASSPORT | `matches.json` の `venue` / `venue_code`、`home_away` | スタジアムマスタ、訪問記録、距離データ |
+| MY SANGA BEST XI | 予想スカッド（`public/squad.html`、`public/data/players.json` 39件、フォーメーション17件） | 歴代選手データ |
+| 予想スカッド答え合わせ | 予想スカッドの保存データ | 公式スタメンデータの入手経路 |
+| MATCHDAY DASHBOARD | `matches.json`、SUPPORTER TIMELINE のイベントデータ | 当日表示の集約UI |
+
+**最大の分岐点は「歴代選手データ」と「観戦実績データ」を新たに持つかどうかです。**
+現在の正本は今季の試合57件と選手39件だけで、過去シーズンのデータはありません。
+歴代BEST XIや歴代ユニフォーム図鑑は、データ整備そのものが本体の作業量になります。
+一方でMY SANGA RECORD系は、利用者が端末内に貯める個人データなので、正本データを増やさずに始められます。
+
+## 判断メモ
+
+- 個人の観戦実績はLocalStorage中心で扱い、公開JSONには含めません（`AGENTS.md`、`docs/personalization.md`）。
+  端末を変えると消えるため、書き出し・読み込みの手段は早い段階で用意する必要があります。
+- 選手画像、ユニフォーム画像、チャント音源・歌詞は権利確認が必要です。`docs/source-and-license.md` と
+  `THIRD_PARTY_NOTICES.md` に由来と利用条件を残せないものは採用しません。
+  公式由来画像の許諾確認は `docs/roadmap.md` 上でも保留中です。
+- 認証・サーバーDB・投稿モデレーションを伴う案（GPSチェックイン、ランキング、ユーザー投稿）は、
+  現在の構成（静的ホスティング＋手動デプロイ）から外れます。採用するなら構成変更の判断が先です。
+- 案を1つ足すごとに公開ページが増えます。追加時は `docs/site-index.md`（入口ページ）と
+  `docs/production-inventory-audit.md`（公開物一覧）の更新が必要です。
+
 ## 全体構成案
 
 「試合前 → 当日 → 試合後 → シーズン終了」をつなぎます。
@@ -140,6 +171,9 @@ SNSで強いのは「成果物が外へ出る」ツールです。多くの成�
 
 - `docs/supporter-timeline-design.md`
 - `docs/roadmap.md`
+- `docs/screenshot-social-share.md`
+- `docs/source-and-license.md`
+- `docs/site-index.md`
 - `docs/service-scope.md`
 - `docs/ui-prototype-workflow.md`
 - `docs/concept/fan-tools-research.html`

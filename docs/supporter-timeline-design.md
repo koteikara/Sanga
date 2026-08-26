@@ -2,6 +2,18 @@
 
 確認基準日: 2026-08-26
 
+## 索引
+
+| 知りたいこと | 節 |
+| --- | --- |
+| このツールが何か、既存構想との関係 | 位置づけ |
+| 解決したい課題と設計原則 | 解決したい課題 / 設計原則 |
+| データ構造 | 情報モデル |
+| 既存データとの接続 | 既存データとの整合 |
+| 収集と人間確認の流れ | 情報収集アーキテクチャ / 変更検知 / 管理画面 |
+| いつ何を作るか | 段階実装 |
+| 未確定事項 | 未確定・保留事項 |
+
 ## この文書の目的
 
 京都サンガF.C.の公式情報に散在する「チケット販売」「応募締切」「試合日イベント」「開門」「キックオフ」などを、
@@ -10,6 +22,23 @@
 現時点では企画・設計の記録のみで、実装、依存追加、公開HTML/CSS/JavaScript変更、公開JSON変更は行っていません。
 
 閲覧用の元資料（HTML）は `docs/concept/supporter-timeline-design.html` です。内容の正本は本文書とします。
+
+## 位置づけ
+
+本企画は、`docs/service-scope.md` で「ニュース連動カレンダー」として構想していたサービスの後継です。
+対象とする情報（チケット販売開始、ファンクラブグレード別販売開始、イベント申込開始・終了、グッズ販売、キャンペーン締切）は同じですが、
+主表現をカレンダーではなく時系列タイムラインに変え、Google Calendarを出力先の一つに格下げした点が異なります。
+
+| 観点 | ニュース連動カレンダー（従来構想） | SUPPORTER TIMELINE（本企画） |
+| --- | --- | --- |
+| 主表現 | 公開カレンダー | 1本のサポータータイムライン |
+| 利用者の操作 | 必要な予定を自分のカレンダーへコピー | 画面上で次の行動と当日の流れを確認 |
+| Google Calendar | 最終出力先 | 出力先の一つ |
+| 個人の予定 | 対象外 | 公式イベントと同じモデルで同じ時系列に並べる |
+| 日時抽出 | 公式ニュースから抽出＋人間確認 | 同じ（構造化ページを先、ニュースを後） |
+
+役割分担の考え方（年間スケジュールページは試合予定・パーソナライズ・SNS共有に集中し、ニュース由来の日時は別サービスで扱う）は
+`docs/service-scope.md` のまま引き継ぎます。名称と主表現の変更は本文書を正とし、`docs/service-scope.md` からも参照します。
 
 ## 解決したい課題
 
@@ -26,7 +55,9 @@
 主役は「試合」ではなく「サポーター本人」です。すべての情報を、試合単位ではなく1本のサポータータイムラインに並べます。
 
 - 表示の絞り込み軸: ALL / チケット / 応募 / 試合当日 / MY予定
-- 各イベントに `matchIds` を持たせ、必要なときだけ特定試合へ絞り込む。
+- 各イベントに `match_ids` を持たせ、必要なときだけ特定試合へ絞り込む。
+- 公式情報と個人の予定を同じモデルで扱い、UI上は同じ時系列に並べる。
+- 情報の正本はタイムライン側のデータとし、Google Calendarなど外部は出力先として扱う。
 
 ## 体験イメージ
 
@@ -41,38 +72,69 @@
 
 ## 情報モデル
 
-`TimelineEvent` を最小単位にします。
+`TimelineEvent` を最小単位にします。キー名は既存の公開JSON（`public/data/matches.json`）に合わせてスネークケースを使います。
 
 ```json
 {
-  "id": "ticket-kashiwa-general",
-  "datetime": "2026-08-30T12:00:00+09:00",
+  "id": "ticket-sec03-sc",
+  "starts_at": "2026-08-30T12:00:00+09:00",
+  "ends_at": "",
   "type": "ticket",
-  "title": "一般販売開始",
+  "title": "SC最速先行販売開始",
   "source": "official",
-  "actionType": "action",
-  "matchIds": ["2026-j1-kashiwa-home"],
-  "sourceUrl": "...",
-  "status": "confirmed"
+  "action_type": "action",
+  "match_ids": ["sec03"],
+  "source_url": "https://...",
+  "source_checked_at": "2026-08-26",
+  "status": "confirmed",
+  "is_visible": true
 }
 ```
 
-`matchIds` は0件・1件・複数件を許可し、クラブ全体イベントにも対応します。
+| キー | 値 | 補足 |
+| --- | --- | --- |
+| `id` | イベント固有ID | `種別-試合ID-識別子` を基本にし、重複排除・変更検知の同一性キーにする |
+| `starts_at` | ISO 8601（`+09:00` 付き） | 日付のみ判明で時刻未定の場合の表現は未確定（後述） |
+| `ends_at` | ISO 8601または空文字 | 申込期間・イベント開催時間帯を持つ場合に使う |
+| `type` | `ticket` / `entry` / `event` / `goods` / `match` / `personal` | 表示の絞り込み軸に対応させる |
+| `source` | `official` / `personal` | 将来 `jleague` などを足せるようにする |
+| `action_type` | `action` / `information` / `personal` | 表示カテゴリ（後述） |
+| `match_ids` | 試合IDの配列 | 0件・1件・複数件を許可し、クラブ全体イベントにも対応する |
+| `status` | `confirmed` / `tentative` | `docs/data-schema.md` の状態語彙に揃える |
+| `is_visible` | 真偽値 | `matches.json` と同じく公開制御に使う |
 
-MY予定（利用者自身の予定）も同じモデルで扱い、UI上は同じ時系列に並べます。
+MY予定（利用者自身の予定）も同じモデルで扱います。
 
 ```json
 {
-  "id": "my-seat-20260830",
-  "datetime": "2026-08-30T18:10:00+09:00",
+  "id": "my-seat-sec03",
+  "starts_at": "2026-08-30T18:10:00+09:00",
   "type": "personal",
   "title": "座席へ移動",
   "source": "personal",
-  "matchIds": ["2026-j1-mito-home"]
+  "action_type": "personal",
+  "match_ids": ["sec03"]
 }
 ```
 
-MY予定は個人状態のためLocalStorage側で扱い、公開JSONには含めません（`AGENTS.md` の保護事項に従う）。
+MY予定は個人状態のためLocalStorage側で扱い、公開JSONには含めません（`AGENTS.md` の保護事項、`docs/personalization.md` に従う）。
+LocalStorageキーは既存の命名に合わせ、`sanga-timeline-personal-events-v1` のような `sanga-<機能>-<用途>-v1` 形式を使います。
+既存の `sanga-schedule-*` キーは変更しません。
+
+## 既存データとの整合
+
+タイムラインは新規データを持ちますが、試合そのものの正本は既存のまま `public/data/matches.json` です。
+
+- 試合IDは `matches.json` の `id`（現在は `sec01` 〜 `sec38` 形式）をそのまま外部キーとして使います。
+  独自のID体系（`2026-j1-kashiwa-home` のような形）は作りません。
+  カップ戦・ACL戦への拡張が必要になった場合は、`docs/service-scope.md` と `docs/data-schema.md` が想定する
+  `j1-sec01`、`lev-r1` 形式への移行に合わせます。
+- タイムライン側の公開データファイル名は、`docs/service-scope.md` の予告に合わせて `public/data/calendar-events.json` を第一候補とします。
+  ファイル名を変える場合は `docs/service-scope.md` と `docs/data-schema.md` も同時に更新します。
+- 試合の日程が未定・候補日ありの場合（`matches.json` の `date_candidates`、`status: tentative`、`match_status: 未定`）、
+  そこにぶら下がるイベントの日時も確定できません。この扱いは未確定事項として後述します。
+- 公開データを追加する場合は、既存の検証の作り（`tools/validate-matches.js`、`tools/validate-players.js` など）に倣って
+  `tools/validate-calendar-events.js` を用意し、`npm run check:data` から呼びます。検証なしで公開データを増やしません。
 
 ## 情報収集アーキテクチャ
 
@@ -94,7 +156,7 @@ SANGA公式
                                           人間レビュー
                                                 │
                                                 ↓
-                                           events.json
+                                     calendar-events.json
                                                 │
                           ┌─────────────────────┴────────────────────┐
                           ↓                                          ↓
@@ -103,6 +165,9 @@ SANGA公式
 ```
 
 重要: Google Calendarを「最終目的」にしません。タイムラインを正本にし、Calendarは出力先の一つとして扱います。
+
+取得については、公式サイトの利用条件と負荷への配慮を先に確認します。取得可否が確認できない範囲は、手入力運用で始めます。
+出典URLと確認日は必ず残します（`AGENTS.md` の「公開情報更新時は可能な限り出典URLと確認日を残す」）。
 
 ## AI利用方針
 
@@ -116,7 +181,7 @@ SANGA公式
 | 4 | 意味付け・JSON化 | Qwen 7B/14B |
 | 5 | 難解記事 | クラウドLLMへフォールバック |
 
-クラウドLLMは全記事ではなく、低confidenceや訂正記事など一部だけに限定します。
+クラウドLLMは全記事ではなく、低確信度や訂正記事など一部だけに限定します。
 
 LLMには「抽出」より「意味付け」を任せます。
 
@@ -126,7 +191,11 @@ LLMには「抽出」より「意味付け」を任せます。
 - 複数イベントを分割する
 - JSONスキーマに整形する
 
-推奨: まずQwen 7Bと14Bで30〜50記事を比較し、日時Recall・変更判定・誤イベント生成・JSON安定性を評価します。
+評価の進め方: まずQwen 7Bと14Bで30〜50記事を比較し、日時Recall・変更判定・誤イベント生成・JSON安定性を測ります。
+比較結果は本文書か別の調査記録に残し、選定理由を追えるようにします。
+
+抽出処理はローカルまたは運用者の手元で実行し、GitHub Actionsの必須検証には載せません。
+APIキーなどの認証情報はリポジトリに置きません（`AGENTS.md` の最重要ルール）。
 
 ## 変更検知
 
@@ -138,7 +207,9 @@ LLMには「抽出」より「意味付け」を任せます。
 8/22 12:00           8/30 12:00
 ```
 
-過去実装の `itemKey + fingerprint` の考え方を、イベント同一性と変更検知に再利用します。
+同一性の判定は、`id`（`種別-試合ID-識別子`）を安定キーとし、本文由来の内容ハッシュを併用して差分を検出する方式を想定します。
+「同一性キー＋内容ハッシュ」の考え方自体は本リポジトリ外の実装で用いた方式で、本リポジトリには該当コードはありません。
+実装時は既存の `tools/asset-versions.mjs`（内容ハッシュで版数を決める仕組み）が参考になります。
 
 ## 管理画面
 
@@ -147,8 +218,10 @@ Human-in-the-loopを前提にします。
 - 「新しく見つかった情報 8件」のような候補一覧を出す。
 - 各候補に [承認] [修正] [無視]。
 - 変更候補は「8/22 12:00 → 8/30 12:00」のように差分を示し [更新する]。
+- いつ、どのニュースから、どのイベントを登録・修正したかを更新ログとして残す。
 
 これにより、AI誤抽出がそのまま公開されない状態を保ちます。
+管理画面は運用者向けであり、公開ページからはリンクしません（`docs/roadmap.md` の「本番ページから検証用プロトタイプへリンクしない」）。
 
 ## 表示カテゴリ
 
@@ -161,28 +234,33 @@ ACTION と INFORMATION を分離します。
 | PERSONAL | 家を出る、食事、座席へ移動 |
 
 トップ画面はACTIONを優先し、その下に全体タイムラインを表示します。
+分類は色だけで表さず、ラベルまたはアイコンと併記します（`AGENTS.md` の実装上の保護事項）。
 
-## 段階実装（MVP）
+## 段階実装
 
 最初から全部のニュースをAI解析しません。
 
-| Phase | 実装内容 |
-| --- | --- |
-| Phase 1 | TimelineEventスキーマ / タイムラインUI / チケット販売ページParser / `matches.json` 連携 / LocalStorage MY予定 |
-| Phase 2 | ニュース記事収集 / Qwen抽出 / 管理画面 / 人間承認 / 変更検知 |
-| Phase 3 | 通知 / PWA / Google Calendar連携 / イベント重複警告 |
-| Phase 4 | 「あなたの試合当日プラン」自動組み立て / 移動余裕時間の警告 |
+| Phase | 実装内容 | 完了条件の目安 |
+| --- | --- | --- |
+| Phase 1 | TimelineEventスキーマ / タイムラインUI / チケット販売ページParser / `matches.json` 連携 / LocalStorage MY予定 | `experiments/` のプロトタイプが実データで動き、`tools/validate-calendar-events.js` が通る |
+| Phase 2 | ニュース記事収集 / Qwen抽出 / 管理画面 / 人間承認 / 変更検知 | 誤抽出が公開前に止まること、更新ログが残ること |
+| Phase 3 | 通知 / PWA / Google Calendar連携 / イベント重複警告 | 出力が正本データと一致すること |
+| Phase 4 | 「あなたの試合当日プラン」自動組み立て / 移動余裕時間の警告 | 当日の動線が1画面で組めること |
 
-UIを伴う変更のため、Phase 1 は `docs/ui-prototype-workflow.md` に従い `experiments/` でのプロトタイプから始めます。
+UIを伴う変更のため、Phase 1 は `docs/ui-prototype-workflow.md` に従い `experiments/supporter-timeline/` でのプロトタイプから始めます。
+公開ページ化する段階で `docs/site-index.md`（入口ページ）と `docs/production-inventory-audit.md`（公開物一覧）を更新します。
+
+Phase 1 を最小で成立させるなら、AI抽出も管理画面も使わず、手入力の `calendar-events.json` とタイムラインUIだけで検証できます。
+この最小構成を先に作り、収集の自動化は後から足します。
 
 ## 既存ツールとの役割分担
 
-- 年間スケジュール: 「いつ試合がある？」
-- 予想スカッド: 「誰が出ると思う？」
+- 年間スケジュール（`public/sanga202627season.html`）: 「いつ試合がある？」
+- 予想スカッド（`public/squad.html`）: 「誰が出ると思う？」
 - SUPPORTER TIMELINE: 「次に何をすればいい？」「当日どう動けばいい？」
 
-`docs/roadmap.md` の開発方針にある「ニュース由来のチケット販売開始、イベント申込締切などはニュース連動カレンダー側を基本にする」を、
-本企画が引き継ぐ想定です。
+`docs/roadmap.md` の「チケット・観戦準備メモのUIプロトタイプ」「追加メモ機能のUIプロトタイプ」は、
+年間スケジュールページ側の個人メモであり、本企画のMY予定とは別機能です。両者を1つの画面へ混ぜません。
 
 ## 成功条件
 
@@ -199,17 +277,23 @@ UIを伴う変更のため、Phase 1 は `docs/ui-prototype-workflow.md` に従�
 
 ## 未確定・保留事項
 
-- 公式サイトからの情報取得可否・取得方法の可否判断は未確認。
-- `events.json` の公開場所、更新運用、Actions構成は未決定。
-- ローカルLLMの実行環境と評価結果は未取得。
-- Google Calendar連携の認証方式は未検討。
+| 項目 | 内容 |
+| --- | --- |
+| 取得可否 | 公式サイトからの情報取得の可否・方法・頻度は未確認。確認できるまでは手入力運用とする。 |
+| 日時未定の表現 | 「日付のみ確定・時刻未定」「候補日複数」をタイムライン上でどう並べるかが未決定。`matches.json` の `date_candidates` と `status: tentative` の扱いに揃える必要がある。 |
+| データファイル名 | `public/data/calendar-events.json` は第一候補であり確定していない。 |
+| 更新運用 | 誰が・どの頻度で候補を確認し、どの経路で公開するか（手動 / Actions）が未決定。 |
+| ローカルLLM | 実行環境と7B/14Bの比較結果は未取得。 |
+| Google Calendar連携 | 認証方式と公開カレンダーの持ち方が未検討。 |
+| 管理画面の置き場所 | 運用者専用画面をどこに置くか（ローカル限定 / 非公開パス）が未決定。 |
 
 ## 関連ドキュメント
 
+- `docs/service-scope.md`（従来構想「ニュース連動カレンダー」と役割分担）
 - `docs/fan-tools-research.md`
 - `docs/roadmap.md`
-- `docs/ui-prototype-workflow.md`
-- `docs/service-scope.md`
-- `docs/personalization.md`
 - `docs/data-schema.md`
+- `docs/personalization.md`
+- `docs/ui-prototype-workflow.md`
+- `docs/operation-flow.md`
 - `docs/concept/supporter-timeline-design.html`
