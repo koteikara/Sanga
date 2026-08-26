@@ -1,0 +1,42 @@
+{
+  "updatedAt": "2026-08-26",
+  "tools": [
+    {
+      "id": "season-schedule",
+      "name": "年間スケジュール",
+      "description": "2026/27シーズンの試合日程を確認し、参戦予定を保存できます。",
+      "href": "../../public/sanga202627season.html",
+      "section": "primary"
+    },
+    {
+      "id": "squad-builder",
+      "name": "予想スカッド作成",
+      "description": "フォーメーションを選んでスタメンを並べ、画像にして共有できます。",
+      "href": "../../public/squad.html",
+      "section": "primary"
+    },
+    {
+      "id": "trade-post",
+      "name": "求・譲 投稿フォーマット",
+      "description": "チケットやグッズの交換募集を、Xに投稿しやすい形に整えます。",
+      "href": "../../public/TradePost/index-v1.html",
+      "section": "secondary"
+    },
+    {
+      "id": "season-2025",
+      "name": "2025シーズン日程",
+      "description": "2025シーズンの試合日程です。",
+      "href": "../../public/sanga2025season.html",
+      "section": "archive",
+      "updatedNote": "2025シーズンの記録"
+    },
+    {
+      "id": "player-slides",
+      "name": "選手が思う\"サンガのみりょく\"",
+      "description": "選手のことばを集めたスライドです。",
+      "href": "../../public/sanga_slides.html",
+      "section": "archive",
+      "updatedNote": "更新終了"
+    }
+  ]
+}
