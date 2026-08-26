@@ -13,6 +13,11 @@
 //   node tools/fetch-production-files.mjs                        一覧だけ作る
 //   node tools/fetch-production-files.mjs --mode download         取り込み候補を取得する
 //   node tools/fetch-production-files.mjs --mode download --apply 取得後に public/ へ配置する
+//   node tools/fetch-production-files.mjs --mode backup           サーバー上の全ファイルを取得する
+//
+// backup はリポジトリとの差分に関係なくサーバー上の全ファイルを取得します。
+// 本番デプロイ前の退避用で、public/ へは配置しません。除外リストも適用せず、
+// 同期状態ファイルを含めてそのまま取得します。復元できることが目的だからです。
 //
 // 認証情報は環境変数からのみ読み、リポジトリには保存しません。
 //   STAR_SERVER_HOST / STAR_SERVER_USER / STAR_SERVER_PASSWORD / STAR_SERVER_REMOTE_DIR
@@ -59,8 +64,8 @@ function parseArgs(argv) {
     else throw new Error(`不明な引数です: ${arg}`);
   }
 
-  if (!["inventory", "download"].includes(options.mode)) {
-    throw new Error(`--mode は inventory か download です: ${options.mode}`);
+  if (!["inventory", "download", "backup"].includes(options.mode)) {
+    throw new Error(`--mode は inventory / download / backup です: ${options.mode}`);
   }
   if (options.apply && options.mode !== "download") {
     throw new Error("--apply は --mode download と一緒に指定します。");
@@ -137,6 +142,7 @@ function classify(relativePath) {
 }
 
 async function walk(client, remoteRoot, relativeDir, collected, options) {
+  const isBackup = options.mode === "backup";
   const remoteDir = relativeDir ? path.posix.join(remoteRoot, relativeDir) : remoteRoot;
   const entries = await client.list(remoteDir);
 
@@ -149,7 +155,7 @@ async function walk(client, remoteRoot, relativeDir, collected, options) {
     const relativePath = relativeDir ? path.posix.join(relativeDir, entry.name) : entry.name;
 
     if (entry.type === "dir") {
-      if (EXCLUDED_DIRS.has(entry.name)) {
+      if (!isBackup && EXCLUDED_DIRS.has(entry.name)) {
         collected.excluded.push({ path: `${relativePath}/`, reason: "除外ディレクトリ" });
         continue;
       }
@@ -157,13 +163,20 @@ async function walk(client, remoteRoot, relativeDir, collected, options) {
       continue;
     }
 
-    if (EXCLUDED_NAMES.has(entry.name)) {
+    if (!isBackup && EXCLUDED_NAMES.has(entry.name)) {
       collected.excluded.push({ path: relativePath, reason: "除外ファイル" });
       continue;
     }
 
-    const category = classify(relativePath);
     const record = { path: relativePath, size: entry.size, modifiedAt: entry.modifiedAt };
+
+    // バックアップは分類せず、サーバー上にあるものをすべて取得対象にする。
+    if (isBackup) {
+      collected.importable.push(record);
+      continue;
+    }
+
+    const category = classify(relativePath);
 
     if (category === "managed") collected.managed.push(record);
     else if (category === "review") collected.review.push(record);
@@ -240,8 +253,8 @@ async function main() {
     const remoteRoot = await resolveRemoteRoot(client, credentials.remoteDir);
     await walk(client, remoteRoot, "", collected, options);
 
-    if (options.mode === "download") {
-      const targets = options.includeReview
+    if (options.mode === "download" || options.mode === "backup") {
+      const targets = options.includeReview || options.mode === "backup"
         ? [...collected.importable, ...collected.review]
         : collected.importable;
 
@@ -251,7 +264,7 @@ async function main() {
         console.log(`取得: ${target.path}（${buffer.length} bytes）`);
       }
 
-      if (options.apply) {
+      if (options.apply && options.mode === "download") {
         for (const target of targets) {
           const from = path.join(options.outDir, "files", target.path);
           const to = path.join(rootDir, "public", target.path);

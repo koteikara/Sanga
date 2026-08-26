@@ -8,13 +8,14 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: '一覧だけ作る(inventory) / 取り込みPRまで作る(import)'
+        description: '一覧だけ作る(inventory) / 取り込みPRまで作る(import) / 全ファイルを退避する(backup)'
         required: true
         default: inventory
         type: choice
         options:
           - inventory
           - import
+          - backup
       include_review:
         description: 'サーバー設定や動的スクリプト（.htaccess、.php等）も取り込む'
         required: false
@@ -58,6 +59,8 @@ jobs:
           args=()
           if [ "$MODE" = "import" ]; then
             args+=(--mode download --apply)
+          elif [ "$MODE" = "backup" ]; then
+            args+=(--mode backup)
           fi
           if [ "$INCLUDE_REVIEW" = "true" ]; then
             args+=(--include-review)
@@ -93,6 +96,18 @@ jobs:
           name: production-inventory
           path: tmp/production-import/inventory.*
           if-no-files-found: error
+
+      # 本番デプロイ前の退避。復元できることが目的なので、分類も除外もせず
+      # サーバー上のすべてを固めて残す。
+      - name: バックアップを成果物として保存
+        if: inputs.mode == 'backup'
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-backup-${{ github.run_number }}
+          path: tmp/production-import/files/
+          if-no-files-found: error
+          retention-days: 90
+          include-hidden-files: true
 
       - name: 取り込み結果を検証
         if: inputs.mode == 'import'
