@@ -200,7 +200,10 @@ body {
 }
 
 .topbar-mark {
-  display: block;
+  display: flex;
+  align-items: center;
+  /* 34pxの絵だけだとタップ領域が足りない。当たり判定は44pxにする */
+  min-height: var(--tap);
   width: 34px;
   flex: none;
 }
@@ -407,12 +410,13 @@ body {
 .about-handle a:hover,
 .about-handle a:focus-visible { text-decoration: underline; }
 
-/* Xのアイコンを入れたときの受け皿。画像が無いあいだはキャラクターが出る */
+/* 元画像は白地の正方形。丸く抜いて、暗い背景から浮くように縁を足す */
 .topbar-mark img {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
 }
 
 .site-footer {
