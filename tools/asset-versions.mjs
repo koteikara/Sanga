@@ -24,7 +24,10 @@ const publicDir = path.join(rootDir, "public");
 // 8桁でも公開アセットの規模では衝突しない。URLに載るので短さを優先する。
 const HASH_LENGTH = 8;
 
-const ASSET_REF = /(["'])((?:\.{0,2}\/)?[\w./-]+\.(?:css|js|mjs))(\?[^"']*)?\1/g;
+// 画像も対象にする。中身を差し替えても名前が同じなら、再訪した人には
+// 古い画像が使われ続ける（サムネイルの日付がずれたまま残った実例がある）。
+// svgは favicon をデータURIで書いているため対象から外す。
+const ASSET_REF = /(["'])((?:\.{0,2}\/)?[\w./-]+\.(?:css|js|mjs|webp|png|jpe?g))(\?[^"']*)?\1/g;
 
 function hashOf(content) {
   return crypto.createHash("sha256").update(content).digest("hex").slice(0, HASH_LENGTH);
@@ -49,7 +52,10 @@ function sourceFiles() {
   const scripts = listFiles(path.join(publicDir, "assets"), (file) => /\.(?:js|mjs)$/.test(file)).filter(
     (file) => !file.split(path.sep).includes("vendor")
   );
-  return [...html, ...scripts].sort();
+  // 入口ページのサムネイルは tools.json に書かれている。ここも参照側として扱う
+  const toolsJson = path.join(publicDir, "data", "tools.json");
+  const data = fs.existsSync(toolsJson) ? [toolsJson] : [];
+  return [...html, ...scripts, ...data].sort();
 }
 
 function replaceVersionQuery(query, version) {
@@ -66,6 +72,7 @@ const MAX_PASSES = 10;
 // 戻り値は「ファイルパス -> あるべき中身」。
 export function resolveAssetVersions() {
   const sources = sourceFiles();
+  const sourceSet = new Set(sources);
   const contents = new Map();
   const readFile = (file) => {
     if (!contents.has(file)) contents.set(file, fs.readFileSync(file, "utf8"));
@@ -82,16 +89,27 @@ export function resolveAssetVersions() {
       const after = before.replace(ASSET_REF, (match, quote, ref, query) => {
         if (/^[a-z][a-z0-9+.-]*:/i.test(ref) || ref.startsWith("//")) return match;
 
+        // tools.json のパスは JSON からではなく public/ からの相対で書かれている。
+        // 入口ページ（public/index.html）が読む側だから。
+        const base = source === path.join(publicDir, "data", "tools.json")
+          ? publicDir
+          : path.dirname(source);
         const target = ref.startsWith("/")
           ? path.join(publicDir, ref.slice(1))
-          : path.resolve(path.dirname(source), ref);
+          : path.resolve(base, ref);
 
         if (!target.startsWith(publicDir + path.sep) || !fs.existsSync(target)) {
+          // 画像は download 属性の保存ファイル名など、実ファイルでない文字列にも
+          // 当たる。見つからなければ触らない。CSS・JavaScriptは従来どおり落とす。
+          if (!/\.(?:css|js|mjs)$/.test(ref)) return match;
           unresolved.push({ source, ref });
           return match;
         }
 
-        return `${quote}${ref}${replaceVersionQuery(query, hashOf(readFile(target)))}${quote}`;
+        // 参照先が参照側でもあるときは、書き換え途中の中身でハッシュを取る。
+        // そうしないと連鎖した参照が収束しない。画像などはファイルの生バイトを読む。
+        const body = sourceSet.has(target) ? readFile(target) : fs.readFileSync(target);
+        return `${quote}${ref}${replaceVersionQuery(query, hashOf(body))}${quote}`;
       });
 
       if (after !== before) {

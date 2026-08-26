@@ -695,14 +695,22 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
 
   const weekdayLabels=['SUN','MON','TUE','WED','THU','FRI','SAT'];
 
+  // 試合日は固定の暦日なので、端末のタイムゾーンで変わってはいけない。
+  // 以前は JST の瞬間を作ってから端末のタイムゾーンで読み出しており、
+  // 日本より西の地域では1日前の日付と曜日が出ていた。
+  // 月日は文字列から直接取り、曜日だけUTC基準で計算する。
   function formatDateParts(value){
     if(!value) return null;
-    const date=new Date(`${value}T00:00:00+09:00`);
+    const parts=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+    if(!parts) return null;
+    const [, year, month, day]=parts.map(Number);
+    const date=new Date(Date.UTC(year, month-1, day));
     if(Number.isNaN(date.getTime())) return null;
+    const weekday=date.getUTCDay();
     return {
-      main:`${date.getMonth()+1}.${date.getDate()}`,
-      weekday:weekdayLabels[date.getDay()],
-      weekdayClass:date.getDay()===0 ? 'sun' : date.getDay()===6 ? 'sat' : ''
+      main:`${month}.${day}`,
+      weekday:weekdayLabels[weekday],
+      weekdayClass:weekday===0 ? 'sun' : weekday===6 ? 'sat' : ''
     };
   }
 
