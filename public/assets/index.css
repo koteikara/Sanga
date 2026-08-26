@@ -210,6 +210,15 @@ body {
   gap: clamp(14px, 4vw, 30px);
 }
 
+/* 320px幅ではナビが収まらず、ページ全体が横に溢れていた。
+   字間と間隔を詰めて収める。 */
+@media (max-width: 360px) {
+  .topbar { padding-left: 10px; padding-right: 10px; }
+  .topbar-nav { gap: 8px; }
+  .topbar-nav a { letter-spacing: 0.08em; }
+  .motion-toggle { margin-left: 0; }
+}
+
 .topbar-nav a {
   /* ポートフォリオサイトの並べ方に寄せて、字間を広くとった小さな欧文にする */
   font-size: 0.68rem;
@@ -254,19 +263,17 @@ body {
   letter-spacing: 0.04em;
 }
 
+/* 節ごとに inline-block にして、折り返しを句読点の位置だけで起こす。
+   幅で決まる位置に任せると「サンガを応援」「する人みんなに。」のように
+   語の途中で切れる。 */
+.hero-lead span { display: inline-block; }
+
 /* 公式でないことは見出しのすぐ下にも置く。ABOUTまで読まない人がいる */
 .hero-note {
   margin: 0;
   color: var(--ink-dim);
   font-size: 0.72rem;
   letter-spacing: 0.08em;
-}
-
-/* 狭い画面では改行位置を指定しない。折り返しに任せる */
-.only-wide { display: none; }
-
-@media (min-width: 560px) {
-  .only-wide { display: inline; }
 }
 
 /* ---------------- 作品グリッド ---------------- */
