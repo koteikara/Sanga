@@ -65,6 +65,28 @@ jobs:
 
           node tools/fetch-production-files.mjs "${args[@]}"
 
+      # 成果物のzipを落とさないと結果が読めないのは不便なので、実行ページの
+      # サマリーにも同じ一覧を出す。ジョブサマリーの上限は1MBのため、
+      # 超える場合は先頭だけ載せ、全文は成果物へ誘導する。
+      - name: 取り込み一覧を実行サマリーに表示
+        run: |
+          set -euo pipefail
+
+          inventory="tmp/production-import/inventory.md"
+          limit=900000
+
+          if [ "$(wc -c < "$inventory")" -gt "$limit" ]; then
+            head -c "$limit" "$inventory" >> "$GITHUB_STEP_SUMMARY"
+            {
+              echo
+              echo '---'
+              echo
+              echo '一覧が大きいため途中で切りました。全文は成果物 `production-inventory` の `inventory.md` を参照してください。'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            cat "$inventory" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: 取り込み一覧を成果物として保存
         uses: actions/upload-artifact@v4
         with:
