@@ -105,5 +105,14 @@ node tools/fetch-production-files.mjs --mode download --apply
 | `tools/fetch-production-files.mjs` | 一覧作成、分類、ダウンロード、`public/` への配置 |
 | `tools/ftp-client.mjs` | 依存なしの最小FTP/FTPSクライアント（読み取り専用） |
 | `.github/workflows/import-production-files.yml` | 手動実行ワークフロー。一覧の成果物保存とドラフトPR作成 |
+| `tools/check-import-tools.mjs` | `npm run check:tools` の実体。検証用FTPサーバーを立てて取り込みを実行し、走査・分類・取得結果を確認する |
+
+### パスの扱い
+
+FTPのカレントディレクトリは接続内で持ち越されます。相対パスで `CWD` を重ねると降りた先からの相対解決になり、別のディレクトリを見てしまうため、接続直後に `PWD` でログインディレクトリを取得し、`STAR_SERVER_REMOTE_DIR` を絶対パスへ解決したうえで、走査と取得のパスをすべてその絶対パス起点で組み立てます。`STAR_SERVER_REMOTE_DIR` は `./` のような相対指定でも `/home/example/public_html/` のような絶対指定でも動きます。
+
+サーバーが返したファイル名は、そのままローカルのパスには使いません。区切り文字や上位参照を含む名前は取り込まず、一覧の「除外」に「扱えない名前」として記録します。
+
+`npm run check:tools` は、実サーバーと同じく `CWD` を現在位置からの相対で解決する検証用FTPサーバーをその場で立て、相対指定と絶対指定の両方で入れ子ディレクトリを走査できることを確認します。この検証は本番サーバーへ接続しません。
 
 FTPクライアントを自前で持っているのは、`tools/` が追加の依存を持たずNode.js 20だけで動く方針のためです。実装しているのはログイン、`PASV`、`MLSD`（非対応時は `LIST`）、`RETR` だけで、アップロード系のコマンドは持ちません。
