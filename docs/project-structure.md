@@ -34,9 +34,7 @@
 
 ### `experiments/`
 
-公開前の画像生成・スカッドのデザインと操作検証です。公開物の正本ではありません。本番サーバーへはアップロードしません。
-
-`public/experiments/` に一部の複製がありますが内容がずれています。詳細と未解決の扱いは `docs/production-inventory-audit.md` を参照してください。
+公開前の画像生成・スカッドのデザインと操作検証です。公開物の正本ではありません。`public/` には置かないため、GitHub Pagesにも本番サーバーにも公開されません。以前は `public/experiments/` に複製がありましたが、内容がずれていたうえ本番で公開されていたため削除しました。経緯は `docs/production-inventory-audit.md` を参照してください。
 
 ### `docs/`
 

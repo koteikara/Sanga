@@ -66,11 +66,12 @@ jobs:
           port: ${{ secrets.STAR_SERVER_PORT || 21 }}
           local-dir: ./public/
           server-dir: ${{ secrets.STAR_SERVER_REMOTE_DIR }}
-          # exclude を指定するとActionの既定除外が上書きされるため、既定分も書く。
-          # experiments/ は公開前の検証用で本番の公開物ではない。GitHub Pagesは
-          # public配下をそのまま配信するため、確認環境では引き続き参照できる。
+          # exclude を指定するとActionの既定除外が上書きされるため、既定分を書く。
+          # 検証用のプロトタイプは public/ に置かず、リポジトリ直下の experiments/
+          # だけを正本にしている。除外ではなく public/ に無いことで公開対象から外す。
+          # 除外に入れると同期の比較対象から外れ、サーバー上の既存ファイルが
+          # 削除されないまま残るため。
           exclude: |
             **/.git*
             **/.git*/**
             **/node_modules/**
-            experiments/**
