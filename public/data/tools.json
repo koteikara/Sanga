@@ -1,0 +1,50 @@
+{
+  "updatedAt": "2026-08-26",
+  "tools": [
+    {
+      "id": "season-schedule",
+      "name": "年間スケジュール",
+      "description": "2026/27シーズンの試合日程を確認し、参戦予定を保存できます。",
+      "href": "sanga202627season.html",
+      "thumb": "assets/thumbs/season-schedule.webp",
+      "accent": "#7b0064",
+      "section": "live"
+    },
+    {
+      "id": "squad-builder",
+      "name": "予想スカッド作成",
+      "description": "フォーメーションを選んでスタメンを並べ、画像にして共有できます。",
+      "href": "squad.html",
+      "thumb": "assets/thumbs/squad-builder.webp",
+      "accent": "#14532d",
+      "section": "live"
+    },
+    {
+      "id": "trade-post",
+      "name": "求・譲 投稿フォーマット",
+      "description": "チケットやグッズの交換募集を、Xに投稿しやすい形に整えます。",
+      "href": "TradePost/index-v1.html",
+      "thumb": "assets/thumbs/trade-post.webp",
+      "accent": "#5b1f7e",
+      "section": "live"
+    },
+    {
+      "id": "season-2025",
+      "name": "2025シーズン日程",
+      "description": "2025シーズンの試合日程です。更新は終了しています。",
+      "href": "sanga2025season.html",
+      "thumb": "assets/thumbs/season-2025.webp",
+      "accent": "#3d2352",
+      "section": "archive"
+    },
+    {
+      "id": "player-slides",
+      "name": "選手が思う\"サンガのみりょく\"",
+      "description": "選手のことばを集めたスライドです。更新は終了しています。",
+      "href": "sanga_slides.html",
+      "thumb": "assets/thumbs/player-slides.webp",
+      "accent": "#123a52",
+      "section": "archive"
+    }
+  ]
+}

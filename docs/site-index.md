@@ -126,7 +126,7 @@
 * JavaScriptが動く場合は `tools.json` から全区分を描画する。
 * `tools.json` の読み込みに失敗した場合も、`<noscript>` と同じ内容を表示に残す。読み込み失敗で導線が消えないようにする。
 
-`<noscript>` に書くリンクは主要ツールのみとし、`tools.json` との二重管理を最小にします。この重複は検証で突き合わせます（後述）。
+`<noscript>` に書くリンクは現役のツールのみとし、`tools.json` との二重管理を最小にします。この重複は検証で突き合わせます（後述）。
 
 読み込みパスは既存ページと同じく、絶対パスと相対パスの順で試します。本番サーバーとGitHub Pagesでルートが異なるためです（`public/assets/squad-builder.js` と同じ方式）。バージョンクエリも既存ページに合わせて付けます。
 
@@ -186,15 +186,18 @@
 `tools/validate-tools.js`（新規）で次を確認します。
 
 * `id` が一意で、英小文字とハイフンのみ。
-* `section` が `primary` / `secondary` / `archive` のいずれか。
+* `section` が `live` / `archive` のいずれか。
 * `href` が `public/` 配下に実在する。**リンク切れをここで落とします。** ページを削除・改名したときに入口が壊れたまま気づかない事態を防ぐのが主目的です。
-* `href` が外部URLでない。
+* `href` が外部URLでない。`public/` の外も指していない。
+* `thumb` の画像が実在する。
+* `accent` が `#rrggbb` の形。
 * `name`、`description` が空でない。
+* 現役のツールが1件以上ある。0件だと入口から導線が消える。
 
 `tools/check-static-assets.mjs` に次を追加します。
 
 * `index.html` が `tools.json` と入口用JavaScriptを参照していること。
-* `<noscript>` 内のリンク先が、`tools.json` の `primary` の `href` と一致すること。二重管理のずれを検出します。
+* `<noscript>` 内のリンク先が、`tools.json` の `live` の `href` と一致すること。二重管理のずれを検出します。
 
 ## 実装の段取り
 
