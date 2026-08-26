@@ -338,12 +338,13 @@ body {
   letter-spacing: 0.02em;
 }
 
-.work-tags {
+/* 参考にしたサイトはここが短い分類タグだが、道具箱では
+   「何ができるページか」を1文で置く。分類より用途のほうが選ぶ助けになる */
+.work-desc {
   display: block;
-  margin-top: 3px;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  line-height: 1.6;
   color: var(--ink-dim);
 }
 
