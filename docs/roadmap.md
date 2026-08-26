@@ -72,7 +72,7 @@
 2. `validate-app-contract.js` の確認範囲拡張（CSS整理・JS整理に合わせて継続）
 3. CSS整理の小分け実施
 4. JavaScript整理の小分け実施
-5. チケット・観戦準備メモのUIプロトタイプ（企画設計は `docs/supporter-timeline-design.md`）
+5. チケット・観戦準備メモのUIプロトタイプ（年間スケジュール側の個人メモ。SUPPORTER TIMELINEのMY予定とは別機能）（企画設計は `docs/supporter-timeline-design.md`）
 6. 追加メモ機能のUIプロトタイプ
 
 ## 進行中の別ページ
@@ -97,7 +97,7 @@
 
 | 候補 | 扱い | メモ |
 | --- | --- | --- |
-| ニュース連動カレンダー | 長期候補 | 年間スケジュールページとは別サービス寄りとして、ニュース由来の日時イベントを扱う。 |
+| ニュース連動カレンダー（現・SUPPORTER TIMELINE） | 長期候補 | 年間スケジュールページとは別サービス寄りとして、ニュース由来の日時イベントを扱う。企画設計は `docs/supporter-timeline-design.md`。 |
 | Googleスプレッドシートからの自動連携 | 長期候補 | 認証情報をリポジトリに保存しない前提で設計する。 |
 | 自動デプロイの高度化 | 長期候補 | 現時点では手動デプロイを基本にする。 |
 | 年間スケジュールの実ブラウザ確認自動化 | 長期候補 | 予想スカッドではPlaywrightを導入済み。年間スケジュール側への導入可否を、運用コストも含めて検討する。 |
@@ -163,6 +163,8 @@
 - `docs/operation-flow.md`
 - `docs/deploy-policy.md`
 - `docs/screenshot-social-share.md`
+- `docs/supporter-timeline-design.md`
+- `docs/fan-tools-research.md`
 - `docs/supporter-timeline-design.md`
 - `docs/fan-tools-research.md`
 - `docs/filtering.md`
