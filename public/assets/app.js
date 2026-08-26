@@ -1,4 +1,4 @@
-import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs';
+import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddfabcc6';
 
 // =========================================================
 // Imports and initialization

@@ -23,7 +23,7 @@
 - 日程生成・検証: `generate-matches-from-csv.js`、`validate-matches.js`、`validate-generated-matches.js`、`validate-app-contract.js`
 - 選手生成・検証: `generate-players-from-csv.js`、`validate-players.js`
 - スカッド: `check-squad-layout.mjs`、背番号画像加工ツール
-- 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照）
+- 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照、版数の突き合わせ）、`asset-versions.mjs`（CSS/JSの `?v=` を内容ハッシュで生成・検証。`--check` で検出、引数なしで書き換え）
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
 - ホテル: `tools/hotels/`、`validate-hotels.js`
 - 本番からの取り込み: `fetch-production-files.mjs`、`ftp-client.mjs`（読み取り専用。手順は `docs/production-import.md`）、`check-import-tools.mjs`（検証用FTPサーバーを立てて動作確認）
@@ -86,7 +86,7 @@ GitHub Actionsでは `npm run check:squad:browser` まで自動実行します�
 - LocalStorageキー・保存形式。
 - 年間スケジュールのDOMフックとCSS上書き。
 - スカッドの保存形式、配置計算、iOS Safariの画像生成制約。
-- 公開HTMLのキャッシュ用バージョンクエリ。
+- 公開HTML・JavaScriptのキャッシュ用バージョンクエリ（`tools/asset-versions.mjs` が内容ハッシュから生成）。
 - `public/` 全体をアップロードする本番デプロイ。
 
 ## 次の構成改善

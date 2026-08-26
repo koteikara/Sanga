@@ -10,7 +10,7 @@
 // 進行的強化として作る。WebGLが使えない場合や初期化に失敗した場合は、
 // 何もせずCSSの背景をそのまま見せる。
 
-import { isReduced } from "./index-motion.js?v=20260826-1";
+import { isReduced } from "./index-motion.js?v=d70b93b4";
 
 const VERTEX_SHADER = `
 attribute vec2 aPosition;
