@@ -16,6 +16,8 @@
 
 本番公開物の正本です。日程・選手・ホテル索引JSON、CSS、JavaScript、ロゴ、背番号タイル、静的配置した `modern-screenshot` を含みます。`hotel-index.json` は現在0件で画面表示は未実装です。
 
+現行2ページのほかに、2025シーズンの日程ページ、スライドページ、求譲ツールなど過去に公開したページも含みます。全体像と各ページの位置づけは `docs/production-inventory-audit.md` を参照してください。`public/experiments/` は本番アップロードの対象外で、GitHub Pagesでのみ参照できます。
+
 ### `tools/`
 
 - 日程生成・検証: `generate-matches-from-csv.js`、`validate-matches.js`、`validate-generated-matches.js`、`validate-app-contract.js`
@@ -32,7 +34,9 @@
 
 ### `experiments/`
 
-公開前の画像生成・スカッドのデザインと操作検証です。公開物の正本ではありません。
+公開前の画像生成・スカッドのデザインと操作検証です。公開物の正本ではありません。本番サーバーへはアップロードしません。
+
+`public/experiments/` に一部の複製がありますが内容がずれています。詳細と未解決の扱いは `docs/production-inventory-audit.md` を参照してください。
 
 ### `docs/`
 

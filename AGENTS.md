@@ -40,6 +40,7 @@
 | LocalStorage | `docs/personalization.md`、`docs/dom-inventory.md`、対象機能の仕様書 |
 | Actions・本番反映 | `docs/deploy-policy.md`、`docs/operation-flow.md` |
 | 本番サーバーからの取り込み | `docs/production-import.md`、`docs/deploy-policy.md` |
+| 公開物の全体像・過去の公開ページ | `docs/production-inventory-audit.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
 
 `docs/dom-inventory.md` は `tools/generate-dom-inventory.mjs` が実装から生成します。
