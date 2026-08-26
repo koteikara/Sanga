@@ -50,10 +50,62 @@ function checkHtmlReferences(relativePath, requiredRefs) {
   console.log(`参照OK public/${relativePath}: ${requiredRefs.join(", ")}`);
 }
 
+// 入口ページの noscript は tools.json と二重管理になる。ずれると
+// JavaScriptが動かない環境だけ導線が古いまま残るため、突き合わせる。
+function checkIndexNoscriptLinks() {
+  const html = readPublicFile("index.html");
+  if (html === null) return;
+
+  const toolsPath = path.join(rootDir, "public", "data", "tools.json");
+  if (!fs.existsSync(toolsPath)) {
+    errors.push("ファイルが見つかりません: public/data/tools.json");
+    return;
+  }
+
+  let tools;
+  try {
+    tools = JSON.parse(fs.readFileSync(toolsPath, "utf8")).tools;
+  } catch (error) {
+    errors.push(`public/data/tools.json を解釈できません: ${error.message}`);
+    return;
+  }
+
+  const noscript = /<noscript>([\s\S]*?)<\/noscript>/.exec(html);
+  if (!noscript) {
+    errors.push("public/index.html に noscript がありません");
+    return;
+  }
+
+  const inNoscript = [...noscript[1].matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  const expected = tools.filter((tool) => tool.section === "live").map((tool) => tool.href);
+
+  const missing = expected.filter((href) => !inNoscript.includes(href));
+  const extra = inNoscript.filter((href) => !expected.includes(href));
+
+  if (missing.length > 0 || extra.length > 0) {
+    errors.push(
+      `public/index.html の noscript が tools.json の live と一致しません` +
+        (missing.length ? ` / 足りない: ${missing.join(", ")}` : "") +
+        (extra.length ? ` / 余分: ${extra.join(", ")}` : "")
+    );
+    return;
+  }
+
+  console.log(`noscriptOK public/index.html: tools.json の live ${expected.length}件と一致`);
+}
+
 checkCssBraces("assets/style.css");
 checkCssBraces("assets/squad.css");
+checkCssBraces("assets/index.css");
 checkHtmlReferences("sanga202627season.html", ["assets/style.css", "assets/app.js"]);
 checkHtmlReferences("squad.html", ["assets/squad.css", "assets/squad-builder.js"]);
+checkHtmlReferences("index.html", [
+  "assets/index.css",
+  "assets/index-page.js",
+  "assets/index-nebula.js",
+  "assets/index-motion.js",
+]);
+checkIndexNoscriptLinks();
 
 if (errors.length > 0) {
   for (const error of errors) {

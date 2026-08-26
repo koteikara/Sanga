@@ -126,7 +126,7 @@
 * JavaScriptが動く場合は `tools.json` から全区分を描画する。
 * `tools.json` の読み込みに失敗した場合も、`<noscript>` と同じ内容を表示に残す。読み込み失敗で導線が消えないようにする。
 
-`<noscript>` に書くリンクは主要ツールのみとし、`tools.json` との二重管理を最小にします。この重複は検証で突き合わせます（後述）。
+`<noscript>` に書くリンクは現役のツールのみとし、`tools.json` との二重管理を最小にします。この重複は検証で突き合わせます（後述）。
 
 読み込みパスは既存ページと同じく、絶対パスと相対パスの順で試します。本番サーバーとGitHub Pagesでルートが異なるためです（`public/assets/squad-builder.js` と同じ方式）。バージョンクエリも既存ページに合わせて付けます。
 
@@ -136,7 +136,7 @@
 
 | 項目 | 方針 |
 | --- | --- |
-| `description` | 全ページに置く。そのページで何ができるかを1文で書く。入口ページの `tools.json` の `description` と揃える |
+| `description` | 全ページに置く。そのページで何ができるかを1文で書く。原則として入口ページの `tools.json` の `description` と同じにする（例外は後述） |
 | favicon | `squad.html` にあるSVGデータURIを全ページで共有する。外部ファイルにはせず、現状の方式を踏襲する |
 | `og:title` / `og:description` | 各ページの `<title>` と `description` に合わせる |
 | `og:type` | `website` |
@@ -144,6 +144,12 @@
 | `og:image` | 今回は入れない。共有用画像は日程・スカッドが生成する仕組みを持っており、静的なOGP画像の要否は別途判断する |
 
 `og:image` を省くと、SNSでの見え方は文字情報だけになります。画像を用意するかどうかは、見た目の設計と合わせて決めます。
+
+適用したのは `tools.json` に載っている5ページと入口ページです。`sanga2025.html` は `sanga2025season.html` への3秒リダイレクトだけのページなので対象外にしました。滞在する先ではなく、共有される想定もありません。
+
+`description` は原則 `tools.json` の文言と同じにします。入口のカードとページのメタで別々の文を持つと、片方だけ古くなるためです。
+
+ただし `TradePost/index-v1.html` は例外で、元からあった文をそのまま残しています。カードの文より情報量があり、検索から来る人に向いているためです。**カードは一覧で読ませる短い文、ページのメタは検索・共有向けの文と、役割が違う場合があります。** 同じにできない理由があるときは、この文書に書き足してください。
 
 ## 背景表現の実装方式
 
@@ -186,32 +192,45 @@
 `tools/validate-tools.js`（新規）で次を確認します。
 
 * `id` が一意で、英小文字とハイフンのみ。
-* `section` が `primary` / `secondary` / `archive` のいずれか。
+* `section` が `live` / `archive` のいずれか。
 * `href` が `public/` 配下に実在する。**リンク切れをここで落とします。** ページを削除・改名したときに入口が壊れたまま気づかない事態を防ぐのが主目的です。
-* `href` が外部URLでない。
+* `href` が外部URLでない。`public/` の外も指していない。
+* `thumb` の画像が実在する。
+* `accent` が `#rrggbb` の形。
 * `name`、`description` が空でない。
+* 現役のツールが1件以上ある。0件だと入口から導線が消える。
 
 `tools/check-static-assets.mjs` に次を追加します。
 
 * `index.html` が `tools.json` と入口用JavaScriptを参照していること。
-* `<noscript>` 内のリンク先が、`tools.json` の `primary` の `href` と一致すること。二重管理のずれを検出します。
+* `<noscript>` 内のリンク先が、`tools.json` の `live` の `href` と一致すること。二重管理のずれを検出します。
 
 ## 実装の段取り
 
 見た目を伴う変更のため、`docs/ui-prototype-workflow.md` に従いプロトタイプを先に作ります。
 
-1. **見た目の設計**（別途）。配色は日程ページの紫系とスカッドの緑系に割れているため、入口ページをどちらに寄せるか、または中立にするかを決める。カード、区分の見せ方、過去ページの扱いを含む。
-2. **プロトタイプ**を `experiments/site-index/` に作り、GitHub Pagesで確認する。
-3. **`tools.json` と検証**を先に入れる。データと検証だけなら見た目の決定を待たずに進められる。
-4. **本番実装**。`public/index.html` の書き換え、入口用CSS/JavaScriptの追加。
-5. **メタ情報の統一**を全公開ページへ適用する。
+1. ~~**見た目の設計**~~ 済み。紫を基調にし、ポートフォリオ型のグリッドに決めた。
+2. ~~**プロトタイプ**~~ 済み。`experiments/site-index/` にあり、GitHub Pagesで確認できる。
+3. ~~**`tools.json` と検証**~~ 済み。`public/data/tools.json` と `tools/validate-tools.js`。
+4. ~~**本番実装**~~ 済み。`public/index.html` と `assets/index.css` / `index-page.js` / `index-nebula.js` / `index-motion.js`。
+5. ~~**メタ情報の統一**~~ 済み。入口ページを含む公開6ページに `description` / favicon / OGP を入れた。
 6. 本番反映は `docs/deploy-policy.md` の手順に従う。
 
-3と5は見た目の決定に依存しないため、1・2と並行して進められます。
+## 本番のファイル構成
+
+| ファイル | 役割 |
+| --- | --- |
+| `public/index.html` | 骨組み。上部バー、見出し、グリッドの器、ABOUT |
+| `public/assets/index.css` | 配色、背景、キャラクター、グリッド |
+| `public/assets/index-page.js` | `tools.json` からカードを組み立てる |
+| `public/assets/index-nebula.js` | 生WebGLの背景。進行的強化として足す |
+| `public/assets/index-motion.js` | 動きを止めるかどうかの設定 |
+| `public/assets/thumbs/` | 各ツールのスクリーンショット |
+| `public/assets/avatar.webp` | 作り手のアイコン |
+
+`index-` を頭に付けているのは、`assets/` に日程・スカッドのファイルが同居しているためです。どのページのものかがファイル名で分かるようにしています。
 
 ## この設計で決めていないこと
 
-* 入口ページの配色、レイアウト、カードの見た目。
-* 画像・アイコンを使うかどうか。使う場合の `tools.json` の項目追加。
 * OGP画像を用意するかどうか。
 * `TradePost/` に `index.html` が無く `/TradePost/` で到達できない問題（`docs/production-inventory-audit.md` の未解決課題）。入口から `index-v1.html` へ直接リンクすれば導線は成立しますが、URLの見た目としては整えたいところです。
