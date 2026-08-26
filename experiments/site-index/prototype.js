@@ -26,8 +26,6 @@ function buildWork(tool, index) {
   const link = document.createElement("a");
   link.className = "work-link";
   link.href = tool.href;
-  // 説明文はカードには出さない。ポインタを乗せたときだけ補足として見せる
-  if (tool.description) link.title = tool.description;
 
   const thumb = document.createElement("span");
   thumb.className = "work-thumb";
@@ -51,10 +49,10 @@ function buildWork(tool, index) {
   name.textContent = tool.name;
   link.append(name);
 
-  const tags = document.createElement("span");
-  tags.className = "work-tags";
-  tags.textContent = (tool.tags ?? []).join(" , ");
-  link.append(tags);
+  const desc = document.createElement("span");
+  desc.className = "work-desc";
+  desc.textContent = tool.description;
+  link.append(desc);
 
   item.append(link);
   return item;

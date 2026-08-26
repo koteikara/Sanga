@@ -200,7 +200,10 @@ body {
 }
 
 .topbar-mark {
-  display: block;
+  display: flex;
+  align-items: center;
+  /* 34pxの絵だけだとタップ領域が足りない。当たり判定は44pxにする */
+  min-height: var(--tap);
   width: 34px;
   flex: none;
 }
@@ -338,12 +341,13 @@ body {
   letter-spacing: 0.02em;
 }
 
-.work-tags {
+/* 参考にしたサイトはここが短い分類タグだが、道具箱では
+   「何ができるページか」を1文で置く。分類より用途のほうが選ぶ助けになる */
+.work-desc {
   display: block;
-  margin-top: 3px;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  line-height: 1.6;
   color: var(--ink-dim);
 }
 
@@ -384,6 +388,36 @@ body {
 }
 
 .about p { margin: 0 0 8px; max-width: 60ch; }
+
+/* 作り手の自己紹介。免責より先に置き、誰が作っているかを分かるようにする */
+.about-bio {
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.9;
+}
+
+.about-handle { margin-bottom: 18px !important; }
+
+.about-handle a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--cyan-soft);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.about-handle a:hover,
+.about-handle a:focus-visible { text-decoration: underline; }
+
+/* 元画像は白地の正方形。丸く抜いて、暗い背景から浮くように縁を足す */
+.topbar-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
 
 .site-footer {
   max-width: 1040px;
