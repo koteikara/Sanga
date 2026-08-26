@@ -452,6 +452,7 @@ body {
 :root[data-motion="off"] .bg-nebula,
 :root[data-motion="off"] .topbar-nav a,
 :root[data-motion="off"] .work-thumb img,
+:root[data-motion="off"] .motion-icon,
 :root[data-motion="off"] .archive .work-thumb { transition: none; }
 
 :root[data-motion="off"] .bg-blob,
@@ -482,37 +483,50 @@ body {
 
 /* ---------------- 動きの切り替え ---------------- */
 
+/* ナビの文字と同じ見た目にすると、押した結果が想像できない。
+   丸い枠に入れた記号にして、リンクではなく操作するものだと分かるようにする。 */
 .motion-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  min-height: var(--tap);
-  padding: 0 2px;
+  justify-content: center;
+  /* 絵は30pxだが、当たり判定は44pxを保つ */
+  width: var(--tap);
+  height: var(--tap);
+  margin-left: 4px;
+  padding: 0;
   border: 0;
   background: none;
   color: var(--ink-dim);
-  font: inherit;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
   cursor: pointer;
-  transition: color 0.25s ease;
 }
 
-.motion-toggle:hover,
-.motion-toggle:focus-visible { color: var(--ink); }
-
-/* 状態は色ではなく形でも分かるようにする。
-   動いているときは塗り、止めているときは輪郭だけ。 */
-.motion-dot {
-  width: 9px;
-  height: 9px;
+.motion-icon {
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+  border: 1px solid currentColor;
   border-radius: 50%;
-  border: 1.5px solid currentColor;
-  background: currentColor;
+  fill: currentColor;
+  transition: color 0.25s ease, background-color 0.25s ease;
 }
 
-.motion-toggle[aria-pressed="true"] .motion-dot { background: transparent; }
+.motion-toggle:hover .motion-icon,
+.motion-toggle:focus-visible .motion-icon {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.motion-toggle:focus-visible {
+  outline: 3px solid var(--cyan-soft);
+  outline-offset: -4px;
+  border-radius: 50%;
+}
+
+/* 動いているときは一時停止、止まっているときは再生。
+   状態ではなく「押すと何が起きるか」を出す */
+.icon-play { display: none; }
+:root[data-motion="off"] .icon-pause { display: none; }
+:root[data-motion="off"] .icon-play { display: block; }
 
 /* JavaScriptが無いと切り替えられない。押せないボタンは出さない */
 .motion-toggle { display: none; }
