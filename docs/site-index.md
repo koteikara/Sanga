@@ -145,6 +145,10 @@
 
 `og:image` を省くと、SNSでの見え方は文字情報だけになります。画像を用意するかどうかは、見た目の設計と合わせて決めます。
 
+適用したのは `tools.json` に載っている5ページと入口ページです。`sanga2025.html` は `sanga2025season.html` への3秒リダイレクトだけのページなので対象外にしました。滞在する先ではなく、共有される想定もありません。
+
+`TradePost/index-v1.html` には元から `description` がありましたが、`tools.json` の文言へ置き換えています。入口のカードとページのメタで別々の文を持つと、片方だけ古くなるためです。
+
 ## 背景表現の実装方式
 
 入口ページの背景に、紫の霧が流れる表現（ネビュラ）を置きます。実装は**生のWebGLによるフルスクリーン・フラグメントシェーダー**とし、ライブラリを使いません。
@@ -207,7 +211,7 @@
 2. ~~**プロトタイプ**~~ 済み。`experiments/site-index/` にあり、GitHub Pagesで確認できる。
 3. ~~**`tools.json` と検証**~~ 済み。`public/data/tools.json` と `tools/validate-tools.js`。
 4. ~~**本番実装**~~ 済み。`public/index.html` と `assets/index.css` / `index-page.js` / `index-nebula.js` / `index-motion.js`。
-5. **メタ情報の統一**を全公開ページへ適用する。入口ページには入れたが、他のページは未着手。
+5. ~~**メタ情報の統一**~~ 済み。入口ページを含む公開6ページに `description` / favicon / OGP を入れた。
 6. 本番反映は `docs/deploy-policy.md` の手順に従う。
 
 ## 本番のファイル構成
