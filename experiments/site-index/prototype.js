@@ -39,6 +39,13 @@ function buildCard(tool) {
   desc.textContent = tool.description;
   link.append(desc);
 
+  // 主要ツールと補助ツールにだけ矢印を出す。過去のページはCSS側で隠す
+  const go = document.createElement("span");
+  go.className = "card-go";
+  go.setAttribute("aria-hidden", "true");
+  go.innerHTML = '<svg viewBox="0 0 12 12" focusable="false"><path d="M2 6h8M6.6 2.6 10 6 6.6 9.4"/></svg>';
+  link.append(go);
+
   if (tool.updatedNote) {
     const note = document.createElement("span");
     note.className = "card-note";

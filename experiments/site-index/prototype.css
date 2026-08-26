@@ -230,6 +230,9 @@ main {
 }
 
 .card {
+  position: relative;
+  /* ::before を負のz-indexで敷くため、カード自身に重ね合わせの文脈を作る */
+  isolation: isolate;
   display: block;
   min-height: var(--tap);
   padding: 16px 18px;
@@ -276,8 +279,70 @@ main {
   color: var(--ink-dim);
 }
 
+/* ガラスの縁。1pxのパディングにグラデーションを敷き、内側をマスクで抜いて
+   縁だけを残す。border では角ごとに色を変えられないため。
+   ThreeUI の aster-glass と同じ手法で、配色をこのサイトの紫へ寄せている。 */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(148deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 143, 208, 0.22) 34%,
+    rgba(255, 255, 255, 0.06) 58%,
+    rgba(111, 214, 232, 0.30) 100%);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  pointer-events: none;
+  transition: filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover::before,
+.card:focus-visible::before { filter: brightness(1.6); }
+
+/* 矢印のチップ。カード全体が押せるので、これは飾りとして扱う */
+.card-go {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.10);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+}
+
+.card-go svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card:hover .card-go,
+.card:focus-visible .card-go {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(3px);
+}
+
+/* 説明文が矢印の下に潜り込まないようにする */
+.card-desc { padding-right: 40px; }
+
 /* 過去のページは主要ツールと同じ強さで見せない */
 .section-archive .card { background: transparent; }
+.section-archive .card::before { opacity: 0.45; }
+.section-archive .card-go { display: none; }
+.section-archive .card-desc { padding-right: 0; }
 .section-archive .card-name { font-weight: 600; font-size: 0.95rem; }
 
 .fallback-list { padding-left: 1.2em; }
@@ -299,7 +364,9 @@ main {
 /* ---------------- 動きを減らす設定 ---------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .bg-nebula { transition: none; }
+  .bg-nebula,
+  .card::before,
+  .card-go { transition: none; }
   .bg-blob,
   .mate,
   .eye,
