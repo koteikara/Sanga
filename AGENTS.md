@@ -39,6 +39,7 @@
 | 予想スカッド | `docs/squad-builder.md`、`docs/players-data-schema.md`、`docs/ai/SQUAD_BROWSER_CHECKLIST.md` |
 | LocalStorage | `docs/personalization.md`、`docs/dom-inventory.md`、対象機能の仕様書 |
 | Actions・本番反映 | `docs/deploy-policy.md`、`docs/operation-flow.md` |
+| 本番サーバーからの取り込み | `docs/production-import.md`、`docs/deploy-policy.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
 
 `docs/dom-inventory.md` は `tools/generate-dom-inventory.mjs` が実装から生成します。
@@ -92,6 +93,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 | `npm run check:static` | 日程ページ（データ・JS契約・公開アセット） |
 | `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
 | `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
+| `npm run check:tools` | 取り込みスクリプトのJS構文 |
 
 `npm run check:squad:browser` はPlaywrightを利用できる環境でのみ実行します。GitHub ActionsはPR時と
 本番デプロイ前に、3画面幅・4種類の控え人数・17フォーメーション・8スタイルの組み合わせをChromiumで

@@ -1,6 +1,6 @@
 # プロジェクト構成
 
-確認基準日: 2026-08-25
+確認基準日: 2026-08-26
 
 ## 公開ページ
 
@@ -24,6 +24,7 @@
 - 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照）
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
 - ホテル: `tools/hotels/`、`validate-hotels.js`
+- 本番からの取り込み: `fetch-production-files.mjs`、`ftp-client.mjs`（読み取り専用。手順は `docs/production-import.md`）
 
 ### ルート直下 `package.json`
 

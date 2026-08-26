@@ -3,13 +3,14 @@
   "private": true,
   "description": "京都サンガF.C.に関する非公式Webツールの検証スクリプト集約",
   "scripts": {
-    "check": "npm run check:static && npm run check:squad",
+    "check": "npm run check:static && npm run check:squad && npm run check:tools",
     "check:static": "npm run check:data && npm run check:js && node tools/check-static-assets.mjs && node tools/generate-dom-inventory.mjs --check",
     "check:data": "node tools/validate-matches.js && node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict && node tools/validate-hotels.js && node tools/validate-players.js",
     "check:js": "node --check public/assets/app.js && node tools/validate-app-contract.js",
     "check:squad": "npm run check:squad:js && node tools/validate-players.js && node tools/validate-squad-contract.mjs",
     "check:squad:js": "node --check public/assets/squad-builder.js && node --check public/assets/squad-formations.js && node --check public/assets/squad-sample-players.js && node --check tools/validate-squad-contract.mjs && node --check tools/check-squad-layout.mjs",
     "check:squad:browser": "node tools/check-squad-layout.mjs",
+    "check:tools": "node --check tools/ftp-client.mjs && node --check tools/fetch-production-files.mjs",
     "docs:dom-inventory": "node tools/generate-dom-inventory.mjs"
   }
 }
