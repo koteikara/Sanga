@@ -386,6 +386,35 @@ body {
 
 .about p { margin: 0 0 8px; max-width: 60ch; }
 
+/* 作り手の自己紹介。免責より先に置き、誰が作っているかを分かるようにする */
+.about-bio {
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.9;
+}
+
+.about-handle { margin-bottom: 18px !important; }
+
+.about-handle a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--cyan-soft);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.about-handle a:hover,
+.about-handle a:focus-visible { text-decoration: underline; }
+
+/* Xのアイコンを入れたときの受け皿。画像が無いあいだはキャラクターが出る */
+.topbar-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
 .site-footer {
   max-width: 1040px;
   margin: clamp(40px, 8vw, 72px) auto 0;
