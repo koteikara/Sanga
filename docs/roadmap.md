@@ -59,6 +59,7 @@
 | CSS整理前の棚卸し | 進行中 | 低リスクな整理候補と実ブラウザ確認が必要な候補を分ける。 |
 | JavaScript整理前の安全網強化 | 進行中 | 既存LocalStorage、DOMフック、表示設定、フィルタ仕様を壊さない確認を続ける。 |
 | `validate-app-contract.js` の確認範囲 | 確認中 | 主要DOM/CSSフック、表示列、表示モード、フィルタ、共有画像生成、大会リボン関連の確認範囲拡張は一部実施済み。今後もCSS整理・JS整理に合わせて追加する。 |
+| ホテルデータ検証 | 確認中 | `tools/validate-hotels.js` は `npm run check:data` で常時実行中。索引は0件のため、空索引を正常扱いする経路だけが動いている。 |
 | 実ブラウザ確認観点 | 確認中 | `docs/ai/BROWSER_CHECKLIST.md` に沿って、人間の目視確認を継続する。 |
 | Googleスプレッドシート運用 | 確認中 | 初期CSV、列定義、生成JSON、公開JSON反映手順を安全に運用する。 |
 | 本番デプロイ運用 | 確認中 | GitHub Pages確認後に手動デプロイし、本番URLで再確認する。 |
@@ -90,6 +91,7 @@
 | カレンダー連携 | 未着手 | 試合日程の個人カレンダー追加を検討する。ニュース由来イベントはニュース連動カレンダー側を基本にする。 |
 | 戦績更新 | 未着手 | 試合後の得点、結果、状態更新の運用を整理してから進める。 |
 | カップ戦・ACL戦追加 | 一部対応 | 現在の `matches.json` はJ1、天皇杯、ルヴァン杯を含み、天皇杯・ルヴァン杯は表示と大会フィルタに一部対応済み。ACLなど追加大会は要確認。 |
+| ホテル提案 | 中断中 | 生成基盤（`tools/hotels/`、`public/data/hotel-index.json`、`tools/validate-hotels.js`、`docs/hotels-data-schema.md`）はPR #122で実装済み。実データ取得と公開ページ側の出口が未定のため止まっている。現状と再開条件は `docs/hotels-data-schema.md` と `docs/hotels-operation-flow.md`、出口候補は `docs/supporter-timeline-design.md`。 |
 | 対戦相手別補助情報 | 未着手 | 会場、関連URL、観戦補助情報などの表示方針を先に整理する。 |
 | 共有URL機能 | 未着手 | フィルタ条件や表示モードの共有を検討する。個人メモなど私的情報は含めない。 |
 
@@ -165,6 +167,8 @@
 - `docs/screenshot-social-share.md`
 - `docs/supporter-timeline-design.md`
 - `docs/fan-tools-research.md`
+- `docs/hotels-data-schema.md`
+- `docs/hotels-operation-flow.md`
 - `docs/supporter-timeline-design.md`
 - `docs/fan-tools-research.md`
 - `docs/filtering.md`
