@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>入口ページ プロトタイプ | 京都サンガF.C. 非公式ツール</title>
+<meta name="description" content="京都サンガF.C.の非公式ファンツール一覧。入口ページの見た目・動きの検証用プロトタイプです。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+
+<!-- 背景。装飾専用なので支援技術からは隠す -->
+<div class="bg" aria-hidden="true">
+  <span class="bg-blob bg-blob-1"></span>
+  <span class="bg-blob bg-blob-2"></span>
+  <span class="bg-blob bg-blob-3"></span>
+</div>
+
+<header class="hero">
+  <!-- キャラクター。意味を持たない装飾 -->
+  <div class="mates" aria-hidden="true">
+    <div class="mate mate-pentagon">
+      <svg viewBox="0 0 100 100" focusable="false">
+        <defs>
+          <linearGradient id="gradPentagon" x1="0" y1="0" x2="0.6" y2="1">
+            <stop offset="0" stop-color="#f2e4ff"/>
+            <stop offset="1" stop-color="#c99ae0"/>
+          </linearGradient>
+        </defs>
+        <path class="mate-body" fill="url(#gradPentagon)"
+          d="M50 6c4 0 7 2 10 4l28 20c5 4 7 9 5 15l-11 33c-2 6-6 9-12 9H30c-6 0-10-3-12-9L7 45c-2-6 0-11 5-15l28-20c3-2 6-4 10-4z"/>
+        <g class="mate-eyes">
+          <rect x="35" y="46" width="8" height="17" rx="4"/>
+          <rect x="57" y="46" width="8" height="17" rx="4"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="mate mate-squircle">
+      <div class="squircle">
+        <span class="eye"></span>
+        <span class="eye"></span>
+      </div>
+    </div>
+  </div>
+
+  <p class="eyebrow">非公式ファンサイト</p>
+  <h1 class="hero-title">京都サンガF.C.<br>サポーターのための道具箱</h1>
+  <p class="hero-lead">試合日程の確認、予想スカッド作り、交換募集の下書き。<br class="only-wide">サポーター有志が作った道具をまとめています。</p>
+</header>
+
+<main id="tools">
+  <noscript>
+    <section class="section">
+      <h2 class="section-title">ツール</h2>
+      <ul class="fallback-list">
+        <li><a href="../../public/sanga202627season.html">年間スケジュール</a></li>
+        <li><a href="../../public/squad.html">予想スカッド作成</a></li>
+      </ul>
+    </section>
+  </noscript>
+</main>
+
+<footer class="site-footer">
+  <p>京都サンガF.C.の公式サイトではありません。サポーター有志による非公式のファン作成物です。</p>
+  <p>掲載内容の正確性について作成者は責任を負いません。最新の情報は公式発表を確認してください。</p>
+</footer>
+
+<script src="prototype.js"></script>
+</body>
+</html>

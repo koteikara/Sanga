@@ -51,23 +51,21 @@ experiments/<feature-name>/
   prototype.html
   prototype.css
   prototype.js
-
-public/experiments/<feature-name>/
-  prototype.html
-  prototype.css
-  prototype.js
 ```
 
-`experiments/` は検証用ソースとして扱います。
-`public/experiments/` はGitHub Pages確認用コピーとして扱います。
-本番ページから `public/experiments/` へリンクしません。
-GitHub Pages上の検証用URLを直接開いて確認します。
+`experiments/` が検証用プロトタイプの唯一の正本です。`public/` にはコピーを置きません。
+
+GitHub Pagesのワークフローが、公開物と `experiments/` をまとめて確認環境へ配置します。本番デプロイは `public/` だけを送るため、プロトタイプが本番サーバーへ出ることはありません。
+
+以前は `public/experiments/` に確認用コピーを置いていましたが、本番サーバーでも公開される状態になっていたため取りやめました。経緯は `docs/production-inventory-audit.md` を参照してください。
+
+本番ページからプロトタイプへはリンクしません。GitHub Pages上の検証用URLを直接開いて確認します。
 
 ## プロトタイプ作成の流れ
 
 1. docsで目的・対象ユーザー・画面要件を整理する
 2. `experiments/` に最小構成のHTML / CSS / JavaScriptを作る
-3. `public/experiments/` にGitHub Pages確認用コピーを置く
+3. `experiments/` に置く。GitHub Pagesのワークフローが確認環境へ配置する
 4. PC Chromeで確認する
 5. iPhone Safariで確認する
 6. 必要ならスクリーンショットを見ながら調整する
