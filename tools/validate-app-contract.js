@@ -318,9 +318,12 @@ ${cardFilterDefinitionBody}`,
     ],
   },
   {
+    // CDNではなくリポジトリ内の静的配置を読むこと。CDNへ到達できないと
+    // トップレベルimportが失敗し、日程表そのものが描画されなくなる。
     label: 'Share image generation import in public/assets/app.js',
     source: appJs,
-    required: ['modern-screenshot@4.6.5', 'domToPng'],
+    required: ['./vendor/modern-screenshot/modern-screenshot.mjs', 'domToPng'],
+    forbidden: ['esm.sh'],
   },
   {
     label: 'Share image generation behavior in public/assets/app.js',
@@ -354,8 +357,10 @@ const failures = [];
 for (const check of checks) {
   const includesItem = check.predicate || ((source, item) => source.includes(item));
   const missing = check.required.filter((item) => !includesItem(check.source, item));
-  if (missing.length > 0) {
-    failures.push({ label: check.label, missing });
+  // forbidden は「入っていたら落とす」。消したはずのものが戻ったことを検出する
+  const present = (check.forbidden || []).filter((item) => includesItem(check.source, item));
+  if (missing.length > 0 || present.length > 0) {
+    failures.push({ label: check.label, missing, present });
   }
 }
 
@@ -365,6 +370,9 @@ if (failures.length > 0) {
     console.error(`\n[app-contract] ${failure.label}`);
     for (const item of failure.missing) {
       console.error(`[app-contract] missing contract item: ${item}`);
+    }
+    for (const item of failure.present || []) {
+      console.error(`[app-contract] forbidden contract item present: ${item}`);
     }
   }
   process.exit(1);

@@ -1,4 +1,4 @@
-import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
+import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs';
 
 // =========================================================
 // Imports and initialization
@@ -387,8 +387,8 @@ import { domToPng } from 'https://esm.sh/modern-screenshot@4.6.5';
       await waitForLayout();
       if(document.fonts && document.fonts.ready) await document.fonts.ready;
       await waitForLayout();
-      // modern-screenshot is loaded from a pinned esm.sh CDN URL for this initial static-site implementation.
-      // It renders the DOM in the browser and does not send the page DOM or generated image to an external API.
+      // modern-screenshot はリポジトリ内へ静的配置したものを読み込む。
+      // ブラウザ内でDOMを描画するだけで、ページのDOMや生成画像を外部へ送らない。
       const dataUrl=await domToPng(shareCaptureTarget, {
         scale:2,
         backgroundColor:'#5b0045'

@@ -24,6 +24,10 @@
 
 * { box-sizing: border-box; }
 
+/* 上部バーが貼り付いているので、ページ内リンクの着地点をその分だけ下げる。
+   指定しないと、飛んだ先の見出しがバーの裏に隠れる（実測で64px）。 */
+html { scroll-padding-top: 76px; }
+
 body {
   margin: 0;
   min-height: 100vh;
