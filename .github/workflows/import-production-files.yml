@@ -138,8 +138,29 @@ jobs:
             echo '- 取り込み後に本番デプロイを実行すると、これらのファイルはリポジトリ側が正本になります。'
           } > pr-body.md
 
-          gh pr create --draft --base main --head "$branch" \
+          # PR作成は、リポジトリ設定「Allow GitHub Actions to create and approve
+          # pull requests」が無効だと拒否される。その場合もブランチのpushは
+          # 済んでいて取り込み自体は成功しているため、ジョブは失敗にせず、
+          # 人がPRを作れるリンクを案内する。
+          if gh pr create --draft --base main --head "$branch" \
             --title "data: 本番サーバー上のプロジェクト外ファイルを取り込む" \
-            --body-file pr-body.md
+            --body-file pr-body.md; then
+            echo "取り込みPRを作成しました。"
+          else
+            url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/new/${branch}"
+            {
+              echo
+              echo '## PRは自動作成できませんでした'
+              echo
+              echo "取り込んだ内容はブランチ \`${branch}\` にpush済みです。次のリンクから手動でPRを作成してください。"
+              echo
+              echo "$url"
+              echo
+              echo 'GitHub Actionsによる自動作成を有効にする場合は、Settings → Actions → General → Workflow permissions の'
+              echo '「Allow GitHub Actions to create and approve pull requests」を有効にします。'
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            echo "::warning::PRを自動作成できませんでした。ブランチ ${branch} は push 済みです: ${url}"
+          fi
 
           rm -f pr-body.md

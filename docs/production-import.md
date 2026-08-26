@@ -62,6 +62,8 @@
 
 `import` は `npm run check:static` に成功した場合だけPRを作成します。`public/` に差分がない場合はPRを作りません。
 
+PRの自動作成には、リポジトリ設定 Settings → Actions → General → Workflow permissions の「Allow GitHub Actions to create and approve pull requests」が必要です。無効の場合、取り込んだ内容は `import/production-<日時>` ブランチへpushされたうえで、実行サマリーにPR作成用のリンクが出ます。ジョブは失敗しません。この設定を有効にするかどうかは、リポジトリ所有者が判断します。
+
 ## 手元での実行
 
 FTP認証情報を安全に扱える環境でのみ実行します。値をシェル履歴やファイルへ残さないでください。
