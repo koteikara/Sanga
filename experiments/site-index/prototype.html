@@ -44,8 +44,14 @@
     <a href="#archive">ARCHIVE</a>
     <a href="#about">ABOUT</a>
     <button type="button" class="motion-toggle" id="motion-toggle"
-            aria-pressed="false" aria-label="背景と装飾の動きを止める">
-      <span class="motion-dot" aria-hidden="true"></span>MOTION
+            aria-label="背景の動きを止める" title="背景の動きを止める">
+      <svg class="motion-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <g class="icon-pause">
+          <rect x="4" y="3" width="3" height="10" rx="1"/>
+          <rect x="9" y="3" width="3" height="10" rx="1"/>
+        </g>
+        <path class="icon-play" d="M5.5 3.4 12.6 8 5.5 12.6Z"/>
+      </svg>
     </button>
   </nav>
 </header>
@@ -117,11 +123,14 @@
 
   // 動きの切り替え。motion.js が <html data-motion> を書き、CSSとネビュラの
   // 両方がそれを見る
+  // 再生・一時停止のボタンと同じ考え方で、「押すと何が起きるか」を出す。
+  // 止まっているときは▶、動いているときは❙❙。aria-pressed は使わない。
+  // 押した状態という言い方より、次の動作を読み上げたほうが分かりやすい。
   const motionButton = document.querySelector("#motion-toggle");
   const syncMotionButton = () => {
-    const reduced = isReduced();
-    motionButton.setAttribute("aria-pressed", String(reduced));
-    motionButton.setAttribute("aria-label", reduced ? "背景と装飾の動きを出す" : "背景と装飾の動きを止める");
+    const label = isReduced() ? "背景の動きを再生する" : "背景の動きを止める";
+    motionButton.setAttribute("aria-label", label);
+    motionButton.setAttribute("title", label);
   };
   motionButton.addEventListener("click", toggle);
   window.addEventListener("motionchange", syncMotionButton);
