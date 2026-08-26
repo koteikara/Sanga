@@ -203,18 +203,28 @@
 
 見た目を伴う変更のため、`docs/ui-prototype-workflow.md` に従いプロトタイプを先に作ります。
 
-1. **見た目の設計**（別途）。配色は日程ページの紫系とスカッドの緑系に割れているため、入口ページをどちらに寄せるか、または中立にするかを決める。カード、区分の見せ方、過去ページの扱いを含む。
-2. **プロトタイプ**を `experiments/site-index/` に作り、GitHub Pagesで確認する。
-3. **`tools.json` と検証**を先に入れる。データと検証だけなら見た目の決定を待たずに進められる。
-4. **本番実装**。`public/index.html` の書き換え、入口用CSS/JavaScriptの追加。
-5. **メタ情報の統一**を全公開ページへ適用する。
+1. ~~**見た目の設計**~~ 済み。紫を基調にし、ポートフォリオ型のグリッドに決めた。
+2. ~~**プロトタイプ**~~ 済み。`experiments/site-index/` にあり、GitHub Pagesで確認できる。
+3. ~~**`tools.json` と検証**~~ 済み。`public/data/tools.json` と `tools/validate-tools.js`。
+4. ~~**本番実装**~~ 済み。`public/index.html` と `assets/index.css` / `index-page.js` / `index-nebula.js` / `index-motion.js`。
+5. **メタ情報の統一**を全公開ページへ適用する。入口ページには入れたが、他のページは未着手。
 6. 本番反映は `docs/deploy-policy.md` の手順に従う。
 
-3と5は見た目の決定に依存しないため、1・2と並行して進められます。
+## 本番のファイル構成
+
+| ファイル | 役割 |
+| --- | --- |
+| `public/index.html` | 骨組み。上部バー、見出し、グリッドの器、ABOUT |
+| `public/assets/index.css` | 配色、背景、キャラクター、グリッド |
+| `public/assets/index-page.js` | `tools.json` からカードを組み立てる |
+| `public/assets/index-nebula.js` | 生WebGLの背景。進行的強化として足す |
+| `public/assets/index-motion.js` | 動きを止めるかどうかの設定 |
+| `public/assets/thumbs/` | 各ツールのスクリーンショット |
+| `public/assets/avatar.webp` | 作り手のアイコン |
+
+`index-` を頭に付けているのは、`assets/` に日程・スカッドのファイルが同居しているためです。どのページのものかがファイル名で分かるようにしています。
 
 ## この設計で決めていないこと
 
-* 入口ページの配色、レイアウト、カードの見た目。
-* 画像・アイコンを使うかどうか。使う場合の `tools.json` の項目追加。
 * OGP画像を用意するかどうか。
 * `TradePost/` に `index.html` が無く `/TradePost/` で到達できない問題（`docs/production-inventory-audit.md` の未解決課題）。入口から `index-v1.html` へ直接リンクすれば導線は成立しますが、URLの見た目としては整えたいところです。

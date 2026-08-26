@@ -1,0 +1,530 @@
+/* 入口ページ
+ *
+ * 見た目は experiments/site-index/ のプロトタイプで確認してから移した。
+ *
+ * 制約
+ *  - 追加の依存なし。アニメーションはCSSのみ
+ *  - 動かすのは transform と opacity だけにする。レイアウトを再計算させない
+ *  - prefers-reduced-motion: reduce では動きを止める
+ */
+
+:root {
+  --purple-deep: #2a0a2b;
+  --purple-base: #7b0064;
+  --purple-lit: #a8248c;
+  --pink-soft: #ff8fd0;
+  --cyan-soft: #6fd6e8;
+  --ink: #ffffff;
+  --ink-dim: rgba(255, 255, 255, 0.72);
+  --card: rgba(255, 255, 255, 0.08);
+  --card-line: rgba(255, 255, 255, 0.18);
+  --radius: 18px;
+  --tap: 44px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--purple-deep);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ---------------- 背景 ---------------- */
+
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #4a1150 0%, var(--purple-deep) 62%);
+}
+
+.bg-blob {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  /* ぼかしは filter ではなく放射グラデーションで作る。
+     filter: blur は端末によって描画コストが高い */
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.bg-blob-1 {
+  width: 70vmax; height: 70vmax;
+  top: -22vmax; left: -18vmax;
+  background: radial-gradient(circle, rgba(168, 36, 140, 0.55) 0%, rgba(168, 36, 140, 0) 68%);
+  animation: drift-a 34s ease-in-out infinite;
+}
+
+.bg-blob-2 {
+  width: 58vmax; height: 58vmax;
+  bottom: -20vmax; right: -14vmax;
+  background: radial-gradient(circle, rgba(255, 143, 208, 0.34) 0%, rgba(255, 143, 208, 0) 68%);
+  animation: drift-b 43s ease-in-out infinite;
+}
+
+.bg-blob-3 {
+  width: 44vmax; height: 44vmax;
+  top: 38%; left: 52%;
+  background: radial-gradient(circle, rgba(111, 214, 232, 0.20) 0%, rgba(111, 214, 232, 0) 70%);
+  animation: drift-c 51s ease-in-out infinite;
+}
+
+/* ネビュラ。WebGLが動いたときだけCSSのぼかしより前に出る */
+.bg-nebula {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  opacity: 0;
+  transition: opacity 900ms ease-out;
+}
+
+.has-nebula .bg-nebula { display: block; opacity: 1; }
+
+/* ネビュラが出たらCSSのぼかしは引っ込める。二重に描く意味がない */
+.has-nebula .bg-blob { opacity: 0; transition: opacity 900ms ease-out; }
+
+@keyframes drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(6vmax, 4vmax, 0) scale(1.12); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.06); }
+  50%      { transform: translate3d(-7vmax, -5vmax, 0) scale(1); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(-5vmax, 6vmax, 0); }
+}
+
+/* ---------------- キャラクター ---------------- */
+
+.mates {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(14px, 5vw, 34px);
+  margin-bottom: 20px;
+}
+
+.mate { will-change: transform; }
+
+/* 上下にふわふわ。2体で周期をずらし、揃って動く感じを避ける */
+.mate-pentagon { width: clamp(74px, 19vw, 104px); animation: float-1 4.6s ease-in-out infinite; }
+.mate-squircle { width: clamp(58px, 15vw, 82px); animation: float-2 5.4s ease-in-out infinite 0.7s; }
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-11px) rotate(2deg); }
+}
+@keyframes float-2 {
+  0%, 100% { transform: translateY(-4px) rotate(3deg); }
+  50%      { transform: translateY(7px) rotate(-2deg); }
+}
+
+.mate svg { width: 100%; height: auto; display: block; }
+
+/* 五角形寄りのブロブ。サッカーボールの面がモチーフ */
+.mate-body { filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.32)); }
+
+/* 角丸スクエア */
+.squircle {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 32%;
+  background: linear-gradient(155deg, #8fe3f5 0%, #3fa8d8 100%);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18%;
+}
+
+.eye,
+.mate-eyes rect {
+  background: #241a2e;
+  fill: #241a2e;
+}
+
+.eye {
+  width: 11%;
+  height: 26%;
+  border-radius: 999px;
+  /* まばたき。周期の大半は開いたままにして、一瞬だけ閉じる */
+  animation: blink 6.2s infinite;
+}
+
+.mate-eyes { transform-origin: 50% 55%; animation: blink 7.4s infinite 1.4s; }
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.08); }
+}
+
+/* ---------------- 上部バー ---------------- */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--purple-deep);
+  z-index: 10;
+}
+.skip-link:focus { left: 12px; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px clamp(14px, 4vw, 28px);
+  /* 背景を隠さない。文字が読める程度だけ暗くする */
+  background: linear-gradient(to bottom, rgba(24, 6, 26, 0.72), rgba(24, 6, 26, 0));
+}
+
+.topbar-mark {
+  display: flex;
+  align-items: center;
+  /* 34pxの絵だけだとタップ領域が足りない。当たり判定は44pxにする */
+  min-height: var(--tap);
+  width: 34px;
+  flex: none;
+}
+
+.topbar-nav {
+  display: flex;
+  gap: clamp(14px, 4vw, 30px);
+}
+
+.topbar-nav a {
+  /* ポートフォリオサイトの並べ方に寄せて、字間を広くとった小さな欧文にする */
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  font-weight: 600;
+  color: var(--ink-dim);
+  text-decoration: none;
+  /* タップ領域を44px以上に保つ */
+  display: flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 2px;
+  transition: color 0.25s ease;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a:focus-visible { color: var(--ink); }
+
+/* ---------------- 見出し ---------------- */
+
+.hero {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(26px, 7vw, 56px) 20px clamp(34px, 8vw, 66px);
+  text-align: center;
+}
+
+.hero-title {
+  margin: 18px 0 12px;
+  font-size: clamp(1.5rem, 6.6vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  /* 字間を広げると右端に空白が残るので、その分だけ左へ戻す */
+  text-indent: 0.16em;
+  line-height: 1.3;
+}
+
+.hero-lead {
+  margin: 0 0 10px;
+  color: var(--ink);
+  font-size: clamp(0.9rem, 3.7vw, 1.05rem);
+  letter-spacing: 0.04em;
+}
+
+/* 公式でないことは見出しのすぐ下にも置く。ABOUTまで読まない人がいる */
+.hero-note {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+
+/* 狭い画面では改行位置を指定しない。折り返しに任せる */
+.only-wide { display: none; }
+
+@media (min-width: 560px) {
+  .only-wide { display: inline; }
+}
+
+/* ---------------- 作品グリッド ---------------- */
+
+.works,
+.about {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 5vw, 40px);
+}
+
+.work-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(26px, 5vw, 48px);
+}
+
+@media (min-width: 700px) {
+  .work-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* スクロールで浮かび上がる。動かすのは transform と opacity だけ。
+   隠すのは reveal-ready が付いたときだけにする。JS や IntersectionObserver が
+   途中で落ちても、カードが見えないまま残ることがない。 */
+.reveal-ready .work {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s ease-out var(--delay, 0ms), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms);
+}
+
+.reveal-ready .work.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.work-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 色の面の上に端末の画面を置く。面の色がそのツールの目印になる */
+.work-thumb {
+  display: block;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--accent, var(--purple-base));
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
+}
+
+.work-thumb img {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  width: 50%;
+  height: auto;
+  /* 画面の下側は面に潜らせる。全体を入れると小さくなりすぎる */
+  transform: translateX(-50%);
+  border-radius: 7px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.42);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.work-link:hover .work-thumb img,
+.work-link:focus-visible .work-thumb img {
+  transform: translateX(-50%) translateY(-8px);
+}
+
+.work-link:focus-visible .work-thumb {
+  outline: 3px solid var(--cyan-soft);
+  outline-offset: 3px;
+}
+
+.work-name {
+  display: block;
+  margin-top: 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* 参考にしたサイトはここが短い分類タグだが、道具箱では
+   「何ができるページか」を1文で置く。分類より用途のほうが選ぶ助けになる */
+.work-desc {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--ink-dim);
+}
+
+/* ---------------- 過去のページ ---------------- */
+
+.archive { margin-top: clamp(56px, 11vw, 104px); }
+
+.archive-title,
+.about-title {
+  margin: 0 0 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: var(--ink-dim);
+}
+
+.archive-note {
+  margin: 0 0 clamp(20px, 4vw, 32px);
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+}
+
+/* 主要ツールと同じ強さで見せない */
+.archive .work-thumb { opacity: 0.66; transition: opacity 0.4s ease; }
+.archive .work-link:hover .work-thumb,
+.archive .work-link:focus-visible .work-thumb { opacity: 1; }
+.archive .work-name { font-weight: 600; }
+
+.fallback-list { padding-left: 1.2em; }
+.fallback-list a { color: var(--ink); }
+
+/* ---------------- ABOUT と脚注 ---------------- */
+
+.about {
+  margin-top: clamp(64px, 12vw, 120px);
+  font-size: 0.82rem;
+  color: var(--ink-dim);
+}
+
+.about p { margin: 0 0 8px; max-width: 60ch; }
+
+/* 作り手の自己紹介。免責より先に置き、誰が作っているかを分かるようにする */
+.about-bio {
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.9;
+}
+
+.about-handle { margin-bottom: 18px !important; }
+
+.about-handle a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  color: var(--cyan-soft);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.about-handle a:hover,
+.about-handle a:focus-visible { text-decoration: underline; }
+
+/* 元画像は白地の正方形。丸く抜いて、暗い背景から浮くように縁を足す */
+.topbar-mark img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.site-footer {
+  max-width: 1040px;
+  margin: clamp(40px, 8vw, 72px) auto 0;
+  padding: 20px clamp(16px, 5vw, 40px) 40px;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.site-footer p { margin: 0; }
+
+/* ---------------- 動きを減らす設定 ---------------- */
+
+/* 止める指定はこの1か所だけ。data-motion は motion.js が
+   「OSの設定 + ページ内の切り替え」を見て決めた結果を入れる。 */
+:root[data-motion="off"] .bg-nebula,
+:root[data-motion="off"] .topbar-nav a,
+:root[data-motion="off"] .work-thumb img,
+:root[data-motion="off"] .motion-icon,
+:root[data-motion="off"] .archive .work-thumb { transition: none; }
+
+:root[data-motion="off"] .bg-blob,
+:root[data-motion="off"] .mate,
+:root[data-motion="off"] .eye,
+:root[data-motion="off"] .mate-eyes { animation: none; }
+
+/* 出現の演出はやめる。ただし中身は必ず見えるようにする */
+:root[data-motion="off"] .reveal-ready .work {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+/* JavaScriptが動かない環境向けの保険。data-motion が付かないので、
+   OSの設定を直接見る。属性が付いていれば上の指定に任せる。 */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion]) .bg-nebula,
+  :root:not([data-motion]) .topbar-nav a,
+  :root:not([data-motion]) .work-thumb img,
+  :root:not([data-motion]) .archive .work-thumb { transition: none; }
+
+  :root:not([data-motion]) .bg-blob,
+  :root:not([data-motion]) .mate,
+  :root:not([data-motion]) .eye,
+  :root:not([data-motion]) .mate-eyes { animation: none; }
+}
+
+/* ---------------- 動きの切り替え ---------------- */
+
+/* ナビの文字と同じ見た目にすると、押した結果が想像できない。
+   丸い枠に入れた記号にして、リンクではなく操作するものだと分かるようにする。 */
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 絵は30pxだが、当たり判定は44pxを保つ */
+  width: var(--tap);
+  height: var(--tap);
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ink-dim);
+  cursor: pointer;
+}
+
+.motion-icon {
+  width: 30px;
+  height: 30px;
+  padding: 7px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  fill: currentColor;
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.motion-toggle:hover .motion-icon,
+.motion-toggle:focus-visible .motion-icon {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.motion-toggle:focus-visible {
+  outline: 3px solid var(--cyan-soft);
+  outline-offset: -4px;
+  border-radius: 50%;
+}
+
+/* 動いているときは一時停止、止まっているときは再生。
+   状態ではなく「押すと何が起きるか」を出す */
+.icon-play { display: none; }
+:root[data-motion="off"] .icon-pause { display: none; }
+:root[data-motion="off"] .icon-play { display: block; }
+
+/* JavaScriptが無いと切り替えられない。押せないボタンは出さない */
+.motion-toggle { display: none; }
+:root[data-motion] .motion-toggle { display: inline-flex; }
