@@ -46,6 +46,10 @@ function readTools() {
 // public/ の外や外部サイトを指していないかを見る。
 // 入口ページは同一サイト内の導線だけを扱う。
 function resolveInsidePublic(relativePath, label) {
+  // 参照にはキャッシュ対策のクエリが付く（tools/asset-versions.mjs が付ける）。
+  // 実在確認はクエリを外したパスで行う。
+  relativePath = relativePath.split('?')[0];
+
   if (/^[a-z][a-z0-9+.-]*:/i.test(relativePath) || relativePath.startsWith('//')) {
     fail(`${label} は外部URLです: ${relativePath}`);
     return null;
