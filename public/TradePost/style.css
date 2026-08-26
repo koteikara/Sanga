@@ -1,0 +1,140 @@
+/* 背景画像設定 */
+body {
+    font-family: Arial, sans-serif;
+    background: url("../img/back.png") no-repeat bottom center; /* 画像を画面の下端に配置 */
+    background-size: cover; /* ウインドウサイズにフィット */
+    background-attachment: fixed; /* スクロールしても背景を固定 */
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* メインコンテナ */
+.container {
+    background: rgba(255, 255, 255, 0.9); /* 背景を少し透過させる */
+    width: 80%;
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    border-top: 5px solid #800080; /* 紫のライン */
+}
+
+/* 見出し */
+h2 {
+    color: #800080;
+    font-weight: bold;
+}
+
+/* ラジオボタン */
+.radio-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 15px 0;
+}
+
+.radio-group legend {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #4b0082;
+}
+
+/* フォーム要素 */
+.input-group {
+    margin: 10px 0;
+    text-align: left;
+    max-width: 100%;
+}
+
+/* ラベル */
+label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #800080;
+}
+
+/* 入力フィールド */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #800080;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+/* ボタンのスタイル */
+button {
+    background-color: #800080;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+    min-width: 100px;
+}
+
+/* フォーカス時のアクセシビリティ対応 */
+button:focus,
+input:focus {
+    outline: 3px solid #C2AA7E;
+}
+
+button:hover {
+    background-color: #4b0082;
+}
+
+/* 生成されたツイートの表示 */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #800080;
+    border-radius: 5px;
+    resize: none;
+    font-size: 14px;
+    background-color: #f9f9f9;
+}
+
+/* 文字数カウント */
+#charCount {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+}
+
+/* 140文字を超えた場合の警告色 */
+#charCount.exceeded {
+    color: #C2AA7E;
+}
+
+/* ボタンを横並びにする */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+}

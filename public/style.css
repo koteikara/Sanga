@@ -1,0 +1,77 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column; /* 縦方向に並べる */
+  align-items: center; /* 横方向を中央揃え */
+  min-height: 100vh;
+  background-color: #750069; /* 背景色 */
+  background-image: url('img/back.png'); /* 背景画像を設定 */
+  background-repeat: no-repeat; /* 繰り返しなし */
+  background-position: bottom center; /* 下端中央に配置 */
+  background-size: 100% auto; /* 横幅を画面いっぱいに、縦幅は自動調整 */
+}
+
+.site-header {
+  display: flex;
+  justify-content: center; /* 水平方向で中央揃え */
+  align-items: center; /* 垂直方向で中央揃え */
+  width: 100%; /* ヘッダーを横幅いっぱいに */
+  height: auto;
+  padding: 20px 0; /* 上下に余白を追加 */
+}
+
+.site-header img {
+  width: 363px; /* ヘッダー画像の横幅 */
+  height: 58px; /* ヘッダー画像の縦幅 */
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 常に3列レイアウト */
+  gap: 10px; /* 画像間の隙間 */
+  padding: 10px;
+  width: 100%; /* グリッドの幅を全体に広げる */
+  max-width: 1200px; /* 最大幅を設定 */
+  box-sizing: border-box; /* パディングを含むサイズ計算 */
+  justify-content: center; /* グリッド全体を中央揃え */
+}
+
+.image-grid img {
+  width: 100%; /* グリッドセルに応じた横幅 */
+  max-width: 159px; /* 画像の最大幅を制限 */
+  aspect-ratio: 159 / 37; /* 横:縦の比率を維持 */
+  border: 3px solid #ffffff; /* デフォルトの枠線色を白色に設定 */
+  box-sizing: border-box; /* 枠線を含むサイズ計算 */
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.image-grid img:hover {
+  border-color: #C2AA7E; /* ホバー時の枠線色を#C2AA7Eに設定 */
+}
+
+.image-grid img.clicked {
+  border-color: #EC1834; /* クリック時の枠線色を#EC1834に設定 */
+}
+
+/* スマートフォン対応 */
+@media (max-width: 768px) {
+  .image-grid {
+    gap: 8px; /* 隙間を少し小さく */
+  }
+
+  .image-grid img {
+    width: 100%; /* グリッドセル内で横幅を調整 */
+  }
+}
+
+@media (max-width: 480px) {
+  .image-grid {
+    gap: 5px; /* 隙間をさらに小さく */
+  }
+
+  .image-grid img {
+    width: 100%; /* 横幅をセルの幅に合わせる */
+  }
+}

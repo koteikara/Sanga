@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="京都サンガのチケットやグッズの交換をスムーズにする求・譲投稿フォーマット生成ツール。簡単にX（Twitter）で投稿できます。">
+    <title>求・譲 投稿フォーマット生成ツール | 京都サンガ交換</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>求・譲 投稿フォーマット生成ツール</h2>
+        
+        <fieldset class="radio-group">
+            <legend>投稿タイプ</legend>
+            <label for="request"><input type="checkbox" id="request" name="type" value="求"> 求</label>
+            <label for="offer"><input type="checkbox" id="offer" name="type" value="譲"> 譲</label>
+        </fieldset>
+
+        <div class="input-group">
+            <label for="offer-item">譲るもの:</label>
+            <input type="text" id="offer-item" placeholder="ホーム浦和戦 Sメイン">
+
+            <label for="request-item">求めるもの:</label>
+            <input type="text" id="request-item" placeholder="ホームユニガチャ14">
+
+            <label for="condition">希望条件:</label>
+            <input type="text" id="condition" placeholder="定価＋手数料 or 交換">
+
+            <label for="method">受け渡し方法 (任意):</label>
+            <input type="text" id="method" placeholder="当日現地">
+        </div>
+
+        <button onclick="generateTweet()" aria-label="投稿を作成">投稿を作成</button>
+
+        <h3>生成された投稿:</h3>
+        <textarea id="tweetText" rows="5" cols="50" readonly></textarea>
+        <p id="charCount">文字数: 0 / 140</p>
+
+        <div class="button-group">
+            <button onclick="copyText()" aria-label="投稿をコピー">コピー</button>
+            <button onclick="tweetNow()" aria-label="Xに投稿">Xで投稿</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
