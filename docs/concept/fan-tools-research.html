@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>世界の非公式スポーツファンツール調査 / SANGA TOOLBOX向け示唆</title>
+<style>
+:root{
+  --bg:#f5f3f8;
+  --card:#fff;
+  --ink:#24212a;
+  --muted:#6b6873;
+  --line:#dfd9e7;
+  --purple:#6f42c1;
+  --purple2:#8c68d4;
+  --soft:#eee8f8;
+  --green:#eaf6ec;
+  --amber:#fff4d8;
+  --blue:#eaf2fb;
+  --red:#fdecec;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  line-height:1.65;
+}
+main{max-width:1180px;margin:auto;padding:24px 16px 64px}
+.hero{
+  background:linear-gradient(135deg,#2f2145,#6f42c1 58%,#9275d5);
+  color:#fff;
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 12px 32px rgba(48,31,72,.18);
+}
+.hero h1{margin:0 0 10px;font-size:clamp(28px,5vw,52px);line-height:1.08}
+.hero p{margin:0;max-width:900px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:16px}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:20px;
+}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}
+.kicker{font-size:.82rem;font-weight:800;letter-spacing:.04em;color:var(--purple);margin-bottom:4px}
+h2{font-size:1.35rem;margin:0 0 12px}
+h3{font-size:1.05rem;margin:16px 0 6px}
+p{margin:8px 0}
+ul{padding-left:1.2em;margin:8px 0}
+li+li{margin-top:4px}
+.tag{display:inline-block;background:var(--soft);color:var(--purple);font-weight:700;font-size:.78rem;border-radius:999px;padding:3px 8px;margin:2px}
+.score{font-size:1.7rem;font-weight:900;color:var(--purple)}
+.small{font-size:.9rem;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:left;vertical-align:top}
+th{background:#faf9fc}
+.reco{background:var(--green);border-left:4px solid #2e7d32;border-radius:10px;padding:12px 14px}
+.watch{background:var(--amber);border-left:4px solid #c99500;border-radius:10px;padding:12px 14px}
+.skip{background:var(--red);border-left:4px solid #b23b3b;border-radius:10px;padding:12px 14px}
+.idea{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  background:#faf9fc;
+}
+.rank{
+  display:flex;gap:12px;align-items:flex-start;
+}
+.ranknum{
+  min-width:40px;height:40px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--purple);color:white;font-weight:900;
+}
+blockquote{
+  margin:10px 0;padding:10px 14px;border-left:4px solid var(--purple);
+  background:#faf8fd;
+}
+a{color:#5d34a5}
+@media(max-width:760px){
+ .span-8,.span-6,.span-4{grid-column:span 12}
+ .hero{padding:22px}
+ .card{padding:16px}
+ th,td{font-size:.92rem}
+}
+</style>
+</head>
+<body>
+<main>
+
+<section class="hero">
+  <div class="kicker" style="color:#eadfff">WORLD FAN TOOL RESEARCH</div>
+  <h1>世界の非公式スポーツファンツール調査</h1>
+  <p>個人開発・コミュニティ制作・SNS発のスポーツファン向けツールを整理し、SANGA TOOLBOXに取り入れる価値が高いものを優先順位付きでまとめる。</p>
+</section>
+
+<section class="grid">
+
+<article class="card span-12">
+  <div class="kicker">01 / 全体傾向</div>
+  <h2>面白いのは「公式では作りにくい、小さなファン体験」</h2>
+  <p>世界的に見ると、非公式ファンツールはニュース・順位・日程の再掲よりも、<strong>ファン本人の行動・思い出・予想・収集・SNS共有</strong>を支援するものほど個性が強い。</p>
+  <div>
+    <span class="tag">観戦記録</span><span class="tag">スタメン作成</span><span class="tag">遠征</span>
+    <span class="tag">予想</span><span class="tag">思い出化</span><span class="tag">SNS共有</span>
+    <span class="tag">コレクション</span><span class="tag">チャント</span>
+  </div>
+</article>
+
+<article class="card span-12">
+  <div class="kicker">02 / 実例</div>
+  <h2>見つかった主な非公式ファンツール</h2>
+  <table>
+    <tr><th>ツール</th><th>ジャンル</th><th>何が面白いか</th><th>SANGA示唆</th></tr>
+    <tr><td><strong>Squadra</strong></td><td>スタメン作成</td><td>短時間でXIを作り、そのままSNS投稿用画像へ</td><td>既存の予想スカッドと親和性が高い</td></tr>
+    <tr><td><strong>Fitbaw Factory</strong></td><td>Groundhopping</td><td>GPS、XP、バッジ、ランキング、シーズンまとめ画像</td><td>AWAY PASSPORT / Supporter Level</td></tr>
+    <tr><td><strong>Kopio</strong></td><td>観戦キャリア</td><td>自分が見た試合・選手・勝率を「ファンのキャリア」として記録</td><td>MY SANGA RECORD / Seen XI</td></tr>
+    <tr><td><strong>Fanvoyage</strong></td><td>遠征</td><td>アウェイ観戦、集合、チェックイン、ランキング</td><td>遠征支援の発展形</td></tr>
+    <tr><td><strong>Stadianity</strong></td><td>スタジアムレビュー</td><td>雰囲気、食事、ビール、コスパ等をファン視点で評価</td><td>AWAY Tips / Stadium Memo</td></tr>
+    <tr><td><strong>ARENAS</strong></td><td>観戦記念</td><td>GPSチェックイン後に観戦記念チケットを生成</td><td>Match Memory / Digital Ticket</td></tr>
+    <tr><td><strong>GoalClash</strong></td><td>予想ゲーム</td><td>スコア・スタメン予想＋ランキング</td><td>予想スカッド答え合わせ</td></tr>
+    <tr><td><strong>38-0</strong></td><td>ドラフト</td><td>選手ドラフト後に仮想シーズンをシミュレーション</td><td>歴代選手ドラフト</td></tr>
+    <tr><td><strong>Eleven</strong></td><td>初心者支援</td><td>推し選手診断＋SNSカード</td><td>新規ファン獲得系の参考</td></tr>
+    <tr><td><strong>Ledger No.2</strong></td><td>野球スコア</td><td>観戦を「自分で記録する行為」に変える</td><td>能動的観戦体験</td></tr>
+    <tr><td><strong>Chalk & Pixels</strong></td><td>歴史・スコア</td><td>過去試合を遡ってスコアカード表示</td><td>「この日何の日」系</td></tr>
+    <tr><td><strong>WeChant</strong></td><td>チャント</td><td>録音・共有・投票</td><td>CHANT BOOKの発展形</td></tr>
+  </table>
+</article>
+
+<article class="card span-6">
+  <div class="kicker">03 / 共通パターン</div>
+  <h2>世界の非公式ツールに多い7パターン</h2>
+  <ol>
+    <li>公式情報を見やすく再構成</li>
+    <li>俺のスタメン・俺の予想</li>
+    <li>サポーター自身の記録</li>
+    <li>スタジアム制覇・Groundhopping</li>
+    <li>観戦を「思い出」に変換</li>
+    <li>試合を見る行為をゲーム化</li>
+    <li>初心者をファンに変える</li>
+  </ol>
+</article>
+
+<article class="card span-6">
+  <div class="kicker">04 / Xとの相性</div>
+  <h2>SNSで強いのは「成果物が外へ出る」ツール</h2>
+  <p>多くの成功パターンは、アプリ内で完結せず、最後に画像やカードが生成される。</p>
+  <ul>
+    <li>スタメン画像</li>
+    <li>観戦記録カード</li>
+    <li>シーズンまとめ</li>
+    <li>推し選手診断</li>
+    <li>スタジアム制覇率</li>
+    <li>スコアカード</li>
+  </ul>
+  <div class="reco"><strong>設計原則：</strong>「入力 → 結果 → Xへ貼る → 他の人もやりたくなる」の循環を作る。</div>
+</article>
+
+<article class="card span-12">
+  <div class="kicker">05 / SANGA TOOLBOX向け 推奨ランキング</div>
+  <h2>次に取り入れる価値が高いもの</h2>
+
+  <div class="idea">
+    <div class="rank"><div class="ranknum">1</div><div>
+      <div class="score">MY SANGA RECORD</div>
+      <p>自分が観戦した試合数、勝敗、勝率、HOME/AWAY、見たゴール数、スタジアム数などを記録。</p>
+      <p class="small">世界事例：Kopio / Groundhopping系</p>
+      <div class="reco">既存の年間スケジュールと最も自然につながる。SANGA WRAPPEDの土台にもなる。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">2</div><div>
+      <div class="score">SANGA WRAPPED</div>
+      <p>シーズン終了時に「あなたの2026/27シーズン」を縦長・正方形画像で生成。</p>
+      <p class="small">観戦数、勝率、総移動距離、最多観戦選手、訪問スタジアムなど。</p>
+      <div class="reco">Xでの拡散性が高い。年末の定番コンテンツにしやすい。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">3</div><div>
+      <div class="score">MATCH MEMORY</div>
+      <p>試合結果・写真・一言メモから、その日の観戦記念カードやデジタル半券を作る。</p>
+      <p class="small">世界事例：ARENAS / GROPPR</p>
+      <div class="reco">「記録」より「思い出」に寄せられる。ファンツールらしさが強い。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">4</div><div>
+      <div class="score">AWAY PASSPORT</div>
+      <p>訪問したJリーグスタジアムを埋め、制覇率・訪問回数・遠征距離を可視化。</p>
+      <p class="small">世界事例：Fitbaw Factory / Groundhoppers.app</p>
+      <div class="reco">Jリーグの遠征文化と相性が非常に良い。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">5</div><div>
+      <div class="score">MY SANGA BEST XI</div>
+      <p>歴代ベスト11、外国籍XI、アカデミーXI、自分が現地で見た選手だけのXIなど。</p>
+      <div class="reco">既存予想スカッド作成ツールの資産をかなり流用できる。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">6</div><div>
+      <div class="score">予想スカッド答え合わせ</div>
+      <p>公式スタメン発表後に「9/11的中」などを表示し、年間的中率も蓄積。</p>
+      <div class="reco">既存ツールを継続利用型ゲームに進化させられる。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">7</div><div>
+      <div class="score">SUPPORTER CAREER</div>
+      <p>通算観戦数・シーズン数・スタジアム数・遠征数を「選手のキャリア」のように見せる。</p>
+      <div class="reco">長期利用の理由になる。MY SANGA RECORDの上位概念。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">8</div><div>
+      <div class="score">MATCHDAY DASHBOARD</div>
+      <p>当日のキックオフ、開門、天気、持ち物、イベント、座席移動などを一画面に。</p>
+      <div class="reco">現在検討中の「Supporter Timeline」と強く接続できる。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">9</div><div>
+      <div class="score">CHANT BOOK</div>
+      <p>現役・過去選手チャント、歌詞、元曲、音声を整理。</p>
+      <div class="watch">権利処理や音源利用に注意。まずは歌詞・情報中心が安全。</div>
+    </div></div>
+  </div>
+
+  <div class="idea" style="margin-top:12px">
+    <div class="rank"><div class="ranknum">10</div><div>
+      <div class="score">SANGA KIT COLLECTION</div>
+      <p>歴代ユニフォーム図鑑＋自分が持っているユニフォームのコレクション管理。</p>
+      <div class="watch">画像権利とデータ整備コストがやや高い。</div>
+    </div></div>
+  </div>
+</article>
+
+<article class="card span-6">
+  <div class="kicker">06 / すぐ作りやすい</div>
+  <h2>既存資産を流用しやすい案</h2>
+  <ul>
+    <li>予想スカッド答え合わせ</li>
+    <li>歴代BEST XI</li>
+    <li>MY SANGA RECORD</li>
+    <li>Season Wrapped</li>
+    <li>Result Card</li>
+    <li>観戦勝率・連勝記録</li>
+  </ul>
+  <p class="small">年間スケジュール・LocalStorage・共有画像生成の既存資産が活かせる。</p>
+</article>
+
+<article class="card span-6">
+  <div class="kicker">07 / 開発コスト高め</div>
+  <h2>面白いが後回しでもよい案</h2>
+  <ul>
+    <li>GPSチェックイン</li>
+    <li>サポーターランキング</li>
+    <li>ユーザー投稿レビュー</li>
+    <li>チャント投稿・投票</li>
+    <li>コミュニティSNS</li>
+    <li>リアルタイム遠征集合</li>
+  </ul>
+  <div class="skip"><strong>理由：</strong>認証・サーバーDB・モデレーション・位置情報・運用負荷が増える。</div>
+</article>
+
+<article class="card span-12">
+  <div class="kicker">08 / SANGA TOOLBOXとしての構成案</div>
+  <h2>「試合前 → 当日 → 試合後 → シーズン終了」をつなぐ</h2>
+<pre style="background:#211d28;color:#f7f1ff;padding:16px;border-radius:12px;overflow:auto">年間スケジュール
+      │
+      ├─ 試合前
+      │    ├─ 予想スカッド
+      │    ├─ 予想答え合わせ
+      │    └─ Supporter Timeline
+      │
+      ├─ 試合当日
+      │    ├─ Matchday Dashboard
+      │    ├─ Supporter Timeline
+      │    └─ Away Passport
+      │
+      ├─ 試合後
+      │    ├─ MY SANGA RECORD
+      │    └─ MATCH MEMORY
+      │
+      └─ シーズン終了
+           ├─ SANGA WRAPPED
+           └─ SUPPORTER CAREER</pre>
+</article>
+
+<article class="card span-12">
+  <div class="kicker">09 / 50+ アイデア一覧</div>
+  <h2>SANGA TOOLBOX候補</h2>
+  <table>
+    <tr><th>カテゴリ</th><th>アイデア</th></tr>
+    <tr><td>観戦記録</td><td>MY SANGA RECORD / 観戦勝率 / 観戦連勝 / 得点目撃数 / Seen Players / Seen XI / 初観戦 / 100試合記念</td></tr>
+    <tr><td>遠征</td><td>AWAY PASSPORT / スタジアム制覇率 / 日本地図 / 総移動距離 / 最遠征 / Away Tips / Away費用メモ / 遠征持ち物</td></tr>
+    <tr><td>思い出</td><td>MATCH MEMORY / Digital Ticket / Result Card / Match Poster / Monthly Wrapped / Lifetime Wrapped</td></tr>
+    <tr><td>予想</td><td>スタメン答え合わせ / Score Prediction / Scorer Prediction / 年間的中率 / Match Bingo</td></tr>
+    <tr><td>歴代選手</td><td>歴代BEST XI / 外国籍XI / アカデミーXI / 年代別XI / Draft XI / 2択BEST XI</td></tr>
+    <tr><td>クイズ</td><td>今日のサンガクイズ / 背番号クイズ / Career Path Quiz / 写真クイズ</td></tr>
+    <tr><td>チャント</td><td>CHANT BOOK / チャント練習 / 新チャント投票</td></tr>
+    <tr><td>コレクション</td><td>歴代ユニフォーム図鑑 / My Kit Collection / グッズ所有リスト / Wishlist</td></tr>
+    <tr><td>実用</td><td>Matchday Dashboard / Supporter Timeline / Home Screen Widget / カレンダー連携</td></tr>
+  </table>
+</article>
+
+<article class="card span-12">
+  <div class="kicker">10 / 現時点の推奨</div>
+  <h2>優先順位</h2>
+  <div class="reco">
+    <strong>最優先：</strong> Supporter Timeline<br>
+    公式情報が散らばるという、実際の観戦行動上の困りごとを直接解決できる。
+  </div>
+  <div class="reco" style="margin-top:10px">
+    <strong>次点：</strong> MY SANGA RECORD → SANGA WRAPPED<br>
+    既存年間スケジュールと自然に連携でき、SNS共有にも強い。
+  </div>
+  <div class="reco" style="margin-top:10px">
+    <strong>その次：</strong> MATCH MEMORY / AWAY PASSPORT / 予想答え合わせ<br>
+    観戦前・当日・試合後の体験を埋められる。
+  </div>
+</article>
+
+<article class="card span-12">
+  <p class="small">※ 本資料は、個人開発・コミュニティ発の非公式ファンツール事例を分類・抽象化した企画整理用資料です。各サービスの仕様や公開状況は変更される可能性があります。</p>
+</article>
+
+</section>
+</main>
+</body>
+</html>

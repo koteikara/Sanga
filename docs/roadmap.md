@@ -72,7 +72,7 @@
 2. `validate-app-contract.js` の確認範囲拡張（CSS整理・JS整理に合わせて継続）
 3. CSS整理の小分け実施
 4. JavaScript整理の小分け実施
-5. チケット・観戦準備メモのUIプロトタイプ
+5. チケット・観戦準備メモのUIプロトタイプ（企画設計は `docs/supporter-timeline-design.md`）
 6. 追加メモ機能のUIプロトタイプ
 
 ## 進行中の別ページ
@@ -163,6 +163,8 @@
 - `docs/operation-flow.md`
 - `docs/deploy-policy.md`
 - `docs/screenshot-social-share.md`
+- `docs/supporter-timeline-design.md`
+- `docs/fan-tools-research.md`
 - `docs/filtering.md`
 - `docs/display-modes.md`
 - `docs/personalization.md`
