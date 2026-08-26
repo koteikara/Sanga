@@ -94,6 +94,28 @@ function checkIndexNoscriptLinks() {
   console.log(`noscriptOK public/index.html: tools.json の live ${expected.length}件と一致`);
 }
 
+// CSSとJavaScriptの参照にはバージョンクエリを必ず付ける。
+// 付け忘れると、中身を直しても再訪した人には古いファイルが使われ続ける。
+// 実際に app.js からCDN依存を外したとき、参照側を上げ忘れていた。
+function checkAssetVersionQuery(relativePath) {
+  const html = readPublicFile(relativePath);
+  if (html === null) return;
+
+  const refs = [...html.matchAll(/(?:href|src)="([^"]+\.(?:css|js|mjs)(?:\?[^"]*)?)"/g)]
+    .map((m) => m[1])
+    // 外部URLは対象外。こちらでキャッシュを制御できない
+    .filter((ref) => !/^[a-z][a-z0-9+.-]*:/i.test(ref) && !ref.startsWith("//"));
+
+  const missing = refs.filter((ref) => !/\?v=/.test(ref));
+
+  if (missing.length > 0) {
+    errors.push(`バージョンクエリがありません public/${relativePath}: ${missing.join(", ")}`);
+    return;
+  }
+
+  console.log(`版数OK public/${relativePath}: ${refs.length}件すべてに ?v= が付いています`);
+}
+
 checkCssBraces("assets/style.css");
 checkCssBraces("assets/squad.css");
 checkCssBraces("assets/index.css");
@@ -106,6 +128,17 @@ checkHtmlReferences("index.html", [
   "assets/index-motion.js",
 ]);
 checkIndexNoscriptLinks();
+
+for (const page of [
+  "index.html",
+  "sanga202627season.html",
+  "squad.html",
+  "sanga2025season.html",
+  "sanga_slides.html",
+  "TradePost/index-v1.html",
+]) {
+  checkAssetVersionQuery(page);
+}
 
 if (errors.length > 0) {
   for (const error of errors) {
