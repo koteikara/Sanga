@@ -79,6 +79,22 @@ body {
   animation: drift-c 51s ease-in-out infinite;
 }
 
+/* ネビュラ。WebGLが動いたときだけCSSのぼかしより前に出る */
+.bg-nebula {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  opacity: 0;
+  transition: opacity 900ms ease-out;
+}
+
+.has-nebula .bg-nebula { display: block; opacity: 1; }
+
+/* ネビュラが出たらCSSのぼかしは引っ込める。二重に描く意味がない */
+.has-nebula .bg-blob { opacity: 0; transition: opacity 900ms ease-out; }
+
 @keyframes drift-a {
   0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
   50%      { transform: translate3d(6vmax, 4vmax, 0) scale(1.12); }
@@ -283,6 +299,7 @@ main {
 /* ---------------- 動きを減らす設定 ---------------- */
 
 @media (prefers-reduced-motion: reduce) {
+  .bg-nebula { transition: none; }
   .bg-blob,
   .mate,
   .eye,

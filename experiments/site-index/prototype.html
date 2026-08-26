@@ -12,9 +12,11 @@
 
 <!-- 背景。装飾専用なので支援技術からは隠す -->
 <div class="bg" aria-hidden="true">
+  <!-- WebGLが使えないときは、この3つのぼかしがそのまま背景になる -->
   <span class="bg-blob bg-blob-1"></span>
   <span class="bg-blob bg-blob-2"></span>
   <span class="bg-blob bg-blob-3"></span>
+  <canvas id="nebula" class="bg-nebula"></canvas>
 </div>
 
 <header class="hero">
@@ -68,5 +70,25 @@
 </footer>
 
 <script src="prototype.js"></script>
+<script type="module">
+  // ネビュラは進行的強化として足す。失敗してもCSSの背景が残る
+  import { startNebula } from "./nebula.js";
+  const canvas = document.querySelector("#nebula");
+
+  // 実機でCSS背景と見比べられるようにする。?nebula=off でCSSのぼかしに戻る
+  if (new URLSearchParams(location.search).get("nebula") === "off") {
+    console.info("[site-index] ?nebula=off のため、CSSの背景を使います。");
+  } else {
+  // 先に表示状態にしてから初期化する。display:none のまま採寸すると
+  // canvasが0×0になり、動きを止めた設定のとき何も描かれない
+  document.body.classList.add("has-nebula");
+  try {
+    startNebula(canvas);
+  } catch (error) {
+    document.body.classList.remove("has-nebula");
+    console.info("[site-index] ネビュラ背景を使えないため、CSSの背景を使います:", error.message);
+  }
+  }
+</script>
 </body>
 </html>
