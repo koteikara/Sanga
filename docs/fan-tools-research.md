@@ -107,6 +107,8 @@ SNSで強いのは「成果物が外へ出る」ツールです。多くの成�
 
 - 個人の観戦実績はLocalStorage中心で扱い、公開JSONには含めません（`AGENTS.md`、`docs/personalization.md`）。
   端末を変えると消えるため、書き出し・読み込みの手段は早い段階で用意する必要があります。
+- **収益化（アフィリエイト等）は行いません。** 公式サイトの利用規約が営利目的の行為を禁止しています。
+  詳細は `docs/supporter-timeline-design.md` の「公式サイトの利用条件」節を参照してください。
 - 選手画像、ユニフォーム画像、チャント音源・歌詞は権利確認が必要です。`docs/source-and-license.md` と
   `THIRD_PARTY_NOTICES.md` に由来と利用条件を残せないものは採用しません。
   公式由来画像の許諾確認は `docs/roadmap.md` 上でも保留中です。

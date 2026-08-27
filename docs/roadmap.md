@@ -91,7 +91,7 @@
 | カレンダー連携 | 未着手 | 試合日程の個人カレンダー追加を検討する。ニュース由来イベントはニュース連動カレンダー側を基本にする。 |
 | 戦績更新 | 未着手 | 試合後の得点、結果、状態更新の運用を整理してから進める。 |
 | カップ戦・ACL戦追加 | 一部対応 | 現在の `matches.json` はJ1、天皇杯、ルヴァン杯を含み、天皇杯・ルヴァン杯は表示と大会フィルタに一部対応済み。ACLなど追加大会は要確認。 |
-| ホテル提案 | 中断中 | 生成基盤（`tools/hotels/`、`public/data/hotel-index.json`、`tools/validate-hotels.js`、`docs/hotels-data-schema.md`）はPR #122で実装済み。実データ取得と公開ページ側の出口が未定のため止まっている。現状と再開条件は `docs/hotels-data-schema.md` と `docs/hotels-operation-flow.md`、出口候補は `docs/supporter-timeline-design.md`。 |
+| ホテル提案 | 中断中 | 生成基盤（`tools/hotels/`、`public/data/hotel-index.json`、`tools/validate-hotels.js`、`docs/hotels-data-schema.md`）はPR #122で実装済み。実データ取得と公開ページ側の出口が未定のため止まっている。現状と再開条件は `docs/hotels-data-schema.md` と `docs/hotels-operation-flow.md`、出口候補は `docs/supporter-timeline-design.md`。アフィリエイトによる収益化は行わない方針。 |
 | 対戦相手別補助情報 | 未着手 | 会場、関連URL、観戦補助情報などの表示方針を先に整理する。 |
 | 共有URL機能 | 未着手 | フィルタ条件や表示モードの共有を検討する。個人メモなど私的情報は含めない。 |
 
