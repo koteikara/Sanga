@@ -267,6 +267,7 @@ SUPPORTER TIMELINE とは別の価値です。
 ## 関連ドキュメント
 
 - `docs/supporter-timeline-design.md`
+- `docs/concept/timeline-architecture.html`（構成図）
 - `docs/data-schema.md`
 - `docs/operation-flow.md`
 - `docs/roadmap.md`

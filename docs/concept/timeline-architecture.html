@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SANGA SUPPORTER TIMELINE 構成図</title>
+<meta name="description" content="SUPPORTER TIMELINE の設計判断が実際にどう噛み合うかを5枚の図にした資料。">
+</head>
+<body>
+<style>
+  :root{
+    --paper:#fbfafc;
+    --panel:#ffffff;
+    --ink:#1c1922;
+    --muted:#6a6577;
+    --line:#ded9e6;
+    --line-soft:#ece8f1;
+    --accent:#6a2fa0;
+    --accent-soft:#f0e8f9;
+    --drop:#a8552a;
+    --drop-soft:#f8ede5;
+    --shadow:0 1px 2px rgba(28,25,34,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#151319;
+      --panel:#1c1922;
+      --ink:#eae6f0;
+      --muted:#9a94a8;
+      --line:#332e3d;
+      --line-soft:#272231;
+      --accent:#bb92e8;
+      --accent-soft:#2a2036;
+      --drop:#dd9c72;
+      --drop-soft:#332420;
+      --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#151319;
+    --panel:#1c1922;
+    --ink:#eae6f0;
+    --muted:#9a94a8;
+    --line:#332e3d;
+    --line-soft:#272231;
+    --accent:#bb92e8;
+    --accent-soft:#2a2036;
+    --drop:#dd9c72;
+    --drop-soft:#332420;
+    --shadow:none;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+    font-size:16px;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:900px;margin:0 auto;padding:clamp(32px,6vw,72px) clamp(18px,4vw,32px) 96px}
+
+  .masthead{
+    display:flex;flex-direction:column;gap:10px;
+    padding-bottom:26px;margin-bottom:44px;
+    border-bottom:2px solid var(--ink);
+  }
+  .eyebrow{
+    font-size:.74rem;font-weight:700;letter-spacing:.16em;
+    color:var(--accent);text-transform:uppercase;
+  }
+  h1{
+    font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700;
+    font-size:clamp(1.9rem,4.6vw,2.9rem);line-height:1.25;
+    margin:0;text-wrap:balance;letter-spacing:.01em;
+  }
+  .standfirst{margin:6px 0 0;color:var(--muted);max-width:62ch}
+  .meta{font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  h2{
+    font-family:"Zen Old Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-weight:700;
+    font-size:1.32rem;line-height:1.5;margin:0;text-wrap:balance;
+  }
+  section{margin-bottom:60px}
+  .sec-head{
+    display:flex;align-items:baseline;gap:14px;
+    margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line);
+  }
+  .num{
+    font-size:.78rem;font-weight:700;color:var(--accent);
+    font-variant-numeric:tabular-nums;letter-spacing:.08em;flex:none;
+  }
+  p{margin:0 0 14px;max-width:66ch}
+  p:last-child{margin-bottom:0}
+  strong{font-weight:700}
+  .lead-accent{color:var(--accent);font-weight:700}
+
+  figure{
+    margin:22px 0 8px;padding:22px 18px 16px;
+    background:var(--panel);border:1px solid var(--line);
+    border-radius:3px;box-shadow:var(--shadow);
+    overflow-x:auto;
+  }
+  figure svg{display:block;width:100%;min-width:640px;max-width:100%;height:auto}
+  figcaption{
+    margin-top:16px;padding-top:12px;border-top:1px solid var(--line-soft);
+    font-size:.86rem;line-height:1.7;color:var(--muted);min-width:640px;
+  }
+  figcaption b{color:var(--ink);font-weight:700}
+
+  .notes{
+    list-style:none;padding:0;margin:16px 0 0;
+    display:flex;flex-direction:column;gap:9px;
+  }
+  .notes li{
+    padding-left:18px;position:relative;font-size:.94rem;
+    color:var(--ink);max-width:64ch;
+  }
+  .notes li::before{
+    content:"";position:absolute;left:0;top:.72em;
+    width:7px;height:1px;background:var(--accent);
+  }
+  code{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.86em;background:var(--line-soft);
+    padding:.12em .4em;border-radius:2px;
+  }
+  .footnote{
+    margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+    font-size:.85rem;color:var(--muted);
+  }
+  .footnote p{max-width:70ch}
+
+  /* SVG shared */
+  .box{fill:var(--panel);stroke:currentColor;stroke-width:1.25}
+  .box-accent{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+  .box-drop{fill:var(--drop-soft);stroke:var(--drop);stroke-width:1.25;stroke-dasharray:4 3}
+  .lbl{fill:currentColor;font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:13px;font-weight:500}
+  .lbl-b{fill:currentColor;font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:13px;font-weight:700}
+  .lbl-s{fill:var(--muted);font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:11px}
+  .lbl-a{fill:var(--accent);font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:12px;font-weight:700}
+  .lbl-d{fill:var(--drop);font-family:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;font-size:11px;font-weight:700}
+  .flow{stroke:currentColor;stroke-width:1.25;fill:none}
+  .flow-a{stroke:var(--accent);stroke-width:1.75;fill:none}
+  .flow-d{stroke:var(--drop);stroke-width:1.25;fill:none;stroke-dasharray:4 3}
+  .rule{stroke:var(--line);stroke-width:1}
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Kyoto Sanga F.C. · 非公式ファンツール</div>
+    <h1>SANGA SUPPORTER TIMELINE</h1>
+    <p class="standfirst">公式情報を、サポーター本人の時間軸に統合する。設計上の判断が実際にどう噛み合うかを5枚の図にした。</p>
+    <div class="meta">設計基準日 2026-08-27 ／ 正本 docs/supporter-timeline-design.md</div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="num">01</span><h2>全体の流れ</h2></div>
+    <p>正本は <code>calendar-events.json</code> ひとつ。外部サービスはすべて出力先として扱う。<span class="lead-accent">情報源の性質ごとに、通る経路が違う</span>のがこの図の要点になる。</p>
+
+    <figure>
+      <svg viewBox="0 0 960 470" role="img" aria-label="一次情報源と記事解析と手入力が calendar-events.json に集まり、そこからタイムライン・ICS・JSON Feed へ出力される全体図">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="ar-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--drop)"/>
+          </marker>
+        </defs>
+
+        <text class="lbl-s" x="16" y="22">情報源</text>
+        <line class="rule" x1="16" y1="30" x2="286" y2="30"/>
+
+        <rect class="box" x="16" y="44" width="270" height="54" rx="2"/>
+        <text class="lbl-b" x="30" y="66">チケット販売スケジュール</text>
+        <text class="lbl-s" x="30" y="86">常設ページ・表形式・会員ランク別</text>
+
+        <rect class="box" x="16" y="110" width="270" height="54" rx="2"/>
+        <text class="lbl-b" x="30" y="132">matches.json</text>
+        <text class="lbl-s" x="30" y="152">試合57件・kickoff_time を保持</text>
+
+        <rect class="box" x="16" y="176" width="270" height="54" rx="2"/>
+        <text class="lbl-b" x="30" y="198">オンラインストア商品ページ</text>
+        <text class="lbl-s" x="30" y="218">受注期間の表がある場合のみ</text>
+
+        <rect class="box" x="16" y="248" width="270" height="66" rx="2"/>
+        <text class="lbl-b" x="30" y="270">公式ニュース記事</text>
+        <text class="lbl-s" x="30" y="290">一覧の差分で新着検知</text>
+        <text class="lbl-s" x="30" y="306">週21件・RSSなし</text>
+
+        <rect class="box" x="16" y="326" width="270" height="54" rx="2"/>
+        <text class="lbl-b" x="30" y="348">公式メール</text>
+        <text class="lbl-s" x="30" y="368">週2通・変更通知が独立して届く</text>
+
+        <rect class="box" x="16" y="392" width="270" height="46" rx="2"/>
+        <text class="lbl-b" x="30" y="420">手入力</text>
+
+        <text class="lbl-s" x="330" y="22">取得</text>
+        <line class="rule" x1="330" y1="30" x2="600" y2="30"/>
+
+        <rect class="box" x="330" y="88" width="180" height="86" rx="2"/>
+        <text class="lbl-b" x="344" y="112">ルールベース</text>
+        <text class="lbl-b" x="344" y="130">Parser</text>
+        <text class="lbl-s" x="344" y="152">表と項目名から</text>
+        <text class="lbl-s" x="344" y="166">そのまま読む</text>
+
+        <rect class="box-accent" x="330" y="248" width="180" height="86" rx="2"/>
+        <text class="lbl-a" x="344" y="272">意味ラベル</text>
+        <text class="lbl-a" x="344" y="290">allow-list</text>
+        <text class="lbl-s" x="344" y="312">応募期限 / 販売開始</text>
+        <text class="lbl-s" x="344" y="326">の直下だけを読む</text>
+
+        <rect class="box-drop" x="330" y="356" width="180" height="52" rx="2"/>
+        <text class="lbl-d" x="344" y="380">対象外にする</text>
+        <text class="lbl-s" x="344" y="398">URLだけ残す</text>
+
+        <line class="flow" x1="286" y1="71" x2="326" y2="110" marker-end="url(#ar)"/>
+        <line class="flow" x1="286" y1="137" x2="326" y2="131" marker-end="url(#ar)"/>
+        <line class="flow" x1="286" y1="203" x2="326" y2="152" marker-end="url(#ar)"/>
+        <line class="flow-a" x1="286" y1="281" x2="326" y2="285" marker-end="url(#ar-a)"/>
+        <line class="flow-d" x1="286" y1="300" x2="326" y2="372" marker-end="url(#ar-d)"/>
+
+        <rect class="box-accent" x="600" y="186" width="180" height="76" rx="2"/>
+        <text class="lbl-a" x="614" y="212">calendar-</text>
+        <text class="lbl-a" x="614" y="230">events.json</text>
+        <text class="lbl-s" x="614" y="250">これが正本</text>
+
+        <line class="flow" x1="510" y1="131" x2="596" y2="200" marker-end="url(#ar)"/>
+        <line class="flow-a" x1="510" y1="291" x2="596" y2="240" marker-end="url(#ar-a)"/>
+        <line class="flow" x1="286" y1="415" x2="596" y2="255" marker-end="url(#ar)"/>
+        <text class="lbl-s" x="360" y="440">運用者が必要と判断したものを直接書く</text>
+
+        <line class="flow" x1="286" y1="353" x2="316" y2="353" marker-end="url(#ar)"/>
+        <text class="lbl-s" x="322" y="349">目視</text>
+
+        <text class="lbl-s" x="820" y="22">出力先</text>
+        <line class="rule" x1="820" y1="30" x2="944" y2="30"/>
+
+        <rect class="box-accent" x="820" y="118" width="124" height="52" rx="2"/>
+        <text class="lbl-a" x="834" y="142">ICSフィード</text>
+        <text class="lbl-s" x="834" y="160">通知を任せる</text>
+
+        <rect class="box" x="820" y="186" width="124" height="52" rx="2"/>
+        <text class="lbl-b" x="834" y="210">タイムライン</text>
+        <text class="lbl-s" x="834" y="228">画面</text>
+
+        <rect class="box" x="820" y="254" width="124" height="52" rx="2"/>
+        <text class="lbl-b" x="834" y="278">JSON Feed</text>
+        <text class="lbl-s" x="834" y="296">RSS</text>
+
+        <line class="flow-a" x1="780" y1="212" x2="816" y2="150" marker-end="url(#ar-a)"/>
+        <line class="flow" x1="780" y1="224" x2="816" y2="212" marker-end="url(#ar)"/>
+        <line class="flow" x1="780" y1="236" x2="816" y2="278" marker-end="url(#ar)"/>
+      </svg>
+      <figcaption><b>紫の経路が新しく作るもの。</b>チケット・試合日程・商品ページは表をそのまま読むだけで済む。記事だけが判断を伴い、判断できないものは点線の先で捨てる。メールは自動処理に入れず、運用者の目を経由して手入力へ合流する。</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="num">02</span><h2>記事1本をどう扱うか</h2></div>
+    <p>ここがAI抽出を置き換えた仕組みになる。全文から日時を探すのをやめ、<strong>意味ラベルの直下だけ</strong>を読む。ラベルが「応募期限」と言っているなら、それは応募期限である。意味を推論する必要がない。</p>
+
+    <figure>
+      <svg viewBox="0 0 960 330" role="img" aria-label="記事が5つの対象外条件を通過した場合のみ日時を抽出し、1つでも該当すれば抽出せず対象外にする判定の流れ">
+        <defs>
+          <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar2-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="ar2-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--drop)"/>
+          </marker>
+        </defs>
+
+        <rect class="box" x="16" y="112" width="118" height="56" rx="2"/>
+        <text class="lbl-b" x="30" y="136">記事1本</text>
+        <text class="lbl-s" x="30" y="156">新着検知から</text>
+
+        <line class="flow" x1="134" y1="140" x2="176" y2="140" marker-end="url(#ar2)"/>
+
+        <text class="lbl-s" x="188" y="34">通ればすべて満たす必要がある5つの関門</text>
+        <line class="rule" x1="188" y1="42" x2="748" y2="42"/>
+
+        <rect class="box" x="188" y="112" width="104" height="56" rx="2"/>
+        <text class="lbl" x="200" y="134">画像だけの</text>
+        <text class="lbl" x="200" y="152">日程表でない</text>
+
+        <rect class="box" x="304" y="112" width="104" height="56" rx="2"/>
+        <text class="lbl" x="316" y="134">変更履歴が</text>
+        <text class="lbl" x="316" y="152">残っていない</text>
+
+        <rect class="box" x="420" y="112" width="104" height="56" rx="2"/>
+        <text class="lbl" x="432" y="134">イベントが</text>
+        <text class="lbl" x="432" y="152">1件だけ</text>
+
+        <rect class="box" x="536" y="112" width="104" height="56" rx="2"/>
+        <text class="lbl" x="548" y="134">意味ラベルが</text>
+        <text class="lbl" x="548" y="152">付いている</text>
+
+        <rect class="box" x="652" y="112" width="104" height="56" rx="2"/>
+        <text class="lbl" x="664" y="134">日付が単独で</text>
+        <text class="lbl" x="664" y="152">確定する</text>
+
+        <line class="flow" x1="292" y1="140" x2="300" y2="140" marker-end="url(#ar2)"/>
+        <line class="flow" x1="408" y1="140" x2="416" y2="140" marker-end="url(#ar2)"/>
+        <line class="flow" x1="524" y1="140" x2="532" y2="140" marker-end="url(#ar2)"/>
+        <line class="flow" x1="640" y1="140" x2="648" y2="140" marker-end="url(#ar2)"/>
+        <line class="flow-a" x1="756" y1="140" x2="796" y2="140" marker-end="url(#ar2-a)"/>
+
+        <rect class="box-accent" x="800" y="104" width="144" height="72" rx="2"/>
+        <text class="lbl-a" x="814" y="130">TimelineEvent</text>
+        <text class="lbl-s" x="814" y="150">として登録</text>
+        <text class="lbl-s" x="814" y="166">出典URLと確認日を付ける</text>
+
+        <line class="flow-d" x1="240" y1="168" x2="240" y2="248" marker-end="url(#ar2-d)"/>
+        <line class="flow-d" x1="356" y1="168" x2="356" y2="248" marker-end="url(#ar2-d)"/>
+        <line class="flow-d" x1="472" y1="168" x2="472" y2="248" marker-end="url(#ar2-d)"/>
+        <line class="flow-d" x1="588" y1="168" x2="588" y2="248" marker-end="url(#ar2-d)"/>
+        <line class="flow-d" x1="704" y1="168" x2="704" y2="248" marker-end="url(#ar2-d)"/>
+
+        <rect class="box-drop" x="188" y="252" width="568" height="54" rx="2"/>
+        <text class="lbl-d" x="204" y="276">1つでも外れたら、日時を取らない</text>
+        <text class="lbl-s" x="204" y="296">記事URLだけ一覧に残す。誤った日時を出すより、出さないほうが安全</text>
+      </svg>
+      <figcaption><b>関門はすべて「取れるか」ではなく「確実か」を見ている。</b>変更履歴が残る記事を弾くのは、素朴に拾うと取り消し線の付いた古い日時を掴んでしまうため。この設計では、人間が誤りを直す工程が存在しない。</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="num">03</span><h2>変更をどこで捕まえるか</h2></div>
+    <p>販売日時の変更は実際に起きる。同じ変更が、記事とメールで<strong>まったく違う形</strong>で届くことが分かった。</p>
+
+    <figure>
+      <svg viewBox="0 0 960 320" role="img" aria-label="記事は既存記事を上書きし変更前の値が取り消し線で残るのに対し、メールは変更前後を対比した独立した1通として届くという違いの比較図">
+        <defs>
+          <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar3-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="ar3-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--drop)"/>
+          </marker>
+        </defs>
+
+        <rect class="box" x="16" y="120" width="150" height="70" rx="2"/>
+        <text class="lbl-b" x="30" y="146">販売日時の変更</text>
+        <text class="lbl-s" x="30" y="166">二次販売が1日ずれた</text>
+        <text class="lbl-s" x="30" y="182">という同一の事実</text>
+
+        <line class="flow-d" x1="166" y1="140" x2="222" y2="86" marker-end="url(#ar3-d)"/>
+        <line class="flow-a" x1="166" y1="170" x2="222" y2="228" marker-end="url(#ar3-a)"/>
+
+        <text class="lbl-d" x="230" y="34">記事の経路</text>
+        <line class="rule" x1="230" y1="42" x2="944" y2="42"/>
+
+        <rect class="box-drop" x="230" y="56" width="200" height="62" rx="2"/>
+        <text class="lbl" x="244" y="80">既存記事を上書き</text>
+        <text class="lbl-s" x="244" y="100">タイトルに (8/25追記)</text>
+
+        <line class="flow-d" x1="430" y1="87" x2="470" y2="87" marker-end="url(#ar3-d)"/>
+
+        <rect class="box-drop" x="474" y="56" width="230" height="62" rx="2"/>
+        <text class="lbl" x="488" y="80">変更前と変更後が同居</text>
+        <text class="lbl-s" x="488" y="100">旧値は取り消し線で残る</text>
+
+        <line class="flow-d" x1="704" y1="87" x2="744" y2="87" marker-end="url(#ar3-d)"/>
+
+        <rect class="box-drop" x="748" y="56" width="196" height="62" rx="2"/>
+        <text class="lbl-d" x="762" y="80">差分を取らないと</text>
+        <text class="lbl-d" x="762" y="100">気づけない</text>
+
+        <text class="lbl-a" x="230" y="198">メールの経路</text>
+        <line class="rule" x1="230" y1="206" x2="944" y2="206"/>
+
+        <rect class="box-accent" x="230" y="220" width="200" height="62" rx="2"/>
+        <text class="lbl" x="244" y="244">独立した1通が届く</text>
+        <text class="lbl-s" x="244" y="264">週2通のうちの1通</text>
+
+        <line class="flow-a" x1="430" y1="251" x2="470" y2="251" marker-end="url(#ar3-a)"/>
+
+        <rect class="box-accent" x="474" y="220" width="230" height="62" rx="2"/>
+        <text class="lbl" x="488" y="244">変更前と変更後を対比</text>
+        <text class="lbl-s" x="488" y="264">■変更後の販売スケジュール</text>
+
+        <line class="flow-a" x1="704" y1="251" x2="744" y2="251" marker-end="url(#ar3-a)"/>
+
+        <rect class="box-accent" x="748" y="220" width="196" height="62" rx="2"/>
+        <text class="lbl-a" x="762" y="244">届いた時点で</text>
+        <text class="lbl-a" x="762" y="264">変更だと分かる</text>
+      </svg>
+      <figcaption><b>だから変更検知はメールを起点にする。</b>記事側は「変更履歴を含む記事は抽出しない」で弾いてしまうため、そのままでは変更を取りこぼす。週2通を目視するだけで、その穴が塞がる。</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="num">04</span><h2>確定していない日時をどう出すか</h2></div>
+    <p>試合57件のうち<strong>28件が未確定、18件は候補日が複数、19件は日付そのものが未定</strong>。未定は例外ではなく、およそ半分を占める。</p>
+
+    <figure>
+      <svg viewBox="0 0 960 340" role="img" aria-label="date_precisionの4つの値が、タイムライン表示とICS出力でどう分岐するかを示す図">
+        <defs>
+          <marker id="ar4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar4-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+          </marker>
+          <marker id="ar4-d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--drop)"/>
+          </marker>
+        </defs>
+
+        <text class="lbl-s" x="16" y="30">date_precision</text>
+        <line class="rule" x1="16" y1="38" x2="286" y2="38"/>
+
+        <rect class="box" x="16" y="52" width="270" height="52" rx="2"/>
+        <text class="lbl-b" x="30" y="74">datetime</text>
+        <text class="lbl-s" x="30" y="94">日時とも確定</text>
+
+        <rect class="box" x="16" y="116" width="270" height="52" rx="2"/>
+        <text class="lbl-b" x="30" y="138">date</text>
+        <text class="lbl-s" x="30" y="158">日付のみ確定・時刻未定</text>
+
+        <rect class="box" x="16" y="180" width="270" height="52" rx="2"/>
+        <text class="lbl-b" x="30" y="202">candidates</text>
+        <text class="lbl-s" x="30" y="222">候補日が複数・18試合</text>
+
+        <rect class="box" x="16" y="244" width="270" height="52" rx="2"/>
+        <text class="lbl-b" x="30" y="266">unknown</text>
+        <text class="lbl-s" x="30" y="286">日付未定・19試合</text>
+
+        <text class="lbl-s" x="420" y="30">タイムライン画面</text>
+        <line class="rule" x1="420" y1="38" x2="660" y2="38"/>
+
+        <rect class="box" x="420" y="52" width="240" height="52" rx="2"/>
+        <text class="lbl" x="434" y="82">時系列のその位置に置く</text>
+
+        <rect class="box" x="420" y="116" width="240" height="52" rx="2"/>
+        <text class="lbl" x="434" y="146">その日の先頭に「時刻未定」</text>
+
+        <rect class="box" x="420" y="180" width="240" height="52" rx="2"/>
+        <text class="lbl" x="434" y="204">最も早い候補の位置に置き</text>
+        <text class="lbl" x="434" y="222">2/13 or 2/14 と併記</text>
+
+        <rect class="box" x="420" y="244" width="240" height="52" rx="2"/>
+        <text class="lbl" x="434" y="274">「日程未定」の別枠へ</text>
+
+        <line class="flow" x1="286" y1="78" x2="416" y2="78" marker-end="url(#ar4)"/>
+        <line class="flow" x1="286" y1="142" x2="416" y2="142" marker-end="url(#ar4)"/>
+        <line class="flow" x1="286" y1="206" x2="416" y2="206" marker-end="url(#ar4)"/>
+        <line class="flow" x1="286" y1="270" x2="416" y2="270" marker-end="url(#ar4)"/>
+
+        <text class="lbl-s" x="760" y="30">ICSフィード</text>
+        <line class="rule" x1="760" y1="38" x2="944" y2="38"/>
+
+        <rect class="box-accent" x="760" y="52" width="184" height="52" rx="2"/>
+        <text class="lbl-a" x="774" y="76">出す</text>
+        <text class="lbl-s" x="774" y="94">時刻付きの予定として</text>
+
+        <rect class="box-accent" x="760" y="116" width="184" height="52" rx="2"/>
+        <text class="lbl-a" x="774" y="140">出す</text>
+        <text class="lbl-s" x="774" y="158">終日の予定として</text>
+
+        <rect class="box-drop" x="760" y="180" width="184" height="116" rx="2"/>
+        <text class="lbl-d" x="774" y="212">出さない</text>
+        <text class="lbl-s" x="774" y="236">購読カレンダーに入った</text>
+        <text class="lbl-s" x="774" y="252">予定は確定情報として</text>
+        <text class="lbl-s" x="774" y="268">届いてしまうため</text>
+
+        <line class="flow-a" x1="660" y1="78" x2="756" y2="78" marker-end="url(#ar4-a)"/>
+        <line class="flow-a" x1="660" y1="142" x2="756" y2="142" marker-end="url(#ar4-a)"/>
+        <line class="flow-d" x1="660" y1="206" x2="756" y2="220" marker-end="url(#ar4-d)"/>
+        <line class="flow-d" x1="660" y1="270" x2="756" y2="256" marker-end="url(#ar4-d)"/>
+      </svg>
+      <figcaption><b>画面には出すが、カレンダーには流さない。</b>画面上の「2/13 or 2/14」は未確定だと読み取れるが、カレンダーに入った予定はそう見えない。確定した時点でフィードに自動的に現れる、という挙動のほうが信用できる。</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="num">05</span><h2>属人的な条件をどこで突き合わせるか</h2></div>
+    <p>先行販売の開始日時は会員種別で違う。「自分の販売はいつか」を出すには属性が要るが、<strong>属性をサーバーに置く必要はない</strong>。</p>
+
+    <figure>
+      <svg viewBox="0 0 960 330" role="img" aria-label="イベント側は誰向けかという事実だけを公開データに持ち、利用者の属性は端末内に留まり、照合も端末内で行われることを示す境界図">
+        <defs>
+          <marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar5-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+          </marker>
+        </defs>
+
+        <text class="lbl-s" x="16" y="30">公開データ（全員に同じもの）</text>
+        <line class="rule" x1="16" y1="38" x2="360" y2="38"/>
+
+        <rect class="box" x="16" y="60" width="344" height="94" rx="2"/>
+        <text class="lbl-b" x="32" y="86">TimelineEvent</text>
+        <text class="lbl-s" x="32" y="110">audience.fc_grade: ["gold"]</text>
+        <text class="lbl-s" x="32" y="130">「ゴールドの先行販売は8/28 12:00」</text>
+        <text class="lbl-s" x="32" y="146">という事実だけを持つ</text>
+
+        <line class="flow" x1="360" y1="107" x2="470" y2="150" marker-end="url(#ar5)"/>
+
+        <line class="rule" x1="440" y1="16" x2="440" y2="314" stroke-dasharray="6 5"/>
+        <text class="lbl-s" x="452" y="30">端末の中（外に出ない）</text>
+
+        <rect class="box-accent" x="470" y="118" width="220" height="88" rx="2"/>
+        <text class="lbl-a" x="486" y="146">照合</text>
+        <text class="lbl-s" x="486" y="170">自分に該当するものを</text>
+        <text class="lbl-s" x="486" y="188">上に出し、バッジを付ける</text>
+
+        <rect class="box" x="470" y="230" width="220" height="80" rx="2"/>
+        <text class="lbl-b" x="486" y="256">SupporterProfile</text>
+        <text class="lbl-s" x="486" y="278">fc_grade / area / interests</text>
+        <text class="lbl-s" x="486" y="296">LocalStorage・選択肢のコードのみ</text>
+
+        <line class="flow-a" x1="580" y1="230" x2="580" y2="210" marker-end="url(#ar5-a)"/>
+
+        <line class="flow-a" x1="690" y1="162" x2="740" y2="162" marker-end="url(#ar5-a)"/>
+
+        <rect class="box" x="744" y="118" width="200" height="88" rx="2"/>
+        <text class="lbl-b" x="760" y="146">画面表示</text>
+        <text class="lbl-s" x="760" y="170">該当しないものも消さない</text>
+        <text class="lbl-s" x="760" y="188">並べ替えと強調にとどめる</text>
+
+        <rect class="box-drop" x="744" y="230" width="200" height="80" rx="2"/>
+        <text class="lbl-d" x="760" y="256">サーバーへ送らない</text>
+        <text class="lbl-s" x="760" y="278">プロフィールはどこにも</text>
+        <text class="lbl-s" x="760" y="296">記録されない</text>
+      </svg>
+      <figcaption><b>イベントは「事実」だけを持ち、「誰に見せるか」の判断は端末に置く。</b>この分け方なら、静的ファイルの配信だけでパーソナライズが成立する。該当しないイベントを消さないのは、設定ミスや家族分の購入で必要になる場合があるため。</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="num">06</span><h2>まだ決まっていないこと</h2></div>
+    <ul class="notes">
+      <li>ニュース記事の実件数。調査で月40件と月96件という2倍以上の開きがあり、対象外に落ちる記事の実数が変わる</li>
+      <li>ブラウザから公式サイトを直接取得できるか。取得は GitHub Actions を前提にしているが未確認</li>
+      <li>公開データのファイル名。<code>calendar-events.json</code> は第一候補にすぎない</li>
+      <li>ICSフィードを条件別に分けるか、端末内での書き出しにとどめるか</li>
+      <li>先行販売の順序と、会員種別ごとに販売日時が何本になるか</li>
+    </ul>
+  </section>
+
+  <div class="footnote">
+    <p>この図は <code>docs/supporter-timeline-design.md</code> と <code>docs/news-extraction-research.md</code> の内容を視覚化したもの。内容の正本はそれらのMarkdownで、食い違いがある場合はMarkdownを正とする。</p>
+    <p>京都サンガF.C.の非公式ファンツールであり、クラブおよびJリーグとは関係がない。</p>
+  </div>
+
+</div>
+</body>
+</html>

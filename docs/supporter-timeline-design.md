@@ -693,4 +693,5 @@ ICS出力は Phase 1 に含めます。Phase 1〜2 にはツール内の通知�
 - `docs/site-index.md`
 - `docs/hotels-data-schema.md`
 - `docs/hotels-operation-flow.md`
-- `docs/concept/supporter-timeline-design.html`
+- `docs/concept/supporter-timeline-design.html`（元資料）
+- `docs/concept/timeline-architecture.html`（構成図。全体の流れ、記事1本の判定、変更検知、日時の確からしさ、パーソナライズの境界）
