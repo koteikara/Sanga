@@ -59,6 +59,7 @@
 | CSS整理前の棚卸し | 進行中 | 低リスクな整理候補と実ブラウザ確認が必要な候補を分ける。 |
 | JavaScript整理前の安全網強化 | 進行中 | 既存LocalStorage、DOMフック、表示設定、フィルタ仕様を壊さない確認を続ける。 |
 | `validate-app-contract.js` の確認範囲 | 確認中 | 主要DOM/CSSフック、表示列、表示モード、フィルタ、共有画像生成、大会リボン関連の確認範囲拡張は一部実施済み。今後もCSS整理・JS整理に合わせて追加する。 |
+| SUPPORTER TIMELINE プロトタイプ | 進行中 | `experiments/supporter-timeline/` にPhase 1の検証用プロトタイプがある。実ブラウザ確認とiPhone Safari確認が残っている。 |
 | ホテルデータ検証 | 確認中 | `tools/validate-hotels.js` は `npm run check:data` で常時実行中。索引は0件のため、空索引を正常扱いする経路だけが動いている。 |
 | 実ブラウザ確認観点 | 確認中 | `docs/ai/BROWSER_CHECKLIST.md` に沿って、人間の目視確認を継続する。 |
 | Googleスプレッドシート運用 | 確認中 | 初期CSV、列定義、生成JSON、公開JSON反映手順を安全に運用する。 |
