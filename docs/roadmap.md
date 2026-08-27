@@ -99,7 +99,7 @@
 
 | 候補 | 扱い | メモ |
 | --- | --- | --- |
-| ニュース連動カレンダー（現・SUPPORTER TIMELINE） | 長期候補 | 年間スケジュールページとは別サービス寄りとして、ニュース由来の日時イベントを扱う。企画設計は `docs/supporter-timeline-design.md`。 |
+| ニュース連動カレンダー（現・SUPPORTER TIMELINE） | 長期候補 | 年間スケジュールページとは別サービス寄りとして、ニュース由来の日時イベントを扱う。企画設計は `docs/supporter-timeline-design.md`、抽出可否の調査は `docs/news-extraction-research.md`。 |
 | Googleスプレッドシートからの自動連携 | 長期候補 | 認証情報をリポジトリに保存しない前提で設計する。 |
 | 自動デプロイの高度化 | 長期候補 | 現時点では手動デプロイを基本にする。 |
 | 年間スケジュールの実ブラウザ確認自動化 | 長期候補 | 予想スカッドではPlaywrightを導入済み。年間スケジュール側への導入可否を、運用コストも含めて検討する。 |
@@ -167,6 +167,7 @@
 - `docs/screenshot-social-share.md`
 - `docs/supporter-timeline-design.md`
 - `docs/fan-tools-research.md`
+- `docs/news-extraction-research.md`
 - `docs/hotels-data-schema.md`
 - `docs/hotels-operation-flow.md`
 - `docs/supporter-timeline-design.md`
