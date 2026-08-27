@@ -13,6 +13,10 @@
 全文を読む必要はありません。該当する節だけを引いてください。
 LocalStorageのキー名一覧は `docs/dom-inventory.md`（自動生成）にもあります。
 
+SUPPORTER TIMELINE のサポータープロフィール（会員種別、居住エリア、興味タグ）も個人状態としてLocalStorageで扱います。
+キー案は `sanga-timeline-profile-v1` で、設計は `docs/supporter-timeline-design.md` の「サポータープロフィール」節を正とします。
+実装時に本文書のキー一覧へ追加します。
+
 ## この設計の目的
 
 このドキュメントは、年間スケジュールページにおける試合カードのパーソナライズ状態、色枠、利用者ごとのラベル設定、LocalStorage保存方針を整理するものです。
