@@ -1,0 +1,132 @@
+# SUPPORTER TIMELINE（Phase 1 プロトタイプ）
+
+作成日: 2026-08-27
+
+## 目的
+
+`docs/supporter-timeline-design.md` の Phase 1 を、移植前に見た目と操作感で確認する。
+設計文書だけでは決まらない次の4点を、実際に触って確かめるためのもの。
+
+| 確認したいこと | 見るところ |
+| --- | --- |
+| 「次にやること」と全体タイムラインを分けたときの見え方 | 画面上部と中段 |
+| `date_precision` による出し分け | タイムラインと「日程未定」 |
+| MY予定が公式イベントと同じ時系列に並ぶか | MY予定を追加してからタイムライン |
+| 確定した日時だけがICSへ出ること | 「カレンダーへ書き出す」 |
+
+## 確認方法
+
+GitHub Pagesで次を開く。
+
+```text
+https://koteikara.github.io/Sanga/experiments/supporter-timeline/prototype.html
+```
+
+`fetch` でJSONを読むため、ローカルで見る場合はファイルを直接開かず、HTTP経由で開く。
+
+```bash
+python3 -m http.server 8000
+# http://localhost:8000/experiments/supporter-timeline/prototype.html
+```
+
+## 今回やったこと
+
+- TimelineEventスキーマの形をサンプルJSONで表現した
+- 「次にやること」（直近のACTION 1件）と全体タイムラインを分けた
+- 種別の絞り込み（すべて / チケット / 応募 / 試合当日 / MY予定）
+- `date_precision` の4値を出し分けた
+- MY予定の追加・削除（LocalStorage）
+- ICS書き出し（日時が確定しているものだけ）
+- 取り込まなかった記事の一覧表示
+
+## 今回やらないこと
+
+Phase 2以降のため、次は入れていない。
+
+- 公式サイトからの取得（Parser）
+- サポータープロフィールによる並べ替え（会員種別・興味タグ）
+- 変更検知
+- 相対時刻（「キックオフ1時間30分前」）の解決
+- 通知、PWA
+
+## データ
+
+| ファイル | 内容 |
+| --- | --- |
+| `calendar-events.sample.json` | 手入力のサンプルイベント。`events` と `skipped` を持つ |
+| `matches.sample.json` | `public/data/matches.json` からの抜粋。正本ではない |
+
+**どちらも検証用の作り物で、実際の販売日時ではない。** 日付は2026年8月末〜9月を想定している。
+時間が経つと「次にやること」が空になるため、必要なら `calendar-events.sample.json` の日付を先へずらす。
+
+`skipped` は「取り込まなかった記事」を表す。設計上、機械的に確実に読めなかった記事は日時を抽出せず、
+URLだけ残す。理由コードは `image_only` / `revision_history` / `multiple_events` / `no_label` / `date_inherited` の5つ。
+
+## LocalStorage
+
+| キー | 保存形式 | 用途 |
+| --- | --- | --- |
+| `sanga-timeline-personal-events-v1` | TimelineEventの配列 | MY予定 |
+
+**既存の `sanga-schedule-*` キーには触れない。** 年間スケジュールページの状態を壊さないため。
+公開JSONにも個人の予定は含めない。
+
+## ICSについて
+
+書き出すのは `date_precision` が `datetime` または `date` のものだけ。
+`candidates`（候補日が複数）と `unknown`（日程未定）は含めない。
+
+購読カレンダーに入った予定は利用者にとって確定情報として届くため、候補日を流すと誤情報になる。
+確定した時点でフィードに現れるほうが信用できる、という判断による。
+
+書き出したファイルは `sanga-timeline-sample.ics`。カレンダーアプリで開いて、
+日時と件数が画面と一致するかを見る。
+
+## 動作確認の状況
+
+作成時に、ヘッドレスChromium（幅430px、`Asia/Tokyo`、2倍密度）で次を確認済み。
+
+| 確認したこと | 結果 |
+| --- | --- |
+| 「次にやること」に直近のACTIONが1件だけ出る | 8/28 12:00 の先行販売、「あと18時間」と表示 |
+| 絞り込みが効く | チケットで8件→2件 |
+| MY予定が同じ日の時系列に混ざる | 17:00 配布 → 18:10 座席へ移動 → 19:00 キックオフ |
+| 候補日の表示 | 「2/13(土) または 2/14(日)」と併記、日程未定の枠に入る |
+| ICS書き出し | 9件を出力、日時が確定していない2件を除外。時刻はUTC変換（12:00 JST → 03:00Z）、時刻未定のものは `DTSTART;VALUE=DATE` |
+| 横スクロール | 発生しない |
+| JavaScriptエラー | なし（`favicon.ico` の404のみ） |
+
+**実機と実ブラウザでの確認は未実施。** 下の確認項目は人間の目で見るためのもの。
+
+## 確認項目
+
+### PC Chrome
+
+- 「次にやること」に直近のACTIONが1件だけ出る
+- 絞り込みで件数が変わり、選択中のチップが分かる
+- MY予定を追加すると、公式イベントと同じ日付の枠に時刻順で入る
+- MY予定を削除できる。再読み込みしても消えたままになる
+- ICSを書き出し、カレンダーアプリで開ける
+- 候補日の予定が「2/13 または 2/14」と出て、ICSには含まれない
+- 出典リンクが記事URLへ直接飛ぶ
+
+### iPhone Safari
+
+- 横スクロールが発生しない
+- チップ・ボタン・入力欄が指で押しやすい（44px程度）
+- `datetime-local` の入力ができる
+- ICS書き出しでカレンダーアプリに渡せるか（挙動が異なる場合は記録する）
+- LocalStorageが保持される（プライベートブラウズでは保持されない場合がある）
+
+## 分かっていないこと
+
+- iOS Safari で `.ics` のダウンロードがどう扱われるか。購読フィード（`webcal:`）との差も未確認
+- 実データの件数が増えたときのタイムラインの長さと、初期スクロール位置
+- 過去のイベントの扱い（現状は時系列にそのまま残る）
+
+## 関連
+
+- `docs/supporter-timeline-design.md`（設計の正本）
+- `docs/news-extraction-research.md`（取得方法の調査）
+- `docs/concept/timeline-architecture.html`（構成図）
+- `docs/ui-prototype-workflow.md`（プロトタイプ運用ルール）

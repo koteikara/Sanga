@@ -1,0 +1,534 @@
+/**
+ * SUPPORTER TIMELINE 検証用プロトタイプ
+ *
+ * 設計の正本は docs/supporter-timeline-design.md。
+ * ここで確認したいのは次の4点。
+ *   1. 「次にやること」と全体タイムラインを分けたときの見え方
+ *   2. date_precision による表示の出し分け（datetime / date / candidates / unknown）
+ *   3. MY予定と公式イベントが同じ時系列に並ぶこと
+ *   4. 確定した日時だけがICSへ出ること
+ *
+ * 本番へ持ち込まないこと: サンプルデータ、検証用の注意書き。
+ */
+(function () {
+  "use strict";
+
+  var EVENTS_URL = "calendar-events.sample.json";
+  var MATCHES_URL = "matches.sample.json";
+  var STORAGE_KEY = "sanga-timeline-personal-events-v1";
+
+  var TYPE_LABEL = {
+    ticket: "チケット",
+    entry: "応募",
+    event: "イベント",
+    goods: "グッズ",
+    match: "試合",
+    personal: "MY予定"
+  };
+
+  var ACTION_LABEL = {
+    action: "ACTION",
+    information: "INFO",
+    personal: "MY"
+  };
+
+  var SKIP_REASON = {
+    image_only: "日程表が画像だけ",
+    revision_history: "変更前と変更後が同じページに残っている",
+    multiple_events: "1記事に複数のイベント",
+    no_label: "日時に意味ラベルがない",
+    date_inherited: "日付を記事全体から推論する必要がある"
+  };
+
+  var state = {
+    events: [],
+    skipped: [],
+    matches: [],
+    filter: "all"
+  };
+
+  /* ---------- 日時 ---------- */
+
+  function parseDate(value) {
+    if (!value) return null;
+    var d = new Date(value);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function pad(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function dayKey(date) {
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1) + "-" + pad(date.getDate());
+  }
+
+  function formatDay(date) {
+    var week = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+    return (date.getMonth() + 1) + "月" + date.getDate() + "日（" + week + "）";
+  }
+
+  function formatTime(date) {
+    return pad(date.getHours()) + ":" + pad(date.getMinutes());
+  }
+
+  function formatCandidates(list) {
+    return list.map(function (value) {
+      var d = parseDate(value + "T00:00:00+09:00");
+      if (!d) return value;
+      var week = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
+      return (d.getMonth() + 1) + "/" + d.getDate() + "(" + week + ")";
+    }).join(" または ");
+  }
+
+  function untilText(date, now) {
+    var diff = date.getTime() - now.getTime();
+    if (diff <= 0) return "受付中または開始済み";
+    var minutes = Math.floor(diff / 60000);
+    if (minutes < 60) return "あと" + minutes + "分";
+    var hours = Math.floor(minutes / 60);
+    if (hours < 48) return "あと" + hours + "時間";
+    return "あと" + Math.floor(hours / 24) + "日";
+  }
+
+  /* ---------- データ ---------- */
+
+  function loadPersonal() {
+    try {
+      var raw = window.localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function savePersonal(list) {
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function allEvents() {
+    return state.events.concat(loadPersonal());
+  }
+
+  function matchLabel(event) {
+    var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+    if (!ids.length) return "";
+    var labels = ids.map(function (id) {
+      var match = state.matches.find(function (m) { return m.id === id; });
+      if (!match) return id;
+      return match.round + " " + (match.opponent || "未定") + "戦";
+    });
+    return labels.join(" / ");
+  }
+
+  function matchesFilter(event) {
+    if (state.filter === "all") return true;
+    if (state.filter === "personal") return event.type === "personal";
+    if (state.filter === "matchday") return event.type === "event" || event.type === "match";
+    return event.type === state.filter;
+  }
+
+  function isDated(event) {
+    return event.date_precision === "datetime" || event.date_precision === "date";
+  }
+
+  /* ---------- 描画 ---------- */
+
+  function renderNext(list, now) {
+    var box = document.getElementById("next-body");
+    var next = list
+      .filter(function (e) { return e.action_type === "action" && isDated(e); })
+      .map(function (e) { return { event: e, date: parseDate(e.starts_at) }; })
+      .filter(function (item) { return item.date && item.date.getTime() >= now.getTime(); })
+      .sort(function (a, b) { return a.date - b.date; })[0];
+
+    box.textContent = "";
+    if (!next) {
+      var none = document.createElement("p");
+      none.className = "empty";
+      none.textContent = "直近の期限つきの予定はありません。";
+      box.appendChild(none);
+      return;
+    }
+
+    var when = document.createElement("p");
+    when.className = "next-when";
+    when.textContent = formatDay(next.date) + " " +
+      (next.event.date_precision === "date" ? "時刻未定" : formatTime(next.date));
+
+    var title = document.createElement("p");
+    title.className = "next-title";
+    title.textContent = next.event.title;
+
+    var sub = document.createElement("p");
+    sub.className = "next-sub";
+    var label = matchLabel(next.event);
+    sub.textContent = untilText(next.date, now) + (label ? " ・ " + label : "");
+
+    box.append(when, title, sub);
+  }
+
+  function createEventNode(event, options) {
+    var li = document.createElement("li");
+    li.className = "event is-" + (event.action_type || "information");
+
+    var top = document.createElement("div");
+    top.className = "event-top";
+
+    var time = document.createElement("span");
+    time.className = "event-time";
+    if (event.date_precision === "datetime") {
+      time.textContent = formatTime(parseDate(event.starts_at));
+    } else if (event.date_precision === "date") {
+      time.textContent = "時刻未定";
+    } else if (event.date_precision === "candidates") {
+      time.textContent = formatCandidates(event.date_candidates || []);
+    } else {
+      time.textContent = "日程未定";
+    }
+
+    var tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = ACTION_LABEL[event.action_type] || "INFO";
+
+    top.append(time, tag);
+
+    var title = document.createElement("p");
+    title.className = "event-title";
+    title.textContent = event.title;
+
+    var meta = document.createElement("p");
+    meta.className = "event-meta";
+
+    var kind = document.createElement("span");
+    kind.textContent = TYPE_LABEL[event.type] || event.type;
+    meta.appendChild(kind);
+
+    var label = matchLabel(event);
+    if (label) {
+      var m = document.createElement("span");
+      m.textContent = label;
+      meta.appendChild(m);
+    }
+
+    if (event.status === "tentative") {
+      var t = document.createElement("span");
+      t.className = "note-tentative";
+      t.textContent = "未確定";
+      meta.appendChild(t);
+    }
+
+    if (event.source_url) {
+      var link = document.createElement("a");
+      link.href = event.source_url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = "出典（" + (event.source_checked_at || "確認日不明") + "確認）";
+      meta.appendChild(link);
+    }
+
+    li.append(top, title, meta);
+
+    if (options && options.removable) {
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn-remove";
+      remove.textContent = "削除";
+      remove.addEventListener("click", function () {
+        var kept = loadPersonal().filter(function (e) { return e.id !== event.id; });
+        savePersonal(kept);
+        render();
+      });
+      meta.appendChild(remove);
+    }
+
+    return li;
+  }
+
+  function renderTimeline(list, now) {
+    var root = document.getElementById("timeline");
+    root.textContent = "";
+
+    var dated = list
+      .filter(isDated)
+      .map(function (e) { return { event: e, date: parseDate(e.starts_at) }; })
+      .filter(function (item) { return item.date; })
+      .sort(function (a, b) { return a.date - b.date; });
+
+    if (!dated.length) {
+      var none = document.createElement("p");
+      none.className = "empty";
+      none.textContent = "表示できる予定がありません。";
+      root.appendChild(none);
+      return;
+    }
+
+    var todayKey = dayKey(now);
+    var currentKey = "";
+    var listNode = null;
+
+    dated.forEach(function (item) {
+      var key = dayKey(item.date);
+      if (key !== currentKey) {
+        currentKey = key;
+        var day = document.createElement("div");
+        day.className = "day";
+        var label = document.createElement("p");
+        label.className = "day-label";
+        label.textContent = formatDay(item.date);
+        if (key === todayKey) {
+          var badge = document.createElement("span");
+          badge.className = "today";
+          badge.textContent = "今日";
+          label.appendChild(badge);
+        }
+        listNode = document.createElement("ul");
+        listNode.className = "events";
+        day.append(label, listNode);
+        root.appendChild(day);
+      }
+      listNode.appendChild(createEventNode(item.event, { removable: item.event.source === "personal" }));
+    });
+  }
+
+  function renderUndated(list) {
+    var root = document.getElementById("undated");
+    root.textContent = "";
+
+    var undated = list.filter(function (e) { return !isDated(e); });
+    if (!undated.length) {
+      var none = document.createElement("p");
+      none.className = "empty";
+      none.textContent = "日程未定の予定はありません。";
+      root.appendChild(none);
+      return;
+    }
+
+    var ul = document.createElement("ul");
+    ul.className = "events";
+    undated.forEach(function (event) { ul.appendChild(createEventNode(event, null)); });
+    root.appendChild(ul);
+  }
+
+  function renderSkipped() {
+    var root = document.getElementById("skipped");
+    root.textContent = "";
+    if (!state.skipped.length) {
+      var li = document.createElement("li");
+      li.textContent = "取り込まなかった記事はありません。";
+      root.appendChild(li);
+      return;
+    }
+    state.skipped.forEach(function (item) {
+      var li = document.createElement("li");
+      var link = document.createElement("a");
+      link.href = item.url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = item.url;
+      var reason = document.createElement("span");
+      reason.className = "reason";
+      reason.textContent = (SKIP_REASON[item.reason] || item.reason) +
+        (item.found_at ? "・" + item.found_at + "に検知" : "");
+      li.append(link, reason);
+      root.appendChild(li);
+    });
+  }
+
+  function renderMatchOptions() {
+    var select = document.getElementById("my-match");
+    state.matches.forEach(function (match) {
+      if (!match.match_date) return;
+      var option = document.createElement("option");
+      option.value = match.id;
+      option.textContent = match.round + " " + (match.opponent || "未定") + "戦（" + match.match_date + "）";
+      select.appendChild(option);
+    });
+  }
+
+  function render() {
+    var now = new Date();
+    var visible = allEvents().filter(matchesFilter);
+    renderNext(visible, now);
+    renderTimeline(visible, now);
+    renderUndated(visible);
+    renderSkipped();
+  }
+
+  /* ---------- ICS ---------- */
+
+  function icsEscape(text) {
+    return String(text)
+      .replace(/\\/g, "\\\\")
+      .replace(/;/g, "\\;")
+      .replace(/,/g, "\\,")
+      .replace(/\r?\n/g, "\\n");
+  }
+
+  function toUtcStamp(date) {
+    return date.getUTCFullYear() +
+      pad(date.getUTCMonth() + 1) +
+      pad(date.getUTCDate()) + "T" +
+      pad(date.getUTCHours()) +
+      pad(date.getUTCMinutes()) +
+      pad(date.getUTCSeconds()) + "Z";
+  }
+
+  function toDateStamp(date) {
+    return date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
+  }
+
+  function buildIcs(list, now) {
+    var lines = [
+      "BEGIN:VCALENDAR",
+      "VERSION:2.0",
+      "PRODID:-//SANGA TOOLBOX//SUPPORTER TIMELINE prototype//JA",
+      "CALSCALE:GREGORIAN",
+      "METHOD:PUBLISH",
+      "X-WR-CALNAME:" + icsEscape("SANGA SUPPORTER TIMELINE（検証用）")
+    ];
+
+    list.forEach(function (event) {
+      var start = parseDate(event.starts_at);
+      if (!start) return;
+      lines.push("BEGIN:VEVENT");
+      lines.push("UID:" + icsEscape(event.id) + "@sanga-timeline.invalid");
+      lines.push("DTSTAMP:" + toUtcStamp(now));
+      if (event.date_precision === "date") {
+        lines.push("DTSTART;VALUE=DATE:" + toDateStamp(start));
+      } else {
+        lines.push("DTSTART:" + toUtcStamp(start));
+        var end = parseDate(event.ends_at);
+        if (end) lines.push("DTEND:" + toUtcStamp(end));
+      }
+      lines.push("SUMMARY:" + icsEscape(event.title));
+      var description = [];
+      var label = matchLabel(event);
+      if (label) description.push(label);
+      if (event.source_url) description.push(event.source_url);
+      description.push("検証用プロトタイプが作成したサンプルです。");
+      lines.push("DESCRIPTION:" + icsEscape(description.join("\n")));
+      lines.push("END:VEVENT");
+    });
+
+    lines.push("END:VCALENDAR");
+    return lines.join("\r\n") + "\r\n";
+  }
+
+  function exportIcs() {
+    var status = document.getElementById("ics-status");
+    var now = new Date();
+    var target = allEvents().filter(matchesFilter).filter(isDated);
+
+    if (!target.length) {
+      status.textContent = "書き出せる予定がありません。日時が確定しているものだけが対象です。";
+      return;
+    }
+
+    var text = buildIcs(target, now);
+    var blob = new Blob([text], { type: "text/calendar;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = "sanga-timeline-sample.ics";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+
+    var skipped = allEvents().filter(matchesFilter).length - target.length;
+    status.textContent = target.length + "件を書き出しました。" +
+      (skipped > 0 ? "日時が確定していない" + skipped + "件は含めていません。" : "");
+  }
+
+  /* ---------- 操作 ---------- */
+
+  function bindFilters() {
+    document.querySelectorAll(".chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        state.filter = chip.dataset.filter;
+        document.querySelectorAll(".chip").forEach(function (other) {
+          var on = other === chip;
+          other.classList.toggle("is-on", on);
+          other.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        render();
+      });
+    });
+  }
+
+  function bindForm() {
+    var form = document.getElementById("my-form");
+    var status = document.getElementById("my-status");
+
+    form.addEventListener("submit", function (submitEvent) {
+      submitEvent.preventDefault();
+      var title = document.getElementById("my-title").value.trim();
+      var when = document.getElementById("my-when").value;
+      var matchId = document.getElementById("my-match").value;
+      if (!title || !when) return;
+
+      var list = loadPersonal();
+      list.push({
+        id: "my-" + Date.now(),
+        starts_at: when + ":00+09:00",
+        ends_at: "",
+        date_precision: "datetime",
+        date_candidates: [],
+        type: "personal",
+        title: title,
+        source: "personal",
+        action_type: "personal",
+        match_ids: matchId ? [matchId] : [],
+        status: "confirmed",
+        is_visible: true
+      });
+
+      if (savePersonal(list)) {
+        status.textContent = "追加しました。この端末にだけ保存しています。";
+        form.reset();
+        render();
+      } else {
+        status.textContent = "保存できませんでした。ブラウザの設定で保存が制限されている可能性があります。";
+      }
+    });
+  }
+
+  /* ---------- 起動 ---------- */
+
+  function start() {
+    bindFilters();
+    bindForm();
+    document.getElementById("ics-btn").addEventListener("click", exportIcs);
+
+    Promise.all([
+      fetch(EVENTS_URL).then(function (r) { return r.json(); }),
+      fetch(MATCHES_URL).then(function (r) { return r.json(); })
+    ]).then(function (results) {
+      state.events = (results[0].events || []).filter(function (e) { return e.is_visible !== false; });
+      state.skipped = results[0].skipped || [];
+      state.matches = results[1].matches || [];
+      renderMatchOptions();
+      render();
+    }).catch(function () {
+      document.getElementById("next-body").textContent = "";
+      var message = document.createElement("p");
+      message.className = "empty";
+      message.textContent = "サンプルデータを読み込めませんでした。ファイルを直接開いた場合は、HTTP経由で開き直してください。";
+      document.getElementById("next-body").appendChild(message);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();

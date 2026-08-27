@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SUPPORTER TIMELINE プロトタイプ</title>
+<meta name="description" content="京都サンガF.C. 非公式ファンツールの検証用プロトタイプ。公開ページではありません。">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+<p class="notice" role="note">検証用プロトタイプです。表示しているデータは手入力のサンプルで、実際の販売日時ではありません。</p>
+
+<header class="head">
+  <p class="eyebrow">SANGA TOOLBOX / 検証用</p>
+  <h1>SUPPORTER TIMELINE</h1>
+  <p class="lead">次にやることと、当日の流れを1本の時系列で見る。</p>
+</header>
+
+<main>
+  <section class="next" aria-labelledby="next-head">
+    <h2 id="next-head">次にやること</h2>
+    <div id="next-body" class="next-body">
+      <p class="empty">読み込み中です。</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="filter-head">
+    <h2 id="filter-head" class="visually-hidden">表示の絞り込み</h2>
+    <div class="filters" role="group" aria-label="種別で絞り込む">
+      <button type="button" class="chip is-on" data-filter="all" aria-pressed="true">すべて</button>
+      <button type="button" class="chip" data-filter="ticket" aria-pressed="false">チケット</button>
+      <button type="button" class="chip" data-filter="entry" aria-pressed="false">応募</button>
+      <button type="button" class="chip" data-filter="matchday" aria-pressed="false">試合当日</button>
+      <button type="button" class="chip" data-filter="personal" aria-pressed="false">MY予定</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="timeline-head">
+    <h2 id="timeline-head">タイムライン</h2>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section aria-labelledby="undated-head">
+    <h2 id="undated-head">日程未定</h2>
+    <p class="section-note">日付が確定していないため、時系列には並べていません。カレンダーへも出しません。</p>
+    <div id="undated" class="undated"></div>
+  </section>
+
+  <section aria-labelledby="my-head">
+    <h2 id="my-head">MY予定を追加</h2>
+    <p class="section-note">この端末にだけ保存します。公開データには入りません。</p>
+    <form id="my-form" class="my-form">
+      <div class="field">
+        <label for="my-title">やること</label>
+        <input type="text" id="my-title" name="title" maxlength="40" required placeholder="例: 座席へ移動">
+      </div>
+      <div class="field">
+        <label for="my-when">日時</label>
+        <input type="datetime-local" id="my-when" name="when" required>
+      </div>
+      <div class="field">
+        <label for="my-match">関連する試合</label>
+        <select id="my-match" name="match"><option value="">指定しない</option></select>
+      </div>
+      <button type="submit" class="btn btn-primary">追加する</button>
+    </form>
+    <p id="my-status" class="my-status" role="status"></p>
+  </section>
+
+  <section aria-labelledby="ics-head">
+    <h2 id="ics-head">カレンダーへ書き出す</h2>
+    <p class="section-note">
+      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
+      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
+    </p>
+    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を書き出す</button>
+    <p id="ics-status" class="my-status" role="status"></p>
+  </section>
+
+  <section aria-labelledby="skipped-head">
+    <h2 id="skipped-head">取り込まなかった記事</h2>
+    <p class="section-note">機械的に確実に読めなかったものは、日時を取らずURLだけ残します。</p>
+    <ul id="skipped" class="skipped"></ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>京都サンガF.C.の非公式ファンツールの検証用プロトタイプです。クラブおよびJリーグとは関係がありません。</p>
+  <p>設計は <code>docs/supporter-timeline-design.md</code>、構成図は <code>docs/concept/timeline-architecture.html</code>。</p>
+</footer>
+
+<script src="prototype.js"></script>
+</body>
+</html>
