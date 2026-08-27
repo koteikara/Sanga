@@ -89,8 +89,8 @@
 | チケット・観戦準備メモ | 未着手 | UIを伴うため、先に `docs/ui-prototype-workflow.md` に従ってプロトタイプを作る。個人状態はLocalStorage中心で扱う。 |
 | 追加メモ機能 | 未着手 | 個人メモは公開JSONに含めず、LocalStorage中心で扱う。 |
 | カレンダー連携 | 未着手 | 試合日程の個人カレンダー追加を検討する。ニュース由来イベントはニュース連動カレンダー側を基本にする。 |
-| 戦績更新 | 未着手 | 試合後の得点、結果、状態更新の運用を整理してから進める。 |
-| カップ戦・ACL戦追加 | 一部対応 | 現在の `matches.json` はJ1、天皇杯、ルヴァン杯を含み、天皇杯・ルヴァン杯は表示と大会フィルタに一部対応済み。ACLなど追加大会は要確認。 |
+| 戦績更新 | 未着手 | 試合後の得点、結果、状態更新の運用を整理してから進める。公式メールの `Match Result` が試合当日夜に届くため、更新タイミングの起点に使える（`docs/news-extraction-research.md`）。 |
+| カップ戦・ACL戦追加 | 一部対応 | 現在の `matches.json` はJ1、天皇杯、ルヴァン杯を含み、天皇杯・ルヴァン杯は表示と大会フィルタに一部対応済み。ACLなど追加大会は要確認。日程決定は公式メールで通知されるため、更新の起点に使える。 |
 | ホテル提案 | 中断中 | 生成基盤（`tools/hotels/`、`public/data/hotel-index.json`、`tools/validate-hotels.js`、`docs/hotels-data-schema.md`）はPR #122で実装済み。実データ取得と公開ページ側の出口が未定のため止まっている。現状と再開条件は `docs/hotels-data-schema.md` と `docs/hotels-operation-flow.md`、出口候補は `docs/supporter-timeline-design.md`。アフィリエイトによる収益化は行わない方針。 |
 | 対戦相手別補助情報 | 未着手 | 会場、関連URL、観戦補助情報などの表示方針を先に整理する。 |
 | 共有URL機能 | 未着手 | フィルタ条件や表示モードの共有を検討する。個人メモなど私的情報は含めない。 |
@@ -99,7 +99,7 @@
 
 | 候補 | 扱い | メモ |
 | --- | --- | --- |
-| ニュース連動カレンダー（現・SUPPORTER TIMELINE） | 長期候補 | 年間スケジュールページとは別サービス寄りとして、ニュース由来の日時イベントを扱う。企画設計は `docs/supporter-timeline-design.md`。 |
+| ニュース連動カレンダー（現・SUPPORTER TIMELINE） | 長期候補 | 年間スケジュールページとは別サービス寄りとして、ニュース由来の日時イベントを扱う。企画設計は `docs/supporter-timeline-design.md`、抽出可否の調査は `docs/news-extraction-research.md`。 |
 | Googleスプレッドシートからの自動連携 | 長期候補 | 認証情報をリポジトリに保存しない前提で設計する。 |
 | 自動デプロイの高度化 | 長期候補 | 現時点では手動デプロイを基本にする。 |
 | 年間スケジュールの実ブラウザ確認自動化 | 長期候補 | 予想スカッドではPlaywrightを導入済み。年間スケジュール側への導入可否を、運用コストも含めて検討する。 |
@@ -167,6 +167,7 @@
 - `docs/screenshot-social-share.md`
 - `docs/supporter-timeline-design.md`
 - `docs/fan-tools-research.md`
+- `docs/news-extraction-research.md`
 - `docs/hotels-data-schema.md`
 - `docs/hotels-operation-flow.md`
 - `docs/supporter-timeline-design.md`
