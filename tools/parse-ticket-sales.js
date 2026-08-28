@@ -41,6 +41,16 @@ const COLUMNS = [
 ];
 
 /**
+ * 内容が変わったかを見るときに無視する列。
+ *
+ * `retrieved_at_jst` は取得のたびに動き、`official_display_status` は販売開始や終了で
+ * 日に何度も変わる、そのときの画面表示です。どちらも販売スケジュールという事実ではないため、
+ * ここだけが違う場合は「変化なし」として既存のCSVを書き換えません（`--keep-unchanged`）。
+ * 毎日中身の変わらないPRが立つのを避けるためです。
+ */
+const VOLATILE_COLUMNS = ['official_display_status', 'retrieved_at_jst'];
+
+/**
  * 公式表記の段階名。ここに無い段階が現れたら、勝手に取り込まず失敗させる。
  * 段階が増減したときに黙って欠けるより、気付けるほうがよい。
  */
@@ -68,6 +78,7 @@ function usage() {
   console.error('使い方: node tools/parse-ticket-sales.js <schedule.html> [output.csv] [options]');
   console.error('  --retrieved-at <日時>  取得日時（ISO 8601、+09:00）。既定は実行時刻');
   console.error('  --check                出力先の既存CSVと突き合わせ、差分があれば失敗する');
+  console.error('  --keep-unchanged       既存CSVとの違いが取得日時と画面表示だけなら書き換えない');
   console.error(`出力先を省略した場合: ${DEFAULT_OUTPUT}`);
 }
 
@@ -319,6 +330,93 @@ function parseSchedule(html, options) {
 
 // --- CSV -------------------------------------------------------------------
 
+/** RFC 4180 の最小限の読み取り。既存CSVとの突き合わせにだけ使う。 */
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    if (quoted) {
+      if (char !== '"') { cell += char; continue; }
+      if (text[i + 1] === '"') { cell += '"'; i += 1; continue; }
+      quoted = false;
+      continue;
+    }
+    if (char === '"') { quoted = true; continue; }
+    if (char === ',') { row.push(cell); cell = ''; continue; }
+    if (char === '\r') continue;
+    if (char === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; continue; }
+    cell += char;
+  }
+  if (cell !== '' || row.length > 0) { row.push(cell); rows.push(row); }
+  return rows.filter((cells) => cells.some((value) => value !== ''));
+}
+
+/** 移ろう列を除いた中身。これが同じなら「変化なし」とみなす。 */
+function comparableRows(csvText) {
+  const rows = parseCsv(csvText.replace(/^\uFEFF/, ''));
+  if (rows.length === 0) return null;
+  const header = rows[0];
+  const keep = header
+    .map((name, index) => (VOLATILE_COLUMNS.includes(name) ? -1 : index))
+    .filter((index) => index >= 0);
+  return JSON.stringify(rows.map((cells) => keep.map((index) => cells[index] ?? '')));
+}
+
+/** 行を見分ける鍵。1試合の中で段階名は重複しない。 */
+function rowKey(row) {
+  return [row.round, row.entry_group, row.sale_type].join('\u0000');
+}
+
+/** 行の見出し。変更報告を読む人が、どの試合のどの段階か分かるように。 */
+function rowLabel(row) {
+  const match = `第${row.round}節 ${row.opponent}`;
+  return row.sale_type ? `${match} / ${row.sale_type}` : match;
+}
+
+/** CSVを列名つきの行に変換する。 */
+function rowsWithNames(csvText) {
+  const rows = parseCsv(csvText.replace(/^\uFEFF/, ''));
+  if (rows.length === 0) return [];
+  const header = rows[0];
+  return rows.slice(1).map((cells) => {
+    const row = {};
+    header.forEach((name, index) => { row[name] = cells[index] ?? ''; });
+    return row;
+  });
+}
+
+/**
+ * 既存CSVと新しいCSVの違いを、人が読める形で並べる。
+ *
+ * `retrieved_at_jst` は全行で動くため、そのままdiffを取ると124行すべてが
+ * 書き換わったように見えて、何が変わったのか読めない。移ろう列を除いて突き合わせ、
+ * 変わった値だけを挙げる。
+ */
+function describeChanges(existingCsv, newCsv) {
+  const before = new Map(rowsWithNames(existingCsv).map((row) => [rowKey(row), row]));
+  const after = new Map(rowsWithNames(newCsv).map((row) => [rowKey(row), row]));
+  const compared = COLUMNS.filter((column) => !VOLATILE_COLUMNS.includes(column));
+  const lines = [];
+
+  for (const [key, row] of after) {
+    const previous = before.get(key);
+    if (!previous) { lines.push(`追加: ${rowLabel(row)}（${row.sale_start || row.schedule_status}）`); continue; }
+    for (const column of compared) {
+      if (previous[column] !== row[column]) {
+        lines.push(`変更: ${rowLabel(row)} / ${column}: ${previous[column] || '(空)'} → ${row[column] || '(空)'}`);
+      }
+    }
+  }
+  for (const [key, row] of before) {
+    if (!after.has(key)) lines.push(`削除: ${rowLabel(row)}（${row.sale_start || row.schedule_status}）`);
+  }
+  return lines;
+}
+
 function csvCell(value) {
   const text = value === undefined || value === null ? '' : String(value);
   return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
@@ -342,13 +440,14 @@ function nowInJst() {
 }
 
 function main(argv) {
-  const options = { htmlPath: null, outputPath: null, retrievedAt: null, check: false };
+  const options = { htmlPath: null, outputPath: null, retrievedAt: null, check: false, keepUnchanged: false };
   const positional = [];
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--help' || arg === '-h') { usage(); return 0; }
     if (arg === '--check') { options.check = true; continue; }
+    if (arg === '--keep-unchanged') { options.keepUnchanged = true; continue; }
     if (arg === '--retrieved-at') { options.retrievedAt = argv[i += 1]; continue; }
     if (arg.startsWith('--')) { console.error(`不明なオプション: ${arg}`); usage(); return 1; }
     positional.push(arg);
@@ -385,10 +484,25 @@ function main(argv) {
     return 0;
   }
 
+  const existing = fs.existsSync(options.outputPath) ? fs.readFileSync(options.outputPath, 'utf8') : null;
+
+  if (options.keepUnchanged && existing !== null && comparableRows(existing) === comparableRows(csv)) {
+    console.log(`変化なし: ${path.relative(repoRoot, options.outputPath)} は書き換えていません`);
+    console.log(`  違いは${VOLATILE_COLUMNS.join(' と ')}だけでした（試合${result.matchCount}件・${result.rows.length}行）`);
+    return 0;
+  }
+
   fs.mkdirSync(path.dirname(options.outputPath), { recursive: true });
   fs.writeFileSync(options.outputPath, csv);
   console.log(`${path.relative(repoRoot, options.outputPath)} を書き出しました`);
   console.log(`  シーズン: ${result.season} / 試合: ${result.matchCount}件 / 行: ${result.rows.length}`);
+
+  // retrieved_at_jst は全行で動くため、diffだけでは何が変わったか読めない。
+  if (existing !== null) {
+    const changes = describeChanges(existing, csv);
+    console.log(changes.length === 0 ? '  内容の変更なし（取得日時と画面表示のみ）' : `  内容の変更 ${changes.length}件:`);
+    for (const line of changes) console.log(`    ${line}`);
+  }
   return 0;
 }
 

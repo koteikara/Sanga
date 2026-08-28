@@ -72,7 +72,9 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 
 - 日程: `public/data/matches.json`（57件）
 - 選手: `public/data/players.json`（39件）
+- チケット販売スケジュール: `docs/sheets/ticket-sales.current.csv`（GitHub Actionsが1日1回更新）
 - `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットであり、現在値ではない。
+- `docs/sheets/ticket-sales.2026-08-28.csv` も同様にスナップショットであり、書き換えない。
 - 公開情報更新時は可能な限り出典URLと確認日を残す。
 - 不確定情報は `tentative`、候補日、注記で明示する。
 - 公開JSONへ個人メモ、運用者メモ、認証情報を含めない。
@@ -99,6 +101,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 | `npm run check:static` | 日程ページ（データ・JS契約・公開アセット）と本番取り込みスクリプト |
 | `npm run check:timeline` | SUPPORTER TIMELINE（`calendar-events` の生成物が最新か、内容が仕様どおりか）。`check:static` から呼ぶ |
 | `npm run check:ticket-sales` | チケット販売スケジュールの解析（作り物の入力で結果が変わっていないか）。`check:timeline` から呼ぶ |
+| `npm run check:ticket-sales:current` | 現在値のチケット販売CSVから `calendar-events` を組み立てられるか。`check:timeline` から呼ぶ |
 | `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
 | `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
 | `npm run check:tools` | 本番取り込みスクリプト（JS構文と、検証用FTPサーバーを使った動作確認）。`check:static` から呼ぶ |

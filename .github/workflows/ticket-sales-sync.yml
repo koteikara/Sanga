@@ -1,0 +1,169 @@
+name: チケット販売スケジュールの取り込み
+
+# 公式のチケット販売スケジュール（常設・表形式）を1日1回取得し、
+# docs/sheets/ticket-sales.current.csv に差分があればPRを作る。
+#
+# 取得マナーは docs/supporter-timeline-design.md の「公式サイトの利用条件」に従う。
+# robots.txt に一般的な Disallow は無いが Crawl-delay: 10 の指定があるため、
+# 1回の実行で1リクエストだけ送り、頻度は1日1回にとどめる。
+# 公式サイトへは何も書き込まない読み取り専用の処理で、デプロイは行わない。
+
+on:
+  schedule:
+    # 22:00 JST（13:00 UTC）。販売開始は11:00と12:00 JSTのため、
+    # その日の変更が出そろったころに見る。
+    - cron: '0 13 * * *'
+  workflow_dispatch:
+    inputs:
+      force_pr:
+        description: '内容に変化がなくてもCSVを更新してPRを作る（取得日時だけの更新）'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ticket-sales-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: 販売スケジュールを取り込む
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.jsを設定
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 実行のたびに新しいランナーなので、24時間ガード（前回取得時刻の記録）は
+      # 効かない。頻度は on.schedule と concurrency で担保する。
+      - name: 公式ページを取得
+        run: node tools/fetch-ticket-sales.js tmp/ticket-schedule.html
+
+      # 取得日時の記録ファイルをCSVと一緒にコミットしてしまわないよう、
+      # tmp/ 配下だけを使う（tmp/ は .gitignore 済み）。
+
+      # 既存CSVとの違いが取得日時と画面表示（受付中・販売中）だけなら書き換えない。
+      # 販売の開始・終了で毎日変わるため、そのままでは中身の変わらないPRが毎日立つ。
+      - name: CSVを更新
+        env:
+          FORCE_PR: ${{ inputs.force_pr }}
+        run: |
+          set -euo pipefail
+
+          args=(tmp/ticket-schedule.html docs/sheets/ticket-sales.current.csv)
+          if [ "${FORCE_PR:-false}" != "true" ]; then
+            args+=(--keep-unchanged)
+          fi
+
+          # 取り込み結果はPR本文と実行サマリーで使うので残す。
+          node tools/parse-ticket-sales.js "${args[@]}" | tee tmp/parse-result.txt
+
+      - name: 差分の有無を判定
+        id: judge
+        run: |
+          set -euo pipefail
+
+          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv)" ]; then
+            echo "販売スケジュールに変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # retrieved_at_jst は全行で動くため、生のdiffでは124行すべてが書き換わったように
+      # 見えて何が変わったか読めない。パーサが出した変更一覧のほうを見せる。
+      - name: 変更内容を実行サマリーに表示
+        if: steps.judge.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+
+          {
+            echo '## 販売スケジュールの変更'
+            echo
+            echo '```text'
+            cat tmp/parse-result.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # PRを作る前に、取り込んだCSVが calendar-events を組み立てられる形かを見る。
+      # 公式ページの構成が変わったまま気付かずCSVを差し替えるのを避けるため。
+      - name: 取り込み結果を検証
+        if: steps.judge.outputs.changed == 'true'
+        run: npm run check:static
+
+      - name: 取り込みPRを作成
+        if: steps.judge.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          branch="automation/ticket-sales-$(date -u +%Y%m%d-%H%M%S)"
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git add docs/sheets/ticket-sales.current.csv
+          git commit -m "data: チケット販売スケジュールを取り込む"
+          git push -u origin "$branch"
+
+          {
+            echo '## Summary'
+            echo
+            echo '- 公式のチケット販売スケジュールを取得し、`docs/sheets/ticket-sales.current.csv` を更新しました。'
+            echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'
+            echo '- 取得日時と画面表示（受付中・販売中）だけの違いでは更新しません。このPRがあるということは、販売日程か掲載状態が変わっています。'
+            echo
+            echo '## 変更内容'
+            echo
+            echo '`retrieved_at_jst` は全行で動くため、差分そのものは124行すべてが書き換わって見えます。実際に変わったのは次の内容です。'
+            echo
+            echo '```text'
+            cat tmp/parse-result.txt
+            echo '```'
+            echo
+            echo '## Testing'
+            echo
+            echo '- `npm run check:static`（`check:timeline` → `check:ticket-sales:current` を含む）'
+            echo
+            echo '## 確認してほしいこと'
+            echo
+            echo '- 販売日時の変更が、公式ページの表示と一致しているか。'
+            echo '- 掲載済みだった試合が未掲載に戻っていないか（戻っている場合は取得の失敗を疑う）。'
+            echo
+            echo '実行: '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } > pr-body.md
+
+          # PR作成は、リポジトリ設定「Allow GitHub Actions to create and approve
+          # pull requests」が無効だと拒否される。その場合もブランチのpushは
+          # 済んでいて取り込み自体は成功しているため、ジョブは失敗にせず、
+          # 人がPRを作れるリンクを案内する。
+          if gh pr create --draft --base main --head "$branch" \
+            --title "data: チケット販売スケジュールを取り込む" \
+            --body-file pr-body.md; then
+            echo "取り込みPRを作成しました。"
+          else
+            url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/new/${branch}"
+            {
+              echo
+              echo '## PRは自動作成できませんでした'
+              echo
+              echo "取り込んだ内容はブランチ \`${branch}\` にpush済みです。次のリンクから手動でPRを作成してください。"
+              echo
+              echo "$url"
+              echo
+              echo 'GitHub Actionsによる自動作成を有効にする場合は、Settings → Actions → General → Workflow permissions の'
+              echo '「Allow GitHub Actions to create and approve pull requests」を有効にします。'
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            echo "::warning::PRを自動作成できませんでした。ブランチ ${branch} は push 済みです: ${url}"
+          fi
+
+          rm -f pr-body.md
