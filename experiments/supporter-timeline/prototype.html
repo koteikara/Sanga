@@ -251,6 +251,57 @@
         <button type="button" id="profile-clear" class="btn btn-quiet">保存した設定を削除する</button>
       </div>
     </form>
+    <p class="section-note">
+      <button type="button" id="tour-open" class="btn btn-quiet">使い方をもう一度見る</button>
+    </p>
+  </div>
+</dialog>
+
+<!-- 初めて開いた人向けの説明。何ができるか・どう操作するかの2点だけを扱う。
+     一度読んだら出さず、設定シートからいつでも開き直せる。 -->
+<dialog id="tour" class="tour" aria-label="使い方">
+  <div class="tour-head">
+    <p id="tour-step" class="tour-step" role="status">1 / 3</p>
+    <button type="button" class="tour-skip" data-tour-skip>スキップ</button>
+  </div>
+
+  <div class="tour-body">
+    <section class="tour-panel" data-tour-panel>
+      <div class="tour-figure" aria-hidden="true">
+        <span class="tour-band">8月</span>
+        <span class="tour-card"><b>12:00</b> ゴールド先行販売 開始</span>
+        <span class="tour-card"><b>19:00</b> キックオフ</span>
+      </div>
+      <h2>公式の予定を1本の時系列に</h2>
+      <p>チケットの先行販売、特典チケットの引換、試合当日の流れを日付順に並べています。<strong>次にやることが一目で分かります。</strong></p>
+    </section>
+
+    <section class="tour-panel" data-tour-panel hidden>
+      <div class="tour-figure" aria-hidden="true">
+        <span class="tour-card is-target">ゴールド先行販売 開始 <b>対象</b></span>
+        <span class="tour-card is-dim">プラチナ先行販売 開始</span>
+      </div>
+      <h2>自分に関係する予定に印が付きます</h2>
+      <p>SANGA CREW の会員種別とシーズンパスの有無を設定すると、自分が買える先行販売が上に出ます。<strong>設定はこの端末にだけ保存し、どこにも送りません。</strong></p>
+    </section>
+
+    <section class="tour-panel" data-tour-panel hidden>
+      <div class="tour-figure tour-figure-bar" aria-hidden="true">
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>絞り込み</span>
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>特典</span>
+        <span class="tour-tab is-primary"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>次にやること</span>
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M12 13v5M9.5 15.5h5"/></svg>MY予定</span>
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>設定</span>
+      </div>
+      <h2>操作は画面の下から開きます</h2>
+      <p>絞り込み・特典チケット・次にやること・MY予定・設定は、画面下のメニューから開きます。<strong>カレンダーへの書き出しは右上の「書き出し」です。</strong></p>
+    </section>
+  </div>
+
+  <div class="tour-foot">
+    <button type="button" class="btn btn-quiet" data-tour-prev hidden>戻る</button>
+    <!-- 開いた直後のフォーカスはここに。既定では最初の「スキップ」に当たり、Enterで飛ばしてしまう -->
+    <button type="button" class="btn btn-primary" data-tour-next autofocus>次へ</button>
   </div>
 </dialog>
 

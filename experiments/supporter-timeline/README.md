@@ -122,6 +122,7 @@ URLだけ残す。理由コードは `image_only` / `revision_history` / `multip
 | `sanga-timeline-personal-events-v1` | TimelineEventの配列 | MY予定 |
 | `sanga-timeline-profile-v1` | `{ fc_grade, has_season_ticket, updated_at }` | サポータープロフィール |
 | `sanga-timeline-benefit-tickets-v1` | `{ changes: [{ id, count, reason, note, at }], uses: [{ match_id, count, status, updated_at }], updated_at }` | 特典チケットの増減と引き換え先 |
+| `sanga-timeline-tour-v1` | `"done"` | 使い方を読んだかどうか |
 
 プロフィールは端末内だけで扱う。照合もサーバーへ送らずに画面側で行うため、個人の属性はどこにも記録されない。
 `fc_grade` は `platinum` / `gold` / `regular` / `kids` / `none` と未設定（空文字）のみを保存し、
@@ -203,6 +204,9 @@ URLだけ残す。理由コードは `image_only` / `revision_history` / `multip
 | カレンダーへの書き出しは見出しの横に置き、見出しごと固定する | 常に見えている必要はあるが押す頻度は低い。下部メニューに6つ目として入れると、320px幅で4つの文字ラベルが切れる（5つなら収まることを実測） |
 | 題の上下の文言（`SANGA TOOLBOX` と説明文）を落とす | 見出しを固定する以上、帯に残せない行は場所を取るだけ |
 | 「検証用」の文言をページ上部の注意書きに集約する | 見出し・脚注・注意書きの3か所で繰り返していた。脚注は非公式である旨だけ残す |
+| 初めて開いた人に使い方を3枚出す | 題の上下を落とした結果、何のツールか伝わらなくなった。扱うのは「何ができるか」「どう操作するか」の2点だけ |
+| 読んだら出さない（`sanga-timeline-tour-v1`）。設定シートから開き直せる | 毎回出ると邪魔。保存を制限されている端末では出さない |
+| 説明の図は画面の要素をそのまま小さく作る | 公式由来の画像を使えない。実物と見た目がずれない利点もある |
 
 **`display` の指定でつまずいた。** `.sheet { display: flex }` と書くとブラウザ既定の
 `dialog:not([open]) { display: none }` を打ち消し、閉じていてもシートが出たままになる。
