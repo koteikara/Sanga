@@ -8,11 +8,24 @@
   --warn-soft: #fbeaea;
   --panel: #ffffff;
   --ink: #1c1922;
-  --muted: #6a6577;
+  /* 補助テキスト。既定は地（ネビュラ）の上を想定し、白場では下で戻す。
+     同じ --muted を両方で使うため、面ごとに値を差し替える。 */
+  --muted-on-paper: #6a6577;
+  --muted: rgba(255, 255, 255, 0.86);
+  /* リンク。地の上は入口ページの --cyan-soft、白場では --accent に戻す */
+  --link: #6fd6e8;
   --line: #ded9e6;
   --line-soft: #ece8f1;
-  --accent: #6a2fa0;
-  --accent-soft: #f2eaf9;
+  --accent: #a8248c;            /* 入口ページ --purple-lit */
+  --accent-soft: #f8eaf4;
+  --anchor: #7b0064;            /* 入口ページ --purple-base。試合と月の帯 */
+  --ground: #2a0a2b;            /* 入口ページ --purple-deep */
+  --ground-ink: #ffffff;
+  /* 入口ページの --ink-dim は 0.72 だが、あちらは短いラベル用。
+     こちらは地の上に本文が乗るため、ネビュラの最も明るい部分（実測 #a23c88）でも
+     4.5:1 を満たす 0.86 にする（0.72 では 3.86:1 で不足）。 */
+  --ground-ink-dim: rgba(255, 255, 255, 0.86);
+  --ground-line: rgba(255, 255, 255, 0.28);
   --action: #8a2f5f;
   --action-soft: #fbeaf2;
   --info: #2f5f8a;
@@ -25,10 +38,87 @@
 
 * { box-sizing: border-box; }
 
+/* 白い面のなかでは補助テキストを濃いグレーに戻す */
+.block,
+.fold,
+.drawer,
+.my-form,
+.benefit-summary,
+.benefit-item {
+  --muted: var(--muted-on-paper);
+  --link: var(--accent);
+}
+
+a { color: var(--link); }
+
+/* 背景。入口ページと同じ二層構成で、WebGLのネビュラが出たらCSSのぼかしは引っ込める。
+   ぼかしは filter ではなく放射グラデーションで作る（端末によって描画コストが高いため）。 */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bg-blob {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  opacity: 0.55;
+  will-change: transform;
+}
+.bg-blob-1 {
+  width: 70vmax; height: 70vmax;
+  top: -22vmax; left: -18vmax;
+  background: radial-gradient(circle, rgba(168, 36, 140, 0.55) 0%, rgba(168, 36, 140, 0) 68%);
+  animation: drift-a 34s ease-in-out infinite;
+}
+.bg-blob-2 {
+  width: 58vmax; height: 58vmax;
+  bottom: -20vmax; right: -14vmax;
+  background: radial-gradient(circle, rgba(255, 143, 208, 0.34) 0%, rgba(255, 143, 208, 0) 68%);
+  animation: drift-b 43s ease-in-out infinite;
+}
+.bg-blob-3 {
+  width: 44vmax; height: 44vmax;
+  top: 38%; left: 52%;
+  background: radial-gradient(circle, rgba(111, 214, 232, 0.20) 0%, rgba(111, 214, 232, 0) 70%);
+  animation: drift-c 51s ease-in-out infinite;
+}
+.bg-nebula {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  opacity: 0;
+  transition: opacity 900ms ease-out;
+}
+.has-nebula .bg-nebula { display: block; opacity: 1; }
+.has-nebula .bg-blob { opacity: 0; transition: opacity 900ms ease-out; }
+
+@keyframes drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(6vmax, 4vmax, 0) scale(1.12); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(-5vmax, -3vmax, 0) scale(1.09); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(3vmax, -4vmax, 0) scale(1.16); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-blob { animation: none; }
+}
+:root[data-motion="off"] .bg-blob { animation: none; }
+
 body {
   margin: 0;
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--ground);
+  color: var(--ground-ink);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
   font-size: 16px;
   line-height: 1.7;
@@ -38,23 +128,22 @@ body {
 .notice {
   margin: 0;
   padding: 10px 16px;
-  background: var(--tentative-soft);
-  border-bottom: 1px solid var(--line);
-  color: var(--tentative);
+  background: rgba(138, 90, 47, 0.22);
+  border-bottom: 1px solid var(--ground-line);
+  color: var(--ground-ink);
   font-size: 0.82rem;
   line-height: 1.6;
 }
 
 .head {
   padding: 24px 16px 18px;
-  border-bottom: 2px solid var(--ink);
 }
 .eyebrow {
   margin: 0 0 4px;
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  color: var(--accent);
+  letter-spacing: 0.22em;
+  color: var(--ground-ink-dim);
 }
 .head h1 {
   margin: 0;
@@ -64,7 +153,7 @@ body {
 }
 .lead {
   margin: 6px 0 0;
-  color: var(--muted);
+  color: var(--ground-ink-dim);
   font-size: 0.9rem;
 }
 
@@ -82,7 +171,7 @@ section h2 {
   font-size: 1.05rem;
   line-height: 1.5;
   padding-bottom: 6px;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--ground-line);
 }
 .section-note {
   margin: 0 0 12px;
@@ -108,6 +197,7 @@ section h2 {
   bottom: 0;
   z-index: 10;
   background: var(--panel);
+  color: var(--ink);
   border-top: 2px solid var(--action);
   box-shadow: 0 -2px 12px rgba(28, 25, 34, 0.12);
   max-height: 70vh;
@@ -248,8 +338,8 @@ a:focus-visible {
   flex: none;
 }
 .event.is-mine {
-  border-color: var(--mine);
-  box-shadow: inset 0 0 0 1px var(--mine-soft);
+  border-left-color: var(--mine);
+  background: var(--mine-soft);
 }
 .next-mine {
   margin: 8px 0 0;
@@ -267,6 +357,7 @@ a:focus-visible {
   margin: 12px 0;
   padding: 14px 16px;
   background: var(--panel);
+  color: var(--ink);
   border: 1px solid var(--line);
   border-left: 4px solid var(--benefit);
   border-radius: 4px;
@@ -312,6 +403,7 @@ a:focus-visible {
 }
 .benefit-item {
   background: var(--panel);
+  color: var(--ink);
   border: 1px solid var(--line);
   border-left: 4px solid var(--line);
   border-radius: 4px;
@@ -359,13 +451,14 @@ a:focus-visible {
   font-weight: 700;
   flex: none;
 }
-.event.is-benefit { border-color: var(--benefit); }
+.event.is-benefit { border-left-color: var(--benefit); }
 
 /* 折りたたみ */
 .fold {
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--panel);
+  color: var(--ink);
   margin-top: 12px;
 }
 .fold > summary {
@@ -387,14 +480,14 @@ a:focus-visible {
 
 .past {
   margin-bottom: 12px;
-  border: 1px dashed var(--line);
-  border-radius: 4px;
+  border: 1px dashed var(--ground-line);
+  border-radius: 10px;
 }
 .past > summary {
   min-height: 44px;
   padding: 12px 14px;
   font-size: 0.86rem;
-  color: var(--muted);
+  color: var(--ground-ink-dim);
   cursor: pointer;
   list-style-position: inside;
 }
@@ -429,17 +522,21 @@ a:focus-visible {
   color: var(--muted);
 }
 .month-label {
-  margin: 24px 0 8px;
-  padding-bottom: 4px;
-  border-bottom: 2px solid var(--ink);
-  font-size: 0.98rem;
-  font-weight: 700;
+  margin: 26px 0 14px;
+  padding: 11px 16px;
+  background: var(--anchor);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(20, 0, 18, 0.30);
+  color: var(--ground-ink);
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
 }
 .month {
-  margin-top: 8px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--panel);
+  margin-top: 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid var(--ground-line);
 }
 .month > summary {
   min-height: 44px;
@@ -456,25 +553,38 @@ a:focus-visible {
 .month[open] > div { padding: 0 12px 12px; }
 .day-match {
   margin-left: 8px;
-  color: var(--accent);
+  color: var(--ground-ink);
 }
 .match-label {
-  margin: 12px 0 6px;
+  margin: 0;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-soft);
+  background: #f7f4f9;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--anchor);
 }
-.day .match-label:first-of-type { margin-top: 0; }
 
 /* タイムライン */
 .day {
-  margin-top: 20px;
+  margin-top: 22px;
 }
+
+/* 白場。日付×試合の単位で1枚。札と札のあいだで背景が見える */
+.block {
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(20, 0, 18, 0.28);
+}
+.block + .block { margin-top: 10px; }
 .day-label {
-  margin: 0 0 8px;
-  font-size: 0.86rem;
+  margin: 0 4px 8px;
+  font-size: 0.82rem;
   font-weight: 700;
-  color: var(--muted);
+  letter-spacing: 0.06em;
+  color: var(--ground-ink-dim);
   font-variant-numeric: tabular-nums;
 }
 .day-label .today {
@@ -491,15 +601,13 @@ a:focus-visible {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 .event {
-  background: var(--panel);
-  border: 1px solid var(--line);
   border-left: 4px solid var(--line);
-  border-radius: 4px;
-  padding: 12px 14px;
+  border-top: 1px solid var(--line-soft);
+  padding: 11px 14px;
 }
+.events > .event:first-child { border-top: 0; }
 .event-top {
   display: flex;
   align-items: baseline;
@@ -555,13 +663,20 @@ a:focus-visible {
   flex-direction: column;
   gap: 8px;
 }
+/* 記事の一覧も内容なので白場に載せる。地の上では紫のリンクが背景と同化する */
 .skipped {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  background: var(--panel);
+  color: var(--ink);
+  --muted: var(--muted-on-paper);
+  --link: var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(20, 0, 18, 0.28);
 }
 .skipped li {
   border-left: 3px solid var(--line);
@@ -581,6 +696,7 @@ a:focus-visible {
   flex-direction: column;
   gap: 12px;
   background: var(--panel);
+  color: var(--ink);
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 16px;
@@ -662,6 +778,7 @@ code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.86em;
   background: var(--line-soft);
+  color: var(--ink);
   padding: 0.1em 0.35em;
   border-radius: 2px;
 }
