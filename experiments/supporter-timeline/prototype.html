@@ -27,6 +27,9 @@
 
   <section class="profile" aria-labelledby="profile-head">
     <h2 id="profile-head">あなたの設定</h2>
+    <p id="profile-status" class="my-status" role="status"></p>
+    <details class="fold">
+      <summary>会員種別とシーズンパスを設定する</summary>
     <p class="section-note">
       会員種別とシーズンパスの有無から、自分に関係する先行販売を上に出します。
       この端末にだけ保存し、公開データにも外部にも送りません。未設定でもすべての予定が見えます。
@@ -52,7 +55,7 @@
         <button type="button" id="profile-clear" class="btn btn-quiet">保存した設定を削除する</button>
       </div>
     </form>
-    <p id="profile-status" class="my-status" role="status"></p>
+    </details>
   </section>
 
   <section class="benefit" aria-labelledby="benefit-head">
@@ -64,6 +67,10 @@
       残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
     </p>
 
+    <div id="benefit-summary" class="benefit-summary" role="status"></div>
+
+    <details class="fold">
+      <summary>枚数の増減を記録する</summary>
     <form id="benefit-form" class="my-form">
       <p id="benefit-suggest" class="benefit-suggest"></p>
       <div class="field">
@@ -84,11 +91,15 @@
         <label for="benefit-note">メモ（任意）</label>
         <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
       </div>
-      <button type="submit" class="btn btn-primary">枚数の増減を記録する</button>
+      <button type="submit" class="btn btn-primary">記録する</button>
     </form>
 
-    <div id="benefit-summary" class="benefit-summary" role="status"></div>
+    <h3 class="sub-head">枚数の増減</h3>
+    <ul id="benefit-changes" class="benefit-list"></ul>
+    </details>
 
+    <details class="fold">
+      <summary>引き換える試合を決める</summary>
     <form id="benefit-plan-form" class="my-form">
       <div class="field">
         <label for="benefit-match">引き換える試合</label>
@@ -101,11 +112,10 @@
       <button type="submit" class="btn btn-primary">引き換える予定にする</button>
     </form>
 
+    </details>
+
     <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
     <ul id="benefit-list" class="benefit-list"></ul>
-
-    <h3 class="sub-head">枚数の増減</h3>
-    <ul id="benefit-changes" class="benefit-list"></ul>
     <p id="benefit-status" class="my-status" role="status"></p>
   </section>
 
@@ -139,6 +149,8 @@
   <section aria-labelledby="my-head">
     <h2 id="my-head">MY予定を追加</h2>
     <p class="section-note">この端末にだけ保存します。公開データには入りません。</p>
+    <details class="fold">
+      <summary>予定を追加する</summary>
     <form id="my-form" class="my-form">
       <div class="field">
         <label for="my-title">やること</label>
@@ -154,6 +166,7 @@
       </div>
       <button type="submit" class="btn btn-primary">追加する</button>
     </form>
+    </details>
     <p id="my-status" class="my-status" role="status"></p>
   </section>
 
