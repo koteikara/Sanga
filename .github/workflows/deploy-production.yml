@@ -44,12 +44,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: mainブランチをチェックアウト
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           ref: main
 
       - name: Node.jsを設定
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
 
@@ -57,7 +57,7 @@ jobs:
         run: npm run check:static
 
       - name: public配下のみを本番サーバーへアップロード
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.STAR_SERVER_HOST }}
           username: ${{ secrets.STAR_SERVER_USER }}

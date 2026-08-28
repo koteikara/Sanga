@@ -24,10 +24,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: リポジトリをチェックアウト
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Pagesを設定
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       # GitHub Pagesは確認環境なので、公開物に加えて検証用プロトタイプも見られるようにする。
       # 本番デプロイは public/ だけを送るため、experiments/ が本番へ出ることはない。
@@ -40,10 +40,10 @@ jobs:
           cp -r experiments tmp/pages/experiments
 
       - name: 確認用ディレクトリをアップロード
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: tmp/pages
 
       - name: GitHub Pagesへデプロイ
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
