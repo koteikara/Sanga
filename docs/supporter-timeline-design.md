@@ -65,6 +65,7 @@
 | プロトタイプ | 動作する（Phase 1 + Phase 2）。チケット販売は実データ | `experiments/supporter-timeline/` |
 | チケット販売スケジュールの構造 | 2026-08-28に確認済み。1試合最大8件 | `docs/sheets/ticket-sales.2026-08-28.csv`、「販売段階は8つある」 |
 | チケット販売スケジュールの取得と解析 | 動作する。公式HTMLから2026-08-28のスナップショットを再現できることを2026-08-28に確認 | `tools/fetch-ticket-sales.js`、`tools/parse-ticket-sales.js`、「販売スケジュールの取得と解析」 |
+| 定期実行 | 動作する。毎日22:00 JSTに取得し、差分があればPRを作る | `.github/workflows/ticket-sales-sync.yml`、「1日1回の取り込み」 |
 | 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方（実データ全量での月の折りたたみ・下部ドロワーを含む）も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
 
 プロトタイプで動いているのは、タイムライン表示、種別の絞り込み、`date_precision` の出し分け、
@@ -92,10 +93,9 @@ Phase 2 で入れたのは次の3つです。
 
 ### できていないこと
 
-- 定期実行。取得（`tools/fetch-ticket-sales.js`）とHTML→CSV（`tools/parse-ticket-sales.js`）は
-  2026-08-28に通したが、GitHub Actions等で1日1回動かす仕組みはまだない。
-  `docs/sheets/ticket-sales.2026-08-28.csv` は現在も2026-08-28のスナップショットのまま
 - 試合当日のイベント・グッズ・応募は作り物のサンプル
+- プロトタイプが読むのは日付入りのスナップショットのままで、自動更新される
+  `docs/sheets/ticket-sales.current.csv` にはまだ切り替えていない
 - 変更検知
 - 相対時刻（「キックオフ1時間30分前」）の解決
 - 購読フィード（`webcal:`）。現在のICSは1回きりの取り込み
@@ -108,14 +108,16 @@ Phase 2 で入れたのは次の3つです。
 
 | 候補 | 内容 | 効果 | 依存 |
 | --- | --- | --- | --- |
-| **B'. 定期実行（GitHub Actions）** | `fetch:ticket-sales` と `parse:ticket-sales` を1日1回動かし、CSVの差分をPRにする | 日時変更に追随できる。手作業の取り込みから完全に脱する | Actionsから公式サイトへ到達できること（開発環境からは2026-08-28に到達確認済み） |
+| **E. 本番ページへの移植** | プロトタイプを `public/` へ入れ、現在値のCSVから作った `calendar-events` を読ませる | 自動で最新になるデータが、実際に使える場所に出る | なし。データも見せ方も揃っている |
 | C. 購読フィード（`webcal:`） | 静的な `.ics` を配信する | 日時変更に自動で追随する | 配信先の決定 |
 | D. プロフィールの書き出し・読み込み | JSONのコピー＆貼り付け | 端末を変えても設定が残る | なし |
 
-**B'を推奨します。** HTML→CSVは通ったので、残るのは「1日1回、勝手に動く」ことだけです。
-手で `npm run fetch:ticket-sales && npm run parse:ticket-sales` を叩いている限り、日時が変わっても追随できません。
+**Eを推奨します。** 取得から `calendar-events` までが自動で流れるようになったため、
+**いま足りないのは「利用者が見られる場所に無い」ことだけです。** プロトタイプは
+`experiments/` にあり、GitHub Pagesでしか参照できません。
 
-B'に着手する場合は、本文書の「販売スケジュールの取得と解析」と「公式サイトの利用条件」を先に読みます。
+Eに着手する場合は `docs/ui-prototype-workflow.md` と `docs/deploy-policy.md` を先に読みます。
+プロトタイプが読むCSVを `ticket-sales.current.csv` へ切り替えるのも、この作業に含めます。
 
 ### 着手前に読むもの
 
@@ -676,8 +678,13 @@ HTMLからCSVを作る部分は「販売スケジュールの取得と解析」�
 | `npm run fetch:ticket-sales -- <出力.html>` | 公式ページを取得してHTMLを保存する |
 | `npm run parse:ticket-sales -- <入力.html> <出力.csv>` | HTMLから販売スケジュールCSVを作る |
 | `npm run check:ticket-sales` | 作り物の入力（`tools/fixtures/`）で解析結果が変わっていないか見る |
+| `npm run check:ticket-sales:current` | 現在値のCSVから `calendar-events` を組み立てられるか見る |
 
 出力の列構成は `docs/sheets/ticket-sales.2026-08-28.csv` と同じで、そのまま `npm run generate:timeline` に渡せます。
+
+**現在値の正本は `docs/sheets/ticket-sales.current.csv` です。** 日付入りの
+`ticket-sales.2026-08-28.csv` は当時の記録であり、書き換えません。プロトタイプの
+`calendar-events.sample.json` は再現性のため日付入りのスナップショットに固定したままにしています。
 
 **取得（`tools/fetch-ticket-sales.js`）** は「公式サイトの利用条件」に従います。素性の分かる User-Agent を送り、
 前回の取得時刻を出力先の隣に記録して、既定では24時間以内の再取得を断ります（`--force` で上書きできます）。
@@ -698,6 +705,29 @@ HTMLからCSVを作る部分は「販売スケジュールの取得と解析」�
 候補日・販売日程ともこの規則と食い違いませんでした。読み取った日付が実在するかも確かめます。
 
 **知らない段階名や表見出しが出てきたら失敗させます。** 黙って行が欠けるより、気付けるほうが安全なためです。
+
+#### 1日1回の取り込み
+
+`.github/workflows/ticket-sales-sync.yml` が毎日22:00 JSTに動き、
+`docs/sheets/ticket-sales.current.csv` に差分があればdraft PRを作ります。手動実行もできます。
+1回の実行で送るリクエストは1件だけです。
+
+**取得日時と画面表示だけの違いでは更新しません。** `retrieved_at_jst` は取得のたびに動き、
+`official_display_status`（`受付中` / `販売中`）は販売の開始・終了で日に何度も変わります。
+どちらも販売スケジュールという事実ではないため、ここだけが違う場合は
+`--keep-unchanged` でCSVを書き換えず、PRも作りません。**そうしないと、中身の変わらないPRが毎日立ちます。**
+
+この扱いの結果、`retrieved_at_jst` は「最後に内容が変わった取得の日時」であって、
+「最後に確認した日時」ではありません。毎日の確認結果はワークフローの実行履歴に残ります。
+
+**内容が変わった回は、変わった値を言葉で挙げます。** `retrieved_at_jst` が全行で動くため、
+生の差分では124行すべてが書き換わったように見えて何が変わったのか読めません。
+パーサが移ろう列を除いて突き合わせ、`変更: 第3節 ... / sale_start: A → B` の形で並べたものを
+PR本文と実行サマリーに載せます。
+
+PRを作る前に `npm run check:static` を実行します。**GitHub Actions が作ったPRでは
+ワークフローが起動しない**ため、Static Checksがこの自動PRに対して走らないためです。
+公式ページの構成が変わったまま気付かずCSVを差し替えるのを避けます。
 
 #### 実物のHTMLはリポジトリに置きません
 
