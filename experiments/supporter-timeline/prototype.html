@@ -18,13 +18,6 @@
 </header>
 
 <main>
-  <section class="next" aria-labelledby="next-head">
-    <h2 id="next-head">次にやること</h2>
-    <div id="next-body" class="next-body">
-      <p class="empty">読み込み中です。</p>
-    </div>
-  </section>
-
   <section class="profile" aria-labelledby="profile-head">
     <h2 id="profile-head">あなたの設定</h2>
     <p id="profile-status" class="my-status" role="status"></p>
@@ -191,6 +184,14 @@
   <p>京都サンガF.C.の非公式ファンツールの検証用プロトタイプです。クラブおよびJリーグとは関係がありません。</p>
   <p>設計は <code>docs/supporter-timeline-design.md</code>、構成図は <code>docs/concept/timeline-architecture.html</code>。</p>
 </footer>
+
+<details id="next-drawer" class="drawer">
+  <summary id="next-summary" class="drawer-handle">
+    <span class="drawer-title">次にやること</span>
+    <span id="next-lead" class="drawer-lead">読み込み中です。</span>
+  </summary>
+  <div id="next-body" class="drawer-body"></div>
+</details>
 
 <script src="prototype.js"></script>
 </body>
