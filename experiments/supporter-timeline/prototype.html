@@ -59,16 +59,32 @@
     <h2 id="benefit-head">特典チケット</h2>
     <p class="section-note">
       持っている枚数と、どの試合のチケットに引き換えるかを自分で記録します。公式には個人の保有状況が
-      出ないため、この端末に自己申告として保存します。1試合に複数枚まとめて引き換えられます。
+      出ないため、この端末に自己申告として保存します。家族や友人と譲り合うことがあるため、
+      枚数は理由つきの増減で記録し、合計をそこから出します。1試合に複数枚まとめて引き換えられます。
       残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
     </p>
 
     <form id="benefit-form" class="my-form">
+      <p id="benefit-suggest" class="benefit-suggest"></p>
       <div class="field">
-        <label for="benefit-total">持っている枚数</label>
-        <input type="number" id="benefit-total" name="total" min="0" max="30" step="1" inputmode="numeric">
+        <label for="benefit-change-count">枚数</label>
+        <input type="number" id="benefit-change-count" name="count" min="1" max="20" step="1" value="1" inputmode="numeric">
       </div>
-      <button type="submit" class="btn btn-primary">枚数を保存する</button>
+      <div class="field">
+        <label for="benefit-reason">理由</label>
+        <select id="benefit-reason" name="reason">
+          <option value="grant">会員特典として受け取った（増やす）</option>
+          <option value="received">譲り受けた（増やす）</option>
+          <option value="given">譲った（減らす）</option>
+          <option value="correction_plus">数え直して増やす</option>
+          <option value="correction_minus">数え直して減らす</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="benefit-note">メモ（任意）</label>
+        <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
+      </div>
+      <button type="submit" class="btn btn-primary">枚数の増減を記録する</button>
     </form>
 
     <div id="benefit-summary" class="benefit-summary" role="status"></div>
@@ -87,6 +103,9 @@
 
     <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
     <ul id="benefit-list" class="benefit-list"></ul>
+
+    <h3 class="sub-head">枚数の増減</h3>
+    <ul id="benefit-changes" class="benefit-list"></ul>
     <p id="benefit-status" class="my-status" role="status"></p>
   </section>
 

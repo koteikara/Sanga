@@ -200,18 +200,54 @@
     return Object.keys(audience).length === 0;
   }
 
+  var BENEFIT_REASON = {
+    grant: { label: "会員特典として受け取った", sign: 1 },
+    received: { label: "譲り受けた", sign: 1 },
+    given: { label: "譲った", sign: -1 },
+    correction_plus: { label: "数え直して増やした", sign: 1 },
+    correction_minus: { label: "数え直して減らした", sign: -1 }
+  };
+
   /**
-   * 特典チケットの保有と使い道。公式には個人の保有状況が出ないため、自己申告として端末内に持つ。
-   * { total: 枚数, uses: [{ match_id, status: "planned" | "used", updated_at }] }
-   */
-  /**
-   * 保存形式をそろえる。1試合に複数枚を充てられるため count を持つ。
-   * 状態は「引き換えた」= exchanged。旧データの used も exchanged として読む。
+   * 特典チケットの保有と引き換え先。
+   * 枚数は1つの数ではなく増減の履歴で持つ。家族や友人と譲り合うことがあり、
+   * 「なぜ増えたか・減ったか」が分からないと自分の記録を信用できなくなるため。
+   * { changes: [{ id, count, reason, note, at }], uses: [{ match_id, count, status, updated_at }] }
    */
   function normalizeBenefit(value) {
     if (!value || typeof value !== "object") return null;
-    var total = Number(value.total);
-    if (!isFinite(total) || total < 0) total = 0;
+
+    var changes = [];
+    if (Array.isArray(value.changes)) {
+      value.changes.forEach(function (change) {
+        if (!change || typeof change !== "object") return;
+        var count = Number(change.count);
+        if (!isFinite(count) || count === 0) return;
+        var reason = Object.prototype.hasOwnProperty.call(BENEFIT_REASON, change.reason)
+          ? change.reason
+          : "correction_plus";
+        changes.push({
+          id: typeof change.id === "string" && change.id ? change.id : "chg-" + changes.length,
+          count: Math.round(count),
+          reason: reason,
+          note: typeof change.note === "string" ? change.note.slice(0, 30) : "",
+          at: typeof change.at === "string" ? change.at : ""
+        });
+      });
+    } else if (value.total !== undefined) {
+      // 旧形式（total だけを持っていたもの）は、会員特典として受け取った1件に読み替える
+      var total = Number(value.total);
+      if (isFinite(total) && total > 0) {
+        changes.push({
+          id: "chg-initial",
+          count: Math.floor(total),
+          reason: "grant",
+          note: "",
+          at: typeof value.updated_at === "string" ? value.updated_at : ""
+        });
+      }
+    }
+
     var uses = Array.isArray(value.uses) ? value.uses : [];
     var byMatch = {};
     var order = [];
@@ -221,7 +257,6 @@
       if (!isFinite(count) || count < 1) count = 1;
       var status = (use.status === "used" || use.status === "exchanged") ? "exchanged" : "planned";
       if (byMatch[use.match_id]) {
-        // 同じ試合の記録が複数あれば枚数をまとめる
         byMatch[use.match_id].count += Math.floor(count);
         if (status === "exchanged") byMatch[use.match_id].status = "exchanged";
         return;
@@ -234,8 +269,9 @@
       };
       order.push(use.match_id);
     });
+
     return {
-      total: Math.floor(total),
+      changes: changes,
       uses: order.map(function (id) { return byMatch[id]; }),
       updated_at: value.updated_at || ""
     };
@@ -261,7 +297,14 @@
   }
 
   function benefitState() {
-    return state.benefit || { total: 0, uses: [], updated_at: "" };
+    return state.benefit || { changes: [], uses: [], updated_at: "" };
+  }
+
+  /** 持っている枚数は増減の履歴の合計。 */
+  function benefitTotal() {
+    var total = 0;
+    benefitState().changes.forEach(function (change) { total += change.count; });
+    return total;
   }
 
   function benefitUseFor(matchId) {
@@ -279,12 +322,8 @@
     b.uses.forEach(function (use) {
       if (use.status === "exchanged") exchanged += use.count; else planned += use.count;
     });
-    return {
-      total: b.total,
-      planned: planned,
-      exchanged: exchanged,
-      left: b.total - planned - exchanged
-    };
+    var total = benefitTotal();
+    return { total: total, planned: planned, exchanged: exchanged, left: total - planned - exchanged };
   }
 
   /** 会員種別ごとの配布枚数（公式）。分からない場合は0を返す。 */
@@ -632,14 +671,10 @@
     box.textContent = "";
     var counts = benefitCounts();
 
-    if (!counts.total && !counts.planned && !counts.exchanged) {
+    if (!benefitState().changes.length && !counts.planned && !counts.exchanged) {
       var none = document.createElement("p");
       none.className = "empty";
-      var suggest = ruleCountFor(state.profile ? state.profile.fc_grade : "");
-      none.textContent = suggest
-        ? GRADE_LABEL[state.profile.fc_grade] + "の特典チケットは" + suggest +
-          "枚です。枚数を保存すると、残りと引き換え先の管理ができます。"
-        : "枚数を入れると、残りと引き換え先の管理ができます。";
+      none.textContent = "枚数の増減を記録すると、残りと引き換え先の管理ができます。";
       box.appendChild(none);
       return;
     }
@@ -743,6 +778,67 @@
     });
   }
 
+  function renderBenefitChanges() {
+    var root = document.getElementById("benefit-changes");
+    root.textContent = "";
+    var changes = benefitState().changes;
+
+    if (!changes.length) {
+      var li = document.createElement("li");
+      li.className = "empty";
+      li.textContent = "まだ記録がありません。";
+      root.appendChild(li);
+      return;
+    }
+
+    changes.slice().reverse().forEach(function (change) {
+      var li = document.createElement("li");
+      li.className = "benefit-item is-change";
+
+      var title = document.createElement("p");
+      title.className = "benefit-item-title";
+      title.textContent = (change.count > 0 ? "+" : "") + change.count + "枚 " +
+        (BENEFIT_REASON[change.reason] ? BENEFIT_REASON[change.reason].label : change.reason);
+
+      var meta = document.createElement("p");
+      meta.className = "benefit-detail";
+      meta.textContent = [change.at, change.note].filter(Boolean).join(" ・ ");
+
+      var actions = document.createElement("p");
+      actions.className = "benefit-actions";
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn-remove";
+      remove.textContent = "この記録を消す";
+      remove.addEventListener("click", function () { removeBenefitChange(change.id); });
+      actions.appendChild(remove);
+
+      li.append(title, meta, actions);
+      root.appendChild(li);
+    });
+  }
+
+  function removeBenefitChange(id) {
+    var b = benefitState();
+    saveBenefit({
+      changes: b.changes.filter(function (change) { return change.id !== id; }),
+      uses: b.uses,
+      updated_at: todayStamp()
+    });
+    render();
+  }
+
+  function renderBenefitSuggest() {
+    var box = document.getElementById("benefit-suggest");
+    var grade = state.profile ? state.profile.fc_grade : "";
+    var suggest = ruleCountFor(grade);
+    box.textContent = "";
+    if (!suggest || benefitState().changes.length) return;
+    box.textContent = GRADE_LABEL[grade] + "の特典チケットは" + suggest +
+      "枚です。「会員特典として受け取った」で記録してください。";
+    document.getElementById("benefit-change-count").value = String(suggest);
+  }
+
   function renderBenefitOptions(now) {
     var select = document.getElementById("benefit-match");
     select.textContent = "";
@@ -771,14 +867,14 @@
         ? { match_id: matchId, count: use.count, status: status, updated_at: todayStamp() }
         : use;
     });
-    saveBenefit({ total: b.total, uses: uses, updated_at: todayStamp() });
+    saveBenefit({ changes: b.changes, uses: uses, updated_at: todayStamp() });
     render();
   }
 
   function removeBenefitUse(matchId) {
     var b = benefitState();
     var uses = b.uses.filter(function (use) { return use.match_id !== matchId; });
-    saveBenefit({ total: b.total, uses: uses, updated_at: todayStamp() });
+    saveBenefit({ changes: b.changes, uses: uses, updated_at: todayStamp() });
     render();
   }
 
@@ -802,6 +898,8 @@
     renderFilterNote();
     renderBenefitSummary(now);
     renderBenefitList();
+    renderBenefitChanges();
+    renderBenefitSuggest();
     renderBenefitOptions(now);
     renderNext(visible, now);
     renderTimeline(visible, now);
@@ -946,7 +1044,6 @@
         state.mineOnly = false;
         document.getElementById("mine-only").checked = false;
       }
-      fillBenefitTotal();
       render();
     });
 
@@ -966,17 +1063,6 @@
     });
   }
 
-  /** 保存済みの枚数を出す。未保存なら会員種別から公式の配布枚数を初期値として置く。 */
-  function fillBenefitTotal() {
-    var input = document.getElementById("benefit-total");
-    if (state.benefit) {
-      input.value = String(state.benefit.total);
-      return;
-    }
-    var suggest = ruleCountFor(state.profile ? state.profile.fc_grade : "");
-    input.value = suggest ? String(suggest) : "";
-  }
-
   function bindBenefit() {
     var form = document.getElementById("benefit-form");
     var planForm = document.getElementById("benefit-plan-form");
@@ -984,15 +1070,34 @@
 
     form.addEventListener("submit", function (submitEvent) {
       submitEvent.preventDefault();
-      var raw = document.getElementById("benefit-total").value;
-      var total = Math.floor(Number(raw));
-      if (!isFinite(total) || total < 0) {
-        status.textContent = "0以上の数を入れてください。";
+      var count = Math.floor(Number(document.getElementById("benefit-change-count").value));
+      var reason = document.getElementById("benefit-reason").value;
+      var note = document.getElementById("benefit-note").value.trim();
+      var rule = BENEFIT_REASON[reason];
+      if (!rule) {
+        status.textContent = "理由を選んでください。";
         return;
       }
+      if (!isFinite(count) || count < 1) {
+        status.textContent = "1以上の枚数を入れてください。";
+        return;
+      }
+
       var b = benefitState();
-      if (saveBenefit({ total: total, uses: b.uses, updated_at: todayStamp() })) {
-        status.textContent = "持っている枚数を" + total + "枚として保存しました。この端末にだけ残ります。";
+      var signed = count * rule.sign;
+      var changes = b.changes.concat([{
+        id: "chg-" + Date.now(),
+        count: signed,
+        reason: reason,
+        note: note,
+        at: todayStamp()
+      }]);
+
+      if (saveBenefit({ changes: changes, uses: b.uses, updated_at: todayStamp() })) {
+        status.textContent = rule.label + "として" + count + "枚を記録しました。持っている枚数は" +
+          benefitTotal() + "枚です。";
+        document.getElementById("benefit-note").value = "";
+        document.getElementById("benefit-change-count").value = "1";
       } else {
         status.textContent = "保存できませんでした。ブラウザの設定で保存が制限されている可能性があります。";
       }
@@ -1020,7 +1125,7 @@
       if (!found) {
         uses = uses.concat([{ match_id: matchId, count: count, status: "planned", updated_at: todayStamp() }]);
       }
-      saveBenefit({ total: b.total, uses: uses, updated_at: todayStamp() });
+      saveBenefit({ changes: b.changes, uses: uses, updated_at: todayStamp() });
       status.textContent = count + "枚を引き換える予定として記録しました。";
       document.getElementById("benefit-count").value = "1";
       render();
@@ -1087,7 +1192,6 @@
       state.skipped = results[0].skipped || [];
       state.matches = results[1].matches || [];
       state.benefitRule = results[2];
-      fillBenefitTotal();
       renderMatchOptions();
       render();
     }).catch(function () {

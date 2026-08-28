@@ -245,6 +245,15 @@ a:focus-visible {
   font-size: 0.84rem;
   font-weight: 700;
 }
+.benefit-suggest {
+  margin: 0 0 4px;
+  padding: 8px 10px;
+  background: var(--accent-soft);
+  border-radius: 3px;
+  color: var(--accent);
+  font-size: 0.84rem;
+}
+.benefit-suggest:empty { display: none; }
 .benefit-list {
   list-style: none;
   margin: 0;
@@ -261,6 +270,7 @@ a:focus-visible {
   padding: 12px 14px;
 }
 .benefit-item.is-planned { border-left-color: var(--benefit); }
+.benefit-item.is-change { border-left-color: var(--accent); }
 .benefit-item.is-used { border-left-color: var(--line); }
 .benefit-item-title {
   margin: 0;
