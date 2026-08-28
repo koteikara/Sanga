@@ -1,10 +1,56 @@
 {
   "meta": {
-    "note": "プロトタイプ検証用の手入力サンプル。実データではない。日時・URLは検証用の作り物として扱う。",
+    "note": "プロトタイプ検証用の手入力サンプル。実データではない。日時・URLは検証用の作り物として扱う。柏戦のチケットは、実際の販売段階（シーズンパス先行/プラチナ/ゴールド/レギュラー・キッズ/一般）を模した5件を入れている。",
     "schema": "docs/supporter-timeline-design.md の TimelineEvent",
     "updated_at": "2026-08-27"
   },
   "events": [
+    {
+      "id": "ticket-sec07-season",
+      "starts_at": "2026-08-26T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 シーズンパス先行販売開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "season_ticket": true
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
+      "source_checked_at": "2026-08-27",
+      "status": "confirmed",
+      "is_visible": true
+    },
+    {
+      "id": "ticket-sec07-platinum",
+      "starts_at": "2026-08-27T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 プラチナクルー先行販売開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
+      "source_checked_at": "2026-08-27",
+      "status": "confirmed",
+      "is_visible": true
+    },
     {
       "id": "ticket-sec07-gold",
       "starts_at": "2026-08-28T12:00:00+09:00",
@@ -15,9 +61,15 @@
       "title": "柏戦 ゴールドクルー先行販売開始",
       "source": "official",
       "action_type": "action",
-      "audience": { "fc_grade": ["gold"] },
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
       "interest_tags": [],
-      "match_ids": ["sec07"],
+      "match_ids": [
+        "sec07"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00000",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -33,9 +85,36 @@
       "title": "柏戦 レギュラー・キッズクルー先行販売開始",
       "source": "official",
       "action_type": "action",
-      "audience": { "fc_grade": ["regular", "kids"] },
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
       "interest_tags": [],
-      "match_ids": ["sec07"],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
+      "source_checked_at": "2026-08-27",
+      "status": "confirmed",
+      "is_visible": true
+    },
+    {
+      "id": "ticket-sec07-general",
+      "starts_at": "2026-08-30T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 一般販売開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00000",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -53,7 +132,9 @@
       "action_type": "information",
       "audience": {},
       "interest_tags": [],
-      "match_ids": ["sec04"],
+      "match_ids": [
+        "sec04"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00001",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -70,8 +151,12 @@
       "source": "official",
       "action_type": "action",
       "audience": {},
-      "interest_tags": ["goods"],
-      "match_ids": ["sec04"],
+      "interest_tags": [
+        "goods"
+      ],
+      "match_ids": [
+        "sec04"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00002",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -89,7 +174,9 @@
       "action_type": "information",
       "audience": {},
       "interest_tags": [],
-      "match_ids": ["sec04"],
+      "match_ids": [
+        "sec04"
+      ],
       "source_url": "",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -106,8 +193,12 @@
       "source": "official",
       "action_type": "action",
       "audience": {},
-      "interest_tags": ["kids"],
-      "match_ids": ["sec07"],
+      "interest_tags": [
+        "kids"
+      ],
+      "match_ids": [
+        "sec07"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00003",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -124,7 +215,9 @@
       "source": "official",
       "action_type": "action",
       "audience": {},
-      "interest_tags": ["goods"],
+      "interest_tags": [
+        "goods"
+      ],
       "match_ids": [],
       "source_url": "https://www.sanga-fc.jp/news/detail/21286",
       "source_checked_at": "2026-08-27",
@@ -142,8 +235,12 @@
       "source": "official",
       "action_type": "information",
       "audience": {},
-      "interest_tags": ["away"],
-      "match_ids": ["sec06"],
+      "interest_tags": [
+        "away"
+      ],
+      "match_ids": [
+        "sec06"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00004",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
@@ -154,14 +251,19 @@
       "starts_at": "",
       "ends_at": "",
       "date_precision": "candidates",
-      "date_candidates": ["2027-02-13", "2027-02-14"],
+      "date_candidates": [
+        "2027-02-13",
+        "2027-02-14"
+      ],
       "type": "ticket",
       "title": "第21節 ホーム開催分 一般販売（開催日が候補のまま）",
       "source": "official",
       "action_type": "action",
       "audience": {},
       "interest_tags": [],
-      "match_ids": ["sec21"],
+      "match_ids": [
+        "sec21"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00005",
       "source_checked_at": "2026-08-27",
       "status": "tentative",
@@ -179,7 +281,9 @@
       "action_type": "action",
       "audience": {},
       "interest_tags": [],
-      "match_ids": ["sec20"],
+      "match_ids": [
+        "sec20"
+      ],
       "source_url": "https://www.sanga-fc.jp/news/detail/00006",
       "source_checked_at": "2026-08-27",
       "status": "tentative",
