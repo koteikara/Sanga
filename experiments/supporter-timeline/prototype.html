@@ -27,11 +27,195 @@
 </header>
 
 <main>
-  <section class="profile" aria-labelledby="profile-head">
-    <h2 id="profile-head">あなたの設定</h2>
-    <p id="profile-status" class="my-status" role="status"></p>
+  <section aria-labelledby="timeline-head">
+    <h2 id="timeline-head">タイムライン</h2>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section aria-labelledby="undated-head">
+    <h2 id="undated-head">日程未定</h2>
+    <p class="section-note">日付が確定していないため、時系列には並べていません。カレンダーへも出しません。</p>
+    <div id="undated" class="undated"></div>
+  </section>
+
+  <section aria-labelledby="ics-head">
+    <h2 id="ics-head">カレンダーへ書き出す</h2>
+    <p class="section-note">
+      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
+      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
+    </p>
+    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を書き出す</button>
+    <p id="ics-status" class="my-status" role="status"></p>
+  </section>
+
+  <section aria-labelledby="skipped-head">
+    <h2 id="skipped-head">取り込まなかった記事</h2>
+    <p class="section-note">機械的に確実に読めなかったものは、日時を取らずURLだけ残します。</p>
+    <ul id="skipped" class="skipped"></ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>京都サンガF.C.の非公式ファンツールの検証用プロトタイプです。クラブおよびJリーグとは関係がありません。</p>
+  <p>設計は <code>docs/supporter-timeline-design.md</code>、構成図は <code>docs/concept/timeline-architecture.html</code>。</p>
+</footer>
+
+<!-- 常時出ている操作メニュー。本題（タイムライン）を上に出すため、
+     設定・特典チケット・絞り込み・MY予定はここからシートで開く。 -->
+<nav id="tabbar" class="tabbar" aria-label="操作">
+  <button type="button" class="tab" data-sheet="sheet-filter" aria-haspopup="dialog">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+    <span class="tab-label">絞り込み</span>
+  </button>
+  <button type="button" class="tab" data-sheet="sheet-benefit" aria-haspopup="dialog">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12"/></svg>
+    <span class="tab-label">特典</span>
+  </button>
+  <button type="button" class="tab tab-primary" data-sheet="sheet-next" aria-haspopup="dialog">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+    <span class="tab-label">次にやること</span>
+  </button>
+  <button type="button" class="tab" data-sheet="sheet-my" aria-haspopup="dialog">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>
+    <span class="tab-label">MY予定</span>
+  </button>
+  <button type="button" class="tab" data-sheet="sheet-profile" aria-haspopup="dialog">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>
+    <span class="tab-label">設定</span>
+    <span id="profile-dot" class="tab-dot" hidden><span class="visually-hidden">未設定です</span></span>
+  </button>
+</nav>
+
+<dialog id="sheet-next" class="sheet" aria-labelledby="sheet-next-head">
+  <div class="sheet-head">
+    <h2 id="sheet-next-head">次にやること</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p id="next-lead" class="next-lead">読み込み中です。</p>
+    <div id="next-body"></div>
+  </div>
+</dialog>
+
+<dialog id="sheet-filter" class="sheet" aria-labelledby="sheet-filter-head">
+  <div class="sheet-head">
+    <h2 id="sheet-filter-head">表示の絞り込み</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <div class="filters" role="group" aria-label="種別で絞り込む">
+      <button type="button" class="chip is-on" data-filter="all" aria-pressed="true">すべて</button>
+      <button type="button" class="chip" data-filter="ticket" aria-pressed="false">チケット</button>
+      <button type="button" class="chip" data-filter="entry" aria-pressed="false">応募</button>
+      <button type="button" class="chip" data-filter="matchday" aria-pressed="false">試合当日</button>
+      <button type="button" class="chip" data-filter="personal" aria-pressed="false">MY予定</button>
+    </div>
+    <div class="filter-mine">
+      <input type="checkbox" id="mine-only">
+      <label for="mine-only">自分に関係するものだけ表示する</label>
+    </div>
+    <p id="filter-note" class="section-note filter-note"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-benefit" class="sheet" aria-labelledby="sheet-benefit-head">
+  <div class="sheet-head">
+    <h2 id="sheet-benefit-head">特典チケット</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <div id="benefit-summary" class="benefit-summary" role="status"></div>
+
+    <p class="section-note">
+      持っている枚数と、どの試合のチケットに引き換えるかを自分で記録します。公式には個人の保有状況が
+      出ないため、この端末に自己申告として保存します。家族や友人と譲り合うことがあるため、
+      枚数は理由つきの増減で記録し、合計をそこから出します。1試合に複数枚まとめて引き換えられます。
+      残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
+    </p>
+
     <details class="fold">
-      <summary>会員種別とシーズンパスを設定する</summary>
+      <summary>枚数の増減を記録する</summary>
+      <form id="benefit-form" class="my-form">
+        <p id="benefit-suggest" class="benefit-suggest"></p>
+        <div class="field">
+          <label for="benefit-change-count">枚数</label>
+          <input type="number" id="benefit-change-count" name="count" min="1" max="20" step="1" value="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="benefit-reason">理由</label>
+          <select id="benefit-reason" name="reason">
+            <option value="grant">会員特典として受け取った（増やす）</option>
+            <option value="received">譲り受けた（増やす）</option>
+            <option value="given">譲った（減らす）</option>
+            <option value="correction_plus">数え直して増やす</option>
+            <option value="correction_minus">数え直して減らす</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="benefit-note">メモ（任意）</label>
+          <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
+        </div>
+        <button type="submit" class="btn btn-primary">記録する</button>
+      </form>
+
+      <h3 class="sub-head">枚数の増減</h3>
+      <ul id="benefit-changes" class="benefit-list"></ul>
+    </details>
+
+    <details class="fold">
+      <summary>引き換える試合を決める</summary>
+      <form id="benefit-plan-form" class="my-form">
+        <div class="field">
+          <label for="benefit-match">引き換える試合</label>
+          <select id="benefit-match" name="match"><option value="">選んでください</option></select>
+        </div>
+        <div class="field">
+          <label for="benefit-count">枚数</label>
+          <input type="number" id="benefit-count" name="count" min="1" max="10" step="1" value="1" inputmode="numeric">
+        </div>
+        <button type="submit" class="btn btn-primary">引き換える予定にする</button>
+      </form>
+    </details>
+
+    <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
+    <ul id="benefit-list" class="benefit-list"></ul>
+    <p id="benefit-status" class="my-status" role="status"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-my" class="sheet" aria-labelledby="sheet-my-head">
+  <div class="sheet-head">
+    <h2 id="sheet-my-head">MY予定を追加</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p class="section-note">この端末にだけ保存します。公開データには入りません。</p>
+    <form id="my-form" class="my-form">
+      <div class="field">
+        <label for="my-title">やること</label>
+        <input type="text" id="my-title" name="title" maxlength="40" required placeholder="例: 座席へ移動">
+      </div>
+      <div class="field">
+        <label for="my-when">日時</label>
+        <input type="datetime-local" id="my-when" name="when" required>
+      </div>
+      <div class="field">
+        <label for="my-match">関連する試合</label>
+        <select id="my-match" name="match"><option value="">指定しない</option></select>
+      </div>
+      <button type="submit" class="btn btn-primary">追加する</button>
+    </form>
+    <p id="my-status" class="my-status" role="status"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-profile" class="sheet" aria-labelledby="sheet-profile-head">
+  <div class="sheet-head">
+    <h2 id="sheet-profile-head">あなたの設定</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p id="profile-status" class="my-status" role="status"></p>
     <p class="section-note">
       会員種別とシーズンパスの有無から、自分に関係する先行販売を上に出します。
       この端末にだけ保存し、公開データにも外部にも送りません。未設定でもすべての予定が見えます。
@@ -57,150 +241,8 @@
         <button type="button" id="profile-clear" class="btn btn-quiet">保存した設定を削除する</button>
       </div>
     </form>
-    </details>
-  </section>
-
-  <section class="benefit" aria-labelledby="benefit-head">
-    <h2 id="benefit-head">特典チケット</h2>
-    <p class="section-note">
-      持っている枚数と、どの試合のチケットに引き換えるかを自分で記録します。公式には個人の保有状況が
-      出ないため、この端末に自己申告として保存します。家族や友人と譲り合うことがあるため、
-      枚数は理由つきの増減で記録し、合計をそこから出します。1試合に複数枚まとめて引き換えられます。
-      残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
-    </p>
-
-    <div id="benefit-summary" class="benefit-summary" role="status"></div>
-
-    <details class="fold">
-      <summary>枚数の増減を記録する</summary>
-    <form id="benefit-form" class="my-form">
-      <p id="benefit-suggest" class="benefit-suggest"></p>
-      <div class="field">
-        <label for="benefit-change-count">枚数</label>
-        <input type="number" id="benefit-change-count" name="count" min="1" max="20" step="1" value="1" inputmode="numeric">
-      </div>
-      <div class="field">
-        <label for="benefit-reason">理由</label>
-        <select id="benefit-reason" name="reason">
-          <option value="grant">会員特典として受け取った（増やす）</option>
-          <option value="received">譲り受けた（増やす）</option>
-          <option value="given">譲った（減らす）</option>
-          <option value="correction_plus">数え直して増やす</option>
-          <option value="correction_minus">数え直して減らす</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="benefit-note">メモ（任意）</label>
-        <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
-      </div>
-      <button type="submit" class="btn btn-primary">記録する</button>
-    </form>
-
-    <h3 class="sub-head">枚数の増減</h3>
-    <ul id="benefit-changes" class="benefit-list"></ul>
-    </details>
-
-    <details class="fold">
-      <summary>引き換える試合を決める</summary>
-    <form id="benefit-plan-form" class="my-form">
-      <div class="field">
-        <label for="benefit-match">引き換える試合</label>
-        <select id="benefit-match" name="match"><option value="">選んでください</option></select>
-      </div>
-      <div class="field">
-        <label for="benefit-count">枚数</label>
-        <input type="number" id="benefit-count" name="count" min="1" max="10" step="1" value="1" inputmode="numeric">
-      </div>
-      <button type="submit" class="btn btn-primary">引き換える予定にする</button>
-    </form>
-
-    </details>
-
-    <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
-    <ul id="benefit-list" class="benefit-list"></ul>
-    <p id="benefit-status" class="my-status" role="status"></p>
-  </section>
-
-  <section aria-labelledby="filter-head">
-    <h2 id="filter-head" class="visually-hidden">表示の絞り込み</h2>
-    <div class="filters" role="group" aria-label="種別で絞り込む">
-      <button type="button" class="chip is-on" data-filter="all" aria-pressed="true">すべて</button>
-      <button type="button" class="chip" data-filter="ticket" aria-pressed="false">チケット</button>
-      <button type="button" class="chip" data-filter="entry" aria-pressed="false">応募</button>
-      <button type="button" class="chip" data-filter="matchday" aria-pressed="false">試合当日</button>
-      <button type="button" class="chip" data-filter="personal" aria-pressed="false">MY予定</button>
-    </div>
-    <div class="filter-mine">
-      <input type="checkbox" id="mine-only">
-      <label for="mine-only">自分に関係するものだけ表示する</label>
-    </div>
-    <p id="filter-note" class="section-note filter-note"></p>
-  </section>
-
-  <section aria-labelledby="timeline-head">
-    <h2 id="timeline-head">タイムライン</h2>
-    <div id="timeline" class="timeline"></div>
-  </section>
-
-  <section aria-labelledby="undated-head">
-    <h2 id="undated-head">日程未定</h2>
-    <p class="section-note">日付が確定していないため、時系列には並べていません。カレンダーへも出しません。</p>
-    <div id="undated" class="undated"></div>
-  </section>
-
-  <section aria-labelledby="my-head">
-    <h2 id="my-head">MY予定を追加</h2>
-    <p class="section-note">この端末にだけ保存します。公開データには入りません。</p>
-    <details class="fold">
-      <summary>予定を追加する</summary>
-    <form id="my-form" class="my-form">
-      <div class="field">
-        <label for="my-title">やること</label>
-        <input type="text" id="my-title" name="title" maxlength="40" required placeholder="例: 座席へ移動">
-      </div>
-      <div class="field">
-        <label for="my-when">日時</label>
-        <input type="datetime-local" id="my-when" name="when" required>
-      </div>
-      <div class="field">
-        <label for="my-match">関連する試合</label>
-        <select id="my-match" name="match"><option value="">指定しない</option></select>
-      </div>
-      <button type="submit" class="btn btn-primary">追加する</button>
-    </form>
-    </details>
-    <p id="my-status" class="my-status" role="status"></p>
-  </section>
-
-  <section aria-labelledby="ics-head">
-    <h2 id="ics-head">カレンダーへ書き出す</h2>
-    <p class="section-note">
-      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
-      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
-    </p>
-    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を書き出す</button>
-    <p id="ics-status" class="my-status" role="status"></p>
-  </section>
-
-  <section aria-labelledby="skipped-head">
-    <h2 id="skipped-head">取り込まなかった記事</h2>
-    <p class="section-note">機械的に確実に読めなかったものは、日時を取らずURLだけ残します。</p>
-    <ul id="skipped" class="skipped"></ul>
-  </section>
-</main>
-
-<footer class="foot">
-  <p>京都サンガF.C.の非公式ファンツールの検証用プロトタイプです。クラブおよびJリーグとは関係がありません。</p>
-  <p>設計は <code>docs/supporter-timeline-design.md</code>、構成図は <code>docs/concept/timeline-architecture.html</code>。</p>
-</footer>
-
-<details id="next-drawer" class="drawer">
-  <summary id="next-summary" class="drawer-handle">
-    <span class="drawer-title">次にやること</span>
-    <span id="next-lead" class="drawer-lead">読み込み中です。</span>
-  </summary>
-  <div id="next-body" class="drawer-body"></div>
-</details>
+  </div>
+</dialog>
 
 <script src="prototype.js"></script>
 <script type="module">

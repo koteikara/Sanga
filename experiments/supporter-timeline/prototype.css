@@ -41,7 +41,8 @@
 /* 白い面のなかでは補助テキストを濃いグレーに戻す */
 .block,
 .fold,
-.drawer,
+.sheet,
+.tabbar,
 .my-form,
 .benefit-summary,
 .benefit-item {
@@ -163,7 +164,7 @@ main {
   padding: 0 16px 64px;
 }
 
-body { padding-bottom: 96px; }
+body { padding-bottom: 108px; }
 
 section { margin-top: 32px; }
 section h2 {
@@ -189,74 +190,196 @@ section h2 {
   border: 0;
 }
 
-/* 次にやること（画面下のドロワー） */
-.drawer {
+/* 常時出ている操作メニュー。白い錠剤を地の上に浮かせる。
+   ネビュラの上に重なるため backdrop-filter は使わない（実機の描画負荷を避ける）。 */
+.tabbar {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  display: flex;
+  gap: 2px;
+  padding: 6px;
   background: var(--panel);
   color: var(--ink);
-  border-top: 2px solid var(--action);
-  box-shadow: 0 -2px 12px rgba(28, 25, 34, 0.12);
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-bottom: env(safe-area-inset-bottom, 0);
+  border-radius: 999px;
+  box-shadow: 0 8px 26px rgba(20, 0, 18, 0.42);
+  max-width: calc(100vw - 20px);
 }
-.drawer-handle {
-  display: list-item;
-  min-height: 56px;
-  padding: 10px 16px;
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 60px;
+  min-height: 52px;
+  padding: 4px 2px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.66rem;
+  line-height: 1.25;
   cursor: pointer;
-  list-style-position: inside;
+  position: relative;
 }
-.drawer-handle:focus-visible {
+.tab:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: -3px;
 }
-.drawer-title {
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+.tab-icon {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* 主役の操作。ここだけ塗る */
+.tab-primary {
+  background: var(--anchor);
+  color: var(--ground-ink);
+  padding: 4px 10px;
+}
+.tab-label { white-space: nowrap; }
+/* 未設定の合図。色だけに頼らず、読み上げ用の語を併記する */
+.tab-dot {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--action);
+}
+
+/* シート。Esc・フォーカスの閉じ込め・閉じたあとのフォーカス復帰は <dialog> の挙動を使う */
+.sheet {
+  width: 100%;
+  max-width: 640px;
+  max-height: 84vh;
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: 18px 18px 0 0;
+  background: var(--panel);
+  color: var(--ink);
+  overflow: hidden;
+}
+/* display は [open] にだけ効かせる。.sheet へ直接書くと
+   ブラウザ既定の dialog:not([open]) { display: none } を打ち消し、
+   閉じていてもシートが出たままになる。 */
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+}
+.sheet::backdrop { background: rgba(20, 0, 18, 0.55); }
+.sheet[open] { animation: sheet-in 260ms cubic-bezier(0.22, 1, 0.36, 1); }
+.sheet[open]::backdrop { animation: sheet-fade 260ms ease-out; }
+.sheet.is-closing { animation: sheet-out 190ms ease-in forwards; }
+.sheet.is-closing::backdrop { animation: sheet-fade 190ms ease-in reverse forwards; }
+
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+@keyframes sheet-out {
+  from { transform: translateY(0); }
+  to   { transform: translateY(100%); }
+}
+@keyframes sheet-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet[open],
+  .sheet[open]::backdrop,
+  .sheet.is-closing { animation: none; }
+}
+:root[data-motion="off"] .sheet[open],
+:root[data-motion="off"] .sheet[open]::backdrop,
+:root[data-motion="off"] .sheet.is-closing { animation: none; }
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--panel);
+}
+.sheet-head h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+.sheet-close {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.84rem;
+  cursor: pointer;
+  flex: none;
+}
+.sheet-close:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.sheet-body {
+  overflow-y: auto;
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom, 0px));
+  -webkit-overflow-scrolling: touch;
+}
+.sheet-body > *:first-child { margin-top: 0; }
+
+/* 「次にやること」のいちばん近い1件 */
+.next-lead {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--action-soft);
   color: var(--action);
+  font-size: 0.92rem;
+  font-weight: 700;
+  line-height: 1.6;
 }
-.drawer-lead {
-  display: block;
-  margin-top: 2px;
-  font-size: 0.88rem;
-  line-height: 1.5;
-  font-variant-numeric: tabular-nums;
-}
-.drawer-body {
-  padding: 0 16px 16px;
-  border-top: 1px solid var(--line-soft);
-}
+
+/* シートが開いているあいだ背面を動かさない */
+body.sheet-open { overflow: hidden; }
+
 .drawer-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 .drawer-list li {
-  padding-top: 12px;
+  padding: 12px 0;
   border-bottom: 1px solid var(--line-soft);
-  padding-bottom: 12px;
 }
 .drawer-list li:last-child { border-bottom: 0; }
 .drawer-when {
   margin: 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--action);
+  font-size: 0.78rem;
+  color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 .drawer-item-title {
   margin: 2px 0 0;
-  font-size: 0.98rem;
-  line-height: 1.5;
+  font-size: 0.96rem;
+  line-height: 1.55;
 }
 .drawer-meta {
   margin: 4px 0 0;

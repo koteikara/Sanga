@@ -1124,6 +1124,7 @@
   function render() {
     var now = new Date();
     var visible = allEvents().filter(matchesFilter).filter(matchesMine);
+    syncProfileDot();
     renderFilterNote();
     renderBenefitSummary(now);
     renderBenefitList();
@@ -1401,13 +1402,86 @@
   /* ---------- 起動 ---------- */
 
   /** まだ設定していない人には開いて見せ、設定済みの人には畳んで本体を近づける。 */
+  // 設定とMY予定はシート自体が折りたたみなので、中の details は無くした。
+  // 特典チケットはシート1枚に複数のフォームが入るため、中の details を残している。
   function foldSettled() {
-    var profileFold = document.querySelector(".profile .fold");
-    if (profileFold) profileFold.open = !hasProfile();
-    var benefitFolds = document.querySelectorAll(".benefit .fold");
+    var benefitFolds = document.querySelectorAll("#sheet-benefit .fold");
     var started = benefitState().changes.length > 0;
     if (benefitFolds[0]) benefitFolds[0].open = !started;
     if (benefitFolds[1]) benefitFolds[1].open = false;
+  }
+
+  /**
+   * 設定が未設定であることを、下部メニューの「設定」に点で示す。
+   * 設定を促す表示は出すが必須にしない、という方針（「表示の原則」）を、
+   * 設定をシートへ移したあとも保つため。点は装飾で、読み上げ用の語を併記する。
+   */
+  function syncProfileDot() {
+    var dot = document.getElementById("profile-dot");
+    if (dot) dot.hidden = hasProfile();
+  }
+
+  /**
+   * 下部メニューとシート。シートは <dialog> で開く。
+   * Esc・フォーカスの閉じ込め・閉じたときのフォーカス復帰は <dialog> の挙動をそのまま使い、
+   * 背面のスクロール止めと出入りの動きだけをこちらで足す。
+   */
+  function bindSheets() {
+    var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    function motionOff() {
+      return reduced.matches || document.documentElement.getAttribute("data-motion") === "off";
+    }
+
+    function open(sheet, tab) {
+      if (!sheet || sheet.open) return;
+      sheet.dataset.opener = tab ? tab.dataset.sheet : "";
+      sheet.showModal();
+      document.body.classList.add("sheet-open");
+    }
+
+    function close(sheet) {
+      if (!sheet || !sheet.open) return;
+      if (motionOff()) {
+        sheet.close();
+        return;
+      }
+      // 閉じる動きを見せてから実際に閉じる
+      sheet.classList.add("is-closing");
+      var done = function () {
+        sheet.classList.remove("is-closing");
+        sheet.removeEventListener("animationend", done);
+        sheet.close();
+      };
+      sheet.addEventListener("animationend", done);
+    }
+
+    document.querySelectorAll("#tabbar .tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        open(document.getElementById(tab.dataset.sheet), tab);
+      });
+    });
+
+    document.querySelectorAll(".sheet").forEach(function (sheet) {
+      sheet.addEventListener("close", function () {
+        document.body.classList.remove("sheet-open");
+      });
+
+      // Esc は既定の即閉じではなく、閉じる動きを通す
+      sheet.addEventListener("cancel", function (cancelEvent) {
+        cancelEvent.preventDefault();
+        close(sheet);
+      });
+
+      sheet.querySelectorAll("[data-close-sheet]").forEach(function (button) {
+        button.addEventListener("click", function () { close(sheet); });
+      });
+
+      // 背景（::backdrop）を押したら閉じる。中身の外側を押したときだけ
+      sheet.addEventListener("click", function (clickEvent) {
+        if (clickEvent.target === sheet) close(sheet);
+      });
+    });
   }
 
   function start() {
@@ -1418,6 +1492,7 @@
     bindBenefit();
     fillProfileForm();
     document.getElementById("profile-status").textContent = profileSummary();
+    bindSheets();
 
     bindForm();
     document.getElementById("ics-btn").addEventListener("click", exportIcs);
