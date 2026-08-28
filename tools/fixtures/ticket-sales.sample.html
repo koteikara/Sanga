@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--
+  tools/parse-ticket-sales.js の回帰確認用の入力です。
+  公式ページの写しではありません。構成だけを真似た作り物で、
+  シーズン・大会名・対戦相手・日付はすべてこちらで用意した架空の値です。
+  公式の文書を複製しない方針（docs/supporter-timeline-design.md「公式サイトの利用条件」）に従い、
+  実物のHTMLはリポジトリに置きません。
+
+  1件目: 日程確定・販売日程あり（8件そろう）
+  2件目: 候補日2つ・販売日程あり・公式の状態表示あり
+  3件目: 日程未定・販売日程なし（理由の記載あり）
+  4件目: 日程確定・販売日程なし（理由の記載なし）
+-->
+<html lang="ja">
+<body id="tickets_schedule">
+<div class="ticketschedule__date">
+    <h2>2030/31シーズン チケット販売スケジュール</h2>
+    <div class="wrap">
+        <dl class="schedule__list">
+            <p>チケット販売開始時刻の案内文（本文は保存しません）</p>
+
+            <dt class=" aco_btn  " id="">
+                <div class="label">
+                    架空リーグ
+                    第1節
+                    <time datetime="2030-08-10 00:00:00 19:00:00" class="date">8.10 (土) 19:00</time>
+                    テスト第一クラブ
+                </div>
+            </dt>
+            <dd class="aco_box">
+                <div class="inner">
+                    <table class="schedule__list__table">
+                        <thead><tr><th>受付・販売種別</th><th>受付・販売日程</th></tr></thead>
+                        <tbody>
+                            <tr><th class="seasonpass">シーズンパス先行受付（ホーム指定席をご購入の方） </th><td>7月13日(土)　11:00～</td></tr>
+                            <tr><th class="plat">SC最速先行販売（プラチナ） </th><td>7月15日(月)　12:00～</td></tr>
+                            <tr><th class="gold">SC先々行販売（ゴールド） </th><td>7月17日(水)　12:00～</td></tr>
+                            <tr><th class="regular kids">SC先行販売（レギュラー・キッズ） </th><td>7月19日(金)　12:00～</td></tr>
+                            <tr><th class="general">一般販売 </th><td>7月20日(土)　12:00～</td></tr>
+                        </tbody>
+                    </table>
+                    <table class="schedule__list__table">
+                        <thead><tr><th>SC特典チケット引換</th><th>引換日程</th></tr></thead>
+                        <tbody>
+                            <tr><th class="plat">SC特典チケット引換 プラチナ </th><td>7月15日(月)　12:00～</td></tr>
+                            <tr><th class="gold">SC特典チケット引換 ゴールド </th><td>7月17日(水)　12:00～</td></tr>
+                            <tr><th class="regular kids">SC特典チケット引換 レギュラー・キッズ </th><td>7月19日(金)　12:00～</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </dd>
+
+            <dt class=" aco_btn   active " id="">
+                <div class="label">
+                    架空リーグ
+                    第2節
+                    3.6<span class="week">(土)</span> or                    3.7<span class="week">(日)</span> キックオフ未定 テスト第二クラブ
+                </div>
+            </dt>
+            <dd class="aco_box" style="display:block;">
+                <div class="inner">
+                    <table class="schedule__list__table">
+                        <thead><tr><th>受付・販売種別</th><th>受付・販売日程</th></tr></thead>
+                        <tbody>
+                            <tr><th class="seasonpass">シーズンパス先行受付（ホーム指定席をご購入の方） <br class="pc-hidden"><span class="onsale">受付中</span> </th><td>2月7日(金)　11:00～</td></tr>
+                            <tr><th class="plat">SC最速先行販売（プラチナ） <br class="pc-hidden"><span class="onsale">販売中</span> </th><td>2月9日(日)　12:00～</td></tr>
+                            <tr><th class="gold">SC先々行販売（ゴールド） </th><td>2月11日(火)　12:00～</td></tr>
+                            <tr><th class="regular kids">SC先行販売（レギュラー・キッズ） </th><td>2月13日(木)　12:00～</td></tr>
+                            <tr><th class="general">一般販売 </th><td>2月14日(金)　12:00～</td></tr>
+                        </tbody>
+                    </table>
+                    <table class="schedule__list__table">
+                        <thead><tr><th>SC特典チケット引換</th><th>引換日程</th></tr></thead>
+                        <tbody>
+                            <tr><th class="plat">SC特典チケット引換 プラチナ <br class="pc-hidden"><span class="onsale">受付中</span> </th><td>2月9日(日)　12:00～</td></tr>
+                            <tr><th class="gold">SC特典チケット引換 ゴールド </th><td>2月11日(火)　12:00～</td></tr>
+                            <tr><th class="regular kids">SC特典チケット引換 レギュラー・キッズ </th><td>2月13日(木)　12:00～</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </dd>
+
+            <dt class=" aco_btn  no-ticket  " id="">
+                <div class="label">
+                    架空リーグ
+                    第3節
+                    <span class="date">日程未定</span>
+                    テスト第三クラブ
+                </div>
+            </dt>
+            <dd class="aco_box" style="display:block;">
+                <p>試合開催日決定後、チケット販売スケジュールをお知らせいたします。</p>
+            </dd>
+
+            <dt class=" aco_btn  no-ticket  " id="">
+                <div class="label">
+                    架空リーグ
+                    第4節
+                    <time datetime="2031-04-12 00:00:00 14:00:00" class="date">4.12 (土) 14:00</time>
+                    テスト第四クラブ
+                </div>
+            </dt>
+            <dd class="aco_box">
+            </dd>
+        </dl>
+    </div>
+</div>
+</body>
+</html>
