@@ -63,7 +63,7 @@
 | 取得方法の調査 | 完了。AI抽出は不要と結論 | `docs/news-extraction-research.md` |
 | プロトタイプ | 動作する（Phase 1 + Phase 2）。チケット販売は実データ | `experiments/supporter-timeline/` |
 | チケット販売スケジュールの構造 | 2026-08-28に確認済み。1試合最大8件 | `docs/sheets/ticket-sales.2026-08-28.csv`、「販売段階は8つある」 |
-| 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認 | `experiments/supporter-timeline/README.md` |
+| 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
 
 プロトタイプで動いているのは、タイムライン表示、種別の絞り込み、`date_precision` の出し分け、
 MY予定の追加・削除（LocalStorage）、ICS書き出し、取り込まなかった記事の一覧、
@@ -280,6 +280,7 @@ LocalStorageキーは既存の命名に合わせ、`sanga-timeline-personal-even
 チケット・応募・イベント・グッズ・試合・MY予定を、それぞれの形のアイコンで示します。
 **アイコンは装飾で、`aria-hidden` にします。** 文字ラベル（「チケット」など）は残すため、
 読み上げでは文字が読まれ、目で見るときは形で種別が分かります。
+この作りは2026-08-28にiPhone Safariの実機で確認しました。
 `★` や `◎` のような記号を文字として置く方法は取りません（「特典チケットの管理」節）。
 
 ### 設定は畳んで本体を近づける
