@@ -187,7 +187,7 @@ a:focus-visible {
   flex-wrap: wrap;
   gap: 10px;
 }
-/* 該当の強調。色だけでなく★とラベルの文字で示す。 */
+/* 該当の強調。記号ではなく、読み上げて意味が通る言葉で示す。 */
 .badge-mine {
   display: inline-block;
   padding: 1px 8px;

@@ -58,9 +58,9 @@
   <section class="benefit" aria-labelledby="benefit-head">
     <h2 id="benefit-head">特典チケット</h2>
     <p class="section-note">
-      持っている枚数と、どの試合に使うかを自分で記録します。公式には個人の保有状況が出ないため、
-      この端末に自己申告として保存します。残り枚数と、残りのホーム戦の数を突き合わせて、
-      使い切れないおそれがあるときに知らせます。
+      持っている枚数と、どの試合のチケットに引き換えるかを自分で記録します。公式には個人の保有状況が
+      出ないため、この端末に自己申告として保存します。1試合に複数枚まとめて引き換えられます。
+      残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
     </p>
 
     <form id="benefit-form" class="my-form">
@@ -75,13 +75,17 @@
 
     <form id="benefit-plan-form" class="my-form">
       <div class="field">
-        <label for="benefit-match">使う試合</label>
+        <label for="benefit-match">引き換える試合</label>
         <select id="benefit-match" name="match"><option value="">選んでください</option></select>
       </div>
-      <button type="submit" class="btn btn-primary">使う予定にする</button>
+      <div class="field">
+        <label for="benefit-count">枚数</label>
+        <input type="number" id="benefit-count" name="count" min="1" max="10" step="1" value="1" inputmode="numeric">
+      </div>
+      <button type="submit" class="btn btn-primary">引き換える予定にする</button>
     </form>
 
-    <h3 class="sub-head">使う予定・使った記録</h3>
+    <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
     <ul id="benefit-list" class="benefit-list"></ul>
     <p id="benefit-status" class="my-status" role="status"></p>
   </section>

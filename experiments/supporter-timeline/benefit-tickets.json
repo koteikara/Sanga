@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "club": "京都サンガF.C.",
+  "fanclub": "SANGA CREW",
+  "checked_at": "2026-08-28",
+  "season": "2026/27",
+  "normal_ticket_rule": {
+    "validity_official_text": "2026-27シーズンでのみ使用可能",
+    "season_membership_period": {
+      "start": "2026-07-01",
+      "end": "2027-06-30"
+    },
+    "normalized_valid_through": "2027-06-30",
+    "normalized_valid_through_note": "会員運用ルール上の2026-27シーズン会員期間終期。特典チケットの実利用は対象ホームゲームの開催日までとなるため、公式がチケット固有の暦日締切として2027-06-30を明記しているわけではない。",
+    "restrictions": [
+      "一部対象外の試合が設定される場合がある",
+      "対象席種が完売した場合は利用できない"
+    ]
+  },
+  "courses": [
+    {
+      "course_id": "platinum",
+      "course_name": "プラチナクルー",
+      "benefit_ticket": {
+        "count": 3,
+        "validity": "2026-27シーズンでのみ使用可能",
+        "normalized_valid_through": "2027-06-30",
+        "count_basis": "プラチナクルーはゴールドクルーの特典を含む構成で、ゴールドクルーの通常特典チケットは3枚",
+        "count_confidence": "high"
+      },
+      "special_1_5_season_ticket": {
+        "count": 1,
+        "validity": "百年構想リーグでのみ使用可",
+        "excluded": [
+          "プレーオフラウンド"
+        ],
+        "status_as_of_checked_at": "利用期間終了",
+        "note": "百年構想リーグ＋2026-27シーズンの1.5シーズン加入者向け限定特典"
+      }
+    },
+    {
+      "course_id": "gold",
+      "course_name": "ゴールドクルー",
+      "benefit_ticket": {
+        "count": 3,
+        "validity": "2026-27シーズンでのみ使用可能",
+        "normalized_valid_through": "2027-06-30",
+        "count_basis": "公式コース詳細に「特典チケット(3枚)」と明記",
+        "count_confidence": "explicit"
+      },
+      "special_1_5_season_ticket": {
+        "count": 1,
+        "validity": "百年構想リーグでのみ使用可",
+        "status_as_of_checked_at": "利用期間終了",
+        "note": "百年構想リーグ＋2026-27シーズンの1.5シーズン加入者向け限定特典"
+      }
+    },
+    {
+      "course_id": "regular",
+      "course_name": "レギュラークルー",
+      "benefit_ticket": {
+        "count": 1,
+        "validity": "2026-27シーズンでのみ使用可能",
+        "normalized_valid_through": "2027-06-30",
+        "count_basis": "公式SANGA CREW概要に「特典チケットが1枚」と明記",
+        "count_confidence": "explicit"
+      },
+      "special_1_5_season_ticket": {
+        "count": 1,
+        "validity": "百年構想リーグでのみ使用可",
+        "status_as_of_checked_at": "利用期間終了",
+        "note": "百年構想リーグ＋2026-27シーズンの1.5シーズン加入者向け限定特典"
+      }
+    },
+    {
+      "course_id": "kids",
+      "course_name": "キッズクルー",
+      "benefit_ticket": {
+        "count": 1,
+        "validity": "2026-27シーズンでのみ使用可能",
+        "normalized_valid_through": "2027-06-30",
+        "count_basis": "公式SANGA CREW概要に「特典チケットも1枚」と明記",
+        "count_confidence": "explicit"
+      },
+      "special_1_5_season_ticket": {
+        "count": 1,
+        "validity": "百年構想リーグでのみ使用可",
+        "status_as_of_checked_at": "利用期間終了",
+        "note": "百年構想リーグ＋2026-27シーズンの1.5シーズン加入者向け限定特典"
+      }
+    }
+  ],
+  "sources": [
+    "https://www.sanga-fc.jp/fanclub",
+    "https://www.sanga-fc.jp/fanclub/platinumcrew",
+    "https://www.sanga-fc.jp/fanclub/goldcrew",
+    "https://www.sanga-fc.jp/fanclub/regularcrew",
+    "https://www.sanga-fc.jp/fanclub/kidscrew",
+    "https://www.sanga-fc.jp/fanclub/agreement",
+    "https://www.sanga-fc.jp/news/detail/20519"
+  ]
+}
