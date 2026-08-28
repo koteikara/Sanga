@@ -20,6 +20,7 @@
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
   var BENEFIT_KEY = "sanga-timeline-benefit-tickets-v1";
+  var TOUR_KEY = "sanga-timeline-tour-v1";
   var BENEFIT_URL = "benefit-tickets.json";
 
   var GRADE_LABEL = {
@@ -1422,6 +1423,94 @@
   }
 
   /**
+   * 背面のスクロール止め。開いているシートが1枚でもあれば止める。
+   * dialog の close イベントは非同期に来るので、付ける・外すを順序で書くと
+   * 「閉じてから開く」で外れてしまう。いまの状態から決め直す。
+   */
+  function syncScrollLock() {
+    document.body.classList.toggle(
+      "sheet-open",
+      !!document.querySelector(".sheet[open], .tour[open]")
+    );
+  }
+
+  /**
+   * 使い方の説明。初めて開いた人にだけ出し、読んだら出さない。
+   * 設定シートからいつでも開き直せる。
+   *
+   * 出すのは「何ができるか」と「どう操作するか」の2点だけにしている。
+   * 題の上下の文言を落として、初見の人に何のツールか伝わらなくなったため。
+   */
+  function bindTour() {
+    var tour = document.getElementById("tour");
+    if (!tour) return;
+
+    var panels = [].slice.call(tour.querySelectorAll("[data-tour-panel]"));
+    var stepLabel = document.getElementById("tour-step");
+    var prev = tour.querySelector("[data-tour-prev]");
+    var next = tour.querySelector("[data-tour-next]");
+    var index = 0;
+
+    function seen() {
+      try {
+        return window.localStorage.getItem(TOUR_KEY) === "done";
+      } catch (error) {
+        // 保存を制限されている端末では、毎回出すより出さないほうが邪魔にならない
+        return true;
+      }
+    }
+
+    function remember() {
+      try {
+        window.localStorage.setItem(TOUR_KEY, "done");
+      } catch (error) {
+        // 覚えられなくても説明は読めている。次に開いたときにまた出るだけ
+      }
+    }
+
+    function show(nextIndex) {
+      index = Math.max(0, Math.min(panels.length - 1, nextIndex));
+      panels.forEach(function (panel, i) { panel.hidden = i !== index; });
+      stepLabel.textContent = (index + 1) + " / " + panels.length;
+      prev.hidden = index === 0;
+      next.textContent = index === panels.length - 1 ? "はじめる" : "次へ";
+    }
+
+    function close() {
+      remember();
+      if (tour.open) tour.close();
+    }
+
+    next.addEventListener("click", function () {
+      if (index === panels.length - 1) close();
+      else show(index + 1);
+    });
+    prev.addEventListener("click", function () { show(index - 1); });
+    tour.querySelector("[data-tour-skip]").addEventListener("click", close);
+
+    // Esc で閉じたときも読んだものとして扱う
+    tour.addEventListener("cancel", function () { remember(); });
+    tour.addEventListener("close", syncScrollLock);
+
+    var open = document.getElementById("tour-open");
+    if (open) {
+      open.addEventListener("click", function () {
+        var profile = document.getElementById("sheet-profile");
+        if (profile && profile.open) profile.close();
+        show(0);
+        tour.showModal();
+        syncScrollLock();
+      });
+    }
+
+    if (!seen()) {
+      show(0);
+      tour.showModal();
+      syncScrollLock();
+    }
+  }
+
+  /**
    * 見出しが画面上部に貼り付いたかを見張る。
    * 貼り付いているあいだだけ帯に縮め、地の色を敷く。
    * scroll を毎回測るより負荷が軽いので IntersectionObserver を使う。
@@ -1456,7 +1545,7 @@
       if (!sheet || sheet.open) return;
       sheet.dataset.opener = tab ? tab.dataset.sheet : "";
       sheet.showModal();
-      document.body.classList.add("sheet-open");
+      syncScrollLock();
     }
 
     function close(sheet) {
@@ -1483,9 +1572,7 @@
     });
 
     document.querySelectorAll(".sheet").forEach(function (sheet) {
-      sheet.addEventListener("close", function () {
-        document.body.classList.remove("sheet-open");
-      });
+      sheet.addEventListener("close", syncScrollLock);
 
       // Esc は既定の即閉じではなく、閉じる動きを通す
       sheet.addEventListener("cancel", function (cancelEvent) {
@@ -1514,6 +1601,7 @@
     document.getElementById("profile-status").textContent = profileSummary();
     bindSheets();
     bindStickyHead();
+    bindTour();
 
     bindForm();
     document.getElementById("ics-btn").addEventListener("click", exportIcs);
