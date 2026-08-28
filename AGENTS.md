@@ -43,6 +43,8 @@
 | 公開物の全体像・過去の公開ページ | `docs/production-inventory-audit.md` |
 | 入口ページ・ツール一覧 | `docs/site-index.md`、`docs/ui-prototype-workflow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
+| SUPPORTER TIMELINE | `docs/supporter-timeline-design.md`（「現在地と次の一手」から読む）、`experiments/supporter-timeline/README.md` |
+| 公式サイトからの情報取得 | `docs/news-extraction-research.md`、`docs/supporter-timeline-design.md` の「公式サイトの利用条件」 |
 
 `docs/dom-inventory.md` は `tools/generate-dom-inventory.mjs` が実装から生成します。
 class名、id名、data属性の参照箇所は、文書を読むよりこの一覧と `grep` で確認するほうが確実です。
