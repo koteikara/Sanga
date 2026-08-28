@@ -1,18 +1,223 @@
 {
   "meta": {
-    "note": "プロトタイプ検証用の手入力サンプル。実データではない。日時・URLは検証用の作り物として扱う。柏戦のチケットは、実際の販売段階（シーズンパス先行/プラチナ/ゴールド/レギュラー・キッズ/一般）を模した5件を入れている。",
+    "note": "チケット販売のイベントは docs/sheets/ticket-sales.2026-08-28.csv（公式のチケット販売スケジュールを2026-08-28に確認したスナップショット）から作った実データ。試合当日のイベント・グッズ・応募（is_sample: true）は検証用の作り物で、日時もURLも実在しない。 チケットイベントは ticket_kind で sale / benefit_exchange / unscheduled を区別する。",
     "schema": "docs/supporter-timeline-design.md の TimelineEvent",
-    "updated_at": "2026-08-27"
+    "ticket_source": "https://www.sanga-fc.jp/ticket/schedule",
+    "ticket_checked_at": "2026-08-28",
+    "ticket_rounds": [
+      "第4節 福岡",
+      "第7節 柏",
+      "第9節 町田",
+      "第20節 岡山（未告知）",
+      "第21節 横浜FM"
+    ],
+    "updated_at": "2026-08-28"
   },
   "events": [
     {
-      "id": "ticket-sec07-season",
-      "starts_at": "2026-08-26T12:00:00+09:00",
+      "id": "ticket-sec04-season",
+      "starts_at": "2026-08-01T11:00:00+09:00",
       "ends_at": "",
       "date_precision": "datetime",
       "date_candidates": [],
       "type": "ticket",
-      "title": "柏戦 シーズンパス先行販売開始",
+      "title": "福岡戦 シーズンパス先行受付 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "season_ticket": true
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec04-benefit-platinum",
+      "starts_at": "2026-08-03T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 特典チケット引換 開始（プラチナ）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec04-platinum",
+      "starts_at": "2026-08-03T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 プラチナ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec04-benefit-gold",
+      "starts_at": "2026-08-05T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 特典チケット引換 開始（ゴールド）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec04-gold",
+      "starts_at": "2026-08-05T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 ゴールド先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec04-benefit-regular",
+      "starts_at": "2026-08-07T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 特典チケット引換 開始（レギュラー・キッズ）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec04-regular",
+      "starts_at": "2026-08-07T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 レギュラー・キッズ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec04-general",
+      "starts_at": "2026-08-08T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "福岡戦 一般販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec04"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec07-season",
+      "starts_at": "2026-08-26T11:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 シーズンパス先行受付 開始",
       "source": "official",
       "action_type": "action",
       "audience": {
@@ -22,19 +227,20 @@
       "match_ids": [
         "sec07"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
-      "source_checked_at": "2026-08-27",
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "ticket_kind": "sale"
     },
     {
-      "id": "ticket-sec07-platinum",
+      "id": "ticket-sec07-benefit-platinum",
       "starts_at": "2026-08-27T12:00:00+09:00",
       "ends_at": "",
       "date_precision": "datetime",
       "date_candidates": [],
       "type": "ticket",
-      "title": "柏戦 プラチナクルー先行販売開始",
+      "title": "柏戦 特典チケット引換 開始（プラチナ）",
       "source": "official",
       "action_type": "action",
       "audience": {
@@ -46,19 +252,45 @@
       "match_ids": [
         "sec07"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
-      "source_checked_at": "2026-08-27",
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
     },
     {
-      "id": "ticket-sec07-gold",
+      "id": "ticket-sec07-platinum",
+      "starts_at": "2026-08-27T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 プラチナ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec07-benefit-gold",
       "starts_at": "2026-08-28T12:00:00+09:00",
       "ends_at": "",
       "date_precision": "datetime",
       "date_candidates": [],
       "type": "ticket",
-      "title": "柏戦 ゴールドクルー先行販売開始",
+      "title": "柏戦 特典チケット引換 開始（ゴールド）",
       "source": "official",
       "action_type": "action",
       "audience": {
@@ -70,19 +302,45 @@
       "match_ids": [
         "sec07"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
-      "source_checked_at": "2026-08-27",
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
     },
     {
-      "id": "ticket-sec07-regular",
+      "id": "ticket-sec07-gold",
+      "starts_at": "2026-08-28T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 ゴールド先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec07-benefit-regular",
       "starts_at": "2026-08-29T12:00:00+09:00",
       "ends_at": "",
       "date_precision": "datetime",
       "date_candidates": [],
       "type": "ticket",
-      "title": "柏戦 レギュラー・キッズクルー先行販売開始",
+      "title": "柏戦 特典チケット引換 開始（レギュラー・キッズ）",
       "source": "official",
       "action_type": "action",
       "audience": {
@@ -95,30 +353,37 @@
       "match_ids": [
         "sec07"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
-      "source_checked_at": "2026-08-27",
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
     },
     {
-      "id": "ticket-sec07-general",
-      "starts_at": "2026-08-30T12:00:00+09:00",
+      "id": "ticket-sec07-regular",
+      "starts_at": "2026-08-29T12:00:00+09:00",
       "ends_at": "",
       "date_precision": "datetime",
       "date_candidates": [],
       "type": "ticket",
-      "title": "柏戦 一般販売開始",
+      "title": "柏戦 レギュラー・キッズ先行販売 開始",
       "source": "official",
       "action_type": "action",
-      "audience": {},
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
       "interest_tags": [],
       "match_ids": [
         "sec07"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00000",
-      "source_checked_at": "2026-08-27",
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "ticket_kind": "sale"
     },
     {
       "id": "event-sec04-gate",
@@ -138,7 +403,8 @@
       "source_url": "https://www.sanga-fc.jp/news/detail/00001",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "is_sample": true
     },
     {
       "id": "goods-sec04-tshirt",
@@ -160,7 +426,8 @@
       "source_url": "https://www.sanga-fc.jp/news/detail/00002",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "is_sample": true
     },
     {
       "id": "match-sec04",
@@ -180,7 +447,29 @@
       "source_url": "",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "is_sample": true
+    },
+    {
+      "id": "ticket-sec07-general",
+      "starts_at": "2026-08-30T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "柏戦 一般販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
     },
     {
       "id": "entry-escortkids-sec07",
@@ -202,7 +491,8 @@
       "source_url": "https://www.sanga-fc.jp/news/detail/00003",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "is_sample": true
     },
     {
       "id": "goods-aclutd-3rd",
@@ -222,7 +512,8 @@
       "source_url": "https://www.sanga-fc.jp/news/detail/21286",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "is_sample": true
     },
     {
       "id": "event-sec06-visitor-meet",
@@ -244,19 +535,428 @@
       "source_url": "https://www.sanga-fc.jp/news/detail/00004",
       "source_checked_at": "2026-08-27",
       "status": "confirmed",
+      "is_visible": true,
+      "is_sample": true
+    },
+    {
+      "id": "match-sec07",
+      "starts_at": "2026-09-11T19:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "match",
+      "title": "柏戦 キックオフ（サンガスタジアム）",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://sanga-fc.jp/news/detail/21194",
+      "source_checked_at": "2026-08-21",
+      "status": "confirmed",
       "is_visible": true
     },
     {
-      "id": "ticket-sec21-general",
-      "starts_at": "",
+      "id": "ticket-sec09-season",
+      "starts_at": "2026-09-19T11:00:00+09:00",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-02-13",
-        "2027-02-14"
-      ],
+      "date_precision": "datetime",
+      "date_candidates": [],
       "type": "ticket",
-      "title": "第21節 ホーム開催分 一般販売（開催日が候補のまま）",
+      "title": "町田戦 シーズンパス先行受付 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "season_ticket": true
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec09-benefit-platinum",
+      "starts_at": "2026-09-21T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 特典チケット引換 開始（プラチナ）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec09-platinum",
+      "starts_at": "2026-09-21T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 プラチナ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec09-benefit-gold",
+      "starts_at": "2026-09-23T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 特典チケット引換 開始（ゴールド）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec09-gold",
+      "starts_at": "2026-09-23T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 ゴールド先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec09-benefit-regular",
+      "starts_at": "2026-09-25T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 特典チケット引換 開始（レギュラー・キッズ）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec09-regular",
+      "starts_at": "2026-09-25T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 レギュラー・キッズ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec09-general",
+      "starts_at": "2026-09-26T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "町田戦 一般販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "match-sec09",
+      "starts_at": "2026-10-10T19:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "match",
+      "title": "町田戦 キックオフ（サンガスタジアム）",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec09"
+      ],
+      "source_url": "https://sanga-fc.jp/news/detail/21194",
+      "source_checked_at": "2026-08-25",
+      "status": "confirmed",
+      "is_visible": true
+    },
+    {
+      "id": "ticket-sec21-season",
+      "starts_at": "2027-01-16T11:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 シーズンパス先行受付 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "season_ticket": true
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec21-benefit-platinum",
+      "starts_at": "2027-01-18T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 特典チケット引換 開始（プラチナ）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec21-platinum",
+      "starts_at": "2027-01-18T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 プラチナ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "platinum"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec21-benefit-gold",
+      "starts_at": "2027-01-20T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 特典チケット引換 開始（ゴールド）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec21-gold",
+      "starts_at": "2027-01-20T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 ゴールド先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "gold"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec21-benefit-regular",
+      "starts_at": "2027-01-22T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 特典チケット引換 開始（レギュラー・キッズ）",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "benefit_exchange"
+    },
+    {
+      "id": "ticket-sec21-regular",
+      "starts_at": "2027-01-22T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 レギュラー・キッズ先行販売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {
+        "fc_grade": [
+          "regular",
+          "kids"
+        ]
+      },
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
+    },
+    {
+      "id": "ticket-sec21-general",
+      "starts_at": "2027-01-23T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "横浜FM戦 一般販売 開始",
       "source": "official",
       "action_type": "action",
       "audience": {},
@@ -264,30 +964,76 @@
       "match_ids": [
         "sec21"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00005",
-      "source_checked_at": "2026-08-27",
-      "status": "tentative",
-      "is_visible": true
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "confirmed",
+      "is_visible": true,
+      "ticket_kind": "sale"
     },
     {
-      "id": "ticket-sec20-general",
+      "id": "match-sec20",
       "starts_at": "",
       "ends_at": "",
       "date_precision": "unknown",
       "date_candidates": [],
-      "type": "ticket",
-      "title": "第20節 チケット販売（試合日が未定）",
+      "type": "match",
+      "title": "岡山戦 キックオフ（試合日が未定）",
       "source": "official",
-      "action_type": "action",
+      "action_type": "information",
       "audience": {},
       "interest_tags": [],
       "match_ids": [
         "sec20"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/00006",
-      "source_checked_at": "2026-08-27",
+      "source_url": "https://sanga-fc.jp/news/detail/21194",
+      "source_checked_at": "2026-08-25",
       "status": "tentative",
       "is_visible": true
+    },
+    {
+      "id": "match-sec21",
+      "starts_at": "",
+      "ends_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-02-13",
+        "2027-02-14"
+      ],
+      "type": "match",
+      "title": "横浜FM戦 キックオフ（開催日が候補のまま）",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec21"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "tentative",
+      "is_visible": true
+    },
+    {
+      "id": "ticket-sec20-unscheduled",
+      "starts_at": "",
+      "ends_at": "",
+      "date_precision": "unknown",
+      "date_candidates": [],
+      "type": "ticket",
+      "title": "岡山戦 チケット販売日程は未告知",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec20"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-08-28",
+      "status": "tentative",
+      "is_visible": true,
+      "note": "試合開催日が決まってから販売スケジュールが出る",
+      "ticket_kind": "unscheduled"
     }
   ],
   "skipped": [

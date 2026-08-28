@@ -2,6 +2,10 @@
   --paper: #fbfafc;
   --mine: #7a4a00;
   --mine-soft: #fdf3e0;
+  --benefit: #1f5f66;
+  --benefit-soft: #e6f2f3;
+  --warn: #8a2f2f;
+  --warn-soft: #fbeaea;
   --panel: #ffffff;
   --ink: #1c1922;
   --muted: #6a6577;
@@ -183,7 +187,7 @@ a:focus-visible {
   flex-wrap: wrap;
   gap: 10px;
 }
-/* 該当の強調。色だけでなく★とラベルの文字で示す。 */
+/* 該当の強調。記号ではなく、読み上げて意味が通る言葉で示す。 */
 .badge-mine {
   display: inline-block;
   padding: 1px 8px;
@@ -205,6 +209,109 @@ a:focus-visible {
   font-weight: 700;
   color: var(--mine);
 }
+
+/* 特典チケット */
+.sub-head {
+  margin: 20px 0 8px;
+  font-size: 0.92rem;
+}
+.benefit-summary {
+  margin: 12px 0;
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--benefit);
+  border-radius: 4px;
+}
+.benefit-count {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--benefit);
+  font-variant-numeric: tabular-nums;
+}
+.benefit-detail {
+  margin: 4px 0 0;
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.benefit-warn {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  background: var(--warn-soft);
+  border-radius: 3px;
+  color: var(--warn);
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+.benefit-suggest {
+  margin: 0 0 4px;
+  padding: 8px 10px;
+  background: var(--accent-soft);
+  border-radius: 3px;
+  color: var(--accent);
+  font-size: 0.84rem;
+}
+.benefit-suggest:empty { display: none; }
+.benefit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.benefit-item {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line);
+  border-radius: 4px;
+  padding: 12px 14px;
+}
+.benefit-item.is-planned { border-left-color: var(--benefit); }
+.benefit-item.is-change { border-left-color: var(--accent); }
+.benefit-item.is-used { border-left-color: var(--line); }
+.benefit-item-title {
+  margin: 0;
+  font-size: 0.94rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.benefit-tag {
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--benefit);
+  background: var(--benefit-soft);
+  color: var(--benefit);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+.benefit-item.is-used .benefit-tag {
+  border-color: var(--muted);
+  background: var(--line-soft);
+  color: var(--muted);
+}
+.benefit-actions {
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.badge-benefit {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--benefit);
+  background: var(--benefit-soft);
+  color: var(--benefit);
+  font-size: 0.74rem;
+  font-weight: 700;
+  flex: none;
+}
+.event.is-benefit { border-color: var(--benefit); }
 
 /* タイムライン */
 .day {

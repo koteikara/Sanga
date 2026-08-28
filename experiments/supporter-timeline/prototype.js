@@ -8,6 +8,7 @@
  *   3. MY予定と公式イベントが同じ時系列に並ぶこと
  *   4. 確定した日時だけがICSへ出ること
  *   5. プロフィール（会員種別・シーズンパス）による強調と並べ替え（Phase 2）
+ *   6. 特典チケットの残り枚数と引き換え予定の記録（Phase 2 追加）
  *
  * 本番へ持ち込まないこと: サンプルデータ、検証用の注意書き。
  */
@@ -18,6 +19,8 @@
   var MATCHES_URL = "matches.sample.json";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
+  var BENEFIT_KEY = "sanga-timeline-benefit-tickets-v1";
+  var BENEFIT_URL = "benefit-tickets.json";
 
   var GRADE_LABEL = {
     platinum: "プラチナクルー",
@@ -56,7 +59,9 @@
     matches: [],
     filter: "all",
     mineOnly: false,
-    profile: null
+    profile: null,
+    benefit: null,
+    benefitRule: null
   };
 
   /* ---------- 日時 ---------- */
@@ -195,6 +200,160 @@
     return Object.keys(audience).length === 0;
   }
 
+  var BENEFIT_REASON = {
+    grant: { label: "会員特典として受け取った", sign: 1 },
+    received: { label: "譲り受けた", sign: 1 },
+    given: { label: "譲った", sign: -1 },
+    correction_plus: { label: "数え直して増やした", sign: 1 },
+    correction_minus: { label: "数え直して減らした", sign: -1 }
+  };
+
+  /**
+   * 特典チケットの保有と引き換え先。
+   * 枚数は1つの数ではなく増減の履歴で持つ。家族や友人と譲り合うことがあり、
+   * 「なぜ増えたか・減ったか」が分からないと自分の記録を信用できなくなるため。
+   * { changes: [{ id, count, reason, note, at }], uses: [{ match_id, count, status, updated_at }] }
+   */
+  function normalizeBenefit(value) {
+    if (!value || typeof value !== "object") return null;
+
+    var changes = [];
+    if (Array.isArray(value.changes)) {
+      value.changes.forEach(function (change) {
+        if (!change || typeof change !== "object") return;
+        var count = Number(change.count);
+        if (!isFinite(count) || count === 0) return;
+        var reason = Object.prototype.hasOwnProperty.call(BENEFIT_REASON, change.reason)
+          ? change.reason
+          : "correction_plus";
+        changes.push({
+          id: typeof change.id === "string" && change.id ? change.id : "chg-" + changes.length,
+          count: Math.round(count),
+          reason: reason,
+          note: typeof change.note === "string" ? change.note.slice(0, 30) : "",
+          at: typeof change.at === "string" ? change.at : ""
+        });
+      });
+    } else if (value.total !== undefined) {
+      // 旧形式（total だけを持っていたもの）は、会員特典として受け取った1件に読み替える
+      var total = Number(value.total);
+      if (isFinite(total) && total > 0) {
+        changes.push({
+          id: "chg-initial",
+          count: Math.floor(total),
+          reason: "grant",
+          note: "",
+          at: typeof value.updated_at === "string" ? value.updated_at : ""
+        });
+      }
+    }
+
+    var uses = Array.isArray(value.uses) ? value.uses : [];
+    var byMatch = {};
+    var order = [];
+    uses.forEach(function (use) {
+      if (!use || typeof use.match_id !== "string" || !use.match_id) return;
+      var count = Number(use.count);
+      if (!isFinite(count) || count < 1) count = 1;
+      var status = (use.status === "used" || use.status === "exchanged") ? "exchanged" : "planned";
+      if (byMatch[use.match_id]) {
+        byMatch[use.match_id].count += Math.floor(count);
+        if (status === "exchanged") byMatch[use.match_id].status = "exchanged";
+        return;
+      }
+      byMatch[use.match_id] = {
+        match_id: use.match_id,
+        count: Math.floor(count),
+        status: status,
+        updated_at: typeof use.updated_at === "string" ? use.updated_at : ""
+      };
+      order.push(use.match_id);
+    });
+
+    return {
+      changes: changes,
+      uses: order.map(function (id) { return byMatch[id]; }),
+      updated_at: value.updated_at || ""
+    };
+  }
+
+  function loadBenefit() {
+    try {
+      var raw = window.localStorage.getItem(BENEFIT_KEY);
+      return raw ? normalizeBenefit(JSON.parse(raw)) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveBenefit(benefit) {
+    try {
+      window.localStorage.setItem(BENEFIT_KEY, JSON.stringify(benefit));
+      state.benefit = normalizeBenefit(benefit);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function benefitState() {
+    return state.benefit || { changes: [], uses: [], updated_at: "" };
+  }
+
+  /** 持っている枚数は増減の履歴の合計。 */
+  function benefitTotal() {
+    var total = 0;
+    benefitState().changes.forEach(function (change) { total += change.count; });
+    return total;
+  }
+
+  function benefitUseFor(matchId) {
+    var found = null;
+    benefitState().uses.forEach(function (use) {
+      if (use.match_id === matchId) found = use;
+    });
+    return found;
+  }
+
+  function benefitCounts() {
+    var b = benefitState();
+    var planned = 0;
+    var exchanged = 0;
+    b.uses.forEach(function (use) {
+      if (use.status === "exchanged") exchanged += use.count; else planned += use.count;
+    });
+    var total = benefitTotal();
+    return { total: total, planned: planned, exchanged: exchanged, left: total - planned - exchanged };
+  }
+
+  /** 会員種別ごとの配布枚数（公式）。分からない場合は0を返す。 */
+  function ruleCountFor(grade) {
+    if (!state.benefitRule || !grade) return 0;
+    var found = 0;
+    (state.benefitRule.courses || []).forEach(function (course) {
+      if (course.course_id === grade && course.benefit_ticket) {
+        found = Number(course.benefit_ticket.count) || 0;
+      }
+    });
+    return found;
+  }
+
+  /** これから開催されるホーム戦。日程未定・候補日も引き換えられる機会として数える。 */
+  function upcomingHomeMatches(now) {
+    return state.matches.filter(function (match) {
+      if (match.home_away !== "H") return false;
+      if (!match.match_date) return true;
+      return new Date(match.match_date + "T23:59:59+09:00").getTime() >= now.getTime();
+    });
+  }
+
+  /** これからのホーム戦のうち、まだ1枚も充てていないもの。 */
+  function openHomeMatches(now) {
+    return upcomingHomeMatches(now).filter(function (match) {
+      return !benefitUseFor(match.id);
+    });
+  }
+
   function allEvents() {
     return state.events.concat(loadPersonal());
   }
@@ -276,7 +435,7 @@
     if (reason) {
       var mine = document.createElement("p");
       mine.className = "next-mine";
-      mine.textContent = "★ " + reason + "に該当します";
+      mine.textContent = reason + "が対象です";
       box.appendChild(mine);
     }
   }
@@ -288,6 +447,22 @@
     // 強調は色だけに依存させない。バッジの文字で理由を示す。
     var reason = profileMatch(event);
     if (reason) li.classList.add("is-mine");
+
+    // 特典チケットの残りと使い道を、関係するイベントの上に出す。
+    var benefitNote = "";
+    var counts = benefitCounts();
+    if (event.ticket_kind === "benefit_exchange" && reason && counts.total > 0) {
+      benefitNote = "特典チケットは残り" + Math.max(counts.left, 0) + "枚";
+    }
+    var use = event.type === "match" && Array.isArray(event.match_ids) && event.match_ids.length
+      ? benefitUseFor(event.match_ids[0])
+      : null;
+    if (use) {
+      benefitNote = use.status === "exchanged"
+        ? "特典チケットを" + use.count + "枚 引き換えた"
+        : "特典チケットを" + use.count + "枚 引き換える予定";
+      li.classList.add("is-benefit");
+    }
 
     var top = document.createElement("div");
     top.className = "event-top";
@@ -313,8 +488,15 @@
     if (reason) {
       var mine = document.createElement("span");
       mine.className = "badge-mine";
-      mine.textContent = "★ " + reason;
+      mine.textContent = reason + "が対象";
       top.appendChild(mine);
+    }
+
+    if (benefitNote) {
+      var benefitBadge = document.createElement("span");
+      benefitBadge.className = "badge-benefit";
+      benefitBadge.textContent = benefitNote;
+      top.appendChild(benefitBadge);
     }
 
     var title = document.createElement("p");
@@ -476,6 +658,226 @@
     });
   }
 
+  function matchTitle(match) {
+    return match.round + " " + (match.opponent || "未定") + "戦" +
+      (match.match_date ? "（" + match.match_date + "）"
+        : (match.date_candidates && match.date_candidates.length
+          ? "（" + formatCandidates(match.date_candidates) + "）"
+          : "（日程未定）"));
+  }
+
+  function renderBenefitSummary(now) {
+    var box = document.getElementById("benefit-summary");
+    box.textContent = "";
+    var counts = benefitCounts();
+
+    if (!benefitState().changes.length && !counts.planned && !counts.exchanged) {
+      var none = document.createElement("p");
+      none.className = "empty";
+      none.textContent = "枚数の増減を記録すると、残りと引き換え先の管理ができます。";
+      box.appendChild(none);
+      return;
+    }
+
+    var line = document.createElement("p");
+    line.className = "benefit-count";
+    line.textContent = "残り " + Math.max(counts.left, 0) + "枚";
+
+    var detail = document.createElement("p");
+    detail.className = "benefit-detail";
+    detail.textContent = "持っている " + counts.total + "枚 ・ 引き換える予定 " + counts.planned +
+      "枚 ・ 引き換えた " + counts.exchanged + "枚";
+    box.append(line, detail);
+
+    var upcoming = upcomingHomeMatches(now).length;
+    var note = document.createElement("p");
+    if (counts.left < 0) {
+      note.className = "benefit-warn";
+      note.textContent = "注意: 持っている枚数より多く割り当てています。枚数か割り当てを見直してください。";
+    } else if (counts.left > upcoming) {
+      note.className = "benefit-warn";
+      note.textContent = "注意: 残り" + counts.left + "枚に対して、これからのホーム戦は" + upcoming +
+        "試合です。1試合に複数枚まとめて引き換えないと、使わないまま残ります。";
+    } else if (counts.left > 0) {
+      note.className = "benefit-detail";
+      note.textContent = "これからのホーム戦は" + upcoming + "試合あります。";
+    } else {
+      note.className = "benefit-detail";
+      note.textContent = "残りはありません。";
+    }
+    box.appendChild(note);
+
+    if (state.benefitRule && state.benefitRule.normal_ticket_rule) {
+      var rule = state.benefitRule.normal_ticket_rule;
+      var terms = document.createElement("p");
+      terms.className = "benefit-detail";
+      var parts = [rule.validity_official_text];
+      (rule.restrictions || []).forEach(function (item) { parts.push(item); });
+      terms.textContent = parts.join("。") + "。";
+      box.appendChild(terms);
+    }
+  }
+
+  function renderBenefitList() {
+    var root = document.getElementById("benefit-list");
+    root.textContent = "";
+    var uses = benefitState().uses.slice().sort(function (a, b) {
+      return a.match_id < b.match_id ? -1 : 1;
+    });
+
+    if (!uses.length) {
+      var li = document.createElement("li");
+      li.className = "empty";
+      li.textContent = "まだ記録がありません。";
+      root.appendChild(li);
+      return;
+    }
+
+    uses.forEach(function (use) {
+      var match = state.matches.find(function (m) { return m.id === use.match_id; });
+      var li = document.createElement("li");
+      li.className = "benefit-item is-" + use.status;
+
+      var name = document.createElement("p");
+      name.className = "benefit-item-title";
+      name.textContent = (match ? matchTitle(match) : use.match_id) + " " + use.count + "枚";
+
+      var tag = document.createElement("span");
+      tag.className = "benefit-tag";
+      tag.textContent = use.status === "exchanged" ? "引き換えた" : "引き換える予定";
+      name.appendChild(tag);
+
+      var actions = document.createElement("p");
+      actions.className = "benefit-actions";
+
+      if (use.status === "planned") {
+        var done = document.createElement("button");
+        done.type = "button";
+        done.className = "btn-remove";
+        done.textContent = "引き換えた";
+        done.addEventListener("click", function () { setBenefitStatus(use.match_id, "exchanged"); });
+        actions.appendChild(done);
+      } else {
+        var back = document.createElement("button");
+        back.type = "button";
+        back.className = "btn-remove";
+        back.textContent = "予定に戻す";
+        back.addEventListener("click", function () { setBenefitStatus(use.match_id, "planned"); });
+        actions.appendChild(back);
+      }
+
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn-remove";
+      remove.textContent = "記録を消す";
+      remove.addEventListener("click", function () { removeBenefitUse(use.match_id); });
+      actions.appendChild(remove);
+
+      li.append(name, actions);
+      root.appendChild(li);
+    });
+  }
+
+  function renderBenefitChanges() {
+    var root = document.getElementById("benefit-changes");
+    root.textContent = "";
+    var changes = benefitState().changes;
+
+    if (!changes.length) {
+      var li = document.createElement("li");
+      li.className = "empty";
+      li.textContent = "まだ記録がありません。";
+      root.appendChild(li);
+      return;
+    }
+
+    changes.slice().reverse().forEach(function (change) {
+      var li = document.createElement("li");
+      li.className = "benefit-item is-change";
+
+      var title = document.createElement("p");
+      title.className = "benefit-item-title";
+      title.textContent = (change.count > 0 ? "+" : "") + change.count + "枚 " +
+        (BENEFIT_REASON[change.reason] ? BENEFIT_REASON[change.reason].label : change.reason);
+
+      var meta = document.createElement("p");
+      meta.className = "benefit-detail";
+      meta.textContent = [change.at, change.note].filter(Boolean).join(" ・ ");
+
+      var actions = document.createElement("p");
+      actions.className = "benefit-actions";
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn-remove";
+      remove.textContent = "この記録を消す";
+      remove.addEventListener("click", function () { removeBenefitChange(change.id); });
+      actions.appendChild(remove);
+
+      li.append(title, meta, actions);
+      root.appendChild(li);
+    });
+  }
+
+  function removeBenefitChange(id) {
+    var b = benefitState();
+    saveBenefit({
+      changes: b.changes.filter(function (change) { return change.id !== id; }),
+      uses: b.uses,
+      updated_at: todayStamp()
+    });
+    render();
+  }
+
+  function renderBenefitSuggest() {
+    var box = document.getElementById("benefit-suggest");
+    var grade = state.profile ? state.profile.fc_grade : "";
+    var suggest = ruleCountFor(grade);
+    box.textContent = "";
+    if (!suggest || benefitState().changes.length) return;
+    box.textContent = GRADE_LABEL[grade] + "の特典チケットは" + suggest +
+      "枚です。「会員特典として受け取った」で記録してください。";
+    document.getElementById("benefit-change-count").value = String(suggest);
+  }
+
+  function renderBenefitOptions(now) {
+    var select = document.getElementById("benefit-match");
+    select.textContent = "";
+    var first = document.createElement("option");
+    first.value = "";
+    first.textContent = "選んでください";
+    select.appendChild(first);
+    upcomingHomeMatches(now).forEach(function (match) {
+      var option = document.createElement("option");
+      option.value = match.id;
+      var use = benefitUseFor(match.id);
+      option.textContent = matchTitle(match) + (use ? "（記録済み " + use.count + "枚）" : "");
+      select.appendChild(option);
+    });
+  }
+
+  function todayStamp() {
+    var now = new Date();
+    return now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+  }
+
+  function setBenefitStatus(matchId, status) {
+    var b = benefitState();
+    var uses = b.uses.map(function (use) {
+      return use.match_id === matchId
+        ? { match_id: matchId, count: use.count, status: status, updated_at: todayStamp() }
+        : use;
+    });
+    saveBenefit({ changes: b.changes, uses: uses, updated_at: todayStamp() });
+    render();
+  }
+
+  function removeBenefitUse(matchId) {
+    var b = benefitState();
+    var uses = b.uses.filter(function (use) { return use.match_id !== matchId; });
+    saveBenefit({ changes: b.changes, uses: uses, updated_at: todayStamp() });
+    render();
+  }
+
   function renderFilterNote() {
     var note = document.getElementById("filter-note");
     var toggle = document.getElementById("mine-only");
@@ -483,10 +885,10 @@
       toggle.disabled = false;
       note.textContent = state.mineOnly
         ? "自分に該当するものと全員向けだけを表示しています。"
-        : "自分に該当するものに★を付けています。該当しないものも一覧から消していません。";
+        : "自分に該当するものに「対象」の印を付けています。該当しないものも一覧から消していません。";
     } else {
       toggle.disabled = true;
-      note.textContent = "「あなたの設定」を保存すると、自分に該当する先行販売に★が付きます。";
+      note.textContent = "「あなたの設定」を保存すると、自分に該当する先行販売に「対象」の印が付きます。";
     }
   }
 
@@ -494,6 +896,11 @@
     var now = new Date();
     var visible = allEvents().filter(matchesFilter).filter(matchesMine);
     renderFilterNote();
+    renderBenefitSummary(now);
+    renderBenefitList();
+    renderBenefitChanges();
+    renderBenefitSuggest();
+    renderBenefitOptions(now);
     renderNext(visible, now);
     renderTimeline(visible, now);
     renderUndated(visible);
@@ -656,6 +1063,75 @@
     });
   }
 
+  function bindBenefit() {
+    var form = document.getElementById("benefit-form");
+    var planForm = document.getElementById("benefit-plan-form");
+    var status = document.getElementById("benefit-status");
+
+    form.addEventListener("submit", function (submitEvent) {
+      submitEvent.preventDefault();
+      var count = Math.floor(Number(document.getElementById("benefit-change-count").value));
+      var reason = document.getElementById("benefit-reason").value;
+      var note = document.getElementById("benefit-note").value.trim();
+      var rule = BENEFIT_REASON[reason];
+      if (!rule) {
+        status.textContent = "理由を選んでください。";
+        return;
+      }
+      if (!isFinite(count) || count < 1) {
+        status.textContent = "1以上の枚数を入れてください。";
+        return;
+      }
+
+      var b = benefitState();
+      var signed = count * rule.sign;
+      var changes = b.changes.concat([{
+        id: "chg-" + Date.now(),
+        count: signed,
+        reason: reason,
+        note: note,
+        at: todayStamp()
+      }]);
+
+      if (saveBenefit({ changes: changes, uses: b.uses, updated_at: todayStamp() })) {
+        status.textContent = rule.label + "として" + count + "枚を記録しました。持っている枚数は" +
+          benefitTotal() + "枚です。";
+        document.getElementById("benefit-note").value = "";
+        document.getElementById("benefit-change-count").value = "1";
+      } else {
+        status.textContent = "保存できませんでした。ブラウザの設定で保存が制限されている可能性があります。";
+      }
+      render();
+    });
+
+    planForm.addEventListener("submit", function (submitEvent) {
+      submitEvent.preventDefault();
+      var matchId = document.getElementById("benefit-match").value;
+      var count = Math.floor(Number(document.getElementById("benefit-count").value));
+      if (!matchId) {
+        status.textContent = "試合を選んでください。";
+        return;
+      }
+      if (!isFinite(count) || count < 1) count = 1;
+
+      var b = benefitState();
+      var found = false;
+      var uses = b.uses.map(function (use) {
+        if (use.match_id !== matchId) return use;
+        found = true;
+        // 同じ試合に足す場合は枚数を合算する
+        return { match_id: matchId, count: use.count + count, status: use.status, updated_at: todayStamp() };
+      });
+      if (!found) {
+        uses = uses.concat([{ match_id: matchId, count: count, status: "planned", updated_at: todayStamp() }]);
+      }
+      saveBenefit({ changes: b.changes, uses: uses, updated_at: todayStamp() });
+      status.textContent = count + "枚を引き換える予定として記録しました。";
+      document.getElementById("benefit-count").value = "1";
+      render();
+    });
+  }
+
   function bindForm() {
     var form = document.getElementById("my-form");
     var status = document.getElementById("my-status");
@@ -697,20 +1173,25 @@
 
   function start() {
     state.profile = loadProfile();
+    state.benefit = loadBenefit();
     bindFilters();
     bindProfile();
+    bindBenefit();
     fillProfileForm();
     document.getElementById("profile-status").textContent = profileSummary();
+
     bindForm();
     document.getElementById("ics-btn").addEventListener("click", exportIcs);
 
     Promise.all([
       fetch(EVENTS_URL).then(function (r) { return r.json(); }),
-      fetch(MATCHES_URL).then(function (r) { return r.json(); })
+      fetch(MATCHES_URL).then(function (r) { return r.json(); }),
+      fetch(BENEFIT_URL).then(function (r) { return r.json(); }).catch(function () { return null; })
     ]).then(function (results) {
       state.events = (results[0].events || []).filter(function (e) { return e.is_visible !== false; });
       state.skipped = results[0].skipped || [];
       state.matches = results[1].matches || [];
+      state.benefitRule = results[2];
       renderMatchOptions();
       render();
     }).catch(function () {

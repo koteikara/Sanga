@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="prototype.css">
 </head>
 <body>
-<p class="notice" role="note">検証用プロトタイプです。表示しているデータは手入力のサンプルで、実際の販売日時ではありません。</p>
+<p class="notice" role="note">検証用プロトタイプです。チケット販売は2026年8月28日時点の公式スケジュールの写しで、最新とは限りません。試合当日のイベント・グッズ・応募は検証用の作り物です。購入前に公式サイトで確認してください。</p>
 
 <header class="head">
   <p class="eyebrow">SANGA TOOLBOX / 検証用</p>
@@ -53,6 +53,60 @@
       </div>
     </form>
     <p id="profile-status" class="my-status" role="status"></p>
+  </section>
+
+  <section class="benefit" aria-labelledby="benefit-head">
+    <h2 id="benefit-head">特典チケット</h2>
+    <p class="section-note">
+      持っている枚数と、どの試合のチケットに引き換えるかを自分で記録します。公式には個人の保有状況が
+      出ないため、この端末に自己申告として保存します。家族や友人と譲り合うことがあるため、
+      枚数は理由つきの増減で記録し、合計をそこから出します。1試合に複数枚まとめて引き換えられます。
+      残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
+    </p>
+
+    <form id="benefit-form" class="my-form">
+      <p id="benefit-suggest" class="benefit-suggest"></p>
+      <div class="field">
+        <label for="benefit-change-count">枚数</label>
+        <input type="number" id="benefit-change-count" name="count" min="1" max="20" step="1" value="1" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label for="benefit-reason">理由</label>
+        <select id="benefit-reason" name="reason">
+          <option value="grant">会員特典として受け取った（増やす）</option>
+          <option value="received">譲り受けた（増やす）</option>
+          <option value="given">譲った（減らす）</option>
+          <option value="correction_plus">数え直して増やす</option>
+          <option value="correction_minus">数え直して減らす</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="benefit-note">メモ（任意）</label>
+        <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
+      </div>
+      <button type="submit" class="btn btn-primary">枚数の増減を記録する</button>
+    </form>
+
+    <div id="benefit-summary" class="benefit-summary" role="status"></div>
+
+    <form id="benefit-plan-form" class="my-form">
+      <div class="field">
+        <label for="benefit-match">引き換える試合</label>
+        <select id="benefit-match" name="match"><option value="">選んでください</option></select>
+      </div>
+      <div class="field">
+        <label for="benefit-count">枚数</label>
+        <input type="number" id="benefit-count" name="count" min="1" max="10" step="1" value="1" inputmode="numeric">
+      </div>
+      <button type="submit" class="btn btn-primary">引き換える予定にする</button>
+    </form>
+
+    <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
+    <ul id="benefit-list" class="benefit-list"></ul>
+
+    <h3 class="sub-head">枚数の増減</h3>
+    <ul id="benefit-changes" class="benefit-list"></ul>
+    <p id="benefit-status" class="my-status" role="status"></p>
   </section>
 
   <section aria-labelledby="filter-head">

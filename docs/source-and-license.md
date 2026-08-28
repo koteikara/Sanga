@@ -13,6 +13,8 @@
 | 区分 | 対象 | 現在の状態 |
 | --- | --- | --- |
 | 日程データ | `public/data/matches.json` | 各試合に `source_url` と `source_checked_at` を保持。Jリーグ・京都サンガF.C.等の公開情報を参照 |
+| チケット販売スケジュール | `docs/sheets/ticket-sales.2026-08-28.csv` | 公式のチケット販売スケジュールを2026-08-28に確認したスナップショット。全行に `source_url` と `retrieved_at_jst` を保持。保持するのは日時・対象・試合との対応という事実のみで、記事本文・画像は含まない。`experiments/supporter-timeline/` のプロトタイプが参照し、公開物には未反映 |
+| 特典チケットの条件 | `experiments/supporter-timeline/benefit-tickets.json` | SANGA CREWの各コースの特典チケット枚数と有効期間を2026-08-28に確認したもの。`sources` に公式ページのURLを保持。プロトタイプが枚数の初期値と利用条件の表示に使う |
 | 選手データ | `public/data/players.json`、`docs/sheets/players.csv` | 公式サイトを参照して手入力。公式ページの具体的URLと確認日が未記録 |
 | 対戦相手ロゴ | `public/assets/logos/` 9件 | `docs/sources/` の画像を加工・複製して配置。元ページURLと利用許諾が未確認 |
 | 背番号タイル | `public/assets/players/` 39件 | `docs/sources/players-numbers.jpeg` から切り出した加工物。元ページURLと利用許諾が未確認 |
