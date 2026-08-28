@@ -2,14 +2,95 @@
   "meta": {
     "note": "プロトタイプ検証用の抜粋。public/data/matches.json から必要な試合だけを写したもので、正本ではない。",
     "source": "public/data/matches.json",
-    "copied_at": "2026-08-27"
+    "copied_at": "2026-08-28"
   },
   "matches": [
-    {"id":"sec04","round":"第4節","competition":"J1","match_date":"2026-08-29","date_candidates":[],"kickoff_time":"19:00","home_away":"H","opponent":"福岡","venue":"サンガスタジアム","status":"confirmed"},
-    {"id":"sec05","round":"第5節","competition":"J1","match_date":"2026-09-02","date_candidates":[],"kickoff_time":"19:00","home_away":"A","opponent":"横浜FM","venue":"日産ス","status":"confirmed"},
-    {"id":"sec06","round":"第6節","competition":"J1","match_date":"2026-09-06","date_candidates":[],"kickoff_time":"19:30","home_away":"A","opponent":"FC東京","venue":"味スタ","status":"confirmed"},
-    {"id":"sec07","round":"第7節","competition":"J1","match_date":"2026-09-11","date_candidates":[],"kickoff_time":"19:00","home_away":"H","opponent":"柏","venue":"サンガスタジアム","status":"confirmed"},
-    {"id":"sec21","round":"第21節","competition":"J1","match_date":"","date_candidates":["2027-02-13","2027-02-14"],"kickoff_time":"","home_away":"H","opponent":"未定","venue":"サンガスタジアム","status":"tentative"},
-    {"id":"sec20","round":"第20節","competition":"J1","match_date":"","date_candidates":[],"kickoff_time":"","home_away":"","opponent":"未定","venue":"","status":"tentative"}
+    {
+      "id": "sec04",
+      "round": "第4節",
+      "competition": "J1",
+      "match_date": "2026-08-29",
+      "date_candidates": [],
+      "kickoff_time": "19:00",
+      "home_away": "H",
+      "opponent": "福岡",
+      "venue": "サンガスタジアム",
+      "status": "confirmed"
+    },
+    {
+      "id": "sec05",
+      "round": "第5節",
+      "competition": "J1",
+      "match_date": "2026-09-02",
+      "date_candidates": [],
+      "kickoff_time": "19:00",
+      "home_away": "A",
+      "opponent": "横浜FM",
+      "venue": "日産ス",
+      "status": "confirmed"
+    },
+    {
+      "id": "sec06",
+      "round": "第6節",
+      "competition": "J1",
+      "match_date": "2026-09-06",
+      "date_candidates": [],
+      "kickoff_time": "19:30",
+      "home_away": "A",
+      "opponent": "FC東京",
+      "venue": "味スタ",
+      "status": "confirmed"
+    },
+    {
+      "id": "sec07",
+      "round": "第7節",
+      "competition": "J1",
+      "match_date": "2026-09-11",
+      "date_candidates": [],
+      "kickoff_time": "19:00",
+      "home_away": "H",
+      "opponent": "柏",
+      "venue": "サンガスタジアム",
+      "status": "confirmed"
+    },
+    {
+      "id": "sec09",
+      "round": "第9節",
+      "competition": "J1",
+      "match_date": "2026-10-10",
+      "date_candidates": [],
+      "kickoff_time": "19:00",
+      "home_away": "H",
+      "opponent": "町田",
+      "venue": "サンガスタジアム",
+      "status": "confirmed"
+    },
+    {
+      "id": "sec20",
+      "round": "第20節",
+      "competition": "J1",
+      "match_date": "",
+      "date_candidates": [],
+      "kickoff_time": "",
+      "home_away": "H",
+      "opponent": "岡山",
+      "venue": "サンガスタジアム",
+      "status": "tentative"
+    },
+    {
+      "id": "sec21",
+      "round": "第21節",
+      "competition": "J1",
+      "match_date": "",
+      "date_candidates": [
+        "2027-02-13",
+        "2027-02-14"
+      ],
+      "kickoff_time": "",
+      "home_away": "H",
+      "opponent": "横浜FM",
+      "venue": "サンガスタジアム",
+      "status": "tentative"
+    }
   ]
 }
