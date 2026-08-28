@@ -39,6 +39,35 @@
     personal: "MY予定"
   };
 
+  /**
+   * 種別のイラスト。文字ラベルと併記し、アイコン自体は aria-hidden にする。
+   * 読み上げでは文字が読まれ、目で見るときは形で種別が分かるようにするため。
+   */
+  var TYPE_ICON = {
+    ticket: "M2 5.5h12v2a1.5 1.5 0 0 0 0 3v2H2v-2a1.5 1.5 0 0 0 0-3v-2z M9.5 6v1 M9.5 9v1 M9.5 12v1",
+    entry: "M2 4h12v8H2z M2 4l6 4.5L14 4",
+    event: "M3 2v12 M3 3h9l-2 2.5L12 8H3",
+    goods: "M5 3l3 1.5L11 3l3 2-2 2v6H4V7L2 5z",
+    match: "M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13z M8 4.5l3 2.2-1.2 3.6H6.2L5 6.7z M8 1.5v3 M11 6.7l2.8-.9 M9.8 10.3l1.8 2.4 M6.2 10.3l-1.8 2.4 M5 6.7l-2.8-.9",
+    personal: "M8 2.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5"
+  };
+
+  function createTypeIcon(type) {
+    var path = TYPE_ICON[type];
+    if (!path) return null;
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 16 16");
+    svg.setAttribute("class", "type-icon");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+    path.split(" M").forEach(function (part, index) {
+      var node = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      node.setAttribute("d", index === 0 ? part : "M" + part);
+      svg.appendChild(node);
+    });
+    return svg;
+  }
+
   var ACTION_LABEL = {
     action: "ACTION",
     information: "INFO",
@@ -501,16 +530,24 @@
 
     var title = document.createElement("p");
     title.className = "event-title";
-    title.textContent = event.title;
+    // 見出しで試合名を出しているときは、題からも繰り返さない
+    title.textContent = (options && options.hideMatch)
+      ? event.title.replace(/^[^ ]+戦 /, "")
+      : event.title;
 
     var meta = document.createElement("p");
     meta.className = "event-meta";
 
     var kind = document.createElement("span");
-    kind.textContent = TYPE_LABEL[event.type] || event.type;
+    kind.className = "event-kind";
+    var icon = createTypeIcon(event.type);
+    if (icon) kind.appendChild(icon);
+    var kindText = document.createElement("span");
+    kindText.textContent = TYPE_LABEL[event.type] || event.type;
+    kind.appendChild(kindText);
     meta.appendChild(kind);
 
-    var label = matchLabel(event);
+    var label = (options && options.hideMatch) ? "" : matchLabel(event);
     if (label) {
       var m = document.createElement("span");
       m.textContent = label;
@@ -533,7 +570,19 @@
       meta.appendChild(link);
     }
 
-    li.append(top, title, meta);
+    li.append(top, title);
+
+    // 同時刻に始まる関係イベント（先行販売と特典チケット引換）は1枚にまとめる
+    if (options && options.companions && options.companions.length) {
+      var also = document.createElement("p");
+      also.className = "event-also";
+      also.textContent = "同時に " + options.companions.map(function (e) {
+        return e.title.replace(/^[^ ]+戦 /, "").replace(/\s*開始/, "");
+      }).join("、") + " も始まります";
+      li.appendChild(also);
+    }
+
+    li.appendChild(meta);
 
     if (options && options.removable) {
       var remove = document.createElement("button");
@@ -549,6 +598,85 @@
     }
 
     return li;
+  }
+
+  /** 同じ試合・同じ日時・同じ対象のチケットイベントを1枚にまとめる。 */
+  function mergeSameMoment(items) {
+    var groups = {};
+    var order = [];
+    items.forEach(function (item) {
+      var event = item.event;
+      var key = event.type === "ticket"
+        ? [event.starts_at, (event.match_ids || []).join("+"), JSON.stringify(event.audience || {})].join("|")
+        : "single-" + event.id;
+      if (!groups[key]) {
+        groups[key] = { date: item.date, event: event, companions: [] };
+        order.push(key);
+        return;
+      }
+      // 先行販売を主、特典チケット引換を従として並べる
+      if (groups[key].event.ticket_kind === "benefit_exchange" && event.ticket_kind === "sale") {
+        groups[key].companions.push(groups[key].event);
+        groups[key].event = event;
+      } else {
+        groups[key].companions.push(event);
+      }
+    });
+    return order.map(function (key) { return groups[key]; });
+  }
+
+  function appendDayGroups(root, groups, now) {
+    var todayKey = dayKey(now);
+    var currentDay = "";
+    var currentMatch = null;
+    var listNode = null;
+
+    groups.forEach(function (group) {
+      var key = dayKey(group.date);
+      if (key !== currentDay) {
+        currentDay = key;
+        currentMatch = null;
+        var day = document.createElement("div");
+        day.className = "day";
+        var label = document.createElement("p");
+        label.className = "day-label";
+        label.textContent = formatDay(group.date);
+        if (key === todayKey) {
+          var badge = document.createElement("span");
+          badge.className = "today";
+          badge.textContent = "今日";
+          label.appendChild(badge);
+        }
+        day.appendChild(label);
+        root.appendChild(day);
+        listNode = null;
+      }
+
+      // 同じ日に別の試合の予定が続く場合は、試合名で区切る
+      var matchKey = (group.event.match_ids || []).join("+");
+      var headed = false;
+      if (!listNode || matchKey !== currentMatch) {
+        currentMatch = matchKey;
+        var day = root.lastChild;
+        var label = matchLabel(group.event);
+        headed = !!label;
+        if (label) {
+          var matchHead = document.createElement("p");
+          matchHead.className = "match-label";
+          matchHead.textContent = label;
+          day.appendChild(matchHead);
+        }
+        listNode = document.createElement("ul");
+        listNode.className = "events";
+        day.appendChild(listNode);
+      }
+
+      listNode.appendChild(createEventNode(group.event, {
+        removable: group.event.source === "personal",
+        companions: group.companions,
+        hideMatch: !!matchKey
+      }));
+    });
   }
 
   function renderTimeline(list, now) {
@@ -575,32 +703,36 @@
       return;
     }
 
-    var todayKey = dayKey(now);
-    var currentKey = "";
-    var listNode = null;
+    // 終わったものは既定で畳む。開いたときに「いま何をすべきか」から始まるようにするため。
+    var startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    var past = mergeSameMoment(dated.filter(function (item) {
+      return item.date.getTime() < startOfToday;
+    }));
+    var rest = mergeSameMoment(dated.filter(function (item) {
+      return item.date.getTime() >= startOfToday;
+    }));
 
-    dated.forEach(function (item) {
-      var key = dayKey(item.date);
-      if (key !== currentKey) {
-        currentKey = key;
-        var day = document.createElement("div");
-        day.className = "day";
-        var label = document.createElement("p");
-        label.className = "day-label";
-        label.textContent = formatDay(item.date);
-        if (key === todayKey) {
-          var badge = document.createElement("span");
-          badge.className = "today";
-          badge.textContent = "今日";
-          label.appendChild(badge);
-        }
-        listNode = document.createElement("ul");
-        listNode.className = "events";
-        day.append(label, listNode);
-        root.appendChild(day);
-      }
-      listNode.appendChild(createEventNode(item.event, { removable: item.event.source === "personal" }));
-    });
+    if (past.length) {
+      var details = document.createElement("details");
+      details.className = "past";
+      var summary = document.createElement("summary");
+      summary.textContent = "終わったもの " + past.length + "件を表示する";
+      details.appendChild(summary);
+      var pastBox = document.createElement("div");
+      details.appendChild(pastBox);
+      appendDayGroups(pastBox, past, now);
+      root.appendChild(details);
+    }
+
+    if (!rest.length) {
+      var done = document.createElement("p");
+      done.className = "empty";
+      done.textContent = "これからの予定はありません。";
+      root.appendChild(done);
+      return;
+    }
+
+    appendDayGroups(root, rest, now);
   }
 
   function renderUndated(list) {
@@ -1171,6 +1303,16 @@
 
   /* ---------- 起動 ---------- */
 
+  /** まだ設定していない人には開いて見せ、設定済みの人には畳んで本体を近づける。 */
+  function foldSettled() {
+    var profileFold = document.querySelector(".profile .fold");
+    if (profileFold) profileFold.open = !hasProfile();
+    var benefitFolds = document.querySelectorAll(".benefit .fold");
+    var started = benefitState().changes.length > 0;
+    if (benefitFolds[0]) benefitFolds[0].open = !started;
+    if (benefitFolds[1]) benefitFolds[1].open = false;
+  }
+
   function start() {
     state.profile = loadProfile();
     state.benefit = loadBenefit();
@@ -1193,6 +1335,7 @@
       state.matches = results[1].matches || [];
       state.benefitRule = results[2];
       renderMatchOptions();
+      foldSettled();
       render();
     }).catch(function () {
       document.getElementById("next-body").textContent = "";

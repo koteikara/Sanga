@@ -313,6 +313,81 @@ a:focus-visible {
 }
 .event.is-benefit { border-color: var(--benefit); }
 
+/* 折りたたみ */
+.fold {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  margin-top: 12px;
+}
+.fold > summary {
+  min-height: 44px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  list-style-position: inside;
+}
+.fold > summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+.fold[open] > summary { border-bottom: 1px solid var(--line-soft); }
+.fold > *:not(summary) { margin-left: 14px; margin-right: 14px; }
+.fold > *:last-child { margin-bottom: 14px; }
+.fold .my-form { border: 0; padding: 0; }
+
+.past {
+  margin-bottom: 12px;
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+}
+.past > summary {
+  min-height: 44px;
+  padding: 12px 14px;
+  font-size: 0.86rem;
+  color: var(--muted);
+  cursor: pointer;
+  list-style-position: inside;
+}
+.past > summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+.past[open] > div { padding: 0 12px 12px; }
+.past .event { opacity: 0.72; }
+
+/* 種別のイラスト。文字ラベルと併記する装飾。 */
+.type-icon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.event-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.event-also {
+  margin: 6px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--line);
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+.match-label {
+  margin: 12px 0 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.day .match-label:first-of-type { margin-top: 0; }
+
 /* タイムライン */
 .day {
   margin-top: 20px;
