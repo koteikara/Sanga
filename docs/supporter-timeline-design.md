@@ -63,7 +63,7 @@
 | 取得方法の調査 | 完了。AI抽出は不要と結論 | `docs/news-extraction-research.md` |
 | プロトタイプ | 動作する（Phase 1 + Phase 2）。チケット販売は実データ | `experiments/supporter-timeline/` |
 | チケット販売スケジュールの構造 | 2026-08-28に確認済み。1試合最大8件 | `docs/sheets/ticket-sales.2026-08-28.csv`、「販売段階は8つある」 |
-| 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
+| 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方（実データ全量での月の折りたたみ・下部ドロワーを含む）も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
 
 プロトタイプで動いているのは、タイムライン表示、種別の絞り込み、`date_precision` の出し分け、
 MY予定の追加・削除（LocalStorage）、ICS書き出し、取り込まなかった記事の一覧、
@@ -293,6 +293,8 @@ LocalStorageキーは既存の命名に合わせ、`sanga-timeline-personal-even
 
 タイムラインが長いため、ページ上部に置くと**スクロールした瞬間に見えなくなります。**
 画面下に固定し、閉じているときは直近1件を1行で、開くと直近5件までを出します。
+下部固定はアドレスバーやホームバーと干渉しやすいところですが、`env(safe-area-inset-bottom)` と
+`max-height: 70vh` で足りることを2026-08-28にiPhone Safariの実機で確認しました。
 6件目以降は件数だけ伝えてタイムラインへ送ります（「ほか35件はタイムラインで見られます」）。
 
 **1件だけでは足りないことも実データで分かりました。** 直近1週間に複数の販売と締切が並ぶため、
