@@ -55,6 +55,37 @@
     <p id="profile-status" class="my-status" role="status"></p>
   </section>
 
+  <section class="benefit" aria-labelledby="benefit-head">
+    <h2 id="benefit-head">特典チケット</h2>
+    <p class="section-note">
+      持っている枚数と、どの試合に使うかを自分で記録します。公式には個人の保有状況が出ないため、
+      この端末に自己申告として保存します。残り枚数と、残りのホーム戦の数を突き合わせて、
+      使い切れないおそれがあるときに知らせます。
+    </p>
+
+    <form id="benefit-form" class="my-form">
+      <div class="field">
+        <label for="benefit-total">持っている枚数</label>
+        <input type="number" id="benefit-total" name="total" min="0" max="30" step="1" inputmode="numeric">
+      </div>
+      <button type="submit" class="btn btn-primary">枚数を保存する</button>
+    </form>
+
+    <div id="benefit-summary" class="benefit-summary" role="status"></div>
+
+    <form id="benefit-plan-form" class="my-form">
+      <div class="field">
+        <label for="benefit-match">使う試合</label>
+        <select id="benefit-match" name="match"><option value="">選んでください</option></select>
+      </div>
+      <button type="submit" class="btn btn-primary">使う予定にする</button>
+    </form>
+
+    <h3 class="sub-head">使う予定・使った記録</h3>
+    <ul id="benefit-list" class="benefit-list"></ul>
+    <p id="benefit-status" class="my-status" role="status"></p>
+  </section>
+
   <section aria-labelledby="filter-head">
     <h2 id="filter-head" class="visually-hidden">表示の絞り込み</h2>
     <div class="filters" role="group" aria-label="種別で絞り込む">

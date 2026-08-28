@@ -8,6 +8,7 @@
  *   3. MY予定と公式イベントが同じ時系列に並ぶこと
  *   4. 確定した日時だけがICSへ出ること
  *   5. プロフィール（会員種別・シーズンパス）による強調と並べ替え（Phase 2）
+ *   6. 特典チケットの残り枚数と使う予定の記録（Phase 2 追加）
  *
  * 本番へ持ち込まないこと: サンプルデータ、検証用の注意書き。
  */
@@ -18,6 +19,7 @@
   var MATCHES_URL = "matches.sample.json";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
+  var BENEFIT_KEY = "sanga-timeline-benefit-tickets-v1";
 
   var GRADE_LABEL = {
     platinum: "プラチナクルー",
@@ -56,7 +58,8 @@
     matches: [],
     filter: "all",
     mineOnly: false,
-    profile: null
+    profile: null,
+    benefit: null
   };
 
   /* ---------- 日時 ---------- */
@@ -195,6 +198,81 @@
     return Object.keys(audience).length === 0;
   }
 
+  /**
+   * 特典チケットの保有と使い道。公式には個人の保有状況が出ないため、自己申告として端末内に持つ。
+   * { total: 枚数, uses: [{ match_id, status: "planned" | "used", updated_at }] }
+   */
+  function normalizeBenefit(value) {
+    if (!value || typeof value !== "object") return null;
+    var total = Number(value.total);
+    if (!isFinite(total) || total < 0) total = 0;
+    var uses = Array.isArray(value.uses) ? value.uses : [];
+    var seen = {};
+    var kept = [];
+    uses.forEach(function (use) {
+      if (!use || typeof use.match_id !== "string" || !use.match_id) return;
+      if (seen[use.match_id]) return;
+      seen[use.match_id] = true;
+      kept.push({
+        match_id: use.match_id,
+        status: use.status === "used" ? "used" : "planned",
+        updated_at: typeof use.updated_at === "string" ? use.updated_at : ""
+      });
+    });
+    return { total: Math.floor(total), uses: kept, updated_at: value.updated_at || "" };
+  }
+
+  function loadBenefit() {
+    try {
+      var raw = window.localStorage.getItem(BENEFIT_KEY);
+      return raw ? normalizeBenefit(JSON.parse(raw)) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveBenefit(benefit) {
+    try {
+      window.localStorage.setItem(BENEFIT_KEY, JSON.stringify(benefit));
+      state.benefit = normalizeBenefit(benefit);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function benefitState() {
+    return state.benefit || { total: 0, uses: [], updated_at: "" };
+  }
+
+  function benefitUseFor(matchId) {
+    var found = null;
+    benefitState().uses.forEach(function (use) {
+      if (use.match_id === matchId) found = use;
+    });
+    return found;
+  }
+
+  function benefitCounts() {
+    var b = benefitState();
+    var planned = 0;
+    var used = 0;
+    b.uses.forEach(function (use) {
+      if (use.status === "used") used += 1; else planned += 1;
+    });
+    return { total: b.total, planned: planned, used: used, left: b.total - planned - used };
+  }
+
+  /** これから開催されるホーム戦のうち、まだ使い道を決めていないもの。 */
+  function openHomeMatches(now) {
+    return state.matches.filter(function (match) {
+      if (match.home_away !== "H") return false;
+      if (benefitUseFor(match.id)) return false;
+      if (!match.match_date) return true; // 日程未定・候補日はこれからの試合として数える
+      return new Date(match.match_date + "T23:59:59+09:00").getTime() >= now.getTime();
+    });
+  }
+
   function allEvents() {
     return state.events.concat(loadPersonal());
   }
@@ -289,6 +367,20 @@
     var reason = profileMatch(event);
     if (reason) li.classList.add("is-mine");
 
+    // 特典チケットの残りと使い道を、関係するイベントの上に出す。
+    var benefitNote = "";
+    var counts = benefitCounts();
+    if (event.ticket_kind === "benefit_exchange" && reason && counts.total > 0) {
+      benefitNote = "特典チケット 残り" + Math.max(counts.left, 0) + "枚";
+    }
+    var use = event.type === "match" && Array.isArray(event.match_ids) && event.match_ids.length
+      ? benefitUseFor(event.match_ids[0])
+      : null;
+    if (use) {
+      benefitNote = use.status === "used" ? "特典チケットを使った" : "特典チケットを使う予定";
+      li.classList.add("is-benefit");
+    }
+
     var top = document.createElement("div");
     top.className = "event-top";
 
@@ -315,6 +407,13 @@
       mine.className = "badge-mine";
       mine.textContent = "★ " + reason;
       top.appendChild(mine);
+    }
+
+    if (benefitNote) {
+      var benefitBadge = document.createElement("span");
+      benefitBadge.className = "badge-benefit";
+      benefitBadge.textContent = "◎ " + benefitNote;
+      top.appendChild(benefitBadge);
     }
 
     var title = document.createElement("p");
@@ -476,6 +575,154 @@
     });
   }
 
+  function matchTitle(match) {
+    return match.round + " " + (match.opponent || "未定") + "戦" +
+      (match.match_date ? "（" + match.match_date + "）"
+        : (match.date_candidates && match.date_candidates.length
+          ? "（" + formatCandidates(match.date_candidates) + "）"
+          : "（日程未定）"));
+  }
+
+  function renderBenefitSummary(now) {
+    var box = document.getElementById("benefit-summary");
+    box.textContent = "";
+    var counts = benefitCounts();
+
+    if (!counts.total && !counts.planned && !counts.used) {
+      var none = document.createElement("p");
+      none.className = "empty";
+      none.textContent = "枚数を入れると、残りと使い道の管理ができます。";
+      box.appendChild(none);
+      return;
+    }
+
+    var line = document.createElement("p");
+    line.className = "benefit-count";
+    line.textContent = "残り " + Math.max(counts.left, 0) + "枚";
+
+    var detail = document.createElement("p");
+    detail.className = "benefit-detail";
+    detail.textContent = "持っている " + counts.total + "枚 ・ 使う予定 " + counts.planned +
+      "枚 ・ 使った " + counts.used + "枚";
+    box.append(line, detail);
+
+    var open = openHomeMatches(now).length;
+    var note = document.createElement("p");
+    if (counts.left < 0) {
+      note.className = "benefit-warn";
+      note.textContent = "⚠ 持っている枚数より多く割り当てています。枚数か割り当てを見直してください。";
+    } else if (counts.left > open) {
+      note.className = "benefit-warn";
+      note.textContent = "⚠ 残り" + counts.left + "枚に対して、使い道を決めていないホーム戦は" + open +
+        "試合です。このままでは使い切れないおそれがあります。";
+    } else if (counts.left > 0) {
+      note.className = "benefit-detail";
+      note.textContent = "使い道を決めていないホーム戦は" + open + "試合あります。";
+    } else {
+      note.className = "benefit-detail";
+      note.textContent = "残りはありません。";
+    }
+    box.appendChild(note);
+  }
+
+  function renderBenefitList() {
+    var root = document.getElementById("benefit-list");
+    root.textContent = "";
+    var uses = benefitState().uses.slice().sort(function (a, b) {
+      return a.match_id < b.match_id ? -1 : 1;
+    });
+
+    if (!uses.length) {
+      var li = document.createElement("li");
+      li.className = "empty";
+      li.textContent = "まだ記録がありません。";
+      root.appendChild(li);
+      return;
+    }
+
+    uses.forEach(function (use) {
+      var match = state.matches.find(function (m) { return m.id === use.match_id; });
+      var li = document.createElement("li");
+      li.className = "benefit-item is-" + use.status;
+
+      var name = document.createElement("p");
+      name.className = "benefit-item-title";
+      name.textContent = match ? matchTitle(match) : use.match_id;
+
+      var tag = document.createElement("span");
+      tag.className = "benefit-tag";
+      tag.textContent = use.status === "used" ? "使った" : "使う予定";
+      name.appendChild(tag);
+
+      var actions = document.createElement("p");
+      actions.className = "benefit-actions";
+
+      if (use.status === "planned") {
+        var done = document.createElement("button");
+        done.type = "button";
+        done.className = "btn-remove";
+        done.textContent = "使ったことにする";
+        done.addEventListener("click", function () { setBenefitStatus(use.match_id, "used"); });
+        actions.appendChild(done);
+      } else {
+        var back = document.createElement("button");
+        back.type = "button";
+        back.className = "btn-remove";
+        back.textContent = "予定に戻す";
+        back.addEventListener("click", function () { setBenefitStatus(use.match_id, "planned"); });
+        actions.appendChild(back);
+      }
+
+      var remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "btn-remove";
+      remove.textContent = "記録を消す";
+      remove.addEventListener("click", function () { removeBenefitUse(use.match_id); });
+      actions.appendChild(remove);
+
+      li.append(name, actions);
+      root.appendChild(li);
+    });
+  }
+
+  function renderBenefitOptions(now) {
+    var select = document.getElementById("benefit-match");
+    select.textContent = "";
+    var first = document.createElement("option");
+    first.value = "";
+    first.textContent = "選んでください";
+    select.appendChild(first);
+    openHomeMatches(now).forEach(function (match) {
+      var option = document.createElement("option");
+      option.value = match.id;
+      option.textContent = matchTitle(match);
+      select.appendChild(option);
+    });
+  }
+
+  function todayStamp() {
+    var now = new Date();
+    return now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+  }
+
+  function setBenefitStatus(matchId, status) {
+    var b = benefitState();
+    var uses = b.uses.map(function (use) {
+      return use.match_id === matchId
+        ? { match_id: matchId, status: status, updated_at: todayStamp() }
+        : use;
+    });
+    saveBenefit({ total: b.total, uses: uses, updated_at: todayStamp() });
+    render();
+  }
+
+  function removeBenefitUse(matchId) {
+    var b = benefitState();
+    var uses = b.uses.filter(function (use) { return use.match_id !== matchId; });
+    saveBenefit({ total: b.total, uses: uses, updated_at: todayStamp() });
+    render();
+  }
+
   function renderFilterNote() {
     var note = document.getElementById("filter-note");
     var toggle = document.getElementById("mine-only");
@@ -494,6 +741,9 @@
     var now = new Date();
     var visible = allEvents().filter(matchesFilter).filter(matchesMine);
     renderFilterNote();
+    renderBenefitSummary(now);
+    renderBenefitList();
+    renderBenefitOptions(now);
     renderNext(visible, now);
     renderTimeline(visible, now);
     renderUndated(visible);
@@ -656,6 +906,44 @@
     });
   }
 
+  function bindBenefit() {
+    var form = document.getElementById("benefit-form");
+    var planForm = document.getElementById("benefit-plan-form");
+    var status = document.getElementById("benefit-status");
+
+    form.addEventListener("submit", function (submitEvent) {
+      submitEvent.preventDefault();
+      var raw = document.getElementById("benefit-total").value;
+      var total = Math.floor(Number(raw));
+      if (!isFinite(total) || total < 0) {
+        status.textContent = "0以上の数を入れてください。";
+        return;
+      }
+      var b = benefitState();
+      if (saveBenefit({ total: total, uses: b.uses, updated_at: todayStamp() })) {
+        status.textContent = "持っている枚数を" + total + "枚として保存しました。この端末にだけ残ります。";
+      } else {
+        status.textContent = "保存できませんでした。ブラウザの設定で保存が制限されている可能性があります。";
+      }
+      render();
+    });
+
+    planForm.addEventListener("submit", function (submitEvent) {
+      submitEvent.preventDefault();
+      var matchId = document.getElementById("benefit-match").value;
+      if (!matchId) {
+        status.textContent = "試合を選んでください。";
+        return;
+      }
+      var b = benefitState();
+      var uses = b.uses.concat([{ match_id: matchId, status: "planned", updated_at: todayStamp() }]);
+      saveBenefit({ total: b.total, uses: uses, updated_at: todayStamp() });
+      status.textContent = "使う予定として記録しました。";
+      planForm.reset();
+      render();
+    });
+  }
+
   function bindForm() {
     var form = document.getElementById("my-form");
     var status = document.getElementById("my-status");
@@ -697,10 +985,13 @@
 
   function start() {
     state.profile = loadProfile();
+    state.benefit = loadBenefit();
     bindFilters();
     bindProfile();
+    bindBenefit();
     fillProfileForm();
     document.getElementById("profile-status").textContent = profileSummary();
+    if (state.benefit) document.getElementById("benefit-total").value = String(state.benefit.total);
     bindForm();
     document.getElementById("ics-btn").addEventListener("click", exportIcs);
 
