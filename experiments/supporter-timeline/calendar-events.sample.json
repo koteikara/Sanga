@@ -1,10 +1,12 @@
 {
   "meta": {
-    "note": "チケット販売と試合は実データ。チケットは docs/sheets/ticket-sales.2026-08-28.csv（2026-08-28確認のスナップショット）、試合は public/data/matches.json から作った。試合当日のイベント・グッズ・応募（is_sample: true）は検証用の作り物で、日時もURLも実在しない。チケットイベントは ticket_kind で sale / benefit_exchange / unscheduled を区別する。",
-    "schema": "docs/supporter-timeline-design.md の TimelineEvent",
+    "note": "チケット販売と試合は実データ。作り物のイベントには is_sample: true が付く。tools/generate-calendar-events.js が生成する。手で編集しない。",
+    "generator": "tools/generate-calendar-events.js",
     "ticket_source": "https://www.sanga-fc.jp/ticket/schedule",
     "ticket_checked_at": "2026-08-28",
-    "ticket_rounds": "2026/27 J1のホーム19試合ぶん（掲載済み15試合・未掲載4試合）",
+    "ticket_csv": "docs/sheets/ticket-sales.2026-08-28.csv",
+    "matches_source": "public/data/matches.json",
+    "match_count": 19,
     "updated_at": "2026-08-28"
   },
   "events": [
@@ -402,12 +404,8 @@
     },
     {
       "id": "match-sec03",
-      "starts_at": "2026-08-22T19:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "水戸戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -418,7 +416,11 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-08-22T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "水戸戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec07-season",
@@ -641,12 +643,8 @@
     },
     {
       "id": "match-sec04",
-      "starts_at": "2026-08-29T19:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "福岡戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -657,28 +655,11 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "confirmed",
-      "is_visible": true
-    },
-    {
-      "id": "match-sec04",
+      "is_visible": true,
       "starts_at": "2026-08-29T19:00:00+09:00",
-      "ends_at": "",
       "date_precision": "datetime",
       "date_candidates": [],
-      "type": "match",
-      "title": "福岡戦 キックオフ（サンガスタジアム）",
-      "source": "official",
-      "action_type": "information",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec04"
-      ],
-      "source_url": "",
-      "source_checked_at": "2026-08-27",
-      "status": "confirmed",
-      "is_visible": true,
-      "is_sample": true
+      "title": "福岡戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec07-general",
@@ -770,12 +751,8 @@
     },
     {
       "id": "match-sec07",
-      "starts_at": "2026-09-11T19:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "柏戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -786,7 +763,11 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-21",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-09-11T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "柏戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec09-season",
@@ -1378,12 +1359,8 @@
     },
     {
       "id": "match-sec09",
-      "starts_at": "2026-10-10T19:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "町田戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -1394,16 +1371,16 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-25",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-10-10T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "町田戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "match-sec11",
-      "starts_at": "2026-10-21T19:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "鹿島戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -1414,7 +1391,11 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-10-21T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "鹿島戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec15-season",
@@ -1637,12 +1618,8 @@
     },
     {
       "id": "match-sec13",
-      "starts_at": "2026-10-31T14:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "清水戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -1653,7 +1630,11 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-25",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-10-31T14:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "清水戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec17-benefit-platinum",
@@ -2026,12 +2007,8 @@
     },
     {
       "id": "match-sec15",
-      "starts_at": "2026-11-21T14:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "浦和戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -2042,16 +2019,16 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-25",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-11-21T14:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "浦和戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "match-sec17",
-      "starts_at": "2026-11-28T14:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "C大阪戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -2062,16 +2039,16 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-25",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-11-28T14:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "C大阪戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "match-sec19",
-      "starts_at": "2026-12-13T14:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "千葉戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -2082,7 +2059,11 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2026-12-13T14:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "千葉戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec21-season",
@@ -2870,12 +2851,8 @@
     },
     {
       "id": "match-sec16",
-      "starts_at": "2027-04-14T19:00:00+09:00",
       "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
       "type": "match",
-      "title": "神戸戦 キックオフ（サンガスタジアム）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -2886,7 +2863,11 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-25",
       "status": "confirmed",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "2027-04-14T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "神戸戦 キックオフ（サンガスタジアム）"
     },
     {
       "id": "ticket-sec35-season",
@@ -3282,12 +3263,8 @@
     },
     {
       "id": "match-sec20",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "unknown",
-      "date_candidates": [],
       "type": "match",
-      "title": "岡山戦 キックオフ（試合日が未定）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3298,19 +3275,16 @@
       "source_url": "https://sanga-fc.jp/news/detail/21194",
       "source_checked_at": "2026-08-25",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "unknown",
+      "date_candidates": [],
+      "title": "岡山戦 キックオフ（試合日が未定）"
     },
     {
       "id": "match-sec21",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-02-13",
-        "2027-02-14"
-      ],
       "type": "match",
-      "title": "横浜FM戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3321,19 +3295,19 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-02-13",
+        "2027-02-14"
+      ],
+      "title": "横浜FM戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec23",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-02-27",
-        "2027-02-28"
-      ],
       "type": "match",
-      "title": "東京V戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3344,19 +3318,19 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-02-27",
+        "2027-02-28"
+      ],
+      "title": "東京V戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec24",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-03-06",
-        "2027-03-07"
-      ],
       "type": "match",
-      "title": "FC東京戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3367,19 +3341,19 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-03-06",
+        "2027-03-07"
+      ],
+      "title": "FC東京戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec26",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-03-13",
-        "2027-03-14"
-      ],
       "type": "match",
-      "title": "川崎F戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3390,19 +3364,19 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-03-13",
+        "2027-03-14"
+      ],
+      "title": "川崎F戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec28",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-04-03",
-        "2027-04-04"
-      ],
       "type": "match",
-      "title": "長崎戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3413,18 +3387,19 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-04-03",
+        "2027-04-04"
+      ],
+      "title": "長崎戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec32",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-04-29"
-      ],
       "type": "match",
-      "title": "G大阪戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3435,19 +3410,18 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-04-29"
+      ],
+      "title": "G大阪戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec35",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-05-15",
-        "2027-05-16"
-      ],
       "type": "match",
-      "title": "広島戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3458,19 +3432,19 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-05-15",
+        "2027-05-16"
+      ],
+      "title": "広島戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "match-sec37",
-      "starts_at": "",
       "ends_at": "",
-      "date_precision": "candidates",
-      "date_candidates": [
-        "2027-05-29",
-        "2027-05-30"
-      ],
       "type": "match",
-      "title": "名古屋戦 キックオフ（開催日が候補のまま）",
       "source": "official",
       "action_type": "information",
       "audience": {},
@@ -3481,7 +3455,14 @@
       "source_url": "https://www.jleague.jp/news/article/34406/",
       "source_checked_at": "2026-07-09",
       "status": "tentative",
-      "is_visible": true
+      "is_visible": true,
+      "starts_at": "",
+      "date_precision": "candidates",
+      "date_candidates": [
+        "2027-05-29",
+        "2027-05-30"
+      ],
+      "title": "名古屋戦 キックオフ（開催日が候補のまま）"
     },
     {
       "id": "ticket-sec16-unscheduled",

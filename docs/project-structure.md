@@ -24,6 +24,7 @@
 - 選手生成・検証: `generate-players-from-csv.js`、`validate-players.js`
 - スカッド: `check-squad-layout.mjs`、背番号画像加工ツール
 - 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照、版数の突き合わせ）、`asset-versions.mjs`（CSS/JSの `?v=` を内容ハッシュで生成・検証。`--check` で検出、引数なしで書き換え）
+- タイムライン: `generate-calendar-events.js`（チケット販売CSVと `matches.json` から `calendar-events` を生成）、`validate-calendar-events.js`
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
 - ホテル: `tools/hotels/`、`validate-hotels.js`
 - 本番からの取り込み: `fetch-production-files.mjs`、`ftp-client.mjs`（読み取り専用。手順は `docs/production-import.md`）、`check-import-tools.mjs`（検証用FTPサーバーを立てて動作確認）
@@ -69,7 +70,8 @@ Static Checksと本番デプロイは、再利用可能な `squad-checks.yml` �
 npm run check
 ```
 
-個別に実行する場合は `npm run check:static`（日程ページ）と `npm run check:squad`（予想スカッド）を使います。
+個別に実行する場合は `npm run check:static`（日程ページ）、`npm run check:squad`（予想スカッド）、
+`npm run check:timeline`（SUPPORTER TIMELINEの生成物と内容）を使います。
 実体は `tools/` 配下の検証スクリプトで、追加の依存はありません。
 
 Playwrightを利用できる環境では、ローカルサーバーを起動して次も実行します。
