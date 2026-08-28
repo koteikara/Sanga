@@ -1422,6 +1422,25 @@
   }
 
   /**
+   * 見出しが画面上部に貼り付いたかを見張る。
+   * 貼り付いているあいだだけ帯に縮め、地の色を敷く。
+   * scroll を毎回測るより負荷が軽いので IntersectionObserver を使う。
+   */
+  function bindStickyHead() {
+    var head = document.querySelector(".head");
+    if (!head || typeof IntersectionObserver !== "function") return;
+
+    var sentinel = document.createElement("div");
+    sentinel.setAttribute("aria-hidden", "true");
+    sentinel.style.height = "1px";
+    head.parentNode.insertBefore(sentinel, head);
+
+    new IntersectionObserver(function (entries) {
+      head.classList.toggle("is-stuck", !entries[0].isIntersecting);
+    }, { threshold: 0 }).observe(sentinel);
+  }
+
+  /**
    * 下部メニューとシート。シートは <dialog> で開く。
    * Esc・フォーカスの閉じ込め・閉じたときのフォーカス復帰は <dialog> の挙動をそのまま使い、
    * 背面のスクロール止めと出入りの動きだけをこちらで足す。
@@ -1456,9 +1475,10 @@
       sheet.addEventListener("animationend", done);
     }
 
-    document.querySelectorAll("#tabbar .tab").forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        open(document.getElementById(tab.dataset.sheet), tab);
+    // 下部メニューと、見出しの「書き出し」の両方から開く
+    document.querySelectorAll("[data-sheet]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        open(document.getElementById(button.dataset.sheet), button);
       });
     });
 
@@ -1493,6 +1513,7 @@
     fillProfileForm();
     document.getElementById("profile-status").textContent = profileSummary();
     bindSheets();
+    bindStickyHead();
 
     bindForm();
     document.getElementById("ics-btn").addEventListener("click", exportIcs);

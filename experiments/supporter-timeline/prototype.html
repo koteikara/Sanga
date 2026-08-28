@@ -21,9 +21,14 @@
 <p class="notice" role="note">検証用プロトタイプです。チケット販売は2026年8月28日時点の公式スケジュールの写しで、最新とは限りません。試合当日のイベント・グッズ・応募は検証用の作り物です。購入前に公式サイトで確認してください。</p>
 
 <header class="head">
-  <p class="eyebrow">SANGA TOOLBOX / 検証用</p>
-  <h1>SUPPORTER TIMELINE</h1>
-  <p class="lead">次にやることと、当日の流れを1本の時系列で見る。</p>
+  <div class="head-row">
+    <h1>SUPPORTER TIMELINE</h1>
+    <!-- 書き出しは常に見えるが押す頻度は低い。下部メニューの枠を使わず見出しの横に置く -->
+    <button type="button" class="head-action" data-sheet="sheet-ics" aria-haspopup="dialog" aria-label="カレンダーへ書き出す">
+      <svg class="head-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v10M8.5 10 12 13.5 15.5 10"/><path d="M4.5 15.5v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/></svg>
+      <span class="head-action-label">書き出し</span>
+    </button>
+  </div>
 </header>
 
 <main>
@@ -38,16 +43,6 @@
     <div id="undated" class="undated"></div>
   </section>
 
-  <section aria-labelledby="ics-head">
-    <h2 id="ics-head">カレンダーへ書き出す</h2>
-    <p class="section-note">
-      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
-      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
-    </p>
-    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を書き出す</button>
-    <p id="ics-status" class="my-status" role="status"></p>
-  </section>
-
   <section aria-labelledby="skipped-head">
     <h2 id="skipped-head">取り込まなかった記事</h2>
     <p class="section-note">機械的に確実に読めなかったものは、日時を取らずURLだけ残します。</p>
@@ -56,30 +51,30 @@
 </main>
 
 <footer class="foot">
-  <p>京都サンガF.C.の非公式ファンツールの検証用プロトタイプです。クラブおよびJリーグとは関係がありません。</p>
+  <p>京都サンガF.C.の非公式ファンツールです。クラブおよびJリーグとは関係がありません。</p>
   <p>設計は <code>docs/supporter-timeline-design.md</code>、構成図は <code>docs/concept/timeline-architecture.html</code>。</p>
 </footer>
 
 <!-- 常時出ている操作メニュー。本題（タイムライン）を上に出すため、
      設定・特典チケット・絞り込み・MY予定はここからシートで開く。 -->
 <nav id="tabbar" class="tabbar" aria-label="操作">
-  <button type="button" class="tab" data-sheet="sheet-filter" aria-haspopup="dialog">
+  <button type="button" class="tab" data-sheet="sheet-filter" aria-haspopup="dialog" aria-label="絞り込み">
     <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
     <span class="tab-label">絞り込み</span>
   </button>
-  <button type="button" class="tab" data-sheet="sheet-benefit" aria-haspopup="dialog">
+  <button type="button" class="tab" data-sheet="sheet-benefit" aria-haspopup="dialog" aria-label="特典チケット">
     <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12"/></svg>
     <span class="tab-label">特典</span>
   </button>
-  <button type="button" class="tab tab-primary" data-sheet="sheet-next" aria-haspopup="dialog">
+  <button type="button" class="tab tab-primary" data-sheet="sheet-next" aria-haspopup="dialog" aria-label="次にやること">
     <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
     <span class="tab-label">次にやること</span>
   </button>
-  <button type="button" class="tab" data-sheet="sheet-my" aria-haspopup="dialog">
+  <button type="button" class="tab" data-sheet="sheet-my" aria-haspopup="dialog" aria-label="MY予定を追加">
     <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>
     <span class="tab-label">MY予定</span>
   </button>
-  <button type="button" class="tab" data-sheet="sheet-profile" aria-haspopup="dialog">
+  <button type="button" class="tab" data-sheet="sheet-profile" aria-haspopup="dialog" aria-label="設定">
     <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>
     <span class="tab-label">設定</span>
     <span id="profile-dot" class="tab-dot" hidden><span class="visually-hidden">未設定です</span></span>
@@ -206,6 +201,21 @@
       <button type="submit" class="btn btn-primary">追加する</button>
     </form>
     <p id="my-status" class="my-status" role="status"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-ics" class="sheet" aria-labelledby="sheet-ics-head">
+  <div class="sheet-head">
+    <h2 id="sheet-ics-head">カレンダーへ書き出す</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p class="section-note">
+      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
+      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
+    </p>
+    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を書き出す</button>
+    <p id="ics-status" class="my-status" role="status"></p>
   </div>
 </dialog>
 
