@@ -25,6 +25,36 @@
     </div>
   </section>
 
+  <section class="profile" aria-labelledby="profile-head">
+    <h2 id="profile-head">あなたの設定</h2>
+    <p class="section-note">
+      会員種別とシーズンパスの有無から、自分に関係する先行販売を上に出します。
+      この端末にだけ保存し、公開データにも外部にも送りません。未設定でもすべての予定が見えます。
+    </p>
+    <form id="profile-form" class="my-form">
+      <div class="field">
+        <label for="profile-grade">SANGA CREW 会員種別</label>
+        <select id="profile-grade" name="fc_grade">
+          <option value="">未設定</option>
+          <option value="platinum">プラチナクルー</option>
+          <option value="gold">ゴールドクルー</option>
+          <option value="regular">レギュラークルー</option>
+          <option value="kids">キッズクルー</option>
+          <option value="none">会員ではない</option>
+        </select>
+      </div>
+      <div class="field field-check">
+        <input type="checkbox" id="profile-season" name="has_season_ticket">
+        <label for="profile-season">シーズンパスを持っている</label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">保存する</button>
+        <button type="button" id="profile-clear" class="btn btn-quiet">保存した設定を削除する</button>
+      </div>
+    </form>
+    <p id="profile-status" class="my-status" role="status"></p>
+  </section>
+
   <section aria-labelledby="filter-head">
     <h2 id="filter-head" class="visually-hidden">表示の絞り込み</h2>
     <div class="filters" role="group" aria-label="種別で絞り込む">
@@ -34,6 +64,11 @@
       <button type="button" class="chip" data-filter="matchday" aria-pressed="false">試合当日</button>
       <button type="button" class="chip" data-filter="personal" aria-pressed="false">MY予定</button>
     </div>
+    <div class="filter-mine">
+      <input type="checkbox" id="mine-only">
+      <label for="mine-only">自分に関係するものだけ表示する</label>
+    </div>
+    <p id="filter-note" class="section-note filter-note"></p>
   </section>
 
   <section aria-labelledby="timeline-head">
