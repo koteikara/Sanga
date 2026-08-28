@@ -14,6 +14,7 @@
   --muted: rgba(255, 255, 255, 0.86);
   /* リンク。地の上は入口ページの --cyan-soft、白場では --accent に戻す */
   --link: #6fd6e8;
+  --cyan-focus: #6fd6e8;
   --line: #ded9e6;
   --line-soft: #ece8f1;
   --accent: #a8248c;            /* 入口ページ --purple-lit */
@@ -136,26 +137,74 @@ body {
   line-height: 1.6;
 }
 
+/* 見出しは画面上部に固定する。スクロール中は帯に縮め、書き出しだけを連れて行く。
+   背景が動いているため、固定中だけ地の色を敷いて文字を読めるようにする。 */
 .head {
+  position: sticky;
+  top: 0;
+  z-index: 15;
   padding: 24px 16px 18px;
+  transition: padding 180ms ease, background-color 180ms ease;
 }
-.eyebrow {
-  margin: 0 0 4px;
+.head.is-stuck {
+  padding: 8px 12px 8px 16px;
+  background: rgba(42, 10, 43, 0.92);
+  box-shadow: 0 4px 16px rgba(20, 0, 18, 0.34);
+}
+.head.is-stuck h1 { font-size: 1.02rem; letter-spacing: 0.06em; }
+
+.head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* 書き出し。見出しの横の余白に収まる大きさにする */
+.head-action {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--ground-line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--ground-ink);
+  font-family: inherit;
   font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: var(--ground-ink-dim);
+  cursor: pointer;
+}
+.head-action:focus-visible {
+  outline: 3px solid var(--cyan-focus);
+  outline-offset: 2px;
+}
+.head-action-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 狭い端末では見出しと並べる余地がないので、書き出しは絵柄だけにする。
+   読み上げ名は aria-label で保つ。 */
+@media (max-width: 359px) {
+  .head-action-label { display: none; }
+  .head-action { min-width: 44px; justify-content: center; padding: 0; }
 }
 .head h1 {
   margin: 0;
-  font-size: 1.5rem;
+  /* 幅に応じて縮め、横のボタンの場所を作る。折り返すと帯が2行になるため折り返さない */
+  font-size: clamp(1rem, 4.8vw, 1.5rem);
   line-height: 1.3;
   letter-spacing: 0.02em;
-}
-.lead {
-  margin: 6px 0 0;
-  color: var(--ground-ink-dim);
-  font-size: 0.9rem;
+  white-space: nowrap;
+  transition: font-size 180ms ease;
 }
 
 main {
@@ -205,7 +254,9 @@ section h2 {
   color: var(--ink);
   border-radius: 999px;
   box-shadow: 0 8px 26px rgba(20, 0, 18, 0.42);
-  max-width: calc(100vw - 20px);
+  /* 端末幅に収める。ボタンは伸び縮みするので、狭い端末でもはみ出さない */
+  width: max-content;
+  max-width: calc(100vw - 16px);
 }
 .tab {
   display: flex;
@@ -213,15 +264,16 @@ section h2 {
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-width: 60px;
+  flex: 1 1 auto;
+  min-width: 44px;
   min-height: 52px;
-  padding: 4px 2px;
+  padding: 4px 6px;
   border: 0;
   border-radius: 999px;
   background: transparent;
   color: var(--muted);
   font-family: inherit;
-  font-size: 0.66rem;
+  font-size: 0.64rem;
   line-height: 1.25;
   cursor: pointer;
   position: relative;
@@ -246,7 +298,13 @@ section h2 {
   color: var(--ground-ink);
   padding: 4px 10px;
 }
-.tab-label { white-space: nowrap; }
+.tab-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  max-width: 100%;
+}
+
 /* 未設定の合図。色だけに頼らず、読み上げ用の語を併記する */
 .tab-dot {
   position: absolute;
