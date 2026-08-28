@@ -697,12 +697,15 @@
       }
       node.appendChild(label);
 
+      // 試合ブロックごとに白場（.block）で包む。札と札のあいだで背景を見せるため
       day.blocks.forEach(function (block) {
+        var blockNode = document.createElement("div");
+        blockNode.className = "block";
         if (!single && block.label) {
           var head = document.createElement("p");
           head.className = "match-label";
           head.textContent = block.label;
-          node.appendChild(head);
+          blockNode.appendChild(head);
         }
         var listNode = document.createElement("ul");
         listNode.className = "events";
@@ -713,7 +716,8 @@
             hideMatch: !!block.matchKey
           }));
         });
-        node.appendChild(listNode);
+        blockNode.appendChild(listNode);
+        node.appendChild(blockNode);
       });
 
       root.appendChild(node);
@@ -838,10 +842,13 @@
       return;
     }
 
+    var blockNode = document.createElement("div");
+    blockNode.className = "block";
     var ul = document.createElement("ul");
     ul.className = "events";
     undated.forEach(function (event) { ul.appendChild(createEventNode(event, null)); });
-    root.appendChild(ul);
+    blockNode.appendChild(ul);
+    root.appendChild(blockNode);
   }
 
   function renderSkipped() {

@@ -9,6 +9,15 @@
 <link rel="stylesheet" href="prototype.css">
 </head>
 <body>
+<!-- 背景。入口ページ（public/assets/）の実装をそのまま借りる。
+     WebGLが使えない場合はCSSのぼかしがそのまま残る（進行的強化）。 -->
+<div class="bg" aria-hidden="true">
+  <span class="bg-blob bg-blob-1"></span>
+  <span class="bg-blob bg-blob-2"></span>
+  <span class="bg-blob bg-blob-3"></span>
+  <canvas id="nebula" class="bg-nebula"></canvas>
+</div>
+
 <p class="notice" role="note">検証用プロトタイプです。チケット販売は2026年8月28日時点の公式スケジュールの写しで、最新とは限りません。試合当日のイベント・グッズ・応募は検証用の作り物です。購入前に公式サイトで確認してください。</p>
 
 <header class="head">
@@ -194,5 +203,21 @@
 </details>
 
 <script src="prototype.js"></script>
+<script type="module">
+  // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
+  // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。
+  if (new URLSearchParams(location.search).get("nebula") !== "off") {
+    try {
+      const { startNebula } = await import("../../assets/index-nebula.js");
+      const canvas = document.querySelector("#nebula");
+      // 先にクラスを付けてcanvasに大きさを与える。0×0では描けない
+      document.body.classList.add("has-nebula");
+      startNebula(canvas);
+    } catch (error) {
+      document.body.classList.remove("has-nebula");
+      console.info("[supporter-timeline] ネビュラを使えないため、CSSの背景に戻します:", error.message);
+    }
+  }
+</script>
 </body>
 </html>
