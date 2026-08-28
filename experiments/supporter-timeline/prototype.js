@@ -417,55 +417,82 @@
 
   /* ---------- 描画 ---------- */
 
+  /**
+   * 「次にやること」は画面下のドロワーに出す。
+   * タイムラインが長いため、スクロール中でも直近の期限が見えているようにするため。
+   * 閉じているときは1件目だけ、開くと直近5件まで見える。
+   */
   function renderNext(list, now) {
+    var lead = document.getElementById("next-lead");
     var box = document.getElementById("next-body");
+    box.textContent = "";
+
     var upcoming = list
       .filter(function (e) { return e.action_type === "action" && isDated(e); })
       .map(function (e) { return { event: e, date: parseDate(e.starts_at) }; })
       .filter(function (item) { return item.date && item.date.getTime() >= now.getTime(); })
       .sort(function (a, b) { return a.date - b.date; });
 
-    // プロフィールがあるときは、自分に該当するものと全員向けだけを「次にやること」に出す。
-    // 他グレードの先行販売は一覧には残るが、行動を促す位置には出さない。
-    var next = upcoming[0];
     if (hasProfile()) {
-      next = upcoming.filter(function (item) {
+      // 他グレードの先行販売は一覧には残るが、行動を促す位置には出さない
+      upcoming = upcoming.filter(function (item) {
         return profileMatch(item.event) !== "" || isForEveryone(item.event) ||
           item.event.type === "personal";
-      })[0] || null;
+      });
     }
 
-    box.textContent = "";
-    if (!next) {
+    if (!upcoming.length) {
+      lead.textContent = "直近の期限つきの予定はありません。";
       var none = document.createElement("p");
       none.className = "empty";
-      none.textContent = "直近の期限つきの予定はありません。";
+      none.textContent = "これから始まる販売や締切が出ると、ここに並びます。";
       box.appendChild(none);
       return;
     }
 
-    var when = document.createElement("p");
-    when.className = "next-when";
-    when.textContent = formatDay(next.date) + " " +
-      (next.event.date_precision === "date" ? "時刻未定" : formatTime(next.date));
+    var first = upcoming[0];
+    lead.textContent = formatDay(first.date) + " " +
+      (first.event.date_precision === "date" ? "時刻未定" : formatTime(first.date)) + " " +
+      first.event.title + "（" + untilText(first.date, now) + "）";
 
-    var title = document.createElement("p");
-    title.className = "next-title";
-    title.textContent = next.event.title;
+    var ul = document.createElement("ul");
+    ul.className = "drawer-list";
+    upcoming.slice(0, 5).forEach(function (item) {
+      var li = document.createElement("li");
 
-    var sub = document.createElement("p");
-    sub.className = "next-sub";
-    var label = matchLabel(next.event);
-    sub.textContent = untilText(next.date, now) + (label ? " ・ " + label : "");
+      var when = document.createElement("p");
+      when.className = "drawer-when";
+      when.textContent = formatDay(item.date) + " " +
+        (item.event.date_precision === "date" ? "時刻未定" : formatTime(item.date)) +
+        " ・ " + untilText(item.date, now);
 
-    box.append(when, title, sub);
+      var title = document.createElement("p");
+      title.className = "drawer-item-title";
+      title.textContent = item.event.title;
 
-    var reason = profileMatch(next.event);
-    if (reason) {
-      var mine = document.createElement("p");
-      mine.className = "next-mine";
-      mine.textContent = reason + "が対象です";
-      box.appendChild(mine);
+      li.append(when, title);
+
+      var sub = [];
+      var label = matchLabel(item.event);
+      if (label) sub.push(label);
+      var reason = profileMatch(item.event);
+      if (reason) sub.push(reason + "が対象");
+      if (sub.length) {
+        var meta = document.createElement("p");
+        meta.className = "drawer-meta";
+        meta.textContent = sub.join(" ・ ");
+        li.appendChild(meta);
+      }
+
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+
+    if (upcoming.length > 5) {
+      var more = document.createElement("p");
+      more.className = "drawer-meta";
+      more.textContent = "ほか" + (upcoming.length - 5) + "件はタイムラインで見られます。";
+      box.appendChild(more);
     }
   }
 
@@ -627,55 +654,118 @@
 
   function appendDayGroups(root, groups, now) {
     var todayKey = dayKey(now);
-    var currentDay = "";
-    var currentMatch = null;
-    var listNode = null;
 
+    // 日ごと、その中で試合ごとにまとめる
+    var days = [];
+    var byDay = {};
     groups.forEach(function (group) {
       var key = dayKey(group.date);
-      if (key !== currentDay) {
-        currentDay = key;
-        currentMatch = null;
-        var day = document.createElement("div");
-        day.className = "day";
-        var label = document.createElement("p");
-        label.className = "day-label";
-        label.textContent = formatDay(group.date);
-        if (key === todayKey) {
-          var badge = document.createElement("span");
-          badge.className = "today";
-          badge.textContent = "今日";
-          label.appendChild(badge);
-        }
-        day.appendChild(label);
-        root.appendChild(day);
-        listNode = null;
+      if (!byDay[key]) {
+        byDay[key] = { key: key, date: group.date, blocks: [], byMatch: {} };
+        days.push(byDay[key]);
       }
-
-      // 同じ日に別の試合の予定が続く場合は、試合名で区切る
+      var day = byDay[key];
       var matchKey = (group.event.match_ids || []).join("+");
-      var headed = false;
-      if (!listNode || matchKey !== currentMatch) {
-        currentMatch = matchKey;
-        var day = root.lastChild;
-        var label = matchLabel(group.event);
-        headed = !!label;
-        if (label) {
-          var matchHead = document.createElement("p");
-          matchHead.className = "match-label";
-          matchHead.textContent = label;
-          day.appendChild(matchHead);
-        }
-        listNode = document.createElement("ul");
-        listNode.className = "events";
-        day.appendChild(listNode);
+      if (!day.byMatch[matchKey]) {
+        day.byMatch[matchKey] = { matchKey: matchKey, label: matchLabel(group.event), items: [] };
+        day.blocks.push(day.byMatch[matchKey]);
       }
+      day.byMatch[matchKey].items.push(group);
+    });
 
-      listNode.appendChild(createEventNode(group.event, {
-        removable: group.event.source === "personal",
-        companions: group.companions,
-        hideMatch: !!matchKey
-      }));
+    days.forEach(function (day) {
+      var node = document.createElement("div");
+      node.className = "day";
+
+      var label = document.createElement("p");
+      label.className = "day-label";
+      label.textContent = formatDay(day.date);
+
+      // その日に1つの試合しかなければ、日付と試合名を1行にまとめる
+      var single = day.blocks.length === 1 && day.blocks[0].label;
+      if (single) {
+        var inline = document.createElement("span");
+        inline.className = "day-match";
+        inline.textContent = day.blocks[0].label;
+        label.appendChild(inline);
+      }
+      if (day.key === todayKey) {
+        var badge = document.createElement("span");
+        badge.className = "today";
+        badge.textContent = "今日";
+        label.appendChild(badge);
+      }
+      node.appendChild(label);
+
+      day.blocks.forEach(function (block) {
+        if (!single && block.label) {
+          var head = document.createElement("p");
+          head.className = "match-label";
+          head.textContent = block.label;
+          node.appendChild(head);
+        }
+        var listNode = document.createElement("ul");
+        listNode.className = "events";
+        block.items.forEach(function (group) {
+          listNode.appendChild(createEventNode(group.event, {
+            removable: group.event.source === "personal",
+            companions: group.companions,
+            hideMatch: !!block.matchKey
+          }));
+        });
+        node.appendChild(listNode);
+      });
+
+      root.appendChild(node);
+    });
+  }
+
+  function monthKey(date) {
+    return date.getFullYear() + "-" + pad(date.getMonth() + 1);
+  }
+
+  function formatMonth(date) {
+    return date.getFullYear() + "年" + (date.getMonth() + 1) + "月";
+  }
+
+  /**
+   * 月ごとに区切り、当月と翌月だけ開く。
+   * 実データは9か月先まであり、全部を開いたままでは20,000pxを超えて読めないため。
+   */
+  function appendByMonth(root, groups, now) {
+    var months = [];
+    var byMonth = {};
+    groups.forEach(function (group) {
+      var key = monthKey(group.date);
+      if (!byMonth[key]) {
+        byMonth[key] = { key: key, date: group.date, items: [] };
+        months.push(byMonth[key]);
+      }
+      byMonth[key].items.push(group);
+    });
+
+    var openKeys = {};
+    openKeys[monthKey(now)] = true;
+    openKeys[monthKey(new Date(now.getFullYear(), now.getMonth() + 1, 1))] = true;
+
+    months.forEach(function (month, index) {
+      if (openKeys[month.key] || index === 0) {
+        var head = document.createElement("p");
+        head.className = "month-label";
+        head.textContent = formatMonth(month.date);
+        root.appendChild(head);
+        appendDayGroups(root, month.items, now);
+        return;
+      }
+      var details = document.createElement("details");
+      details.className = "month";
+      var summary = document.createElement("summary");
+      summary.textContent = formatMonth(month.date) + " " + month.items.length + "件";
+      details.appendChild(summary);
+      var box = document.createElement("div");
+      details.appendChild(box);
+      appendDayGroups(box, month.items, now);
+      root.appendChild(details);
     });
   }
 
@@ -732,7 +822,7 @@
       return;
     }
 
-    appendDayGroups(root, rest, now);
+    appendByMonth(root, rest, now);
   }
 
   function renderUndated(list) {
