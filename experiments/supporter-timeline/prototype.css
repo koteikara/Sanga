@@ -160,6 +160,50 @@ body {
   justify-content: space-between;
   gap: 10px;
 }
+.head-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* 入口ページのキャラの円形・紫版。
+   あちらは五角形（薄紫）と角丸四角（シアン）の2体で、目のまばたきが共通の作り。
+   同じ目の作りをそのまま使い、形を円に、色を紫にして家族に揃える。 */
+.mate-round {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18%;
+  flex: none;
+  width: clamp(26px, 7.5vw, 34px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  /* 目が円のどこに来ても見え、円が地から浮くように選んだ。
+     目/最も暗い部分 3.59、円/地 3.85（装飾の基準3:1を満たす）。 */
+  background: linear-gradient(155deg, #efc4f7 0%, #c2409f 100%);
+  box-shadow: 0 4px 10px rgba(20, 0, 18, 0.38);
+  transition: width 180ms ease;
+}
+.mate-eye {
+  width: 11%;
+  height: 26%;
+  border-radius: 999px;
+  background: #241a2e;
+  /* まばたき。周期の大半は開いたままで、一瞬だけ閉じる（入口ページと同じ） */
+  animation: mate-blink 6.2s infinite;
+}
+@keyframes mate-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mate-eye { animation: none; }
+}
+:root[data-motion="off"] .mate-eye { animation: none; }
+
+/* 帯に縮んだときはキャラも小さくする */
+.head.is-stuck .mate-round { width: 24px; }
 
 /* 書き出し。見出しの横の余白に収まる大きさにする */
 .head-action {
