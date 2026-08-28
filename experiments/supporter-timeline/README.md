@@ -69,17 +69,28 @@ Phase 3以降のため、次は入れていない。
 
 | ファイル | 内容 |
 | --- | --- |
-| `calendar-events.sample.json` | チケット販売は実データ、試合当日のイベント等は作り物。`events` と `skipped` を持つ |
+| `calendar-events.sample.json` | **生成物。手で編集しない。** `npm run generate:timeline` が作る |
+| `sample-events.json` | 検証用の作り物イベントと「取り込まなかった記事」。生成時に混ぜられる |
 | `matches.sample.json` | `public/data/matches.json` からの抜粋。正本ではない |
 | `benefit-tickets.json` | SANGA CREW各コースの特典チケット枚数と有効期間。2026-08-28に公式で確認した実データ |
 
-**チケット販売と試合は実データです。** チケットは `docs/sheets/ticket-sales.2026-08-28.csv`
+**チケット販売と試合は実データで、生成物です。** チケットは `docs/sheets/ticket-sales.2026-08-28.csv`
 （公式のチケット販売スケジュールを2026-08-28に確認したスナップショット）、試合は
-`public/data/matches.json` から作りました。**2026/27 J1のホーム19試合ぶん（掲載済み15試合・未掲載4試合）、
-全149件が入っています。** 量の問題を確かめるため、一部ではなく全部を入れています。
+`public/data/matches.json` から `tools/generate-calendar-events.js` が組み立てます。
+**2026/27 J1のホーム19試合ぶん（掲載済み15試合・未掲載4試合）、全148件が入っています。**
+量の問題を確かめるため、一部ではなく全部を入れています。
+
+```bash
+npm run generate:timeline   # 生成し直す
+npm run check:timeline      # 生成物が最新かと、内容の検証
+```
+
+**`calendar-events.sample.json` を手で編集しない。** CSVを取り直したときに作り直せなくなるため。
+作り物のイベントを足したいときは `sample-events.json` を直して生成し直す。
 
 **それ以外のイベントは検証用の作り物です。** 開門、Tシャツ配布、エスコートキッズ応募、
-ACLユニフォーム販売、アウェイ交流ブースには `"is_sample": true` を付けています。日時もURLも実在しません。
+ACLユニフォーム販売、アウェイ交流ブースの5件で、`sample-events.json` に置いてあります。
+生成時に `"is_sample": true` が付きます。日時もURLも実在しません。
 
 1試合の販売は**先行販売5段階と特典チケット引換3件の、合わせて8件**です。
 

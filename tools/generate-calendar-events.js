@@ -1,0 +1,370 @@
+#!/usr/bin/env node
+
+/**
+ * チケット販売スケジュールのCSVと matches.json から calendar-events を生成する。
+ *
+ * 設計は docs/supporter-timeline-design.md の「情報収集アーキテクチャ」
+ * 「販売段階は8つある」「チケット販売スケジュールのスナップショット」を正とする。
+ *
+ * 生成するのは事実だけ（日時・対象・試合との対応）で、記事本文やタイトルは持たない。
+ * 検証用の作り物は --samples で別ファイルから足す。実データと作り物を混ぜないため。
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const repoRoot = path.resolve(__dirname, '..');
+const DEFAULT_MATCHES = path.join(repoRoot, 'public', 'data', 'matches.json');
+const DEFAULT_OUTPUT = path.join(repoRoot, 'tmp', 'calendar-events.generated.json');
+
+const SOURCE_URL = 'https://www.sanga-fc.jp/ticket/schedule';
+
+/** 公式の段階名 → 保存する事実。題は自分の言葉で書き、公式の表記を転載しない。 */
+const STAGES = {
+  'シーズンパス先行受付（ホーム指定席をご購入の方）': {
+    suffix: 'season',
+    kind: 'sale',
+    audience: { season_ticket: true },
+    label: 'シーズンパス先行受付 開始',
+  },
+  'SC最速先行販売（プラチナ）': {
+    suffix: 'platinum',
+    kind: 'sale',
+    audience: { fc_grade: ['platinum'] },
+    label: 'プラチナ先行販売 開始',
+  },
+  'SC先々行販売（ゴールド）': {
+    suffix: 'gold',
+    kind: 'sale',
+    audience: { fc_grade: ['gold'] },
+    label: 'ゴールド先行販売 開始',
+  },
+  'SC先行販売（レギュラー・キッズ）': {
+    suffix: 'regular',
+    kind: 'sale',
+    audience: { fc_grade: ['regular', 'kids'] },
+    label: 'レギュラー・キッズ先行販売 開始',
+  },
+  一般販売: {
+    suffix: 'general',
+    kind: 'sale',
+    audience: {},
+    label: '一般販売 開始',
+  },
+  'SC特典チケット引換 プラチナ': {
+    suffix: 'benefit-platinum',
+    kind: 'benefit_exchange',
+    audience: { fc_grade: ['platinum'] },
+    label: '特典チケット引換 開始（プラチナ）',
+  },
+  'SC特典チケット引換 ゴールド': {
+    suffix: 'benefit-gold',
+    kind: 'benefit_exchange',
+    audience: { fc_grade: ['gold'] },
+    label: '特典チケット引換 開始（ゴールド）',
+  },
+  'SC特典チケット引換 レギュラー・キッズ': {
+    suffix: 'benefit-regular',
+    kind: 'benefit_exchange',
+    audience: { fc_grade: ['regular', 'kids'] },
+    label: '特典チケット引換 開始（レギュラー・キッズ）',
+  },
+};
+
+function usage() {
+  console.error('使い方: node tools/generate-calendar-events.js <ticket-sales.csv> [output.json] [options]');
+  console.error('  --matches <path>   試合データ（既定: public/data/matches.json）');
+  console.error('  --samples <path>   検証用の作り物イベントを足す（events と skipped を持つJSON）');
+  console.error('  --checked-at <日付> 出典の確認日。省略時はCSVの retrieved_at_jst から取る');
+  console.error('  --check            出力先の既存ファイルと突き合わせ、差分があれば失敗する');
+  console.error(`出力先を省略した場合: ${DEFAULT_OUTPUT}`);
+}
+
+/** RFC 4180 の最小実装。区切りと引用だけを扱う。 */
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (inQuotes) {
+      if (char === '"' && next === '"') {
+        field += '"';
+        i += 1;
+      } else if (char === '"') {
+        inQuotes = false;
+      } else {
+        field += char;
+      }
+      continue;
+    }
+
+    if (char === '"') {
+      inQuotes = true;
+    } else if (char === ',') {
+      row.push(field);
+      field = '';
+    } else if (char === '\n') {
+      row.push(field);
+      rows.push(row);
+      row = [];
+      field = '';
+    } else if (char !== '\r') {
+      field += char;
+    }
+  }
+
+  if (inQuotes) throw new Error('CSVの引用符が閉じていません');
+  if (field !== '' || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+  return rows;
+}
+
+function readCsvRecords(csvPath) {
+  const text = fs.readFileSync(csvPath, 'utf8').replace(/^﻿/, '');
+  const rows = parseCsv(text).filter((row) => row.some((cell) => cell.trim() !== ''));
+  if (rows.length < 2) throw new Error('CSVに行がありません');
+  const header = rows[0].map((cell) => cell.trim());
+  return rows.slice(1).map((row) => {
+    const record = {};
+    header.forEach((key, index) => {
+      record[key] = (row[index] || '').trim();
+    });
+    return record;
+  });
+}
+
+function matchIdForRound(round) {
+  const number = Number(round);
+  if (!Number.isInteger(number) || number < 1) {
+    throw new Error(`節の値を数として読めません: ${round}`);
+  }
+  return `sec${String(number).padStart(2, '0')}`;
+}
+
+function buildMatchIndex(matchesPath) {
+  const raw = JSON.parse(fs.readFileSync(matchesPath, 'utf8'));
+  const matches = Array.isArray(raw) ? raw : raw.matches;
+  if (!Array.isArray(matches)) throw new Error('matches.json の形式が想定と違います');
+  const index = new Map();
+  matches.forEach((match) => {
+    index.set(match.id, match);
+  });
+  return index;
+}
+
+function ticketEvent(record, match, checkedAt) {
+  const matchId = match.id;
+  const opponent = match.opponent || '未定';
+
+  if (record.schedule_status === '未掲載') {
+    return {
+      id: `ticket-${matchId}-unscheduled`,
+      starts_at: '',
+      ends_at: '',
+      date_precision: 'unknown',
+      date_candidates: [],
+      type: 'ticket',
+      ticket_kind: 'unscheduled',
+      title: `${opponent}戦 チケット販売日程は未告知`,
+      source: 'official',
+      action_type: 'information',
+      audience: {},
+      interest_tags: [],
+      match_ids: [matchId],
+      source_url: record.source_url || SOURCE_URL,
+      source_checked_at: checkedAt,
+      status: 'tentative',
+      is_visible: true,
+      note: record.schedule_note || '',
+    };
+  }
+
+  const stage = STAGES[record.sale_type];
+  if (!stage) throw new Error(`知らない販売段階です: ${record.sale_type}`);
+  if (!record.sale_start) throw new Error(`販売開始日時が空です: ${matchId} ${record.sale_type}`);
+
+  return {
+    id: `ticket-${matchId}-${stage.suffix}`,
+    starts_at: record.sale_start,
+    ends_at: '',
+    date_precision: 'datetime',
+    date_candidates: [],
+    type: 'ticket',
+    ticket_kind: stage.kind,
+    title: `${opponent}戦 ${stage.label}`,
+    source: 'official',
+    action_type: 'action',
+    audience: stage.audience,
+    interest_tags: [],
+    match_ids: [matchId],
+    source_url: record.source_url || SOURCE_URL,
+    source_checked_at: checkedAt,
+    status: 'confirmed',
+    is_visible: true,
+  };
+}
+
+/**
+ * 試合そのもののイベント。日時の確からしさは matches.json の状態をそのまま写す。
+ * 試合が未確定でも販売日時は確定して告知されるため、両者の date_precision は別に持つ。
+ */
+function matchEvent(match) {
+  const opponent = match.opponent || '未定';
+  const base = {
+    id: `match-${match.id}`,
+    ends_at: '',
+    type: 'match',
+    source: 'official',
+    action_type: 'information',
+    audience: {},
+    interest_tags: [],
+    match_ids: [match.id],
+    source_url: match.source_url || '',
+    source_checked_at: match.source_checked_at || '',
+    status: match.status || 'confirmed',
+    is_visible: true,
+  };
+
+  if (match.match_date) {
+    const time = match.kickoff_time || '00:00';
+    return Object.assign(base, {
+      starts_at: `${match.match_date}T${time}:00+09:00`,
+      date_precision: match.kickoff_time ? 'datetime' : 'date',
+      date_candidates: [],
+      title: `${opponent}戦 キックオフ（${match.venue || '会場未定'}）`,
+    });
+  }
+
+  if (Array.isArray(match.date_candidates) && match.date_candidates.length > 0) {
+    return Object.assign(base, {
+      starts_at: '',
+      date_precision: 'candidates',
+      date_candidates: match.date_candidates.slice(),
+      title: `${opponent}戦 キックオフ（開催日が候補のまま）`,
+    });
+  }
+
+  return Object.assign(base, {
+    starts_at: '',
+    date_precision: 'unknown',
+    date_candidates: [],
+    title: `${opponent}戦 キックオフ（試合日が未定）`,
+  });
+}
+
+function sortEvents(events) {
+  return events.slice().sort((a, b) => {
+    const left = a.starts_at || '9999';
+    const right = b.starts_at || '9999';
+    if (left !== right) return left < right ? -1 : 1;
+    return a.id < b.id ? -1 : 1;
+  });
+}
+
+function build(options) {
+  const records = readCsvRecords(options.csvPath).filter((record) => record.season);
+  if (records.length === 0) throw new Error('CSVに対象の行がありません');
+
+  const matchIndex = buildMatchIndex(options.matchesPath);
+  const checkedAt = options.checkedAt
+    || (records[0].retrieved_at_jst || '').slice(0, 10)
+    || new Date().toISOString().slice(0, 10);
+
+  const events = [];
+  const rounds = new Set();
+
+  records.forEach((record) => {
+    const matchId = matchIdForRound(record.round);
+    const match = matchIndex.get(matchId);
+    if (!match) throw new Error(`matches.json に該当する試合がありません: ${matchId}`);
+    rounds.add(matchId);
+    events.push(ticketEvent(record, match, checkedAt));
+  });
+
+  Array.from(rounds).sort().forEach((matchId) => {
+    events.push(matchEvent(matchIndex.get(matchId)));
+  });
+
+  let skipped = [];
+  if (options.samplesPath) {
+    const samples = JSON.parse(fs.readFileSync(options.samplesPath, 'utf8'));
+    (samples.events || []).forEach((event) => {
+      events.push(Object.assign({}, event, { is_sample: true }));
+    });
+    skipped = samples.skipped || [];
+  }
+
+  return {
+    meta: {
+      note: options.samplesPath
+        ? 'チケット販売と試合は実データ。作り物のイベントには is_sample: true が付く。tools/generate-calendar-events.js が生成する。手で編集しない。'
+        : 'チケット販売と試合の実データ。tools/generate-calendar-events.js が生成する。手で編集しない。',
+      generator: 'tools/generate-calendar-events.js',
+      ticket_source: SOURCE_URL,
+      ticket_checked_at: checkedAt,
+      ticket_csv: path.relative(repoRoot, path.resolve(options.csvPath)),
+      matches_source: path.relative(repoRoot, path.resolve(options.matchesPath)),
+      match_count: rounds.size,
+      updated_at: checkedAt,
+    },
+    events: sortEvents(events),
+    skipped,
+  };
+}
+
+function main(argv) {
+  const positional = [];
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', checkedAt: '', check: false };
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === '--matches') { options.matchesPath = argv[i += 1]; continue; }
+    if (arg === '--samples') { options.samplesPath = argv[i += 1]; continue; }
+    if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
+    if (arg === '--check') { options.check = true; continue; }
+    if (arg === '-h' || arg === '--help') { usage(); return 0; }
+    if (arg.startsWith('--')) { console.error(`知らない引数です: ${arg}`); usage(); return 1; }
+    positional.push(arg);
+  }
+
+  if (positional.length === 0) { usage(); return 1; }
+  options.csvPath = positional[0];
+  const outputPath = positional[1] || DEFAULT_OUTPUT;
+
+  let data;
+  try {
+    data = build(options);
+  } catch (error) {
+    console.error(`生成に失敗しました: ${error.message}`);
+    return 1;
+  }
+
+  const text = `${JSON.stringify(data, null, 2)}\n`;
+
+  if (options.check) {
+    if (!fs.existsSync(outputPath)) {
+      console.error(`差分検出: ${path.relative(repoRoot, outputPath)} がありません。生成コマンドを実行してください。`);
+      return 1;
+    }
+    if (fs.readFileSync(outputPath, 'utf8') !== text) {
+      console.error(`差分検出: ${path.relative(repoRoot, outputPath)} が生成結果と一致しません。生成コマンドを実行して結果をコミットしてください。`);
+      return 1;
+    }
+    console.log(`生成物OK: ${path.relative(repoRoot, outputPath)} は CSV と matches.json から生成した結果と一致しています。`);
+    return 0;
+  }
+
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(outputPath, text);
+  console.log(`生成しました: ${path.relative(repoRoot, outputPath)}（イベント${data.events.length}件・試合${data.meta.match_count}件）`);
+  return 0;
+}
+
+process.exit(main(process.argv.slice(2)));

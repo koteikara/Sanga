@@ -44,6 +44,7 @@
 | 入口ページ・ツール一覧 | `docs/site-index.md`、`docs/ui-prototype-workflow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
 | SUPPORTER TIMELINE | `docs/supporter-timeline-design.md`（「現在地と次の一手」から読む）、`experiments/supporter-timeline/README.md` |
+| タイムラインのデータ生成 | `docs/supporter-timeline-design.md` の「生成と検証の道具」、`docs/sheets/ticket-sales.2026-08-28.csv` |
 | 公式サイトからの情報取得 | `docs/news-extraction-research.md`、`docs/supporter-timeline-design.md` の「公式サイトの利用条件」 |
 
 `docs/dom-inventory.md` は `tools/generate-dom-inventory.mjs` が実装から生成します。
@@ -95,6 +96,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 | --- | --- |
 | `npm run check` | 下記すべて |
 | `npm run check:static` | 日程ページ（データ・JS契約・公開アセット）と本番取り込みスクリプト |
+| `npm run check:timeline` | SUPPORTER TIMELINE（`calendar-events` の生成物が最新か、内容が仕様どおりか）。`check:static` から呼ぶ |
 | `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
 | `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
 | `npm run check:tools` | 本番取り込みスクリプト（JS構文と、検証用FTPサーバーを使った動作確認）。`check:static` から呼ぶ |

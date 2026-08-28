@@ -5,13 +5,15 @@
   "scripts": {
     "check": "npm run check:static && npm run check:squad",
     "check:static": "npm run check:data && npm run check:js && node tools/check-static-assets.mjs && node tools/generate-dom-inventory.mjs --check && npm run check:tools",
-    "check:data": "node tools/validate-matches.js && node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict && node tools/validate-hotels.js && node tools/validate-players.js && node tools/validate-tools.js",
+    "check:data": "node tools/validate-matches.js && node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict && node tools/validate-hotels.js && node tools/validate-players.js && node tools/validate-tools.js && npm run check:timeline",
     "check:js": "node --check public/assets/app.js && node tools/validate-app-contract.js",
+    "check:timeline": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.2026-08-28.csv experiments/supporter-timeline/calendar-events.sample.json --samples experiments/supporter-timeline/sample-events.json --check && node tools/validate-calendar-events.js experiments/supporter-timeline/calendar-events.sample.json",
     "check:squad": "npm run check:squad:js && node tools/validate-players.js && node tools/validate-squad-contract.mjs",
     "check:squad:js": "node --check public/assets/squad-builder.js && node --check public/assets/squad-formations.js && node --check public/assets/squad-sample-players.js && node --check tools/validate-squad-contract.mjs && node --check tools/check-squad-layout.mjs",
     "check:squad:browser": "node tools/check-squad-layout.mjs",
     "check:tools": "node --check tools/asset-versions.mjs && node --check tools/ftp-client.mjs && node --check tools/fetch-production-files.mjs && node --check tools/check-import-tools.mjs && node tools/check-import-tools.mjs",
     "docs:dom-inventory": "node tools/generate-dom-inventory.mjs",
-    "fix:asset-versions": "node tools/asset-versions.mjs"
+    "fix:asset-versions": "node tools/asset-versions.mjs",
+    "generate:timeline": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.2026-08-28.csv experiments/supporter-timeline/calendar-events.sample.json --samples experiments/supporter-timeline/sample-events.json"
   }
 }
