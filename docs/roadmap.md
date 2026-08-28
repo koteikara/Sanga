@@ -59,7 +59,7 @@
 | CSS整理前の棚卸し | 進行中 | 低リスクな整理候補と実ブラウザ確認が必要な候補を分ける。 |
 | JavaScript整理前の安全網強化 | 進行中 | 既存LocalStorage、DOMフック、表示設定、フィルタ仕様を壊さない確認を続ける。 |
 | `validate-app-contract.js` の確認範囲 | 確認中 | 主要DOM/CSSフック、表示列、表示モード、フィルタ、共有画像生成、大会リボン関連の確認範囲拡張は一部実施済み。今後もCSS整理・JS整理に合わせて追加する。 |
-| SUPPORTER TIMELINE | 進行中 | Phase 1（タイムライン、MY予定、ICS書き出し）は `experiments/supporter-timeline/` で動作し、Android・iOSの実機確認も完了。次はPhase 2のプロフィール照合が有力。現在地と次の一手は `docs/supporter-timeline-design.md` の冒頭にある。 |
+| SUPPORTER TIMELINE | 進行中 | Phase 1（タイムライン、MY予定、ICS書き出し）とPhase 2（会員種別・シーズンパスによる照合と強調）は `experiments/supporter-timeline/` で動作し、Android・iOSの実機確認も完了。次はチケット販売スケジュールのParserが有力。現在地と次の一手は `docs/supporter-timeline-design.md` の冒頭にある。 |
 | ホテルデータ検証 | 確認中 | `tools/validate-hotels.js` は `npm run check:data` で常時実行中。索引は0件のため、空索引を正常扱いする経路だけが動いている。 |
 | 実ブラウザ確認観点 | 確認中 | `docs/ai/BROWSER_CHECKLIST.md` に沿って、人間の目視確認を継続する。 |
 | Googleスプレッドシート運用 | 確認中 | 初期CSV、列定義、生成JSON、公開JSON反映手順を安全に運用する。 |
@@ -74,7 +74,7 @@
 2. `validate-app-contract.js` の確認範囲拡張（CSS整理・JS整理に合わせて継続）
 3. CSS整理の小分け実施
 4. JavaScript整理の小分け実施
-5. SUPPORTER TIMELINE Phase 2（プロフィール照合。設計は `docs/supporter-timeline-design.md`）
+5. SUPPORTER TIMELINE チケット販売スケジュールのParser（実データ取得。設計は `docs/supporter-timeline-design.md`、取得方法は `docs/news-extraction-research.md`）
 6. チケット・観戦準備メモのUIプロトタイプ（年間スケジュール側の個人メモ。SUPPORTER TIMELINEのMY予定とは別機能）
 7. 追加メモ機能のUIプロトタイプ
 

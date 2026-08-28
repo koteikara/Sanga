@@ -14,7 +14,8 @@
 LocalStorageのキー名一覧は `docs/dom-inventory.md`（自動生成）にもあります。
 
 SUPPORTER TIMELINE のサポータープロフィール（会員種別、居住エリア、興味タグ）も個人状態としてLocalStorageで扱います。
-キー案は `sanga-timeline-profile-v1` で、設計は `docs/supporter-timeline-design.md` の「サポータープロフィール」節を正とします。
+キーは `sanga-timeline-profile-v1` で、設計は `docs/supporter-timeline-design.md` の「サポータープロフィール」節を正とします。
+現時点では `experiments/supporter-timeline/` のプロトタイプだけが `fc_grade` と `has_season_ticket` を保存しており、公開ページでは使っていません。
 実装時に本文書のキー一覧へ追加します。
 
 ## この設計の目的

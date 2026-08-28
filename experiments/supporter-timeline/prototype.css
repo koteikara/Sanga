@@ -1,5 +1,7 @@
 :root {
   --paper: #fbfafc;
+  --mine: #7a4a00;
+  --mine-soft: #fdf3e0;
   --panel: #ffffff;
   --ink: #1c1922;
   --muted: #6a6577;
@@ -157,6 +159,53 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* 自分に関係するもの（プロフィール照合） */
+.filter-mine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  min-height: 44px;
+}
+.filter-mine input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  accent-color: var(--accent);
+}
+.filter-mine label { font-size: 0.88rem; }
+.filter-mine input:disabled + label { color: var(--muted); }
+.filter-note { margin: 4px 0 0; }
+
+.form-actions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+/* 該当の強調。色だけでなく★とラベルの文字で示す。 */
+.badge-mine {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 3px;
+  border: 1px solid var(--mine);
+  background: var(--mine-soft);
+  color: var(--mine);
+  font-size: 0.74rem;
+  font-weight: 700;
+  flex: none;
+}
+.event.is-mine {
+  border-color: var(--mine);
+  box-shadow: inset 0 0 0 1px var(--mine-soft);
+}
+.next-mine {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--mine);
+}
+
 /* タイムライン */
 .day {
   margin-top: 20px;
@@ -297,6 +346,21 @@ select {
   font-size: 1rem;
   font-family: inherit;
 }
+.field-check {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+}
+.field-check input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  accent-color: var(--accent);
+}
+.field-check label { font-weight: 400; font-size: 0.94rem; }
+
 .btn {
   min-height: 44px;
   padding: 0 18px;
@@ -309,6 +373,13 @@ select {
   font-family: inherit;
   cursor: pointer;
 }
+.btn-quiet {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--muted);
+  font-weight: 400;
+}
+
 .btn-remove {
   min-height: 32px;
   padding: 0 10px;

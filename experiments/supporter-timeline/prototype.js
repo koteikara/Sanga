@@ -7,6 +7,7 @@
  *   2. date_precision による表示の出し分け（datetime / date / candidates / unknown）
  *   3. MY予定と公式イベントが同じ時系列に並ぶこと
  *   4. 確定した日時だけがICSへ出ること
+ *   5. プロフィール（会員種別・シーズンパス）による強調と並べ替え（Phase 2）
  *
  * 本番へ持ち込まないこと: サンプルデータ、検証用の注意書き。
  */
@@ -16,6 +17,15 @@
   var EVENTS_URL = "calendar-events.sample.json";
   var MATCHES_URL = "matches.sample.json";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
+  var PROFILE_KEY = "sanga-timeline-profile-v1";
+
+  var GRADE_LABEL = {
+    platinum: "プラチナクルー",
+    gold: "ゴールドクルー",
+    regular: "レギュラークルー",
+    kids: "キッズクルー",
+    none: "会員ではない"
+  };
 
   var TYPE_LABEL = {
     ticket: "チケット",
@@ -44,7 +54,9 @@
     events: [],
     skipped: [],
     matches: [],
-    filter: "all"
+    filter: "all",
+    mineOnly: false,
+    profile: null
   };
 
   /* ---------- 日時 ---------- */
@@ -113,6 +125,76 @@
     }
   }
 
+  function normalizeProfile(value) {
+    if (!value || typeof value !== "object") return null;
+    var grade = typeof value.fc_grade === "string" ? value.fc_grade : "";
+    if (grade && !Object.prototype.hasOwnProperty.call(GRADE_LABEL, grade)) grade = "";
+    return {
+      fc_grade: grade,
+      has_season_ticket: value.has_season_ticket === true,
+      updated_at: typeof value.updated_at === "string" ? value.updated_at : ""
+    };
+  }
+
+  function loadProfile() {
+    try {
+      var raw = window.localStorage.getItem(PROFILE_KEY);
+      return raw ? normalizeProfile(JSON.parse(raw)) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveProfile(profile) {
+    try {
+      window.localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function clearProfile() {
+    try {
+      window.localStorage.removeItem(PROFILE_KEY);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function hasProfile() {
+    var p = state.profile;
+    return !!(p && (p.fc_grade || p.has_season_ticket));
+  }
+
+  /**
+   * イベントの audience と端末内のプロフィールを突き合わせる。
+   * 照合はすべて端末内で行い、プロフィールをどこへも送らない。
+   * audience に複数のキーがある場合は、いずれかを満たせば該当とする。
+   * 戻り値は該当理由のラベル。該当しなければ空文字。
+   */
+  function profileMatch(event) {
+    if (!hasProfile()) return "";
+    var audience = event.audience;
+    if (!audience || typeof audience !== "object") return "";
+    if (audience.season_ticket === true && state.profile.has_season_ticket) {
+      return "シーズンパス";
+    }
+    if (Array.isArray(audience.fc_grade) && state.profile.fc_grade &&
+      audience.fc_grade.indexOf(state.profile.fc_grade) !== -1) {
+      return "あなたのグレード";
+    }
+    return "";
+  }
+
+  /** audience が空または未指定なら全員向け。 */
+  function isForEveryone(event) {
+    var audience = event.audience;
+    if (!audience || typeof audience !== "object") return true;
+    return Object.keys(audience).length === 0;
+  }
+
   function allEvents() {
     return state.events.concat(loadPersonal());
   }
@@ -126,6 +208,12 @@
       return match.round + " " + (match.opponent || "未定") + "戦";
     });
     return labels.join(" / ");
+  }
+
+  function matchesMine(event) {
+    if (!state.mineOnly || !hasProfile()) return true;
+    if (event.type === "personal") return true;
+    return isForEveryone(event) || profileMatch(event) !== "";
   }
 
   function matchesFilter(event) {
@@ -143,11 +231,21 @@
 
   function renderNext(list, now) {
     var box = document.getElementById("next-body");
-    var next = list
+    var upcoming = list
       .filter(function (e) { return e.action_type === "action" && isDated(e); })
       .map(function (e) { return { event: e, date: parseDate(e.starts_at) }; })
       .filter(function (item) { return item.date && item.date.getTime() >= now.getTime(); })
-      .sort(function (a, b) { return a.date - b.date; })[0];
+      .sort(function (a, b) { return a.date - b.date; });
+
+    // プロフィールがあるときは、自分に該当するものと全員向けだけを「次にやること」に出す。
+    // 他グレードの先行販売は一覧には残るが、行動を促す位置には出さない。
+    var next = upcoming[0];
+    if (hasProfile()) {
+      next = upcoming.filter(function (item) {
+        return profileMatch(item.event) !== "" || isForEveryone(item.event) ||
+          item.event.type === "personal";
+      })[0] || null;
+    }
 
     box.textContent = "";
     if (!next) {
@@ -173,11 +271,23 @@
     sub.textContent = untilText(next.date, now) + (label ? " ・ " + label : "");
 
     box.append(when, title, sub);
+
+    var reason = profileMatch(next.event);
+    if (reason) {
+      var mine = document.createElement("p");
+      mine.className = "next-mine";
+      mine.textContent = "★ " + reason + "に該当します";
+      box.appendChild(mine);
+    }
   }
 
   function createEventNode(event, options) {
     var li = document.createElement("li");
     li.className = "event is-" + (event.action_type || "information");
+
+    // 強調は色だけに依存させない。バッジの文字で理由を示す。
+    var reason = profileMatch(event);
+    if (reason) li.classList.add("is-mine");
 
     var top = document.createElement("div");
     top.className = "event-top";
@@ -199,6 +309,13 @@
     tag.textContent = ACTION_LABEL[event.action_type] || "INFO";
 
     top.append(time, tag);
+
+    if (reason) {
+      var mine = document.createElement("span");
+      mine.className = "badge-mine";
+      mine.textContent = "★ " + reason;
+      top.appendChild(mine);
+    }
 
     var title = document.createElement("p");
     title.className = "event-title";
@@ -260,7 +377,13 @@
       .filter(isDated)
       .map(function (e) { return { event: e, date: parseDate(e.starts_at) }; })
       .filter(function (item) { return item.date; })
-      .sort(function (a, b) { return a.date - b.date; });
+      .sort(function (a, b) {
+        // 時系列を崩さない。同時刻のときだけ、自分に該当するものを先に出す。
+        if (a.date - b.date !== 0) return a.date - b.date;
+        var am = profileMatch(a.event) ? 0 : 1;
+        var bm = profileMatch(b.event) ? 0 : 1;
+        return am - bm;
+      });
 
     if (!dated.length) {
       var none = document.createElement("p");
@@ -353,9 +476,24 @@
     });
   }
 
+  function renderFilterNote() {
+    var note = document.getElementById("filter-note");
+    var toggle = document.getElementById("mine-only");
+    if (hasProfile()) {
+      toggle.disabled = false;
+      note.textContent = state.mineOnly
+        ? "自分に該当するものと全員向けだけを表示しています。"
+        : "自分に該当するものに★を付けています。該当しないものも一覧から消していません。";
+    } else {
+      toggle.disabled = true;
+      note.textContent = "「あなたの設定」を保存すると、自分に該当する先行販売に★が付きます。";
+    }
+  }
+
   function render() {
     var now = new Date();
-    var visible = allEvents().filter(matchesFilter);
+    var visible = allEvents().filter(matchesFilter).filter(matchesMine);
+    renderFilterNote();
     renderNext(visible, now);
     renderTimeline(visible, now);
     renderUndated(visible);
@@ -464,6 +602,60 @@
     });
   }
 
+  function profileSummary() {
+    if (!hasProfile()) return "未設定です。すべての予定をそのまま表示します。";
+    var parts = [];
+    if (state.profile.fc_grade) parts.push(GRADE_LABEL[state.profile.fc_grade]);
+    if (state.profile.has_season_ticket) parts.push("シーズンパスあり");
+    return "この端末に保存しました（" + parts.join(" ・ ") + "）。設定はこの端末から出ません。";
+  }
+
+  function fillProfileForm() {
+    document.getElementById("profile-grade").value = state.profile ? state.profile.fc_grade : "";
+    document.getElementById("profile-season").checked = !!(state.profile && state.profile.has_season_ticket);
+  }
+
+  function bindProfile() {
+    var form = document.getElementById("profile-form");
+    var status = document.getElementById("profile-status");
+
+    form.addEventListener("submit", function (submitEvent) {
+      submitEvent.preventDefault();
+      var now = new Date();
+      var profile = {
+        fc_grade: document.getElementById("profile-grade").value,
+        has_season_ticket: document.getElementById("profile-season").checked,
+        updated_at: now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate())
+      };
+      if (saveProfile(profile)) {
+        state.profile = normalizeProfile(profile);
+        status.textContent = profileSummary();
+      } else {
+        status.textContent = "保存できませんでした。ブラウザの設定で保存が制限されている可能性があります。";
+      }
+      if (!hasProfile()) {
+        state.mineOnly = false;
+        document.getElementById("mine-only").checked = false;
+      }
+      render();
+    });
+
+    document.getElementById("profile-clear").addEventListener("click", function () {
+      clearProfile();
+      state.profile = null;
+      state.mineOnly = false;
+      document.getElementById("mine-only").checked = false;
+      fillProfileForm();
+      status.textContent = "会員種別とシーズンパスの設定を削除しました。MY予定は消していません。";
+      render();
+    });
+
+    document.getElementById("mine-only").addEventListener("change", function (changeEvent) {
+      state.mineOnly = changeEvent.target.checked;
+      render();
+    });
+  }
+
   function bindForm() {
     var form = document.getElementById("my-form");
     var status = document.getElementById("my-status");
@@ -504,7 +696,11 @@
   /* ---------- 起動 ---------- */
 
   function start() {
+    state.profile = loadProfile();
     bindFilters();
+    bindProfile();
+    fillProfileForm();
+    document.getElementById("profile-status").textContent = profileSummary();
     bindForm();
     document.getElementById("ics-btn").addEventListener("click", exportIcs);
 
