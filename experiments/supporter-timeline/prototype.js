@@ -1204,7 +1204,7 @@
     var target = allEvents().filter(matchesFilter).filter(isDated);
 
     if (!target.length) {
-      status.textContent = "書き出せる予定がありません。日時が確定しているものだけが対象です。";
+      status.textContent = "追加できる予定がありません。日時が確定しているものだけが対象です。";
       return;
     }
 
@@ -1220,7 +1220,9 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 
     var skipped = allEvents().filter(matchesFilter).length - target.length;
-    status.textContent = target.length + "件を書き出しました。" +
+    // この道具からカレンダーへ直接は入れられない。ファイルを作るところまでなので、
+    // 「追加した」とは言わず、次に何をすればいいかまで書く。
+    status.textContent = target.length + "件をファイルにしました。カレンダーアプリで開くと追加されます。" +
       (skipped > 0 ? "日時が確定していない" + skipped + "件は含めていません。" : "");
   }
 
@@ -1564,7 +1566,7 @@
       sheet.addEventListener("animationend", done);
     }
 
-    // 下部メニューと、見出しの「書き出し」の両方から開く
+    // 下部メニューと、見出しの「カレンダー」の両方から開く
     document.querySelectorAll("[data-sheet]").forEach(function (button) {
       button.addEventListener("click", function () {
         open(document.getElementById(button.dataset.sheet), button);
