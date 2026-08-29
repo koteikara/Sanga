@@ -1177,6 +1177,12 @@
       lines.push("BEGIN:VEVENT");
       lines.push("UID:" + icsEscape(event.id) + "@sanga-timeline.invalid");
       lines.push("DTSTAMP:" + toUtcStamp(now));
+      // 版が無いと、同じUIDでもカレンダー側は更新と判断できない。
+      if (typeof event.calendar_sequence === "number" && event.calendar_sequence >= 0) {
+        lines.push("SEQUENCE:" + Math.floor(event.calendar_sequence));
+      }
+      var lastModified = parseDate(event.calendar_last_modified);
+      if (lastModified) lines.push("LAST-MODIFIED:" + toUtcStamp(lastModified));
       if (event.date_precision === "date") {
         lines.push("DTSTART;VALUE=DATE:" + toDateStamp(start));
       } else {

@@ -159,12 +159,36 @@ function buildMatchIndex(matchesPath) {
   return index;
 }
 
+/**
+ * 版の基準時刻。SEQUENCE を Unix秒にすると2038年に32bit符号付き整数を超えるため、
+ * 桁を小さく保つ目的で 2024-01-01 UTC を起点にする。
+ */
+const VERSION_EPOCH_MS = Date.UTC(2024, 0, 1);
+
+/**
+ * カレンダー側の版情報を作る。正本はCSVの retrieved_at_jst で、
+ * 公式ページを取り直した時刻。行ごとに持つ唯一の「いつ時点の事実か」を表す値。
+ *
+ * SEQUENCE は非負整数で、同じUIDに対して下がってはいけない。
+ * 取得時刻の経過分にすることで、取り直すたびに必ず増える。
+ * ただし中身が変わっていない行でも版が上がる点は docs に注意点として書いている。
+ */
+function calendarVersion(retrievedAt) {
+  const parsed = retrievedAt ? new Date(retrievedAt) : null;
+  const at = parsed && !Number.isNaN(parsed.getTime()) ? parsed : new Date();
+  return {
+    calendar_sequence: Math.max(0, Math.floor((at.getTime() - VERSION_EPOCH_MS) / 60000)),
+    calendar_last_modified: at.toISOString().replace(/\.\d{3}Z$/, 'Z'),
+  };
+}
+
 function ticketEvent(record, match, checkedAt) {
   const matchId = match.id;
   const opponent = match.opponent || '未定';
+  const version = calendarVersion(record.retrieved_at_jst);
 
   if (record.schedule_status === '未掲載') {
-    return {
+    return Object.assign({
       id: `ticket-${matchId}-unscheduled`,
       starts_at: '',
       ends_at: '',
@@ -183,14 +207,14 @@ function ticketEvent(record, match, checkedAt) {
       status: 'tentative',
       is_visible: true,
       note: record.schedule_note || '',
-    };
+    }, version);
   }
 
   const stage = STAGES[record.sale_type];
   if (!stage) throw new Error(`知らない販売段階です: ${record.sale_type}`);
   if (!record.sale_start) throw new Error(`販売開始日時が空です: ${matchId} ${record.sale_type}`);
 
-  return {
+  return Object.assign({
     id: `ticket-${matchId}-${stage.suffix}`,
     starts_at: record.sale_start,
     ends_at: '',
@@ -208,7 +232,7 @@ function ticketEvent(record, match, checkedAt) {
     source_checked_at: checkedAt,
     status: 'confirmed',
     is_visible: true,
-  };
+  }, version);
 }
 
 /**
