@@ -152,7 +152,7 @@ body {
   background: rgba(42, 10, 43, 0.92);
   box-shadow: 0 4px 16px rgba(20, 0, 18, 0.34);
 }
-.head.is-stuck h1 { font-size: 1.02rem; letter-spacing: 0.06em; }
+.head.is-stuck h1 { font-size: 1.2rem; letter-spacing: 0.05em; }
 
 .head-row {
   display: flex;
@@ -247,15 +247,30 @@ body {
   .head-action-label { display: none; }
   .head-action { min-width: 44px; justify-content: center; padding: 0; }
 }
-/* 題の1文字だけキャラと同じ薄紫にし、小文字にする。点（ティトル）が目盛りに見える。
+/* 題の書体。SIL Open Font License 1.1（assets/dm-serif-display-OFL.txt）。
+   Google Fonts からラテン部分だけを取り込んで自前で配る。この repo は外部への
+   リクエストを持たないため、fonts.googleapis.com は参照しない。
+   読み込むまでは Georgia で出る。字幅が近いので入れ替わりが目立たない。 */
+@font-face {
+  font-family: "DM Serif Display";
+  src: url(assets/dm-serif-display-latin.woff2) format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* 題の "me" だけ薄紫の小文字にする。TIMELINE のなかの me＝自分で、
+   公式の販売スケジュールを自分の時間軸に読み替える、というこの道具の役目を題で言う。
    地の上で 10.3、星雲のいちばん明るい点でも 3.41 で、大きな太字（3:1）を満たす。
    帯に縮んだときは地が 0.92 で敷かれるため 9.64 に上がる。
-   色と字形だけに意味を持たせていないので、読み上げは "TiMELINE" とそのまま読まれる。 */
+   色と字形だけに意味を持たせていないので、読み上げは "TImeLINE" とそのまま読まれる。 */
 .head-mark { color: #f3abff; text-transform: none; }
 .head h1 {
   margin: 0;
-  /* 幅に応じて縮め、横のボタンの場所を作る。折り返すと帯が2行になるため折り返さない */
-  font-size: clamp(1rem, 4.8vw, 1.5rem);
+  font-family: "DM Serif Display", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  /* 幅に応じて縮め、横のボタンの場所を作る。折り返すと帯が2行になるため折り返さない。
+     セリフは同じ級数でも小さく見えるため、ゴシックのときより一回り上げている */
+  font-size: clamp(1.5rem, 6.4vw, 1.9rem);
   line-height: 1.3;
   letter-spacing: 0.02em;
   /* 折り返すと帯が2行になるので折り返さず、入らない分は切る。
