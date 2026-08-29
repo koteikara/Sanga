@@ -24,6 +24,7 @@ const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled']);
 const GRADES = new Set(['platinum', 'gold', 'regular', 'kids']);
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const UTC_STAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
 const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+09:00$/;
 
 const errors = [];
@@ -163,6 +164,19 @@ function checkEvent(event, index, matchIds) {
   }
   if (isNonEmptyString(event.source_checked_at) && !DATE_PATTERN.test(event.source_checked_at)) {
     addError(location, `source_checked_at の日付が不正です: ${event.source_checked_at}`);
+  }
+
+  // 版はカレンダー側が更新を判断する材料。壊れた値を配ると更新が届かなくなる。
+  if (hasOwn(event, 'calendar_sequence')) {
+    if (!Number.isInteger(event.calendar_sequence) || event.calendar_sequence < 0) {
+      addError(location, `calendar_sequence は0以上の整数である必要があります: ${event.calendar_sequence}`);
+    }
+  }
+  if (hasOwn(event, 'calendar_last_modified') && !UTC_STAMP_PATTERN.test(event.calendar_last_modified)) {
+    addError(location, `calendar_last_modified はUTCの日時である必要があります: ${event.calendar_last_modified}`);
+  }
+  if (hasOwn(event, 'calendar_sequence') !== hasOwn(event, 'calendar_last_modified')) {
+    addError(location, 'calendar_sequence と calendar_last_modified は両方そろえてください');
   }
 }
 
