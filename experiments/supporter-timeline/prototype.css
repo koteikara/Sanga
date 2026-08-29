@@ -1128,7 +1128,10 @@ a:focus-visible {
   font-size: 0.82rem;
   font-weight: 700;
 }
+/* 数値欄も同じ組みにする。抜けていると UA 既定のまま出て、高さ21px・文字13.3pxになる。
+   高さはタップ領域が足りず、16px未満の入力欄は iOS Safari がフォーカス時に画面を拡大する。 */
 input[type="text"],
+input[type="number"],
 input[type="datetime-local"],
 select {
   min-height: 44px;
