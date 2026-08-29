@@ -32,10 +32,12 @@
            読み上げは "TImeLINE" とそのまま読まれ、語としては変わらない -->
       <h1>TI<span class="head-mark">me</span>LINE</h1>
     </div>
-    <!-- 書き出しは常に見えるが押す頻度は低い。下部メニューの枠を使わず見出しの横に置く -->
-    <button type="button" class="head-action" data-sheet="sheet-ics" aria-haspopup="dialog" aria-label="カレンダーへ書き出す">
-      <svg class="head-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5v10M8.5 10 12 13.5 15.5 10"/><path d="M4.5 15.5v3a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-3"/></svg>
-      <span class="head-action-label">書き出し</span>
+    <!-- カレンダーへの追加は常に見えるが押す頻度は低い。下部メニューの枠を使わず見出しの横に置く。
+         語は利用者から見た目的（自分のカレンダーに入れる）に合わせている。
+         「取り込む」は「取り込まなかった記事」で逆向きに使っているため避けた -->
+    <button type="button" class="head-action" data-sheet="sheet-ics" aria-haspopup="dialog" aria-label="カレンダーに追加する">
+      <svg class="head-action-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3.5V6M16 3.5V6"/><path d="M12 12.5v5M9.5 15h5"/></svg>
+      <span class="head-action-label">カレンダー</span>
     </button>
   </div>
 </header>
@@ -215,7 +217,7 @@
 
 <dialog id="sheet-ics" class="sheet" aria-labelledby="sheet-ics-head">
   <div class="sheet-head">
-    <h2 id="sheet-ics-head">カレンダーへ書き出す</h2>
+    <h2 id="sheet-ics-head">カレンダーに追加する</h2>
     <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
   </div>
   <div class="sheet-body">
@@ -223,7 +225,7 @@
       日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
       確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
     </p>
-    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を書き出す</button>
+    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を追加する</button>
     <p id="ics-status" class="my-status" role="status"></p>
   </div>
 </dialog>
@@ -303,7 +305,7 @@
         <span class="tour-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>設定</span>
       </div>
       <h2>操作は画面の下から開きます</h2>
-      <p>絞り込み・特典チケット・次にやること・MY予定・設定は、画面下のメニューから開きます。<strong>カレンダーへの書き出しは右上の「書き出し」です。</strong></p>
+      <p>絞り込み・特典チケット・次にやること・MY予定・設定は、画面下のメニューから開きます。<strong>カレンダーへの追加は右上の「カレンダー」です。</strong></p>
     </section>
   </div>
 
