@@ -23,6 +23,33 @@
 * 不明点がある場合は、推測で大きな変更をせず、安全側に倒して小さく進めます。
 * 他の実装者と同時に作業する場合は `docs/parallel-work-policy.md` に従い、変更予定のファイルを先に宣言します。
 
+## Codex Cloudでの作業開始手順
+
+Codex Cloudへ作業を依頼するときは、依頼者が次の順番で操作します。
+
+1. Codex Cloudのトップ画面を開きます。
+2. リポジトリ選択欄から `koteikara/Sanga` を選びます。
+3. 作業ブランチの起点となるブランチを確認します。
+4. 指示文を貼り付けてタスクを開始します。
+
+リポジトリを選ばずにタスクを開始しません。既存タスクの続きから別件を始めません。1タスク1件にします。
+
+指示文の先頭には、必ず次の2行を入れます。
+
+```text
+docs/codex-workflow.md の共通ルールに従ってください。
+git reset は使わないでください。取り消しは追加コミットで行ってください。
+```
+
+## Git操作の禁止事項
+
+* `git reset` を使いません。`--soft` / `--mixed` / `--hard` のいずれも使いません。
+* `git checkout -- <file>` や `git restore` で、他の変更を巻き込んで作業内容を捨てません。
+* `git commit --amend`、`git rebase`、`git push --force`（`--force-with-lease` を含む）で公開済み履歴を書き換えません。
+* `git clean -fd` で未追跡ファイルをまとめて消しません。
+* 間違えたコミットは、打ち消す変更を新しいコミットとして積むか `git revert` で取り消します。
+* 履歴を巻き戻す必要があると判断した場合は、実行せずにPRコメントで相談します。
+
 ## PR作成ルール
 
 PRタイトル、PR本文、作業後の報告は必ず日本語で記載します。
@@ -301,12 +328,15 @@ UI / HTML / CSS / JavaScript を変更した場合は、GitHub Pagesで次を確
 
 ## 作業種別ごとの短縮指示テンプレート
 
+短縮指示テンプレートは、Codex Cloudのトップでリポジトリ `koteikara/Sanga` を選んでから貼り付けてください。どのテンプレートでも `git reset` は使わないでください。
+
 短縮指示テンプレートを使う場合も、PR本文は `docs/codex-workflow.md` のPR作成ルールに従い、日本語見出し「概要 / 変更内容 / 確認内容 / 注意点」を使ってください。英語見出しは使わないでください。
 
 ### ドキュメントのみPR
 
 ```text
 docs/codex-workflow.md の共通ルールに従ってください。
+git reset は使わないでください。取り消しは追加コミットで行ってください。
 今回はドキュメントのみの変更です。
 public/、tools/、.github/workflows/、依存関係ファイルは変更しないでください。
 ```
@@ -315,6 +345,7 @@ public/、tools/、.github/workflows/、依存関係ファイルは変更しな�
 
 ```text
 docs/codex-workflow.md の共通ルールに従ってください。
+git reset は使わないでください。取り消しは追加コミットで行ってください。
 対象は public/sanga202627season.html、public/assets/style.css、public/assets/app.js です。
 public/data/matches.json は変更しないでください。
 HTML/CSS/JSを変更した場合はキャッシュクエリとページ下部バージョンを更新してください。
@@ -324,6 +355,7 @@ HTML/CSS/JSを変更した場合はキャッシュクエリとページ下部バ
 
 ```text
 docs/codex-workflow.md と docs/operation-flow.md の共通ルールに従ってください。
+git reset は使わないでください。取り消しは追加コミットで行ってください。
 docs/sheets/schedule.initial.csv から public/data/matches.json を生成・検証してください。
 ID、LocalStorage互換性、公開JSONに出してはいけない列に注意してください。
 ```
@@ -332,11 +364,14 @@ ID、LocalStorage互換性、公開JSONに出してはいけない列に注意�
 
 ```text
 docs/codex-workflow.md と docs/operation-flow.md の共通ルールに従ってください。
+git reset は使わないでください。取り消しは追加コミットで行ってください。
 GitHub Actions、Secrets、FTP情報の実値を絶対に書かないでください。
 ```
 
 ## やってはいけないこと
 
+* `git reset` で作業内容や履歴を巻き戻さない。
+* `git commit --amend`、`git rebase`、`git push --force` で公開済み履歴を書き換えない。
 * 作業対象外のファイルをついでに変更しない。
 * ドキュメントのみのPRで `public/` 配下を変更しない。
 * 明示的な依頼なしに `.github/workflows/` や `tools/` を変更しない。
