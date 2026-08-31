@@ -982,6 +982,30 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: baseline;
 }
+/* ホーム / アウェイ。会場名だけでは読み取りにくいので、試合名の後ろに四角囲みで置く。
+   文字が違うので色だけに頼っていないが、地の濃さも変えて一目で分かるようにする。 */
+.match-side {
+  display: inline-block;
+  margin-left: 6px;
+  min-width: 1.35em;
+  padding: 0 4px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+  vertical-align: 0.05em;
+}
+.match-side.is-home {
+  color: var(--anchor);
+  background: var(--accent-soft);
+}
+.match-side.is-away {
+  color: var(--muted-on-paper);
+  background: transparent;
+}
+
 /* アウェイ席の販売状態。予定ではないので札にせず、帯に添える。 */
 .match-away {
   font-weight: 700;
