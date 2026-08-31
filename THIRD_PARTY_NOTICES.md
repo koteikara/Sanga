@@ -53,7 +53,26 @@
 
 ## フォント
 
-リポジトリ内にフォントファイルやWebフォントの同梱はありません。CSSと画像生成元HTMLは利用環境のシステムフォントを候補として指定しています。フォントファイルを追加する場合は、配布可能なライセンスかを確認し、ライセンス文書と取得元を同じPRで追加します。
+年間スケジュールと予想スカッドのCSS、画像生成元HTMLは、利用環境のシステムフォントを候補として指定しています。同梱しているフォントは次の1件です。
+
+| 項目 | 内容 |
+| --- | --- |
+| フォント | DM Serif Display（latinサブセット） |
+| 著作権表示 | Copyright 2014-2018 Adobe（Reserved Font Name 'Source'）、Copyright 2019 Google LLC |
+| ライセンス | SIL Open Font License 1.1 |
+| 上流 | https://fonts.google.com/specimen/DM+Serif+Display |
+
+利用箇所:
+
+- `public/assets/timeline.css`: `public/assets/dm-serif-display-latin.woff2` を `@font-face` で読み込む（SUPPORTER TIMELINE の題）。
+- `experiments/supporter-timeline/prototype.css`: 検証用プロトタイプで同じファイルを読み込む。
+
+ライセンス全文:
+
+- `public/assets/dm-serif-display-OFL.txt`
+- `experiments/supporter-timeline/assets/dm-serif-display-OFL.txt`
+
+フォントファイルを追加する場合は、配布可能なライセンスかを確認し、ライセンス文書と取得元を同じPRで追加します。
 
 ## リポジトリ自体のライセンス
 

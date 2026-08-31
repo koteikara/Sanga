@@ -1,5 +1,10 @@
 # SUPPORTER TIMELINE（Phase 1・Phase 2 プロトタイプ）
 
+> **本番ページができました（2026-08-31）。** `public/timeline.html` が公開版で、読むデータは
+> `public/data/calendar-events.json`（現在値のCSVから生成）です。ここは引き続き検証用で、
+> 作り物のサンプルを混ぜた `calendar-events.sample.json` を読みます。
+> 見せ方を試すときはここで、本番に入れるときは `public/` 側を直します。
+
 作成日: 2026-08-27（Phase 2 追加: 2026-08-28）
 
 ## 目的

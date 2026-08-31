@@ -66,6 +66,7 @@
 | プロトタイプ | 動作する（Phase 1 + Phase 2）。チケット販売は実データ | `experiments/supporter-timeline/` |
 | チケット販売スケジュールの構造 | 2026-08-28に確認済み。1試合最大8件 | `docs/sheets/ticket-sales.2026-08-28.csv`、「販売段階は8つある」 |
 | チケット販売スケジュールの取得と解析 | 動作する。公式HTMLから2026-08-28のスナップショットを再現できることを2026-08-28に確認 | `tools/fetch-ticket-sales.js`、`tools/parse-ticket-sales.js`、「販売スケジュールの取得と解析」 |
+| 本番ページ | `public/timeline.html` に移植済み（2026-08-31）。公開JSONは取り込みPRで作り直す | `public/timeline.html`、「Eの設計」 |
 | 見た目 | 入口ページ基準に作り直し済み（ネビュラ背景＋白場）。プロトタイプで確認 | `experiments/supporter-timeline/`、「地は入口ページのネビュラ」 |
 | 定期実行 | 動作する。毎日22:00 JSTに取得し、差分があればPRを作る | `.github/workflows/ticket-sales-sync.yml`、「1日1回の取り込み」 |
 | 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方（実データ全量での月の折りたたみ・下部ドロワーを含む）も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
@@ -107,14 +108,13 @@ Phase 2 で入れたのは次の3つです。
 - プロフィールの `interests`（Phase 3）と `area` / `home_base` / `travel_minutes_to_sanga_stadium`（Phase 4）
 - 個々の試合が特典チケットの対象かどうかの判定（対象外の試合・席種は試合ごとに変わる）
 - プロフィールの書き出し・読み込み。端末を変えると消える
-- 本番ページへの移植。プロトタイプのままで、`public/` には何も入れていない
 
 ### 次の一手の候補
 
 | 候補 | 内容 | 効果 | 依存 |
 | --- | --- | --- | --- |
 | **F. ICSに版を持たせる** | `SEQUENCE` / `LAST-MODIFIED` は実装済み。`STATUS` は未着手 | 販売日時が変わったとき、取り込み直しが更新として届く | なし。小さい |
-| **E. 本番ページへの移植** | プロトタイプを `public/` へ入れ、現在値のCSVから作った `calendar-events` を読ませる | 自動で最新になるデータが、実際に使える場所に出る | なし。データ・見せ方・配色が揃っている |
+| ~~**E. 本番ページへの移植**~~ 実装済み | `public/timeline.html`。現在値のCSVから作った `calendar-events` を読む | 自動で最新になるデータが、実際に使える場所に出る | なし。データ・見せ方・配色が揃っている |
 | C. 購読フィード（`webcal:`） | 静的な `.ics` を固定URLで配る | 更新も取り消しも自動で届く | F と E |
 | D. プロフィールの書き出し・読み込み | JSONのコピー＆貼り付け | 端末を変えても設定が残る | なし |
 
@@ -160,7 +160,7 @@ Phase 2 で入れたのは次の3つです。
 Eに着手する場合は `docs/ui-prototype-workflow.md` と `docs/deploy-policy.md` を先に読みます。
 Cの配信先（`public/` のどこに置くか）はEで決まります。
 
-#### Eの設計（2026-08-29に決定）
+#### Eの設計（2026-08-29に決定。2026-08-31に実装）
 
 **置き場所。**
 
