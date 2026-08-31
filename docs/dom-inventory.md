@@ -227,6 +227,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.match-date`
 - `.match-label`
 - `.match-name`
+- `.match-side`
 - `.month`
 - `.month-label`
 - `.note-tentative`
@@ -237,6 +238,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.tag`
 - `.today`
 - `.tour`
+- `.visually-hidden`
 
 #### 操作しているdata属性
 

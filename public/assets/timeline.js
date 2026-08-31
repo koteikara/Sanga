@@ -468,6 +468,19 @@
     return "アウェイ席 発売中" + (found.checked_at ? "（" + found.checked_at + "確認）" : "");
   }
 
+  /**
+   * ホームかアウェイか。会場名だけでは分かりにくいので、試合名の後ろに H / A で添える。
+   * 文字だけに頼らせないよう、読み上げ用に「ホーム」「アウェイ」を併記する。
+   * 未定（`home_away` が空）の試合には出さない。
+   */
+  function matchSideOf(event) {
+    var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+    if (ids.length !== 1) return "";
+    var match = state.matches.find(function (m) { return m.id === ids[0]; });
+    if (!match) return "";
+    return match.home_away === "H" || match.home_away === "A" ? match.home_away : "";
+  }
+
   function matchesMine(event) {
     if (!state.mineOnly || !hasProfile()) return true;
     if (event.type === "personal") return true;
@@ -797,6 +810,17 @@
           name.className = "match-name";
           name.textContent = block.label;
           head.appendChild(name);
+          var side = matchSideOf(block.items[0].event);
+          if (side) {
+            var sideNode = document.createElement("span");
+            sideNode.className = "match-side" + (side === "H" ? " is-home" : " is-away");
+            sideNode.appendChild(document.createTextNode(side));
+            var sideWord = document.createElement("span");
+            sideWord.className = "visually-hidden";
+            sideWord.textContent = side === "H" ? "ホーム" : "アウェイ";
+            sideNode.appendChild(sideWord);
+            name.appendChild(sideNode);
+          }
           var matchDate = matchDateLabel(block.items[0].event);
           if (matchDate) {
             var when = document.createElement("span");
