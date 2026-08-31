@@ -163,6 +163,17 @@
             <option value="correction_minus">数え直して減らす</option>
           </select>
         </div>
+        <div class="field" id="benefit-source-grade-field" hidden>
+          <label for="benefit-source-grade">譲ってくれた人のコース</label>
+          <select id="benefit-source-grade" name="source_grade">
+            <option value="">分からない</option>
+            <option value="platinum">プラチナクルー</option>
+            <option value="gold">ゴールドクルー</option>
+            <option value="regular">レギュラークルー</option>
+            <option value="kids">キッズクルー</option>
+          </select>
+          <p class="section-note">引き換えられる日時は、譲ってくれた人のコースで決まります。自分のコースの枠では引き換えられません。</p>
+        </div>
         <div class="field">
           <label for="benefit-note">メモ（任意）</label>
           <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
@@ -230,6 +241,10 @@
     <p class="section-note">
       日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
       確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
+    </p>
+    <p class="section-note">
+      特典チケットの引換は、「特典」で引き換え予定を決めた試合のぶんだけ入れます。1試合に3件あり、
+      全ホーム戦ぶんを入れると、使う予定のない予定でカレンダーが埋まるためです。画面には全件出しています。
     </p>
     <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を追加する</button>
     <p id="ics-status" class="my-status" role="status"></p>
@@ -322,7 +337,7 @@
   </div>
 </dialog>
 
-<script src="assets/timeline.js?v=01f84581"></script>
+<script src="assets/timeline.js?v=f44ea965"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。
