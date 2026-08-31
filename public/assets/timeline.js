@@ -416,6 +416,17 @@
     return event.date_precision === "datetime" || event.date_precision === "date";
   }
 
+  /**
+   * 特典チケットの引換は、引き換え予定を決めた試合のぶんだけカレンダーへ出す。
+   * 引換は1試合に3件あり、全ホーム戦ぶんを入れると、使う予定のない予定で
+   * カレンダーが埋まる。画面には引き続き全件出す（どの試合で使えるかを見るため）。
+   */
+  function isIcsTarget(event) {
+    if (event.ticket_kind !== "benefit_exchange") return true;
+    var matchId = (event.match_ids || [])[0];
+    return Boolean(matchId && benefitUseFor(matchId));
+  }
+
   /* ---------- 描画 ---------- */
 
   /**
@@ -1206,7 +1217,8 @@
   function exportIcs() {
     var status = document.getElementById("ics-status");
     var now = new Date();
-    var target = allEvents().filter(matchesFilter).filter(isDated);
+    var dated = allEvents().filter(matchesFilter).filter(isDated);
+    var target = dated.filter(isIcsTarget);
 
     if (!target.length) {
       status.textContent = "追加できる予定がありません。日時が確定しているものだけが対象です。";
@@ -1224,11 +1236,15 @@
     document.body.removeChild(link);
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 
-    var skipped = allEvents().filter(matchesFilter).length - target.length;
+    var undated = allEvents().filter(matchesFilter).length - dated.length;
+    var benefitSkipped = dated.length - target.length;
     // この道具からカレンダーへ直接は入れられない。ファイルを作るところまでなので、
     // 「追加した」とは言わず、次に何をすればいいかまで書く。
+    // 外した理由は分けて書く。「日時が未確定」と「引き換え予定を決めていない」は
+    // 利用者の次の行動が違うため。
     status.textContent = target.length + "件をファイルにしました。カレンダーアプリで開くと追加されます。" +
-      (skipped > 0 ? "日時が確定していない" + skipped + "件は含めていません。" : "");
+      (undated > 0 ? "日時が確定していない" + undated + "件は含めていません。" : "") +
+      (benefitSkipped > 0 ? "特典チケットの引換は、引き換え予定を決めた試合のぶんだけ入れます。決めていない" + benefitSkipped + "件は含めていません。" : "");
   }
 
   /* ---------- 操作 ---------- */

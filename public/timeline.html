@@ -231,6 +231,10 @@
       日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
       確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
     </p>
+    <p class="section-note">
+      特典チケットの引換は、「特典」で引き換え予定を決めた試合のぶんだけ入れます。1試合に3件あり、
+      全ホーム戦ぶんを入れると、使う予定のない予定でカレンダーが埋まるためです。画面には全件出しています。
+    </p>
     <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を追加する</button>
     <p id="ics-status" class="my-status" role="status"></p>
   </div>
@@ -322,7 +326,7 @@
   </div>
 </dialog>
 
-<script src="assets/timeline.js?v=01f84581"></script>
+<script src="assets/timeline.js?v=fab9803a"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。
