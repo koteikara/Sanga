@@ -223,6 +223,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.is-mine`
 - `.is-on`
 - `.is-stuck`
+- `.match-away`
 - `.match-date`
 - `.match-label`
 - `.match-name`

@@ -1,0 +1,59 @@
+<!doctype html>
+<!--
+  tools/parse-away-tickets.js の回帰確認用の入力です。
+  取得したページをそのまま置くと文章の複製になるため、
+  解析に必要な構造（目印のコメント、クラス名、並び）だけを自分で書いた作り物です。
+  実在の試合ではありません。
+-->
+<html lang="ja">
+<body>
+<div class="game-list">
+  <ul>
+    <!--ホームここから-->
+    <li>
+      <a href="/sales/perform/1000001/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-j1"></span>サンプルリーグ</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">7/5</span> <span class="vs-box-info-time">14:00</span></div></div>
+          <div class="vs-box-place"><p class="team-name">ホーム対戦相手</p><span>サンプルスタジアム</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-vacant">空席あり</div></div>
+        </div>
+      </a>
+    </li>
+    <!--ホームここまで-->
+    <!--アウェイここから-->
+    <li>
+      <a href="/sales/perform/1000002/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-j1"></span>サンプルリーグ</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">7/12</span> <span class="vs-box-info-time">19:00</span></div></div>
+          <div class="vs-box-place"><p class="team-name">サンプルＦＣ</p><span>サンプル陸上競技場</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-vacant">空席あり</div></div>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/sales/perform/1000003/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-j1"></span>サンプルリーグ</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">1/10</span> <span class="vs-box-info-time">13:00</span></div></div>
+          <div class="vs-box-place"><p class="team-name">年またぎユナイテッド</p><span>サンプル球技場</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-few">空席わずか</div></div>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/sales/perform/1000004/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-other"></span>その他</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">7/12</span> <span class="vs-box-info-time">19:00</span></div></div>
+          <div class="vs-box-place"><span>サンプル陸上競技場</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-few">空席わずか</div></div>
+        </div>
+      </a>
+    </li>
+    <!--アウェイここまで-->
+  </ul>
+</div>
+</body>
+</html>

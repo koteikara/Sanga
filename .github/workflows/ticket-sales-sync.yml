@@ -66,13 +66,24 @@ jobs:
           # 取り込み結果はPR本文と実行サマリーで使うので残す。
           node tools/parse-ticket-sales.js "${args[@]}" | tee tmp/parse-result.txt
 
+      # アウェイ席の販売状態も同じ流れで取り込む。取得先が別サイトなので、
+      # 失敗してもホーム戦の取り込みは止めない（continue-on-error）。
+      - name: アウェイの販売状態を取得
+        id: away
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          sleep 10
+          node tools/fetch-away-tickets.js tmp/away-tickets.html --force
+          node tools/parse-away-tickets.js tmp/away-tickets.html
+
       - name: 差分の有無を判定
         id: judge
         run: |
           set -euo pipefail
 
-          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv)" ]; then
-            echo "販売スケジュールに変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv)" ]; then
+            echo "販売スケジュールとアウェイの販売状態に変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -116,7 +127,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv public/data/calendar-events.json
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv public/data/calendar-events.json
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 
@@ -126,6 +137,7 @@ jobs:
             echo '- 公式のチケット販売スケジュールを取得し、`docs/sheets/ticket-sales.current.csv` を更新しました。'
             echo '- **公開JSONを変更するPRです。** 同じCSVから `public/data/calendar-events.json` を作り直しています。公開ページ（`public/timeline.html`）が読むデータです。'
             echo '- 内容を確認してからマージしてください。自動ではマージしません。'
+            echo '- アウェイ席の販売状態（`docs/sheets/away-tickets.current.csv`）も更新しています。**ここに出るのは発売中の試合だけで、載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。'
             echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'
             echo '- 取得日時と画面表示（受付中・販売中）だけの違いでは更新しません。このPRがあるということは、販売日程か掲載状態が変わっています。'
             echo

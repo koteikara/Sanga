@@ -6,7 +6,7 @@
     "ticket_checked_at": "2026-08-28",
     "ticket_csv": "docs/sheets/ticket-sales.current.csv",
     "matches_source": "public/data/matches.json",
-    "match_count": 19,
+    "match_count": 22,
     "updated_at": "2026-08-28"
   },
   "events": [
@@ -687,6 +687,46 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-sec05",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec05"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-02T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "横浜FM戦 キックオフ（日産ス）"
+    },
+    {
+      "id": "match-sec06",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec06"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-06T19:30:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "FC東京戦 キックオフ（味スタ）"
+    },
+    {
       "id": "match-sec07",
       "ends_at": "",
       "type": "match",
@@ -730,6 +770,26 @@
       "is_visible": true,
       "calendar_sequence": 1396999,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec08",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec08"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-19T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "岡山戦 キックオフ（JFEス）"
     },
     {
       "id": "ticket-sec09-benefit-platinum",
@@ -3690,5 +3750,28 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     }
   ],
-  "skipped": []
+  "skipped": [],
+  "away_tickets": [
+    {
+      "match_id": "sec05",
+      "state": "on_sale",
+      "state_note": "空席あり",
+      "checked_at": "2026-08-31",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2628602/001"
+    },
+    {
+      "match_id": "sec06",
+      "state": "on_sale",
+      "state_note": "空席あり",
+      "checked_at": "2026-08-31",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2628263/001"
+    },
+    {
+      "match_id": "sec08",
+      "state": "on_sale",
+      "state_note": "空席あり",
+      "checked_at": "2026-08-31",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2630702/001"
+    }
+  ]
 }

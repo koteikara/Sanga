@@ -22,6 +22,8 @@ const SOURCES = new Set(['official', 'personal']);
 const STATUSES = new Set(['confirmed', 'tentative']);
 const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled']);
 const GRADES = new Set(['platinum', 'gold', 'regular', 'kids']);
+// `before_sale` は観測できないため持たない（docs/supporter-timeline-design.md「アウェイ戦のチケット」）。
+const AWAY_STATES = new Set(['on_sale', 'unknown']);
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const UTC_STAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
@@ -203,6 +205,50 @@ function checkTicketStages(events) {
   });
 }
 
+/**
+ * アウェイ戦の販売状態。予定ではなく状態なので、events とは別に持つ。
+ * 状態には「いつ時点か」が必ず要る。
+ *
+ * `before_sale`（まだ発売していない）は持たない。Jリーグチケットに載っていない理由が、
+ * 未発売なのか別のプレイガイドで売っているのか区別できないため。
+ */
+function checkAwayTickets(list, awayMatchIds, allMatchIds) {
+  if (list === undefined) return;
+  if (!Array.isArray(list)) {
+    addError('away_tickets', '配列である必要があります');
+    return;
+  }
+
+  const seen = new Set();
+  list.forEach((item, index) => {
+    const location = `away_tickets[${index}]`;
+    if (!item || typeof item !== 'object') {
+      addError(location, 'オブジェクトである必要があります');
+      return;
+    }
+    if (!isNonEmptyString(item.match_id)) {
+      addError(location, 'match_id がありません');
+    } else if (!allMatchIds.has(item.match_id)) {
+      addError(location, `matches.json にない試合IDです: ${item.match_id}`);
+    } else if (!awayMatchIds.has(item.match_id)) {
+      addError(location, `アウェイ戦ではありません: ${item.match_id}`);
+    } else if (seen.has(item.match_id)) {
+      addError(location, `match_id が重複しています: ${item.match_id}`);
+    }
+    seen.add(item.match_id);
+
+    if (!AWAY_STATES.has(item.state)) {
+      addError(location, `state が不正です: ${item.state}`);
+    }
+    if (!isNonEmptyString(item.checked_at) || !DATE_PATTERN.test(item.checked_at)) {
+      addError(location, `checked_at の日付が不正です: ${item.checked_at}`);
+    }
+    if (!isNonEmptyString(item.source_url)) {
+      addError(location, 'source_url がありません（状態にも出典が要る）');
+    }
+  });
+}
+
 function main(argv) {
   const positional = [];
   let matchesPath = DEFAULT_MATCHES;
@@ -224,11 +270,13 @@ function main(argv) {
   const targetPath = positional[0];
   let data;
   let matchIds;
+  let awayMatchIds;
   try {
     data = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
     const rawMatches = JSON.parse(fs.readFileSync(matchesPath, 'utf8'));
     const matches = Array.isArray(rawMatches) ? rawMatches : rawMatches.matches;
     matchIds = new Set(matches.map((match) => match.id));
+    awayMatchIds = new Set(matches.filter((match) => match.home_away === 'A').map((match) => match.id));
   } catch (error) {
     console.error(`読み込みに失敗しました: ${error.message}`);
     return 1;
@@ -249,6 +297,7 @@ function main(argv) {
   });
 
   checkTicketStages(data.events);
+  checkAwayTickets(data.away_tickets, awayMatchIds, matchIds);
 
   if (Array.isArray(data.skipped)) {
     data.skipped.forEach((item, index) => {
@@ -267,6 +316,9 @@ function main(argv) {
   const sampleCount = data.events.filter((event) => event.is_sample).length;
   console.log(`calendar-events の検証に成功しました: ${path.relative(repoRoot, path.resolve(targetPath))}`);
   console.log(`  イベント${data.events.length}件（チケット${ticketCount}件・作り物${sampleCount}件）、取り込まなかった記事${(data.skipped || []).length}件`);
+  if (Array.isArray(data.away_tickets)) {
+    console.log(`  アウェイ戦の販売中${data.away_tickets.length}件（載っていない試合は「発売前」ではなく、状態が分からない）`);
+  }
   return 0;
 }
 

@@ -283,6 +283,43 @@ function matchEvent(match) {
   });
 }
 
+/**
+ * アウェイ戦の販売状態。Jリーグチケットに載っている試合だけが対象で、
+ * 全アウェイ戦ではない。載っていない試合は何も持たない（「発売前」と扱わない）。
+ *
+ * 試合との対応付けは日付で行う。相手の表記が「横浜Ｆ・マリノス」と「横浜FM」で
+ * 揃わないため、名前では結び付けない。1日に2試合はないので日付が鍵になる。
+ */
+function buildAwayTickets(csvPath, matches) {
+  const records = readCsvRecords(csvPath).filter((record) => record.match_date);
+  const byDate = new Map();
+  matches.forEach((match) => {
+    if (match.home_away !== 'A' || !match.match_date) return;
+    if (byDate.has(match.match_date)) byDate.set(match.match_date, null); // 同日に複数あれば決められない
+    else byDate.set(match.match_date, match);
+  });
+
+  const tickets = [];
+  const unmatched = [];
+  records.forEach((record) => {
+    const match = byDate.get(record.match_date);
+    if (!match) {
+      unmatched.push(`${record.match_date} ${record.opponent_raw}`);
+      return;
+    }
+    tickets.push({
+      match_id: match.id,
+      state: 'on_sale',
+      state_note: record.state_raw || '',
+      checked_at: (record.retrieved_at_jst || '').slice(0, 10),
+      source_url: record.perform_url,
+    });
+  });
+
+  tickets.sort((a, b) => a.match_id.localeCompare(b.match_id));
+  return { tickets, unmatched };
+}
+
 function sortEvents(events) {
   return events.slice().sort((a, b) => {
     const left = a.starts_at || '9999';
@@ -312,6 +349,17 @@ function build(options) {
     events.push(ticketEvent(record, match, checkedAt));
   });
 
+  let awayTickets = [];
+  let awayUnmatched = [];
+  if (options.awayPath) {
+    const away = buildAwayTickets(options.awayPath, Array.from(matchIndex.values()));
+    awayTickets = away.tickets;
+    awayUnmatched = away.unmatched;
+    // アウェイ席が発売中の試合も時系列に出す。試合そのもののイベントが無いと、
+    // 販売状態を添える先が画面に無い。
+    awayTickets.forEach((ticket) => { rounds.add(ticket.match_id); });
+  }
+
   Array.from(rounds).sort().forEach((matchId) => {
     events.push(matchEvent(matchIndex.get(matchId)));
   });
@@ -326,6 +374,7 @@ function build(options) {
   }
 
   return {
+    awayUnmatched,
     meta: {
       note: options.samplesPath
         ? 'チケット販売と試合は実データ。作り物のイベントには is_sample: true が付く。tools/generate-calendar-events.js が生成する。手で編集しない。'
@@ -340,17 +389,19 @@ function build(options) {
     },
     events: sortEvents(events),
     skipped,
+    away_tickets: awayTickets,
   };
 }
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', checkedAt: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--matches') { options.matchesPath = argv[i += 1]; continue; }
     if (arg === '--samples') { options.samplesPath = argv[i += 1]; continue; }
+    if (arg === '--away') { options.awayPath = argv[i += 1]; continue; }
     if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '-h' || arg === '--help') { usage(); return 0; }
@@ -370,7 +421,16 @@ function main(argv) {
     return 1;
   }
 
+  // 突き合わせに失敗した行は生成物に入れず、実行時の警告として出す。
+  const awayUnmatched = data.awayUnmatched || [];
+  delete data.awayUnmatched;
+
   const text = `${JSON.stringify(data, null, 2)}\n`;
+
+  if (awayUnmatched.length) {
+    console.error(`アウェイ戦の突き合わせに失敗しました（${awayUnmatched.length}件）。日付が matches.json のアウェイ戦と一致しません。`);
+    awayUnmatched.forEach((line) => { console.error(`  ${line}`); });
+  }
 
   if (options.check) {
     if (!fs.existsSync(outputPath)) {
@@ -387,7 +447,8 @@ function main(argv) {
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, text);
-  console.log(`生成しました: ${path.relative(repoRoot, outputPath)}（イベント${data.events.length}件・試合${data.meta.match_count}件）`);
+  const awayNote = data.away_tickets.length ? `・アウェイ販売中${data.away_tickets.length}件` : '';
+  console.log(`生成しました: ${path.relative(repoRoot, outputPath)}（イベント${data.events.length}件・試合${data.meta.match_count}件${awayNote}）`);
   return 0;
 }
 

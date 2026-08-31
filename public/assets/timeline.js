@@ -93,7 +93,8 @@
     mineOnly: false,
     profile: null,
     benefit: null,
-    benefitRule: null
+    benefitRule: null,
+    awayTickets: []
   };
 
   /* ---------- 日時 ---------- */
@@ -449,6 +450,24 @@
       "（" + WEEK[date.getDay()] + "）";
   }
 
+  /**
+   * アウェイ席の販売状態。予定ではなく状態なので、時系列の札ではなく帯に出す。
+   *
+   * **載っていない試合には何も出さない。** Jリーグチケットに無い理由が、
+   * 未発売なのか別のプレイガイドで売っているのか区別できないため、
+   * 「発売前」とは言わない。
+   */
+  function awayTicketLabel(event) {
+    var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+    if (ids.length !== 1) return "";
+    var found = null;
+    state.awayTickets.forEach(function (item) {
+      if (item && item.match_id === ids[0] && item.state === "on_sale") found = item;
+    });
+    if (!found) return "";
+    return "アウェイ席 発売中" + (found.checked_at ? "（" + found.checked_at + "確認）" : "");
+  }
+
   function matchesMine(event) {
     if (!state.mineOnly || !hasProfile()) return true;
     if (event.type === "personal") return true;
@@ -784,6 +803,13 @@
             when.className = "match-date";
             when.textContent = matchDate;
             head.appendChild(when);
+          }
+          var away = awayTicketLabel(block.items[0].event);
+          if (away) {
+            var awayNode = document.createElement("span");
+            awayNode.className = "match-away";
+            awayNode.textContent = away;
+            head.appendChild(awayNode);
           }
           blockNode.appendChild(head);
         }
@@ -1729,6 +1755,7 @@
     ]).then(function (results) {
       state.events = (results[0].events || []).filter(function (e) { return e.is_visible !== false; });
       state.skipped = results[0].skipped || [];
+      state.awayTickets = results[0].away_tickets || [];
       state.matches = results[1].matches || [];
       state.benefitRule = results[2];
       renderMatchOptions();
