@@ -176,3 +176,84 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 #### LocalStorageキー
 
 - `sanga-squad-`
+
+### SUPPORTER TIMELINE: `public/assets/timeline.js`
+
+#### 参照しているid
+
+- `#sheet-benefit`
+
+#### 参照しているclass
+
+- `.badge-benefit`
+- `.badge-mine`
+- `.benefit-actions`
+- `.benefit-count`
+- `.benefit-detail`
+- `.benefit-item`
+- `.benefit-item-title`
+- `.benefit-tag`
+- `.benefit-warn`
+- `.block`
+- `.btn-remove`
+- `.chip`
+- `.day`
+- `.day-label`
+- `.day-match`
+- `.drawer-item-title`
+- `.drawer-list`
+- `.drawer-meta`
+- `.drawer-when`
+- `.empty`
+- `.event`
+- `.event-also`
+- `.event-kind`
+- `.event-meta`
+- `.event-time`
+- `.event-title`
+- `.event-top`
+- `.events`
+- `.fold`
+- `.head`
+- `.is-`
+- `.is-benefit`
+- `.is-change`
+- `.is-closing`
+- `.is-mine`
+- `.is-on`
+- `.is-stuck`
+- `.match-label`
+- `.month`
+- `.month-label`
+- `.note-tentative`
+- `.past`
+- `.reason`
+- `.sheet`
+- `.sheet-open`
+- `.tag`
+- `.today`
+- `.tour`
+
+#### 操作しているdata属性
+
+- `data-close-sheet`
+- `data-filter`
+- `data-motion`
+- `data-opener`
+- `data-sheet`
+- `data-tour-next`
+- `data-tour-panel`
+- `data-tour-prev`
+- `data-tour-skip`
+
+#### 操作しているaria属性
+
+- `aria-hidden`
+- `aria-pressed`
+
+#### LocalStorageキー
+
+- `sanga-timeline-benefit-tickets-v1`
+- `sanga-timeline-personal-events-v1`
+- `sanga-timeline-profile-v1`
+- `sanga-timeline-tour-v1`

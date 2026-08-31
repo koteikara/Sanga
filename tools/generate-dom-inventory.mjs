@@ -25,6 +25,7 @@ const outputPath = path.join(rootDir, "docs", "dom-inventory.md");
 const targets = [
   { label: "年間スケジュール", file: "public/assets/app.js" },
   { label: "予想スカッド", file: "public/assets/squad-builder.js" },
+  { label: "SUPPORTER TIMELINE", file: "public/assets/timeline.js" },
 ];
 
 // セレクタ文字列を受け取る呼び出し。ここから #id / .class / [data-*] / [aria-*] を拾う。

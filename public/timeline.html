@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SANGA SUPPORTER TIMELINE｜京都サンガF.C. 非公式ファンツール</title>
+<meta name="description" content="京都サンガF.C.のチケット販売開始・応募締切・試合当日の予定を、ひとつの時系列にまとめる非公式ファンツールです。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
+<link rel="stylesheet" href="assets/timeline.css?v=5036b8ff">
+</head>
+<body>
+<!-- 背景。入口ページ（public/assets/）の実装をそのまま借りる。
+     WebGLが使えない場合はCSSのぼかしがそのまま残る（進行的強化）。 -->
+<div class="bg" aria-hidden="true">
+  <span class="bg-blob bg-blob-1"></span>
+  <span class="bg-blob bg-blob-2"></span>
+  <span class="bg-blob bg-blob-3"></span>
+  <canvas id="nebula" class="bg-nebula"></canvas>
+</div>
+
+<p class="notice" role="note">非公式のファンツールです。チケット販売の日程は公式サイトの掲載内容を写したもので、最新とは限りません。購入・応募の前に必ず公式サイトで確認してください。</p>
+
+<header class="head">
+  <div class="head-row">
+    <div class="head-title">
+      <!-- 入口ページのキャラの円形・紫版。装飾なので読み上げない -->
+      <span class="mate-round" aria-hidden="true">
+        <span class="mate-eye"></span>
+        <span class="mate-eye"></span>
+      </span>
+      <!-- me だけ色と小文字にする。「自分の時間軸」を題そのもので言う。
+           読み上げは "TImeLINE" とそのまま読まれ、語としては変わらない -->
+      <h1>TI<span class="head-mark">me</span>LINE</h1>
+    </div>
+    <!-- カレンダーへの追加は常に見えるが押す頻度は低い。下部メニューの枠を使わず見出しの横に置く。
+         語は利用者から見た目的（自分のカレンダーに入れる）に合わせている。
+         「取り込む」は「取り込まなかった記事」で逆向きに使っているため避けた -->
+    <button type="button" class="head-action" data-sheet="sheet-ics" aria-haspopup="dialog" aria-label="カレンダーに追加する">
+      <svg class="head-action-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3.5V6M16 3.5V6"/><path d="M12 12.5v5M9.5 15h5"/></svg>
+      <span class="head-action-label">カレンダー</span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <!-- 予定はJavaScriptが公開JSONから描く。切っていると各節が空になるため、
+       白紙ではなく理由と行き先を出す。 -->
+  <noscript>
+    <p class="notice" role="note">この画面はJavaScriptで予定を組み立てています。JavaScriptを有効にするか、京都サンガF.C.の公式サイトでチケット販売スケジュールを確認してください。</p>
+  </noscript>
+
+  <section aria-labelledby="timeline-head">
+    <h2 id="timeline-head">タイムライン</h2>
+    <div id="timeline" class="timeline"></div>
+  </section>
+
+  <section aria-labelledby="undated-head">
+    <h2 id="undated-head">日程未定</h2>
+    <p class="section-note">日付が確定していないため、時系列には並べていません。カレンダーへも出しません。</p>
+    <div id="undated" class="undated"></div>
+  </section>
+
+  <section aria-labelledby="skipped-head">
+    <h2 id="skipped-head">取り込まなかった記事</h2>
+    <p class="section-note">機械的に確実に読めなかったものは、日時を取らずURLだけ残します。</p>
+    <ul id="skipped" class="skipped"></ul>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>京都サンガF.C.の非公式ファンツールです。クラブおよびJリーグとは関係がありません。</p>
+  <p class="site-version">販売スケジュールの確認日: <span id="checked-at">—</span>（出典: 京都サンガF.C. 公式サイト）</p>
+</footer>
+
+<!-- 常時出ている操作メニュー。本題（タイムライン）を上に出すため、
+     設定・特典チケット・絞り込み・MY予定はここからシートで開く。 -->
+<nav id="tabbar" class="tabbar" aria-label="操作">
+  <button type="button" class="tab" data-sheet="sheet-filter" aria-haspopup="dialog" aria-label="絞り込み">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>
+    <span class="tab-label">絞り込み</span>
+  </button>
+  <button type="button" class="tab" data-sheet="sheet-benefit" aria-haspopup="dialog" aria-label="特典チケット">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/><path d="M14 6v12"/></svg>
+    <span class="tab-label">特典</span>
+  </button>
+  <button type="button" class="tab tab-primary" data-sheet="sheet-next" aria-haspopup="dialog" aria-label="次にやること">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+    <span class="tab-label">次にやること</span>
+  </button>
+  <button type="button" class="tab" data-sheet="sheet-my" aria-haspopup="dialog" aria-label="MY予定を追加">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4M12 13v5M9.5 15.5h5"/></svg>
+    <span class="tab-label">MY予定</span>
+  </button>
+  <button type="button" class="tab" data-sheet="sheet-profile" aria-haspopup="dialog" aria-label="設定">
+    <svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>
+    <span class="tab-label">設定</span>
+    <span id="profile-dot" class="tab-dot" hidden><span class="visually-hidden">未設定です</span></span>
+  </button>
+</nav>
+
+<dialog id="sheet-next" class="sheet" aria-labelledby="sheet-next-head">
+  <div class="sheet-head">
+    <h2 id="sheet-next-head">次にやること</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p id="next-lead" class="next-lead">読み込み中です。</p>
+    <div id="next-body"></div>
+  </div>
+</dialog>
+
+<dialog id="sheet-filter" class="sheet" aria-labelledby="sheet-filter-head">
+  <div class="sheet-head">
+    <h2 id="sheet-filter-head">表示の絞り込み</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <div class="filters" role="group" aria-label="種別で絞り込む">
+      <button type="button" class="chip is-on" data-filter="all" aria-pressed="true">すべて</button>
+      <button type="button" class="chip" data-filter="ticket" aria-pressed="false">チケット</button>
+      <button type="button" class="chip" data-filter="entry" aria-pressed="false">応募</button>
+      <button type="button" class="chip" data-filter="matchday" aria-pressed="false">試合当日</button>
+      <button type="button" class="chip" data-filter="personal" aria-pressed="false">MY予定</button>
+    </div>
+    <div class="filter-mine">
+      <input type="checkbox" id="mine-only">
+      <label for="mine-only">自分に関係するものだけ表示する</label>
+    </div>
+    <p id="filter-note" class="section-note filter-note"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-benefit" class="sheet" aria-labelledby="sheet-benefit-head">
+  <div class="sheet-head">
+    <h2 id="sheet-benefit-head">特典チケット</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <div id="benefit-summary" class="benefit-summary" role="status"></div>
+
+    <p class="section-note">
+      持っている枚数と、どの試合のチケットに引き換えるかを自分で記録します。公式には個人の保有状況が
+      出ないため、この端末に自己申告として保存します。家族や友人と譲り合うことがあるため、
+      枚数は理由つきの増減で記録し、合計をそこから出します。1試合に複数枚まとめて引き換えられます。
+      残り枚数とこれからのホーム戦を突き合わせて、使わないまま残るおそれがあるときに知らせます。
+    </p>
+
+    <details class="fold">
+      <summary>枚数の増減を記録する</summary>
+      <form id="benefit-form" class="my-form">
+        <p id="benefit-suggest" class="benefit-suggest"></p>
+        <div class="field">
+          <label for="benefit-change-count">枚数</label>
+          <input type="number" id="benefit-change-count" name="count" min="1" max="20" step="1" value="1" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label for="benefit-reason">理由</label>
+          <select id="benefit-reason" name="reason">
+            <option value="grant">会員特典として受け取った（増やす）</option>
+            <option value="received">譲り受けた（増やす）</option>
+            <option value="given">譲った（減らす）</option>
+            <option value="correction_plus">数え直して増やす</option>
+            <option value="correction_minus">数え直して減らす</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="benefit-note">メモ（任意）</label>
+          <input type="text" id="benefit-note" name="note" maxlength="30" placeholder="例: 家族から">
+        </div>
+        <button type="submit" class="btn btn-primary">記録する</button>
+      </form>
+
+      <h3 class="sub-head">枚数の増減</h3>
+      <ul id="benefit-changes" class="benefit-list"></ul>
+    </details>
+
+    <details class="fold">
+      <summary>引き換える試合を決める</summary>
+      <form id="benefit-plan-form" class="my-form">
+        <div class="field">
+          <label for="benefit-match">引き換える試合</label>
+          <select id="benefit-match" name="match"><option value="">選んでください</option></select>
+        </div>
+        <div class="field">
+          <label for="benefit-count">枚数</label>
+          <input type="number" id="benefit-count" name="count" min="1" max="10" step="1" value="1" inputmode="numeric">
+        </div>
+        <button type="submit" class="btn btn-primary">引き換える予定にする</button>
+      </form>
+    </details>
+
+    <h3 class="sub-head">引き換える予定・引き換えた記録</h3>
+    <ul id="benefit-list" class="benefit-list"></ul>
+    <p id="benefit-status" class="my-status" role="status"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-my" class="sheet" aria-labelledby="sheet-my-head">
+  <div class="sheet-head">
+    <h2 id="sheet-my-head">MY予定を追加</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p class="section-note">この端末にだけ保存します。公開データには入りません。</p>
+    <form id="my-form" class="my-form">
+      <div class="field">
+        <label for="my-title">やること</label>
+        <input type="text" id="my-title" name="title" maxlength="40" required placeholder="例: 座席へ移動">
+      </div>
+      <div class="field">
+        <label for="my-when">日時</label>
+        <input type="datetime-local" id="my-when" name="when" required>
+      </div>
+      <div class="field">
+        <label for="my-match">関連する試合</label>
+        <select id="my-match" name="match"><option value="">指定しない</option></select>
+      </div>
+      <button type="submit" class="btn btn-primary">追加する</button>
+    </form>
+    <p id="my-status" class="my-status" role="status"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-ics" class="sheet" aria-labelledby="sheet-ics-head">
+  <div class="sheet-head">
+    <h2 id="sheet-ics-head">カレンダーに追加する</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p class="section-note">
+      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
+      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
+    </p>
+    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を追加する</button>
+    <p id="ics-status" class="my-status" role="status"></p>
+  </div>
+</dialog>
+
+<dialog id="sheet-profile" class="sheet" aria-labelledby="sheet-profile-head">
+  <div class="sheet-head">
+    <h2 id="sheet-profile-head">あなたの設定</h2>
+    <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
+  </div>
+  <div class="sheet-body">
+    <p id="profile-status" class="my-status" role="status"></p>
+    <p class="section-note">
+      会員種別とシーズンパスの有無から、自分に関係する先行販売を上に出します。
+      この端末にだけ保存し、公開データにも外部にも送りません。未設定でもすべての予定が見えます。
+    </p>
+    <form id="profile-form" class="my-form">
+      <div class="field">
+        <label for="profile-grade">SANGA CREW 会員種別</label>
+        <select id="profile-grade" name="fc_grade">
+          <option value="">未設定</option>
+          <option value="platinum">プラチナクルー</option>
+          <option value="gold">ゴールドクルー</option>
+          <option value="regular">レギュラークルー</option>
+          <option value="kids">キッズクルー</option>
+          <option value="none">会員ではない</option>
+        </select>
+      </div>
+      <div class="field field-check">
+        <input type="checkbox" id="profile-season" name="has_season_ticket">
+        <label for="profile-season">シーズンパスを持っている</label>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">保存する</button>
+        <button type="button" id="profile-clear" class="btn btn-quiet">保存した設定を削除する</button>
+      </div>
+    </form>
+    <p class="section-note">
+      <button type="button" id="tour-open" class="btn btn-quiet">使い方をもう一度見る</button>
+    </p>
+  </div>
+</dialog>
+
+<!-- 初めて開いた人向けの説明。何ができるか・どう操作するかの2点だけを扱う。
+     一度読んだら出さず、設定シートからいつでも開き直せる。 -->
+<dialog id="tour" class="tour" aria-label="使い方">
+  <div class="tour-head">
+    <p id="tour-step" class="tour-step" role="status">1 / 3</p>
+    <button type="button" class="tour-skip" data-tour-skip>スキップ</button>
+  </div>
+
+  <div class="tour-body">
+    <section class="tour-panel" data-tour-panel>
+      <div class="tour-figure" aria-hidden="true">
+        <span class="tour-band">8月</span>
+        <span class="tour-card"><b>12:00</b> ゴールド先行販売 開始</span>
+        <span class="tour-card"><b>19:00</b> キックオフ</span>
+      </div>
+      <h2>公式の予定を1本の時系列に</h2>
+      <p>チケットの先行販売、特典チケットの引換、試合当日の流れを日付順に並べています。<strong>次にやることが一目で分かります。</strong></p>
+    </section>
+
+    <section class="tour-panel" data-tour-panel hidden>
+      <div class="tour-figure" aria-hidden="true">
+        <span class="tour-card is-target">ゴールド先行販売 開始 <b>対象</b></span>
+        <span class="tour-card is-dim">プラチナ先行販売 開始</span>
+      </div>
+      <h2>自分に関係する予定に印が付きます</h2>
+      <p>SANGA CREW の会員種別とシーズンパスの有無を設定すると、自分が買える先行販売が上に出ます。<strong>設定はこの端末にだけ保存し、どこにも送りません。</strong></p>
+    </section>
+
+    <section class="tour-panel" data-tour-panel hidden>
+      <div class="tour-figure tour-figure-bar" aria-hidden="true">
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></svg>絞り込み</span>
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z"/></svg>特典</span>
+        <span class="tour-tab is-primary"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>次にやること</span>
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M12 13v5M9.5 15.5h5"/></svg>MY予定</span>
+        <span class="tour-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>設定</span>
+      </div>
+      <h2>操作は画面の下から開きます</h2>
+      <p>絞り込み・特典チケット・次にやること・MY予定・設定は、画面下のメニューから開きます。<strong>カレンダーへの追加は右上の「カレンダー」です。</strong></p>
+    </section>
+  </div>
+
+  <div class="tour-foot">
+    <button type="button" class="btn btn-quiet" data-tour-prev hidden>戻る</button>
+    <!-- 開いた直後のフォーカスはここに。既定では最初の「スキップ」に当たり、Enterで飛ばしてしまう -->
+    <button type="button" class="btn btn-primary" data-tour-next autofocus>次へ</button>
+  </div>
+</dialog>
+
+<script src="assets/timeline.js?v=01f84581"></script>
+<script type="module">
+  // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
+  // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。
+  if (new URLSearchParams(location.search).get("nebula") !== "off") {
+    try {
+      const { startNebula } = await import("./assets/index-nebula.js?v=56428a80");
+      const canvas = document.querySelector("#nebula");
+      // 先にクラスを付けてcanvasに大きさを与える。0×0では描けない
+      document.body.classList.add("has-nebula");
+      startNebula(canvas);
+    } catch (error) {
+      document.body.classList.remove("has-nebula");
+      console.info("[timeline] ネビュラを使えないため、CSSの背景に戻します:", error.message);
+    }
+  }
+</script>
+</body>
+</html>

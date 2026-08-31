@@ -8,6 +8,7 @@
 | --- | --- | --- | --- |
 | 年間スケジュール | `public/sanga202627season.html` | `public/assets/style.css`、`public/assets/app.js` | `public/data/matches.json`（57件） |
 | 予想スカッド | `public/squad.html` | `public/assets/squad.css`、`public/assets/squad-builder.js`、`public/assets/squad-formations.js`、`public/assets/squad-tile-offsets.js` | `public/data/players.json`（39件）、`matches.json` |
+| SUPPORTER TIMELINE | `public/timeline.html` | `public/assets/timeline.css`、`public/assets/timeline.js`、`index-nebula.js`（背景） | `public/data/calendar-events.json`（生成物）、`benefit-tickets.json`、`matches.json` |
 | 入口ページ | `public/index.html` | `public/assets/index.css`、`index-page.js`、`index-nebula.js`、`index-motion.js` | `public/data/tools.json`（5件） |
 
 ## ディレクトリ

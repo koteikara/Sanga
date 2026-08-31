@@ -95,6 +95,12 @@ jobs:
 
       # PRを作る前に、取り込んだCSVが calendar-events を組み立てられる形かを見る。
       # 公式ページの構成が変わったまま気付かずCSVを差し替えるのを避けるため。
+      # 公開ページが読むJSONはCSVから作る。同じPRに入れないと、CSVだけ新しく
+      # 公開ページだけ古い状態ができる。
+      - name: 公開JSONを生成
+        if: steps.judge.outputs.changed == 'true'
+        run: npm run generate:timeline:public
+
       - name: 取り込み結果を検証
         if: steps.judge.outputs.changed == 'true'
         run: npm run check:static
@@ -110,7 +116,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv
+          git add docs/sheets/ticket-sales.current.csv public/data/calendar-events.json
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 
@@ -118,6 +124,8 @@ jobs:
             echo '## Summary'
             echo
             echo '- 公式のチケット販売スケジュールを取得し、`docs/sheets/ticket-sales.current.csv` を更新しました。'
+            echo '- **公開JSONを変更するPRです。** 同じCSVから `public/data/calendar-events.json` を作り直しています。公開ページ（`public/timeline.html`）が読むデータです。'
+            echo '- 内容を確認してからマージしてください。自動ではマージしません。'
             echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'
             echo '- 取得日時と画面表示（受付中・販売中）だけの違いでは更新しません。このPRがあるということは、販売日程か掲載状態が変わっています。'
             echo
