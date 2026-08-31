@@ -261,6 +261,13 @@
           count: Math.round(count),
           reason: reason,
           note: typeof change.note === "string" ? change.note.slice(0, 30) : "",
+          // 譲り受けた特典は、譲った人のコースの枠でしか引き換えられない。
+          // 誰のチケットかを持たないと、引換日時を突き合わせられない。
+          source_grade: typeof change.source_grade === "string" &&
+            Object.prototype.hasOwnProperty.call(GRADE_LABEL, change.source_grade) &&
+            change.source_grade !== "none"
+            ? change.source_grade
+            : "",
           at: typeof change.at === "string" ? change.at : ""
         });
       });
@@ -356,6 +363,25 @@
     return { total: total, planned: planned, exchanged: exchanged, left: total - planned - exchanged };
   }
 
+  /**
+   * 持っている特典チケットのコード。引換の枠はチケットの持ち主のコースで決まるため、
+   * 「自分のコース」ではなくこれで突き合わせる。
+   *
+   * 会員特典として受け取ったぶんと数え直しは自分のコース、譲り受けたぶんは
+   * 記録した相手のコース。どちらも分からない場合は空を返し、呼び出し側で
+   * 絞り込まない（安全側に倒す）。
+   */
+  function heldGrades() {
+    var own = state.profile ? state.profile.fc_grade : "";
+    var grades = {};
+    benefitState().changes.forEach(function (change) {
+      if (change.count <= 0) return;
+      var grade = change.reason === "received" ? change.source_grade : own;
+      if (grade && grade !== "none") grades[grade] = true;
+    });
+    return Object.keys(grades);
+  }
+
   /** 会員種別ごとの配布枚数（公式）。分からない場合は0を返す。 */
   function ruleCountFor(grade) {
     if (!state.benefitRule || !grade) return 0;
@@ -424,7 +450,14 @@
   function isIcsTarget(event) {
     if (event.ticket_kind !== "benefit_exchange") return true;
     var matchId = (event.match_ids || [])[0];
-    return Boolean(matchId && benefitUseFor(matchId));
+    if (!matchId || !benefitUseFor(matchId)) return false;
+
+    // 引換の枠は3つ（コース別）あるが、引き換えられるのは持っているチケットの枠だけ。
+    // どのコースのチケットか分からないときは絞らず、3つとも出す。
+    var held = heldGrades();
+    var target = (event.audience || {}).fc_grade;
+    if (!held.length || !Array.isArray(target)) return true;
+    return target.some(function (grade) { return held.indexOf(grade) !== -1; });
   }
 
   /* ---------- 描画 ---------- */
@@ -1322,11 +1355,21 @@
     var planForm = document.getElementById("benefit-plan-form");
     var status = document.getElementById("benefit-status");
 
+    // 譲り受けたときだけコースを聞く。ほかの理由では自分のコースで決まるため。
+    var reasonSelect = document.getElementById("benefit-reason");
+    var sourceGradeField = document.getElementById("benefit-source-grade-field");
+    function syncSourceGradeField() {
+      sourceGradeField.hidden = reasonSelect.value !== "received";
+    }
+    reasonSelect.addEventListener("change", syncSourceGradeField);
+    syncSourceGradeField();
+
     form.addEventListener("submit", function (submitEvent) {
       submitEvent.preventDefault();
       var count = Math.floor(Number(document.getElementById("benefit-change-count").value));
       var reason = document.getElementById("benefit-reason").value;
       var note = document.getElementById("benefit-note").value.trim();
+      var sourceGrade = document.getElementById("benefit-source-grade").value;
       var rule = BENEFIT_REASON[reason];
       if (!rule) {
         status.textContent = "理由を選んでください。";
@@ -1344,6 +1387,7 @@
         count: signed,
         reason: reason,
         note: note,
+        source_grade: reason === "received" ? sourceGrade : "",
         at: todayStamp()
       }]);
 
@@ -1352,6 +1396,8 @@
           benefitTotal() + "枚です。";
         document.getElementById("benefit-note").value = "";
         document.getElementById("benefit-change-count").value = "1";
+        document.getElementById("benefit-source-grade").value = "";
+        syncSourceGradeField();
       } else {
         status.textContent = "保存できませんでした。ブラウザの設定で保存が制限されている可能性があります。";
       }
