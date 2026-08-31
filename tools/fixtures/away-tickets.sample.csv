@@ -1,0 +1,3 @@
+match_date,kickoff,competition,opponent_raw,venue,state_raw,perform_url,retrieved_at_jst
+2030-07-12,19:00,サンプルリーグ,サンプルＦＣ,サンプル陸上競技場,空席あり,https://www.jleague-ticket.jp/sales/perform/1000002/001,2030-07-01T10:00:00+09:00
+2031-01-10,13:00,サンプルリーグ,年またぎユナイテッド,サンプル球技場,空席わずか,https://www.jleague-ticket.jp/sales/perform/1000003/001,2030-07-01T10:00:00+09:00

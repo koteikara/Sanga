@@ -982,6 +982,15 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: baseline;
 }
+/* アウェイ席の販売状態。予定ではないので札にせず、帯に添える。 */
+.match-away {
+  font-weight: 700;
+  font-size: 0.74rem;
+  padding: 1px 8px;
+  border-radius: 3px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 /* 試合日。上の日付見出し（予定が始まる日）と混同されないよう、
    書式・太さ・色をすべて変える。 */
 .match-date {
