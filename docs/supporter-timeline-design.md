@@ -158,8 +158,63 @@ Phase 2 で入れたのは次の3つです。
   そこはファイル書き出しが担う
 
 Eに着手する場合は `docs/ui-prototype-workflow.md` と `docs/deploy-policy.md` を先に読みます。
-プロトタイプが読むCSVを `ticket-sales.current.csv` へ切り替えるのも、この作業に含めます。
 Cの配信先（`public/` のどこに置くか）はEで決まります。
+
+#### Eの設計（2026-08-29に決定）
+
+**置き場所。**
+
+| もの | 置き場所 | 備考 |
+| --- | --- | --- |
+| ページ | `public/timeline.html` | シーズンをまたいで使うツールなので、名前にシーズンを入れない |
+| スタイル | `public/assets/timeline.css` | `experiments/supporter-timeline/prototype.css` を移す |
+| スクリプト | `public/assets/timeline.js` | `experiments/supporter-timeline/prototype.js` を移す |
+| データ | `public/data/calendar-events.json` | 実データのみ。作り物（`--samples`）は入れない |
+
+`squad.html` と同じく短い名前にします。`sanga202627season.html` にシーズンが入っているのは
+そのシーズンの日程表だからで、タイムラインは販売段階と予定を追う道具なので毎シーズン作り直しません。
+
+**データの作り方。** 正本は `docs/sheets/ticket-sales.current.csv` です。
+`npm run generate:timeline` が現在値のCSVと `matches.json` から
+`public/data/calendar-events.json` を作ります。手で編集しません。
+
+検証用に作り物を混ぜている `experiments/supporter-timeline/calendar-events.sample.json` とは別物です。
+**公開JSONに作り物を入れません。** 生成コマンドを2つに分け、本番用は `--samples` を付けません。
+
+**CSVを取り直したときの更新。** `.github/workflows/ticket-sales-sync.yml` に生成を足し、
+CSVと公開JSONを同じPRに入れます。二つがずれた状態を作らないためです。
+
+- 生成は既存の「取り込み結果を検証」の後、PR作成の前に置く
+- `git add` の対象に `public/data/calendar-events.json` を足す
+- 公開JSONが変わるPRになるため、PR本文にその旨を書く（`docs/codex-workflow.md` の「公開JSONを変更するPRかどうかを必ず区別する」）
+- **自動でマージしません。** 販売日程の変更が公式の表示と一致しているかを人が見てからマージします
+
+これは自動生成されたPRが公開データを書き換える初めてのケースです。
+いまの取り込みPRは `docs/sheets/` だけを触っていました。
+
+**検証。** `npm run check:timeline` に、公開JSONが現在値のCSVから生成した結果と一致するか
+（`--check`）と、`tools/validate-calendar-events.js` による内容の検証を足します。
+生成し忘れたまま公開JSONが古くなるのを止めるためです。
+
+**版数。** CSS / JavaScript / JSON の `?v=` は `tools/asset-versions.mjs` が内容ハッシュから決めます。
+手で書きません。`npm run check:static` がずれを検出します。
+
+**LocalStorage。** プロトタイプが使っているキー（`sanga-timeline-personal-events-v1` など）は
+そのまま持ち込みます。年間スケジュールページの `sanga-schedule-*` とは別系統で、衝突しません。
+**MY予定は公開JSONに入れません**（AGENTS.md）。
+
+**入口ページからの導線は今回作りません。** `docs/site-index.md` の入口ページ作り直しが未実装のため、
+導線はそちらでまとめて扱います。直URLでは到達できます。
+
+**本番デプロイはEに含めません。** 明示の指示があるときだけ実行します（`docs/deploy-policy.md`）。
+GitHub Pagesで確認するところまでがEです。
+
+**Eで確認すること。**
+
+- 実データ全量（148件ではなく実データ124件＋試合19件）で月の折りたたみと下部ドロワーが崩れないか
+- ICSの書き出しが本番ページでも動き、`SEQUENCE` / `LAST-MODIFIED` が出ているか
+- JavaScriptを切った状態で、白紙ではなく説明が出るか
+- `docs/ai/BROWSER_CHECKLIST.md` の項目
 
 ### 着手前に読むもの
 
