@@ -23,6 +23,8 @@
   var TOUR_KEY = "sanga-timeline-tour-v1";
   var BENEFIT_URL = "data/benefit-tickets.json";
 
+  var WEEK = ["日", "月", "火", "水", "木", "金", "土"];
+
   var GRADE_LABEL = {
     platinum: "プラチナクルー",
     gold: "ゴールドクルー",
@@ -111,7 +113,7 @@
   }
 
   function formatDay(date) {
-    var week = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
+    var week = WEEK[date.getDay()];
     return (date.getMonth() + 1) + "月" + date.getDate() + "日（" + week + "）";
   }
 
@@ -123,7 +125,7 @@
     return list.map(function (value) {
       var d = parseDate(value + "T00:00:00+09:00");
       if (!d) return value;
-      var week = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
+      var week = WEEK[d.getDay()];
       return (d.getMonth() + 1) + "/" + d.getDate() + "(" + week + ")";
     }).join(" または ");
   }
@@ -425,6 +427,28 @@
     return labels.join(" / ");
   }
 
+  /**
+   * 試合日。日付の見出し（この予定がいつ始まるか）と混同されないよう、
+   * 「試合日」と明示し、書式も変える（見出しは「9月23日（水）」、ここは「10/10（土）」）。
+   *
+   * `match_date` は "2026-10-10" の形。new Date() に渡すとUTC扱いになり、
+   * 端末のタイムゾーンによって前日に見えるため、数値に分けて組み立てる。
+   */
+  function matchDateLabel(event) {
+    var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+    // 複数試合をまとめたブロックでは、どの試合の日か言えないので出さない
+    if (ids.length !== 1) return "";
+    var match = state.matches.find(function (m) { return m.id === ids[0]; });
+    if (!match) return "";
+    if (!match.match_date) return "試合日未定";
+    var parts = String(match.match_date).split("-");
+    if (parts.length !== 3) return "";
+    var date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    if (isNaN(date.getTime())) return "";
+    return "試合日 " + (date.getMonth() + 1) + "/" + date.getDate() +
+      "（" + WEEK[date.getDay()] + "）";
+  }
+
   function matchesMine(event) {
     if (!state.mineOnly || !hasProfile()) return true;
     if (event.type === "personal") return true;
@@ -638,7 +662,14 @@
       link.href = event.source_url;
       link.target = "_blank";
       link.rel = "noopener";
-      link.textContent = "出典（" + (event.source_checked_at || "確認日不明") + "確認）";
+      link.className = "event-source";
+      // 出典は信頼のために必ず出すが、読む順としては最後。
+      // 確認日は補足なので、小さく添える。
+      link.appendChild(document.createTextNode("出典"));
+      var checked = document.createElement("span");
+      checked.className = "event-source-date";
+      checked.textContent = "（" + (event.source_checked_at || "確認日不明") + "確認）";
+      link.appendChild(checked);
       meta.appendChild(link);
     }
 
@@ -726,14 +757,8 @@
       label.className = "day-label";
       label.textContent = formatDay(day.date);
 
-      // その日に1つの試合しかなければ、日付と試合名を1行にまとめる
-      var single = day.blocks.length === 1 && day.blocks[0].label;
-      if (single) {
-        var inline = document.createElement("span");
-        inline.className = "day-match";
-        inline.textContent = day.blocks[0].label;
-        label.appendChild(inline);
-      }
+      // 試合名は白場の帯に出す。日によって出たり出なかったりすると規則が読めないため、
+      // 1試合の日でも同じ形にする。
       if (day.key === todayKey) {
         var badge = document.createElement("span");
         badge.className = "today";
@@ -746,10 +771,20 @@
       day.blocks.forEach(function (block) {
         var blockNode = document.createElement("div");
         blockNode.className = "block";
-        if (!single && block.label) {
+        if (block.label) {
           var head = document.createElement("p");
           head.className = "match-label";
-          head.textContent = block.label;
+          var name = document.createElement("span");
+          name.className = "match-name";
+          name.textContent = block.label;
+          head.appendChild(name);
+          var matchDate = matchDateLabel(block.items[0].event);
+          if (matchDate) {
+            var when = document.createElement("span");
+            when.className = "match-date";
+            when.textContent = matchDate;
+            head.appendChild(when);
+          }
           blockNode.appendChild(head);
         }
         var listNode = document.createElement("ul");
