@@ -199,7 +199,6 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.chip`
 - `.day`
 - `.day-label`
-- `.day-match`
 - `.drawer-item-title`
 - `.drawer-list`
 - `.drawer-meta`
@@ -209,6 +208,8 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.event-also`
 - `.event-kind`
 - `.event-meta`
+- `.event-source`
+- `.event-source-date`
 - `.event-time`
 - `.event-title`
 - `.event-top`
@@ -222,7 +223,9 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.is-mine`
 - `.is-on`
 - `.is-stuck`
+- `.match-date`
 - `.match-label`
+- `.match-name`
 - `.month`
 - `.month-label`
 - `.note-tentative`
