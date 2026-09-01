@@ -3,11 +3,11 @@
     "note": "チケット販売と試合の実データ。tools/generate-calendar-events.js が生成する。手で編集しない。",
     "generator": "tools/generate-calendar-events.js",
     "ticket_source": "https://www.sanga-fc.jp/ticket/schedule",
-    "ticket_checked_at": "2026-08-28",
+    "ticket_checked_at": "2026-09-02",
     "ticket_csv": "docs/sheets/ticket-sales.current.csv",
     "matches_source": "public/data/matches.json",
-    "match_count": 22,
-    "updated_at": "2026-08-28"
+    "match_count": 24,
+    "updated_at": "2026-09-02"
   },
   "events": [
     {
@@ -29,11 +29,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-benefit-platinum",
@@ -56,11 +56,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-platinum",
@@ -83,11 +83,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-benefit-gold",
@@ -110,11 +110,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-gold",
@@ -137,11 +137,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-benefit-regular",
@@ -165,11 +165,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-regular",
@@ -193,11 +193,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-season",
@@ -218,11 +218,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec03-general",
@@ -241,11 +241,11 @@
         "sec03"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-benefit-platinum",
@@ -268,11 +268,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-platinum",
@@ -295,11 +295,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-benefit-gold",
@@ -322,11 +322,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-gold",
@@ -349,11 +349,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-benefit-regular",
@@ -377,11 +377,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-regular",
@@ -405,11 +405,11 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec04-general",
@@ -428,11 +428,31 @@
         "sec04"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
+    },
+    {
+      "id": "match-sec02",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec02"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-08-15T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "川崎F戦 キックオフ（U等々力）"
     },
     {
       "id": "match-sec03",
@@ -473,11 +493,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec07-benefit-platinum",
@@ -500,11 +520,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec07-platinum",
@@ -527,11 +547,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec07-benefit-gold",
@@ -554,11 +574,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec07-gold",
@@ -581,11 +601,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec07-benefit-regular",
@@ -609,11 +629,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec07-regular",
@@ -637,11 +657,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec04",
@@ -680,11 +700,11 @@
         "sec07"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec05",
@@ -765,11 +785,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec08",
@@ -812,11 +832,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec09-platinum",
@@ -839,11 +859,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec09-benefit-gold",
@@ -866,11 +886,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec09-gold",
@@ -893,11 +913,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec09-benefit-regular",
@@ -921,11 +941,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec09-regular",
@@ -949,11 +969,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-season",
@@ -974,11 +994,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec09-general",
@@ -997,11 +1017,11 @@
         "sec09"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-benefit-platinum",
@@ -1024,11 +1044,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-platinum",
@@ -1051,11 +1071,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-benefit-gold",
@@ -1078,11 +1098,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-gold",
@@ -1105,11 +1125,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-benefit-regular",
@@ -1133,11 +1153,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-regular",
@@ -1161,11 +1181,11 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-season",
@@ -1186,11 +1206,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec11-general",
@@ -1209,11 +1229,31 @@
         "sec11"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
+    },
+    {
+      "id": "match-sec45",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec45"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21171",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-10-03T16:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "FC町田ゼルビア戦 キックオフ（Gスタ）"
     },
     {
       "id": "ticket-sec13-benefit-platinum",
@@ -1236,11 +1276,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-platinum",
@@ -1263,11 +1303,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-benefit-gold",
@@ -1290,11 +1330,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-gold",
@@ -1317,11 +1357,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-benefit-regular",
@@ -1345,11 +1385,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-regular",
@@ -1373,11 +1413,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec13-general",
@@ -1396,11 +1436,11 @@
         "sec13"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec09",
@@ -1461,11 +1501,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-benefit-platinum",
@@ -1488,11 +1528,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-platinum",
@@ -1515,11 +1555,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-benefit-gold",
@@ -1542,11 +1582,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-gold",
@@ -1569,11 +1609,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-benefit-regular",
@@ -1597,11 +1637,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-regular",
@@ -1625,11 +1665,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-season",
@@ -1650,11 +1690,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec15-general",
@@ -1673,11 +1713,11 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec13",
@@ -1720,11 +1760,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-platinum",
@@ -1747,11 +1787,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-benefit-gold",
@@ -1774,11 +1814,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-gold",
@@ -1801,11 +1841,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-benefit-regular",
@@ -1829,11 +1869,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-regular",
@@ -1857,11 +1897,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec17-general",
@@ -1880,11 +1920,11 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-season",
@@ -1905,11 +1945,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-benefit-platinum",
@@ -1932,11 +1972,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-platinum",
@@ -1959,11 +1999,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-benefit-gold",
@@ -1986,11 +2026,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-gold",
@@ -2013,11 +2053,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-benefit-regular",
@@ -2041,11 +2081,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-regular",
@@ -2069,11 +2109,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec19-general",
@@ -2092,11 +2132,11 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec15",
@@ -2177,11 +2217,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-benefit-platinum",
@@ -2204,11 +2244,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-platinum",
@@ -2231,11 +2271,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-benefit-gold",
@@ -2258,11 +2298,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-gold",
@@ -2285,11 +2325,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-benefit-regular",
@@ -2313,11 +2353,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-regular",
@@ -2341,11 +2381,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec21-general",
@@ -2364,11 +2404,11 @@
         "sec21"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-season",
@@ -2389,11 +2429,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-benefit-platinum",
@@ -2416,11 +2456,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-platinum",
@@ -2443,11 +2483,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-benefit-gold",
@@ -2470,11 +2510,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-gold",
@@ -2497,11 +2537,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-benefit-regular",
@@ -2525,11 +2565,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-regular",
@@ -2553,11 +2593,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-season",
@@ -2578,11 +2618,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec23-general",
@@ -2601,11 +2641,11 @@
         "sec23"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-benefit-platinum",
@@ -2628,11 +2668,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-platinum",
@@ -2655,11 +2695,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-benefit-gold",
@@ -2682,11 +2722,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-gold",
@@ -2709,11 +2749,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-benefit-regular",
@@ -2737,11 +2777,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-regular",
@@ -2765,11 +2805,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec24-general",
@@ -2788,11 +2828,11 @@
         "sec24"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-season",
@@ -2813,11 +2853,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-benefit-platinum",
@@ -2840,11 +2880,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-platinum",
@@ -2867,11 +2907,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-benefit-gold",
@@ -2894,11 +2934,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-gold",
@@ -2921,11 +2961,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-benefit-regular",
@@ -2949,11 +2989,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-regular",
@@ -2977,11 +3017,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec28-general",
@@ -3000,11 +3040,11 @@
         "sec28"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec16",
@@ -3045,11 +3085,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-benefit-platinum",
@@ -3072,11 +3112,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-platinum",
@@ -3099,11 +3139,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-benefit-gold",
@@ -3126,11 +3166,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-gold",
@@ -3153,11 +3193,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-benefit-regular",
@@ -3181,11 +3221,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-regular",
@@ -3209,11 +3249,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec35-general",
@@ -3232,11 +3272,11 @@
         "sec35"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-season",
@@ -3257,11 +3297,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-benefit-platinum",
@@ -3284,11 +3324,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-platinum",
@@ -3311,11 +3351,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-benefit-gold",
@@ -3338,11 +3378,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-gold",
@@ -3365,11 +3405,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-benefit-regular",
@@ -3393,11 +3433,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-regular",
@@ -3421,11 +3461,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec37-general",
@@ -3444,11 +3484,11 @@
         "sec37"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "match-sec20",
@@ -3654,6 +3694,102 @@
       "title": "名古屋戦 キックオフ（開催日が候補のまま）"
     },
     {
+      "id": "ticket-sec02-unscheduled",
+      "starts_at": "",
+      "ends_at": "",
+      "date_precision": "unknown",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "unscheduled",
+      "title": "川崎F戦 チケット販売日程は未告知",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec02"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-09-02",
+      "status": "tentative",
+      "is_visible": true,
+      "note": "公式販売スケジュールページに販売日程の記載なし",
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
+    },
+    {
+      "id": "ticket-sec03-unscheduled",
+      "starts_at": "",
+      "ends_at": "",
+      "date_precision": "unknown",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "unscheduled",
+      "title": "水戸戦 チケット販売日程は未告知",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec03"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-09-02",
+      "status": "tentative",
+      "is_visible": true,
+      "note": "公式販売スケジュールページに販売日程の記載なし",
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
+    },
+    {
+      "id": "ticket-sec05-unscheduled",
+      "starts_at": "",
+      "ends_at": "",
+      "date_precision": "unknown",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "unscheduled",
+      "title": "横浜FM戦 チケット販売日程は未告知",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec05"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-09-02",
+      "status": "tentative",
+      "is_visible": true,
+      "note": "公式販売スケジュールページに販売日程の記載なし",
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
+    },
+    {
+      "id": "ticket-sec07-unscheduled",
+      "starts_at": "",
+      "ends_at": "",
+      "date_precision": "unknown",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "unscheduled",
+      "title": "柏戦 チケット販売日程は未告知",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec07"
+      ],
+      "source_url": "https://www.sanga-fc.jp/ticket/schedule",
+      "source_checked_at": "2026-09-02",
+      "status": "tentative",
+      "is_visible": true,
+      "note": "公式販売スケジュールページに販売日程の記載なし",
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
+    },
+    {
       "id": "ticket-sec16-unscheduled",
       "starts_at": "",
       "ends_at": "",
@@ -3670,12 +3806,12 @@
         "sec16"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "tentative",
       "is_visible": true,
       "note": "公式販売スケジュールページに販売日程の記載なし",
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec20-unscheduled",
@@ -3694,12 +3830,12 @@
         "sec20"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec26-unscheduled",
@@ -3718,12 +3854,12 @@
         "sec26"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     },
     {
       "id": "ticket-sec32-unscheduled",
@@ -3742,12 +3878,12 @@
         "sec32"
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
-      "source_checked_at": "2026-08-28",
+      "source_checked_at": "2026-09-02",
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1396999,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 1403584,
+      "calendar_last_modified": "2026-09-01T17:04:07Z"
     }
   ],
   "skipped": [],
@@ -3756,22 +3892,29 @@
       "match_id": "sec05",
       "state": "on_sale",
       "state_note": "空席あり",
-      "checked_at": "2026-08-31",
+      "checked_at": "2026-09-02",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2628602/001"
     },
     {
       "match_id": "sec06",
       "state": "on_sale",
       "state_note": "空席あり",
-      "checked_at": "2026-08-31",
+      "checked_at": "2026-09-02",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2628263/001"
     },
     {
       "match_id": "sec08",
       "state": "on_sale",
       "state_note": "空席あり",
-      "checked_at": "2026-08-31",
+      "checked_at": "2026-09-02",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2630702/001"
+    },
+    {
+      "match_id": "sec45",
+      "state": "on_sale",
+      "state_note": "発売前",
+      "checked_at": "2026-09-02",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2634301/001"
     }
   ]
 }
