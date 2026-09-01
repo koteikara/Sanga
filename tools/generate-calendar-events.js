@@ -320,6 +320,72 @@ function buildAwayTickets(csvPath, matches) {
   return { tickets, unmatched };
 }
 
+/**
+ * アウェイ席の発売開始日時。手で入れたCSVから作る。
+ *
+ * Jリーグチケットに載らない試合（神戸は楽天チケット、柏はローソンチケットなど）と、
+ * まだ発売前で試合ページが無い試合は、対戦クラブ公式を見て手で入れる。年24試合、
+ * 1試合1回で回る。**出典は必ずクラブ公式で、SNSやまとめは手掛かりであって出典ではない。**
+ */
+function awaySaleEvent(record, match) {
+  const opponent = match.opponent || '未定';
+  const label = record.sale_label || 'アウェイ席 発売';
+  return {
+    id: `ticket-${match.id}-away`,
+    starts_at: record.starts_at,
+    ends_at: '',
+    date_precision: 'datetime',
+    date_candidates: [],
+    type: 'ticket',
+    ticket_kind: 'away_sale',
+    title: `${opponent}戦 ${label}`,
+    source: 'official',
+    action_type: 'action',
+    // アウェイ席は相手クラブの会員か一般販売で、SANGA CREW の等級は効かない。
+    audience: {},
+    interest_tags: [],
+    match_ids: [match.id],
+    source_url: record.source_url,
+    source_checked_at: record.checked_at,
+    status: 'confirmed',
+    is_visible: true,
+  };
+}
+
+function buildAwaySales(csvPath, matchIndex) {
+  // 見出しだけで中身が無いのが通常の状態。公式で日時が出た試合から1行ずつ足していく。
+  const text = fs.readFileSync(csvPath, 'utf8').replace(/^\ufeff/, '');
+  const hasRows = text.split('\n').slice(1).some((line) => line.trim() !== '');
+  if (!hasRows) return { events: [], problems: [] };
+
+  const records = readCsvRecords(csvPath).filter((record) => record.match_id);
+  const events = [];
+  const problems = [];
+
+  records.forEach((record) => {
+    const match = matchIndex.get(record.match_id);
+    if (!match) {
+      problems.push(`matches.json にない試合IDです: ${record.match_id}`);
+      return;
+    }
+    if (match.home_away !== 'A') {
+      problems.push(`アウェイ戦ではありません: ${record.match_id}`);
+      return;
+    }
+    if (!record.starts_at) {
+      problems.push(`starts_at が空です: ${record.match_id}`);
+      return;
+    }
+    if (!record.source_url) {
+      problems.push(`source_url が空です: ${record.match_id}（出典はクラブ公式のURL）`);
+      return;
+    }
+    events.push(awaySaleEvent(record, match));
+  });
+
+  return { events, problems };
+}
+
 function sortEvents(events) {
   return events.slice().sort((a, b) => {
     const left = a.starts_at || '9999';
@@ -349,6 +415,16 @@ function build(options) {
     events.push(ticketEvent(record, match, checkedAt));
   });
 
+  let awaySaleProblems = [];
+  if (options.awaySalesPath) {
+    const sales = buildAwaySales(options.awaySalesPath, matchIndex);
+    sales.events.forEach((event) => {
+      events.push(event);
+      rounds.add(event.match_ids[0]);
+    });
+    awaySaleProblems = sales.problems;
+  }
+
   let awayTickets = [];
   let awayUnmatched = [];
   if (options.awayPath) {
@@ -375,6 +451,7 @@ function build(options) {
 
   return {
     awayUnmatched,
+    awaySaleProblems,
     meta: {
       note: options.samplesPath
         ? 'チケット販売と試合は実データ。作り物のイベントには is_sample: true が付く。tools/generate-calendar-events.js が生成する。手で編集しない。'
@@ -395,13 +472,14 @@ function build(options) {
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', checkedAt: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--matches') { options.matchesPath = argv[i += 1]; continue; }
     if (arg === '--samples') { options.samplesPath = argv[i += 1]; continue; }
     if (arg === '--away') { options.awayPath = argv[i += 1]; continue; }
+    if (arg === '--away-sales') { options.awaySalesPath = argv[i += 1]; continue; }
     if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '-h' || arg === '--help') { usage(); return 0; }
@@ -424,6 +502,13 @@ function main(argv) {
   // 突き合わせに失敗した行は生成物に入れず、実行時の警告として出す。
   const awayUnmatched = data.awayUnmatched || [];
   delete data.awayUnmatched;
+  const awaySaleProblems = data.awaySaleProblems || [];
+  delete data.awaySaleProblems;
+
+  if (awaySaleProblems.length) {
+    console.error(`アウェイ席の手入力に問題があります（${awaySaleProblems.length}件）。その行は取り込んでいません。`);
+    awaySaleProblems.forEach((line) => { console.error(`  ${line}`); });
+  }
 
   const text = `${JSON.stringify(data, null, 2)}\n`;
 

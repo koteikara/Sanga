@@ -20,7 +20,7 @@ const TYPES = new Set(['ticket', 'entry', 'event', 'goods', 'match', 'personal']
 const ACTION_TYPES = new Set(['action', 'information', 'personal']);
 const SOURCES = new Set(['official', 'personal']);
 const STATUSES = new Set(['confirmed', 'tentative']);
-const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled']);
+const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled', 'away_sale']);
 const GRADES = new Set(['platinum', 'gold', 'regular', 'kids']);
 // `before_sale` は観測できないため持たない（docs/supporter-timeline-design.md「アウェイ戦のチケット」）。
 const AWAY_STATES = new Set(['on_sale', 'unknown']);
@@ -186,7 +186,9 @@ function checkTicketStages(events) {
   // 1試合の販売は先行5段階と特典チケット引換3件。段階が欠けたり重複したら知らせる。
   const byMatch = new Map();
   events.forEach((event) => {
-    if (!event || event.type !== 'ticket' || event.ticket_kind === 'unscheduled') return;
+    // 8件の規則はホーム戦の販売段階のもの。アウェイ席は段階が無く、0件か1件。
+    if (!event || event.type !== 'ticket') return;
+    if (event.ticket_kind === 'unscheduled' || event.ticket_kind === 'away_sale') return;
     const matchId = (event.match_ids || [])[0];
     if (!matchId) return;
     if (!byMatch.has(matchId)) byMatch.set(matchId, []);
@@ -249,6 +251,39 @@ function checkAwayTickets(list, awayMatchIds, allMatchIds) {
   });
 }
 
+/**
+ * アウェイ席の発売イベント。ホーム戦の8段階とは別の規則で見る。
+ * 特典チケットはホーム戦のチケットに引き換えるものなので、アウェイ戦には出ない。
+ */
+function checkAwaySales(events, awayMatchIds) {
+  const perMatch = new Map();
+  events.forEach((event, index) => {
+    if (!event || event.type !== 'ticket') return;
+    const matchId = (event.match_ids || [])[0];
+    if (!matchId) return;
+
+    if (event.ticket_kind === 'away_sale') {
+      if (!awayMatchIds.has(matchId)) {
+        addError(`events[${index}]`, `away_sale はアウェイ戦だけです: ${matchId}`);
+      }
+      const audience = event.audience || {};
+      if (Object.keys(audience).length > 0) {
+        addError(`events[${index}]`, 'away_sale に audience は付きません（相手クラブの販売で、SANGA CREW の等級は効かない）');
+      }
+      perMatch.set(matchId, (perMatch.get(matchId) || 0) + 1);
+      return;
+    }
+
+    if (awayMatchIds.has(matchId) && event.ticket_kind === 'benefit_exchange') {
+      addError(`events[${index}]`, `アウェイ戦に特典チケット引換は出ません: ${matchId}`);
+    }
+  });
+
+  perMatch.forEach((count, matchId) => {
+    if (count > 1) addError(`match ${matchId}`, `away_sale が1件を超えています: ${count}件`);
+  });
+}
+
 function main(argv) {
   const positional = [];
   let matchesPath = DEFAULT_MATCHES;
@@ -297,6 +332,7 @@ function main(argv) {
   });
 
   checkTicketStages(data.events);
+  checkAwaySales(data.events, awayMatchIds);
   checkAwayTickets(data.away_tickets, awayMatchIds, matchIds);
 
   if (Array.isArray(data.skipped)) {
