@@ -372,10 +372,10 @@ UI案は次のとおりです。
 
 2026-06-24時点で、設定パネルの「絞り込み」に大会フィルタを追加しました。
 
-- 対象は `J1`、`天皇杯`、`ルヴァン杯` です。
+- 対象は `J1`、`天皇杯`、`ルヴァン杯`、`ACL` です（`ACL` は2026-09-02に追加）。
 - 既存フィルタと同じく、日程表示欄ではなく設定パネルから操作します。
-- 内部値は `competition-j1`、`competition-emp`、`competition-lev` を使います。
-- 判定対象は `matches.json` の `competition` 由来で、`J1`、`EMP`、`LEV` に対応します。
+- 内部値は `competition-j1`、`competition-emp`、`competition-lev`、`competition-acl` を使います。
+- 判定対象は `matches.json` の `competition` 由来で、`J1`、`EMP`、`LEV`、`ACL` に対応します。
 - フィルタ状態は既存のLocalStorageフィルタ設定 `sanga-schedule-filter-settings-v1` に保存します。新しいLocalStorageキーは追加しません。
 - 共有画像生成にも、現在の大会フィルタを含む絞り込み結果が反映されます。
 - 大会フィルタ適用時も、対象試合がない年の見出しだけが残らないように、既存の年見出し表示制御を利用します。
@@ -395,6 +395,7 @@ UI案は次のとおりです。
 | `competition-j1` | `J1` | `J1` |
 | `competition-emp` | `天皇杯` | `EMP` |
 | `competition-lev` | `ルヴァン杯` | `LEV` |
+| `competition-acl` | `ACL` | `ACL` |
 
 フィルタ適用時は、試合カードの `hidden`、対象試合がない年見出し、件数表示、0件メッセージ、フィルタボタンの `aria-pressed` を更新します。共有画像生成は現在表示されているDOMを画像化するため、フィルタ後のカード表示状態と年見出し表示状態が引き続き反映されます。
 

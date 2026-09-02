@@ -57,7 +57,8 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
     'state-2':{label:'水色枠', type:'state', value:2},
     'competition-j1':{label:'J1', type:'competition', value:'J1'},
     'competition-emp':{label:'天皇杯', type:'competition', value:'EMP'},
-    'competition-lev':{label:'ルヴァン杯', type:'competition', value:'LEV'}
+    'competition-lev':{label:'ルヴァン杯', type:'competition', value:'LEV'},
+    'competition-acl':{label:'ACL', type:'competition', value:'ACL'}
   };
   const VALID_FILTERS=Object.keys(FILTER_DEFINITIONS);
   const FILTER_LABELS=Object.fromEntries(
