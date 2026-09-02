@@ -6,13 +6,12 @@
 // 読み込みに失敗しても導線を消さない。index.html の noscript に書いた
 // 素のリンク一覧をそのまま残す。
 
-const DATA_VERSION = "20260826-1";
-
 // 本番サーバーとGitHub Pagesでルートが異なるため、絶対パスと相対パスの
 // 順で試す。squad-builder.js と同じ方式。
+// ?v= は tools/asset-versions.mjs が tools.json の内容ハッシュへ書き換える。
 const DATA_CANDIDATES = [
-  `/data/tools.json?v=${DATA_VERSION}`,
-  `data/tools.json?v=${DATA_VERSION}`,
+  "/data/tools.json?v=50f52482",
+  "data/tools.json?v=50f52482",
 ];
 
 async function loadTools() {

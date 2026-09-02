@@ -15,13 +15,13 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json";
-  var MATCHES_URL = "data/matches.json";
+  var EVENTS_URL = "data/calendar-events.json?v=24b40edb";
+  var MATCHES_URL = "data/matches.json?v=dcc1797a";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
   var BENEFIT_KEY = "sanga-timeline-benefit-tickets-v1";
   var TOUR_KEY = "sanga-timeline-tour-v1";
-  var BENEFIT_URL = "data/benefit-tickets.json";
+  var BENEFIT_URL = "data/benefit-tickets.json?v=a9a2e076";
 
   var WEEK = ["日", "月", "火", "水", "木", "金", "土"];
 

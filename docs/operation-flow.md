@@ -326,18 +326,21 @@ GitHub
 
 ### キャッシュ対策
 
-JSON更新時は、必要に応じて次を確認・更新します。
+公開JSONの読み込みクエリ（`?v=`）は、CSS・JavaScript・画像と同じく
+`tools/asset-versions.mjs` が参照先の内容ハッシュから決めます。**手で上げません。**
 
-年間スケジュール:
+JSONを更新したら `npm run fix:asset-versions` を実行します。データの内容が変わった
+参照だけ版数が変わり、変えていない参照は変わりません。上げ忘れは
+`npm run check:static` が「版数が内容と一致しません」として落とします。
 
-* `public/assets/app.js` 内の `data/matches.json?v=...`
-* `public/sanga202627season.html` の `assets/app.js?v=...`
-* ページ下部のバージョン表記
+対象は次のとおりです（いずれも自動で書き換わります）。
 
-予想スカッド:
+* `public/assets/app.js` の `data/matches.json?v=...`
+* `public/assets/squad-builder.js` の `data/players.json?v=...`、`data/matches.json?v=...`
+* `public/assets/index-page.js` の `data/tools.json?v=...`
+* `public/assets/timeline.js` の `data/calendar-events.json?v=...`、`data/matches.json?v=...`、`data/benefit-tickets.json?v=...`
 
-* `public/assets/squad-builder.js` 冒頭の `DATA_VERSION`（`data/players.json` と `data/matches.json` の両方の読み込みクエリに使います）
-* `public/squad.html` の `assets/squad-builder.js?v=...`
+手で確認・更新するのは、ページ下部のバージョン表記だけです。
 
 現在の例は次のとおりです。
 
