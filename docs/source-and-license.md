@@ -16,7 +16,7 @@
 | チケット販売スケジュール | `docs/sheets/ticket-sales.2026-08-28.csv` | 公式のチケット販売スケジュールを2026-08-28に確認したスナップショット。全行に `source_url` と `retrieved_at_jst` を保持。保持するのは日時・対象・試合との対応という事実のみで、記事本文・画像は含まない。`experiments/supporter-timeline/` のプロトタイプが参照し、公開物には未反映 |
 | 特典チケットの条件 | `experiments/supporter-timeline/benefit-tickets.json` | SANGA CREWの各コースの特典チケット枚数と有効期間を2026-08-28に確認したもの。`sources` に公式ページのURLを保持。プロトタイプが枚数の初期値と利用条件の表示に使う |
 | 選手データ | `public/data/players.json`、`docs/sheets/players.csv` | 公式サイトを参照して手入力。公式ページの具体的URLと確認日が未記録 |
-| 対戦相手ロゴ | `public/assets/logos/` 9件 | `docs/sources/` の画像を加工・複製して配置。元ページURLと利用許諾が未確認 |
+| 対戦相手ロゴ | `public/assets/logos/` 10件 | `docs/sources/` の画像を複製して配置。元ページURLと利用許諾が未確認 |
 | 背番号タイル | `public/assets/players/` 39件 | `docs/sources/players-numbers.jpeg` から切り出した加工物。元ページURLと利用許諾が未確認 |
 | スカッド見出し | `public/assets/squad/` 7件 | リポジトリ内のHTML/CSSから生成。生成元は `experiments/squad-builder/assets/*-source.html`。8番目の「シンプル」は画像を使わず文字で表示 |
 | 画像生成ライブラリ | `modern-screenshot` 4.6.5、`html-to-image` 1.11.11 | いずれもMIT License。前者はライセンス全文と取得記録を同梱、後者は検証ページからCDN読込 |
@@ -30,6 +30,7 @@
 | 元素材 | 公開側 |
 | --- | --- |
 | `docs/sources/202405052125_3.png` | `public/assets/logos/fc-maruyasu.png` |
+| `docs/sources/logo_myfc.png` | `public/assets/logos/fujieda-myfc.png` |
 | `docs/sources/MD1.webp` | `public/assets/logos/ota-hanasichien.webp` |
 | `docs/sources/MD2.webp` | `public/assets/logos/rajaburi.webp` |
 | `docs/sources/MD3.webp` | `public/assets/logos/newcastle-jets.webp` |
@@ -81,13 +82,13 @@
 
 ### 現行公開の暫定判断
 
-2026-08-21時点では、`public/assets/logos/` の対戦相手ロゴ9件と `public/assets/players/` の背番号タイル39件について、利用許諾が未確認であることを認識した上で、差し替え方針が決まるまで既存公開を継続します。これは利用許諾を確認済みとする判断ではありません。
+2026-08-21時点では、`public/assets/logos/` の対戦相手ロゴ10件と `public/assets/players/` の背番号タイル39件について、利用許諾が未確認であることを認識した上で、差し替え方針が決まるまで既存公開を継続します。これは利用許諾を確認済みとする判断ではありません。
 
 新規の公式由来画像は追加せず、許諾確認、独自表現への差し替え、または削除を別PRで判断します。本番デプロイ時は、この暫定判断が変更されていないことをPRまたはデプロイ実行記録で確認します。
 
 | 優先度 | 対象 | 必要な判断・作業 |
 | --- | --- | --- |
-| 高 | 公開中の対戦相手ロゴ9件 | 利用許諾を確認する。確認できない場合は文字表記等への差し替えを検討する |
+| 高 | 公開中の対戦相手ロゴ10件 | 利用許諾を確認する。確認できない場合は文字表記等への差し替えを検討する |
 | 高 | 公開中の背番号タイル39件 | 元画像の利用許諾を確認する。確認できない場合は独自生成の背番号表現へ差し替える |
 | 中 | `docs/sources/` の画像11件 | 元URL、権利者、保存目的を特定する。不要・未確認素材の削除は別PRで判断する |
 | 中 | 選手データ | 参照した公式選手一覧のURLと確認日を次回更新時に記録する |

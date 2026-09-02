@@ -494,6 +494,7 @@
   /* ACL teams and new opponents - emblem images to be integrated */
   /* Individual logo support for FC Maruyasu and ACL teams */
   .logo-fc-maruyasu .meta::after,
+  .logo-fujieda-myfc .meta::after,
   .logo-ota-hanasichien .meta::after,
   .logo-rajaburi .meta::after,
   .logo-newcastle-jets .meta::after,
@@ -537,6 +538,7 @@
 
   /* Layout variants for new teams (ACL and FC Maruyasu) */
   .phone.layout-3 .logo-fc-maruyasu .meta::after,
+  .phone.layout-3 .logo-fujieda-myfc .meta::after,
   .phone.layout-3 .logo-ota-hanasichien .meta::after,
   .phone.layout-3 .logo-rajaburi .meta::after,
   .phone.layout-3 .logo-newcastle-jets .meta::after,
@@ -549,6 +551,7 @@
   }
 
   .phone.layout-4 .logo-fc-maruyasu .meta::after,
+  .phone.layout-4 .logo-fujieda-myfc .meta::after,
   .phone.layout-4 .logo-ota-hanasichien .meta::after,
   .phone.layout-4 .logo-rajaburi .meta::after,
   .phone.layout-4 .logo-newcastle-jets .meta::after,
@@ -2289,6 +2292,12 @@
   /* Individual emblem images for new opponents */
   .logo-fc-maruyasu .meta::after {
     background-image: url('logos/fc-maruyasu.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .logo-fujieda-myfc .meta::after {
+    background-image: url('logos/fujieda-myfc.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
