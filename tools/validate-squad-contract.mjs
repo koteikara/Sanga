@@ -85,10 +85,17 @@ const FORMATIONS = formationsModule.FORMATIONS || {};
   }
 });
 
-// 公開JSONの読み込みにもバージョンを付ける（データ更新が反映されなくなるため）
-if (!/const DATA_VERSION = "[\w-]+";/.test(builder)) {
-  addError("public/assets/squad-builder.js: DATA_VERSION の定義が見つかりません");
-}
+// 公開JSONの読み込みにもバージョンを付ける（データ更新が反映されなくなるため）。
+// 値は tools/asset-versions.mjs が内容ハッシュから決めるので、ここでは
+// 読み込みURLに ?v= が付いていることだけを見る。
+[
+  ["data/players.json", /["']\/?data\/players\.json\?v=[\w-]+["']/],
+  ["data/matches.json", /["']\/?data\/matches\.json\?v=[\w-]+["']/],
+].forEach(([label, pattern]) => {
+  if (!pattern.test(builder)) {
+    addError(`public/assets/squad-builder.js: ${label} の読み込みにバージョンクエリ（?v=）がありません`);
+  }
+});
 
 // ベンチの見せ方オプション。CSSとJSのどちらかだけ欠けると表示が壊れる
 [

@@ -12,8 +12,8 @@ import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=3629b247";
 // 「画像化（PNG出力）」セクションのコメントを参照。
 import { domToPng } from "./vendor/modern-screenshot/modern-screenshot.mjs?v=ddfabcc6";
 
-// JSONデータのブラウザキャッシュ対策。data/*.json を更新したらここを上げる。
-const DATA_VERSION = "20260825-1";
+// JSONデータのブラウザキャッシュ対策。読み込みURLの ?v= は
+// tools/asset-versions.mjs が参照先の内容ハッシュへ書き換えるので、手で上げない。
 
 const STORAGE_PREFIX = "sanga-squad-";
 const STORAGE_INDEX_KEY = STORAGE_PREFIX + "index";
@@ -52,8 +52,8 @@ function cloneSlots(slots) {
 ------------------------------------------------------------------ */
 async function loadPlayers() {
   const candidates = [
-    `/data/players.json?v=${DATA_VERSION}`,
-    `data/players.json?v=${DATA_VERSION}`,
+    "/data/players.json?v=d3e67cce",
+    "data/players.json?v=d3e67cce",
   ];
   for (const url of candidates) {
     try {
@@ -257,8 +257,8 @@ async function loadMatchOptions() {
   const select = $("#field-match");
   if (!select) return;
   const candidates = [
-    `/data/matches.json?v=${DATA_VERSION}`,
-    `data/matches.json?v=${DATA_VERSION}`,
+    "/data/matches.json?v=dcc1797a",
+    "data/matches.json?v=dcc1797a",
   ];
   for (const url of candidates) {
     try {

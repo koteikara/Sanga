@@ -27,7 +27,12 @@ const HASH_LENGTH = 8;
 // 画像も対象にする。中身を差し替えても名前が同じなら、再訪した人には
 // 古い画像が使われ続ける（サムネイルの日付がずれたまま残った実例がある）。
 // svgは favicon をデータURIで書いているため対象から外す。
-const ASSET_REF = /(["'])((?:\.{0,2}\/)?[\w./-]+\.(?:css|js|mjs|webp|png|jpe?g))(\?[^"']*)?\1/g;
+// 公開JSONも対象にする。日程データを更新しても参照側の版数が同じままだと、
+// 再訪した人には古い日程が使われ続ける（手書きの版数で実際に起きていた）。
+const ASSET_REF = /(["'])((?:\.{0,2}\/)?[\w./-]+\.(?:css|js|mjs|json|webp|png|jpe?g))(\?[^"']*)?\1/g;
+
+// 版数が無いと更新が届かないので、参照先が見つからなければ落とす拡張子。
+const REQUIRED_REF = /\.(?:css|js|mjs|json)$/;
 
 function hashOf(content) {
   return crypto.createHash("sha256").update(content).digest("hex").slice(0, HASH_LENGTH);
@@ -91,7 +96,9 @@ export function resolveAssetVersions() {
 
         // tools.json のパスは JSON からではなく public/ からの相対で書かれている。
         // 入口ページ（public/index.html）が読む側だから。
-        const base = source === path.join(publicDir, "data", "tools.json")
+        // 公開JSONの読み込みも同じで、fetch の相対パスはスクリプトではなく
+        // 読み込んだページ（public/ 直下）を基準に解決される。
+        const base = source === path.join(publicDir, "data", "tools.json") || ref.endsWith(".json")
           ? publicDir
           : path.dirname(source);
         const target = ref.startsWith("/")
@@ -101,7 +108,7 @@ export function resolveAssetVersions() {
         if (!target.startsWith(publicDir + path.sep) || !fs.existsSync(target)) {
           // 画像は download 属性の保存ファイル名など、実ファイルでない文字列にも
           // 当たる。見つからなければ触らない。CSS・JavaScriptは従来どおり落とす。
-          if (!/\.(?:css|js|mjs)$/.test(ref)) return match;
+          if (!REQUIRED_REF.test(ref)) return match;
           unresolved.push({ source, ref });
           return match;
         }
