@@ -120,7 +120,9 @@
   .sec{font-size:12px;font-weight:900;letter-spacing:.02em;color:#333;line-height:1}
   .team{font-size:13px;font-weight:800;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .place{font-size:9px;font-weight:700;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .date{display:flex;align-items:center;justify-content:center;padding:4px 5px;background:var(--purple);color:#fff;font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif;font-weight:900;line-height:1}
+  .date{display:flex;flex-wrap:wrap;align-items:center;align-content:center;justify-content:center;padding:4px 5px;background:var(--purple);color:#fff;font-family:"Arial Narrow","Helvetica Neue",Arial,sans-serif;font-weight:900;line-height:1}
+  /* 開始時刻は日付の下の行に置く。flex-basis 100% で必ず改行させる。 */
+  .date .time{flex:0 0 100%;margin-top:2px;font-size:10px;font-style:normal;letter-spacing:.02em;line-height:1;text-align:center;opacity:.92}
   .away .date{background:#d8d8d8;color:#111}
   .date .main{font-size:28px;letter-spacing:-.05em}
   .date .sub{font-size:9px;margin-left:3px;writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.02em;opacity:.92}
@@ -804,6 +806,11 @@
   .phone.layout-4 .date .range .main.compact-date{
     font-size:14px;
   }
+  .phone.layout-3 .date .time,
+  .phone.layout-4 .date .time{
+    margin-top:1px;
+    font-size:8px;
+  }
   .phone.layout-3 .date .sub,
   .phone.layout-4 .date .sub{
     font-size:6px;
@@ -969,6 +976,14 @@
   /* 4-column date left spacing */
   .phone.layout-4 .date{
     margin-left:3px;
+  }
+  /* 4列の日付欄は横帯なので、時刻を折り返さず日付の右へ置く */
+  .phone.layout-4 .date{
+    flex-wrap:nowrap;
+  }
+  .phone.layout-4 .date .time{
+    flex:0 0 auto;
+    margin:0 0 0 4px;
   }
   .phone.layout-4 .match-inner{
     column-gap:0;
@@ -1395,6 +1410,10 @@
   .display-mode-compact .date .range .main.compact-date{
     font-size:16px;
   }
+  .display-mode-compact .date .time{
+    margin-top:1px;
+    font-size:8px;
+  }
   .display-mode-compact .date .sub{
     font-size:7px;
     margin-left:1px;
@@ -1450,6 +1469,11 @@
     grid-column:2;
     min-height:24px;
     justify-content:flex-start;
+    flex-wrap:nowrap;
+  }
+  .phone.layout-4 .display-mode-compact .date .time{
+    flex:0 0 auto;
+    margin:0 0 0 4px;
   }
   .phone.layout-4 .display-mode-compact .place,
   .phone.layout-4 .display-mode-compact .date .sub{
@@ -1871,6 +1895,14 @@
     min-height:52px;
     justify-content:center;
     padding:2px 3px;
+    flex-wrap:wrap;
+  }
+  .phone.is-screenshot-mode .date .time,
+  .phone.layout-3.is-screenshot-mode .date .time,
+  .phone.layout-4.is-screenshot-mode .date .time{
+    flex:0 0 100%;
+    margin:2px 0 0;
+    font-size:9px;
   }
   .phone.is-screenshot-mode .date .main,
   .phone.layout-3.is-screenshot-mode .date .main,
@@ -1957,6 +1989,14 @@
   }
   .phone.layout-4.is-screenshot-mode .meta{
     padding:5px 4px 2px 5px;
+  }
+  /* スクショ用表示でも4列は日付が下段のままなので、リボンの分だけ節を下げる */
+  .phone.layout-4.is-screenshot-mode .meta{
+    padding-top:15px;
+  }
+  /* スクショ用表示の3列は節に使える幅が狭いので、節だけ小さくして折り返す */
+  .phone.layout-3.is-screenshot-mode .cup-match .sec{
+    font-size:8px;
   }
   .phone.layout-4.is-screenshot-mode .sec{
     font-size:9px;
@@ -2240,14 +2280,34 @@
   .cup-match .match-inner{
     min-height:68px;
   }
+  /* 大会リボンはカード右上にあり、日付欄が右にある1〜3列では節と重ならない。
+     節の逃げ幅は、リボンが節の行へ被る4列でだけ確保する。 */
+  /* 長い節（ACL MD1、準々決勝 第1戦 など）は1行に入りきらない。
+     省略記号で消さず、2行までは折り返して読めるようにする。 */
   .cup-match .sec{
     max-width:100%;
-    padding-right:58px;
-    white-space:nowrap;
+    white-space:normal;
     overflow:hidden;
+    max-height:2.2em;
     text-overflow:ellipsis;
     font-size:10px;
-    line-height:1.1;
+    line-height:1.05;
+  }
+  /* 4列は日付欄が下段へ移るぶん、リボンが節の行へ被る。横に逃がすと
+     狭い画面で節が1文字ずつになるので、リボンの高さだけ meta を下げ、
+     節はリボンの下から全幅を使う。 */
+  .phone.layout-4 .meta{
+    padding-top:14px;
+  }
+  .phone.layout-4 .competition-ribbon{
+    min-height:11px;
+    padding:1px 5px 1px 6px;
+    font-size:6px;
+  }
+  /* 狭い表示列では節が2行に収まらないことがあるので3行まで許す */
+  .phone.layout-3 .cup-match .sec,
+  .phone.layout-4 .cup-match .sec{
+    max-height:3.2em;
   }
   .cup-match .team{
     display:-webkit-box;
