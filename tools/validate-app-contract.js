@@ -184,13 +184,13 @@ const checks = [
   {
     label: 'Schedule filter button value in public/sanga202627season.html',
     source: html,
-    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2', 'competition-j1', 'competition-emp', 'competition-lev'],
+    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2', 'competition-j1', 'competition-emp', 'competition-lev', 'competition-acl'],
     predicate: (source, item) => hasHtmlAttributeValue(source, 'data-filter', item),
   },
   {
     label: 'Schedule filter visible label in public/sanga202627season.html',
     source: html,
-    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯'],
+    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯', 'ACL'],
   },
   {
     label: 'CSS hook in public/assets/style.css',
@@ -208,6 +208,7 @@ const checks = [
       'competition-j1',
       'competition-emp',
       'competition-lev',
+      'competition-acl',
       'share-capture-target',
       'share-progress',
       'share-preview',
@@ -271,13 +272,13 @@ const checks = [
   {
     label: 'Schedule filter valid value in public/assets/app.js',
     source: appJs,
-    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2', 'competition-j1', 'competition-emp', 'competition-lev'],
+    required: ['all', 'home', 'away', 'year-2026', 'year-2027', 'tentative', 'marked', 'state-1', 'state-2', 'competition-j1', 'competition-emp', 'competition-lev', 'competition-acl'],
     predicate: hasStringLiteral,
   },
   {
     label: 'Schedule filter label in public/assets/app.js',
     source: appJs,
-    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯'],
+    required: ['すべて', 'HOME', 'AWAY', '2026', '2027', '未確定', '枠線あり', '赤色枠', '水色枠', 'J1', '天皇杯', 'ルヴァン杯', 'ACL'],
   },
   {
     label: 'Schedule filter definition contract in public/assets/app.js',
@@ -287,7 +288,7 @@ const checks = [
   {
     label: 'Competition filter handling in public/assets/app.js',
     source: appJs,
-    required: ["'competition-j1':{label:'J1', type:'competition', value:'J1'}", "'competition-emp':{label:'天皇杯', type:'competition', value:'EMP'}", "'competition-lev':{label:'ルヴァン杯', type:'competition', value:'LEV'}", 'getCardCompetition(card) === definition.value'],
+    required: ["'competition-j1':{label:'J1', type:'competition', value:'J1'}", "'competition-emp':{label:'天皇杯', type:'competition', value:'EMP'}", "'competition-lev':{label:'ルヴァン杯', type:'competition', value:'LEV'}", "'competition-acl':{label:'ACL', type:'competition', value:'ACL'}", 'getCardCompetition(card) === definition.value'],
   },
   {
     label: 'Match card state normalization value in public/assets/app.js',
