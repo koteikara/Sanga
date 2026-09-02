@@ -732,6 +732,22 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
     }
   }
 
+  // 開始時刻は日付と同じ欄に出す。時刻が未定の試合（kickoff_time が空）は
+  // 「未定」と書かず、時刻の行そのものを出さない。
+  function formatKickoffTime(value){
+    const text=String(value || '').trim();
+    return /^\d{1,2}:\d{2}$/.test(text) ? text : '';
+  }
+
+  function createKickoffTime(match){
+    const time=formatKickoffTime(match.kickoff_time);
+    if(!time) return null;
+    const element=document.createElement('i');
+    element.className='time';
+    element.textContent=time;
+    return element;
+  }
+
   function createDateContent(match){
     const date=document.createElement('span');
     date.className='date';
@@ -739,6 +755,10 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
     const dateValues=match.match_date ? [match.match_date] : candidates;
     if(match.status==='tentative' || candidates.length){
       date.classList.add('tentative-date');
+    }
+    const kickoff=createKickoffTime(match);
+    if(kickoff){
+      date.classList.add('has-time');
     }
     if(dateValues.length > 1){
       const range=document.createElement('span');
@@ -759,6 +779,9 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
       });
       if(range.children.length){
         date.append(range);
+        if(kickoff){
+          date.append(kickoff);
+        }
         return date;
       }
     }
@@ -775,6 +798,9 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
       date.append(sub);
     }else{
       main.classList.add('small');
+    }
+    if(kickoff){
+      date.append(kickoff);
     }
     return date;
   }
@@ -841,20 +867,30 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
     return labels[competition] || '';
   }
 
+  // 大会名はカード右上のリボンが示すので、節からは落とす。
+  // 「第1戦」「第2戦」は丸数字にして、狭い表示列でも節が省略されないようにする。
+  const ROUND_LEG_LABELS={'第1戦':'①', '第2戦':'②'};
+
   function getCardRoundTitle(match){
     const title=String(match.share_title || match.round || '節未定').trim();
     const prefixes=[
       '天皇杯 ',
       'ルヴァン杯 ',
       'JリーグYBCルヴァンカップ ',
-      '2026/27 JリーグYBCルヴァンカップ '
+      '2026/27 JリーグYBCルヴァンカップ ',
+      'ACL '
     ];
+    let text=title;
     for(const prefix of prefixes){
-      if(title.startsWith(prefix)){
-        return title.slice(prefix.length).trim() || title;
+      if(text.startsWith(prefix)){
+        text=text.slice(prefix.length).trim() || title;
+        break;
       }
     }
-    return title;
+    Object.keys(ROUND_LEG_LABELS).forEach(leg=>{
+      text=text.replace(new RegExp(`\\s*${leg}$`), ROUND_LEG_LABELS[leg]);
+    });
+    return text;
   }
 
   function getDisplayOpponentName(match){
@@ -896,7 +932,9 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
     const cardTitle=getCardRoundTitle(match);
     const noteLabel=getVisibleNoteLabel(match.note);
     const noteDescription=match.note ? ` ${match.note}` : '';
-    button.setAttribute('aria-label',`${cardTitle} ${match.home_away_label || haText || 'HOME/AWAY未定'} ${displayOpponent} ${match.venue || '会場未定'}${noteDescription} 日程カード`);
+    const kickoffLabel=formatKickoffTime(match.kickoff_time);
+    const kickoffDescription=kickoffLabel ? ` ${kickoffLabel}キックオフ` : '';
+    button.setAttribute('aria-label',`${cardTitle} ${match.home_away_label || haText || 'HOME/AWAY未定'} ${displayOpponent} ${match.venue || '会場未定'}${kickoffDescription}${noteDescription} 日程カード`);
 
     const inner=document.createElement('span');
     inner.className='match-inner';

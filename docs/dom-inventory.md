@@ -34,6 +34,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.filter-option`
 - `.filter-result`
 - `.ha`
+- `.has-time`
 - `.help-button`
 - `.help-close`
 - `.help-overlay`
@@ -78,6 +79,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.success`
 - `.team`
 - `.tentative-date`
+- `.time`
 - `.year`
 
 #### 操作しているdata属性
