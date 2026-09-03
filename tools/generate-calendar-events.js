@@ -352,6 +352,35 @@ function awaySaleEvent(record, match) {
   };
 }
 
+/**
+ * 試合ページから取った一般発売。日付で試合に結び付ける（相手の表記が揃わないため）。
+ * **手入力（--away-sales）が同じ試合を持っていれば、そちらを優先する。**
+ * 人がクラブ公式で確認したもののほうが確かで、あとから上書きできる余地を残す。
+ */
+function buildAwaySalesCurrent(csvPath, matchIndex, takenMatchIds) {
+  const records = readCsvRecords(csvPath).filter((record) => record.match_date && record.starts_at);
+  const byDate = new Map();
+  matchIndex.forEach((match) => {
+    if (match.home_away !== 'A' || !match.match_date) return;
+    if (byDate.has(match.match_date)) byDate.set(match.match_date, null);
+    else byDate.set(match.match_date, match);
+  });
+
+  const events = [];
+  const problems = [];
+  records.forEach((record) => {
+    const match = byDate.get(record.match_date);
+    if (!match) {
+      problems.push(`日付から試合を決められません: ${record.match_date}`);
+      return;
+    }
+    if (takenMatchIds.has(match.id)) return; // 手入力が優先
+    events.push(awaySaleEvent(record, match));
+  });
+
+  return { events, problems };
+}
+
 function buildAwaySales(csvPath, matchIndex) {
   // 見出しだけで中身が無いのが通常の状態。公式で日時が出た試合から1行ずつ足していく。
   const text = fs.readFileSync(csvPath, 'utf8').replace(/^\ufeff/, '');
@@ -416,13 +445,24 @@ function build(options) {
   });
 
   let awaySaleProblems = [];
+  const awaySaleMatchIds = new Set();
   if (options.awaySalesPath) {
     const sales = buildAwaySales(options.awaySalesPath, matchIndex);
     sales.events.forEach((event) => {
       events.push(event);
       rounds.add(event.match_ids[0]);
+      awaySaleMatchIds.add(event.match_ids[0]);
     });
     awaySaleProblems = sales.problems;
+  }
+
+  if (options.awaySalesCurrentPath) {
+    const sales = buildAwaySalesCurrent(options.awaySalesCurrentPath, matchIndex, awaySaleMatchIds);
+    sales.events.forEach((event) => {
+      events.push(event);
+      rounds.add(event.match_ids[0]);
+    });
+    awaySaleProblems = awaySaleProblems.concat(sales.problems);
   }
 
   let awayTickets = [];
@@ -472,7 +512,7 @@ function build(options) {
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', checkedAt: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -480,6 +520,7 @@ function main(argv) {
     if (arg === '--samples') { options.samplesPath = argv[i += 1]; continue; }
     if (arg === '--away') { options.awayPath = argv[i += 1]; continue; }
     if (arg === '--away-sales') { options.awaySalesPath = argv[i += 1]; continue; }
+    if (arg === '--away-sales-current') { options.awaySalesCurrentPath = argv[i += 1]; continue; }
     if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '-h' || arg === '--help') { usage(); return 0; }
