@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=1569d690";
+  var EVENTS_URL = "data/calendar-events.json?v=1b17eec9";
   var MATCHES_URL = "data/matches.json?v=dcc1797a";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -1307,6 +1307,8 @@
       lines.push("UID:" + icsEscape(event.id) + "@sanga-timeline.invalid");
       lines.push("DTSTAMP:" + toUtcStamp(now));
       // 版が無いと、同じUIDでもカレンダー側は更新と判断できない。
+      // 版を上げるかどうかは tools/generate-calendar-events.js の ICS_FIELDS が決める。
+      // ここで VEVENT に書く項目を足し引きしたら、あちらの一覧も合わせること。
       if (typeof event.calendar_sequence === "number" && event.calendar_sequence >= 0) {
         lines.push("SEQUENCE:" + Math.floor(event.calendar_sequence));
       }

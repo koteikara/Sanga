@@ -160,35 +160,78 @@ function buildMatchIndex(matchesPath) {
 }
 
 /**
- * 版の基準時刻。SEQUENCE を Unix秒にすると2038年に32bit符号付き整数を超えるため、
- * 桁を小さく保つ目的で 2024-01-01 UTC を起点にする。
+ * カレンダーに出る項目。**版が上がるかどうかは、この6つが変わったかだけで決める。**
+ *
+ * public/assets/timeline.js の buildIcs() が VEVENT に書き出す項目と揃えている。
+ * どちらかを変えたらもう一方も直すこと。source_checked_at のような「いつ確認したか」は
+ * カレンダーに出ないので、ここには入れない。取り直すたびに動くため、入れると
+ * 中身が同じでも版が上がってしまう。
  */
-const VERSION_EPOCH_MS = Date.UTC(2024, 0, 1);
+const ICS_FIELDS = ['starts_at', 'ends_at', 'date_precision', 'title', 'source_url', 'match_ids'];
+
+/** 同じ内容かどうかを比べるための指紋。 */
+function icsFingerprint(event) {
+  return JSON.stringify(ICS_FIELDS.map((key) => event[key] === undefined ? null : event[key]));
+}
+
+/** 前回の生成物を UID ごとに引けるようにする。無ければ空。 */
+function readPrevious(outputPath) {
+  const index = new Map();
+  if (!outputPath || !fs.existsSync(outputPath)) return index;
+  try {
+    const previous = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
+    (previous.events || []).forEach((event) => { if (event.id) index.set(event.id, event); });
+  } catch (error) {
+    console.error(`前回の生成物を読めませんでした（版は作り直します）: ${error.message}`);
+  }
+  return index;
+}
 
 /**
- * カレンダー側の版情報を作る。正本はCSVの retrieved_at_jst で、
- * 公式ページを取り直した時刻。行ごとに持つ唯一の「いつ時点の事実か」を表す値。
+ * カレンダー側の版を付ける。
  *
- * SEQUENCE は非負整数で、同じUIDに対して下がってはいけない。
- * 取得時刻の経過分にすることで、取り直すたびに必ず増える。
- * ただし中身が変わっていない行でも版が上がる点は docs に注意点として書いている。
+ * SEQUENCE は同じUIDに対して下がってはいけず、内容が変わったときに上がるべき値。
+ * 取得時刻から作ると、取り直しただけで全イベントの版が上がり、購読側が毎回
+ * 全件を更新扱いにしてしまう。そこで**前回の生成物と見比べ、カレンダーに出る項目が
+ * 変わった行だけ +1 する。** 変わっていない行は前回の版と更新時刻をそのまま持ち越す。
+ *
+ * 前回に無いUID（新しいイベント）は 0 から始める。前回の値は形を問わず引き継ぐので、
+ * 取得時刻から作っていた頃の大きな番号もそのまま保たれ、下がることはない。
  */
-function calendarVersion(retrievedAt) {
-  const parsed = retrievedAt ? new Date(retrievedAt) : null;
-  const at = parsed && !Number.isNaN(parsed.getTime()) ? parsed : new Date();
-  return {
-    calendar_sequence: Math.max(0, Math.floor((at.getTime() - VERSION_EPOCH_MS) / 60000)),
-    calendar_last_modified: at.toISOString().replace(/\.\d{3}Z$/, 'Z'),
-  };
+function applyVersions(events, snapshotAt, previousIndex) {
+  const lastModified = snapshotAt.toISOString().replace(/\.\d{3}Z$/, 'Z');
+
+  events.forEach((event) => {
+    const previous = previousIndex.get(event.id);
+    if (!previous) {
+      event.calendar_sequence = 0;
+      event.calendar_last_modified = lastModified;
+      return;
+    }
+
+    const previousSequence = Number.isFinite(previous.calendar_sequence)
+      ? Math.max(0, Math.floor(previous.calendar_sequence))
+      : 0;
+
+    if (icsFingerprint(previous) === icsFingerprint(event)) {
+      event.calendar_sequence = previousSequence;
+      event.calendar_last_modified = previous.calendar_last_modified || lastModified;
+      return;
+    }
+
+    event.calendar_sequence = previousSequence + 1;
+    event.calendar_last_modified = lastModified;
+  });
+
+  return events;
 }
 
 function ticketEvent(record, match, checkedAt) {
   const matchId = match.id;
   const opponent = match.opponent || '未定';
-  const version = calendarVersion(record.retrieved_at_jst);
 
   if (record.schedule_status === '未掲載') {
-    return Object.assign({
+    return {
       id: `ticket-${matchId}-unscheduled`,
       starts_at: '',
       ends_at: '',
@@ -207,14 +250,14 @@ function ticketEvent(record, match, checkedAt) {
       status: 'tentative',
       is_visible: true,
       note: record.schedule_note || '',
-    }, version);
+    };
   }
 
   const stage = STAGES[record.sale_type];
   if (!stage) throw new Error(`知らない販売段階です: ${record.sale_type}`);
   if (!record.sale_start) throw new Error(`販売開始日時が空です: ${matchId} ${record.sale_type}`);
 
-  return Object.assign({
+  return {
     id: `ticket-${matchId}-${stage.suffix}`,
     starts_at: record.sale_start,
     ends_at: '',
@@ -232,7 +275,7 @@ function ticketEvent(record, match, checkedAt) {
     source_checked_at: checkedAt,
     status: 'confirmed',
     is_visible: true,
-  }, version);
+  };
 }
 
 /**
@@ -433,6 +476,10 @@ function build(options) {
     || (records[0].retrieved_at_jst || '').slice(0, 10)
     || new Date().toISOString().slice(0, 10);
 
+  // 版の「変わった時刻」に使う。CSVを取り直した時刻を1つだけ使い、行ごとには持たない。
+  const parsedSnapshot = new Date(records[0].retrieved_at_jst || '');
+  const snapshotAt = Number.isNaN(parsedSnapshot.getTime()) ? new Date() : parsedSnapshot;
+
   const events = [];
   const rounds = new Set();
 
@@ -504,7 +551,7 @@ function build(options) {
       match_count: rounds.size,
       updated_at: checkedAt,
     },
-    events: sortEvents(events),
+    events: applyVersions(sortEvents(events), snapshotAt, readPrevious(options.outputPath)),
     skipped,
     away_tickets: awayTickets,
   };
@@ -531,6 +578,8 @@ function main(argv) {
   if (positional.length === 0) { usage(); return 1; }
   options.csvPath = positional[0];
   const outputPath = positional[1] || DEFAULT_OUTPUT;
+  // 版は前回の生成物と見比べて決めるため、出力先を build() に渡す。
+  options.outputPath = outputPath;
 
   let data;
   try {
