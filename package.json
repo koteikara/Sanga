@@ -7,11 +7,11 @@
     "check:static": "npm run check:data && npm run check:js && node tools/check-static-assets.mjs && node tools/generate-dom-inventory.mjs --check && npm run check:tools",
     "check:data": "node tools/validate-matches.js && node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict && node tools/validate-hotels.js && node tools/validate-players.js && node tools/validate-tools.js && npm run check:timeline",
     "check:js": "node --check public/assets/app.js && node tools/validate-app-contract.js",
-    "check:away-tickets": "node --check tools/fetch-away-tickets.js && node --check tools/parse-away-tickets.js && node tools/parse-away-tickets.js tools/fixtures/away-tickets.sample.html tools/fixtures/away-tickets.sample.csv --retrieved-at 2030-07-01T10:00:00+09:00 --check",
+    "check:away-tickets": "node --check tools/fetch-away-tickets.js && node --check tools/parse-away-tickets.js && node --check tools/fetch-away-sales.js && node --check tools/parse-away-sales.js && node tools/parse-away-sales.js --input tools/fixtures/away-tickets.sample.csv --html tools/fixtures/away-perform --out tools/fixtures/away-sales.sample.csv --checked-at 2030-07-01 --check && node tools/parse-away-tickets.js tools/fixtures/away-tickets.sample.html tools/fixtures/away-tickets.sample.csv --retrieved-at 2030-07-01T10:00:00+09:00 --check",
     "check:ticket-sales": "node --check tools/fetch-ticket-sales.js && node --check tools/parse-ticket-sales.js && node tools/parse-ticket-sales.js tools/fixtures/ticket-sales.sample.html tools/fixtures/ticket-sales.sample.csv --retrieved-at 2030-07-01T10:00:00+09:00 --check",
     "check:ticket-sales:current": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv tmp/calendar-events.current.json && node tools/validate-calendar-events.js tmp/calendar-events.current.json",
     "check:timeline": "npm run check:ticket-sales && npm run check:away-tickets && npm run check:ticket-sales:current && node tools/generate-calendar-events.js docs/sheets/ticket-sales.2026-08-28.csv experiments/supporter-timeline/calendar-events.sample.json --samples experiments/supporter-timeline/sample-events.json --check && node tools/validate-calendar-events.js experiments/supporter-timeline/calendar-events.sample.json && npm run check:timeline:public",
-    "check:timeline:public": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv public/data/calendar-events.json --away docs/sheets/away-tickets.current.csv --away-sales docs/sheets/away-sales.manual.csv --check && node tools/validate-calendar-events.js public/data/calendar-events.json",
+    "check:timeline:public": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv public/data/calendar-events.json --away docs/sheets/away-tickets.current.csv --away-sales docs/sheets/away-sales.manual.csv --away-sales-current docs/sheets/away-sales.current.csv --check && node tools/validate-calendar-events.js public/data/calendar-events.json",
     "check:squad": "npm run check:squad:js && node tools/validate-players.js && node tools/validate-squad-contract.mjs",
     "check:squad:js": "node --check public/assets/squad-builder.js && node --check public/assets/squad-formations.js && node --check public/assets/squad-sample-players.js && node --check tools/validate-squad-contract.mjs && node --check tools/check-squad-layout.mjs",
     "check:squad:browser": "node tools/check-squad-layout.mjs",
@@ -19,10 +19,12 @@
     "docs:dom-inventory": "node tools/generate-dom-inventory.mjs",
     "fix:asset-versions": "node tools/asset-versions.mjs",
     "generate:timeline": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.2026-08-28.csv experiments/supporter-timeline/calendar-events.sample.json --samples experiments/supporter-timeline/sample-events.json && npm run generate:timeline:public",
-    "generate:timeline:public": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv public/data/calendar-events.json --away docs/sheets/away-tickets.current.csv --away-sales docs/sheets/away-sales.manual.csv",
+    "generate:timeline:public": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv public/data/calendar-events.json --away docs/sheets/away-tickets.current.csv --away-sales docs/sheets/away-sales.manual.csv --away-sales-current docs/sheets/away-sales.current.csv",
     "fetch:ticket-sales": "node tools/fetch-ticket-sales.js",
     "fetch:away-tickets": "node tools/fetch-away-tickets.js",
     "parse:away-tickets": "node tools/parse-away-tickets.js",
+    "fetch:away-sales": "node tools/fetch-away-sales.js",
+    "parse:away-sales": "node tools/parse-away-sales.js",
     "parse:ticket-sales": "node tools/parse-ticket-sales.js"
   }
 }

@@ -75,14 +75,18 @@ jobs:
           set -euo pipefail
           sleep 10
           node tools/fetch-away-tickets.js tmp/away-tickets.html --force
-          node tools/parse-away-tickets.js tmp/away-tickets.html
+          node tools/parse-away-tickets.js
+          # 段階1が拾った試合ページから一般発売の開始日時を取る。
+          # 開始が読めるのは「先行は開いたが一般発売はこれから」の試合だけで、0件が普通。
+          node tools/fetch-away-sales.js --force
+          node tools/parse-away-sales.js tmp/away-tickets.html
 
       - name: 差分の有無を判定
         id: judge
         run: |
           set -euo pipefail
 
-          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv)" ]; then
+          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv)" ]; then
             echo "販売スケジュールとアウェイの販売状態に変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -127,7 +131,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv public/data/calendar-events.json
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv public/data/calendar-events.json
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 

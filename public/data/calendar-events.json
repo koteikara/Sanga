@@ -707,6 +707,27 @@
       "title": "横浜FM戦 キックオフ（日産ス）"
     },
     {
+      "id": "ticket-sec05-away",
+      "starts_at": "2026-09-02T19:30:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "away_sale",
+      "title": "横浜FM戦 アウェイ席 一般発売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec05"
+      ],
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2628602/001",
+      "source_checked_at": "2026-09-01",
+      "status": "confirmed",
+      "is_visible": true
+    },
+    {
       "id": "match-sec06",
       "ends_at": "",
       "type": "match",
