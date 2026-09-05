@@ -257,8 +257,8 @@ async function loadMatchOptions() {
   const select = $("#field-match");
   if (!select) return;
   const candidates = [
-    "/data/matches.json?v=dcc1797a",
-    "data/matches.json?v=dcc1797a",
+    "/data/matches.json?v=e096ee41",
+    "data/matches.json?v=e096ee41",
   ];
   for (const url of candidates) {
     try {

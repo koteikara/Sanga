@@ -974,7 +974,7 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
 
   async function fetchJsonPreviewData(){
     // ?v= は tools/asset-versions.mjs が matches.json の内容ハッシュへ書き換える。
-    const dataPath='data/matches.json?v=dcc1797a';
+    const dataPath='data/matches.json?v=e096ee41';
     const response=await fetch(dataPath);
     if(!response.ok) throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
