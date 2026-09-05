@@ -244,17 +244,17 @@
   }
 
 
-  /* fixed long date fit */
-  .date:not(.tentative-date) .main.compact-date{
+  /* long date fit（日付が1つの欄。候補日が2つ並ぶ .range は対象外） */
+  .date > .main.compact-date{
     font-size:20px;
     letter-spacing:-.10em;
   }
-  .date:not(.tentative-date) .sub{
+  .date > .sub{
     font-size:7px;
     margin-left:1px;
   }
   @media (min-width:390px){
-    .date:not(.tentative-date) .main.compact-date{
+    .date > .main.compact-date{
       font-size:21px;
       letter-spacing:-.10em;
     }
