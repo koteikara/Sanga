@@ -2,7 +2,7 @@
   "meta": {
     "season": "2026-27",
     "team": "京都サンガF.C.",
-    "updated_at": "2026-09-02 00:00",
+    "updated_at": "2026-09-05 00:00",
     "source": "https://www.jleague.jp/news/article/34406/"
   },
   "matches": [
@@ -804,9 +804,9 @@
       "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第20節",
-      "match_date": "",
+      "match_date": "2026-12-19",
       "date_candidates": [],
-      "kickoff_time": "",
+      "kickoff_time": "13:00",
       "home_away": "H",
       "home_away_label": "ホーム",
       "opponent": "岡山",
@@ -815,12 +815,12 @@
       "result": "",
       "ticket_url": "",
       "broadcast": "DAZN",
-      "source_url": "https://sanga-fc.jp/news/detail/21194",
-      "source_checked_at": "2026-08-25",
-      "status": "tentative",
-      "status_label": "未定",
+      "source_url": "https://www.sanga-fc.jp/news/detail/21194",
+      "source_checked_at": "2026-09-05",
+      "status": "confirmed",
+      "status_label": "確定",
       "note": "",
-      "updated_at": "2026-08-25 00:00",
+      "updated_at": "2026-09-05 00:00",
       "match_status": "試合前",
       "is_visible": true
     },
