@@ -6,7 +6,7 @@
 import { FORMATIONS } from "./squad-formations.js?v=5eaceca8";
 import { SAMPLE_PLAYERS } from "./squad-sample-players.js?v=9ed29a06";
 // 背番号タイル画像の中身のずれ（tools/measure-tile-offsets.mjs で生成）
-import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=495ba0b2";
+import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=90753849";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
 // public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
 // 「画像化（PNG出力）」セクションのコメントを参照。
@@ -52,8 +52,8 @@ function cloneSlots(slots) {
 ------------------------------------------------------------------ */
 async function loadPlayers() {
   const candidates = [
-    "/data/players.json?v=1bcd80dd",
-    "data/players.json?v=1bcd80dd",
+    "/data/players.json?v=1a4a57fa",
+    "data/players.json?v=1a4a57fa",
   ];
   for (const url of candidates) {
     try {
@@ -638,7 +638,47 @@ function layoutPitch() {
     positionPlayer(el, slot, pitchRect);
   });
   fitNames();
+  clampNamesToPitch();
   fitBenchNames();
+}
+
+/**
+ * 名前がピッチの外へ出ないよう、はみ出した分だけ横に縮める。
+ *
+ * シンプルは名前を円の外に出し、枠より左右へ張り出させている（squad.css の
+ * [data-style="simple"] .card-name）。張り出しは枠幅に対する比率なので、
+ * ピッチの端に寄る枠（5バック系の両端）ではキャンバス幅によらず外へ出る。
+ * 張り出し幅を狭めても比率で効くだけで、幅320pxで直しても420pxで再発する。
+ *
+ * fitNames() は「名前の入れ物」の幅に合わせるため、入れ物ごと枠から
+ * はみ出しているこの状況は見えない。ここではピッチの矩形と突き合わせ、
+ * 中央寄せを保ったまま収まる倍率を掛ける。スタイルごとの分岐は持たない。
+ */
+function clampNamesToPitch() {
+  const pitchRect = pitchEl.getBoundingClientRect();
+  $$(".name-en,.name-ja", pitchEl).forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const center = rect.left + rect.width / 2;
+    // 中央から左右それぞれで使える幅のうち、狭いほうが上限になる
+    const room = Math.min(center - pitchRect.left, pitchRect.right - center);
+    const half = rect.width / 2;
+    if (room <= 0 || half <= room) return;
+    // fitNames() が既に scaleX を当てている場合があるので、掛け合わせる
+    const current = readScaleX(el);
+    el.style.transformOrigin = "center";
+    el.style.transform = `scaleX(${(current * (room / half)).toFixed(3)})`;
+  });
+}
+
+/** 要素に当たっている横方向の倍率を読む。未指定なら1 */
+function readScaleX(el) {
+  const value = getComputedStyle(el).transform;
+  if (!value || value === "none") return 1;
+  const nums = value.match(/matrix\(([^)]+)\)/);
+  if (!nums) return 1;
+  const a = parseFloat(nums[1].split(",")[0]);
+  return Number.isFinite(a) && a > 0 ? a : 1;
 }
 
 function positionPlayer(el, slot, pitchRectArg) {

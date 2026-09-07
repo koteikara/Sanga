@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const errors = [];
 const EXPECTED_FORMATION_COUNT = 17;
-const EXPECTED_PLAYER_COUNT = 40;
+const EXPECTED_PLAYER_COUNT = 39;
 const EXPECTED_STYLES = ["modern", "victorian", "graffiti", "cyber", "vapor", "synth", "scrap", "simple"];
 const ALLOWED_POSITIONS = new Set(["GK", "DF", "MF", "FW"]);
 

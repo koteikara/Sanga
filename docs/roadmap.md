@@ -82,7 +82,7 @@
 
 | 項目 | 状態 | 関連ドキュメント | メモ |
 | --- | --- | --- | --- |
-| 予想スカッド作成ページ | 公開構成・事前検証自動化済み / 継続改善 | `docs/squad-builder.md` / `docs/players-data-schema.md` / `docs/ai/SQUAD_BROWSER_CHECKLIST.md` | `public/squad.html` として実装済み。40選手、17フォーメーション、8スタイル、ベンチ表示オプション（見せ方2×大きさ2）、PNG生成、LocalStorage保存に対応。PR #158でPR時・本番デプロイ前の静的契約とChromiumレイアウト検証を追加済み。 |
+| 予想スカッド作成ページ | 公開構成・事前検証自動化済み / 継続改善 | `docs/squad-builder.md` / `docs/players-data-schema.md` / `docs/ai/SQUAD_BROWSER_CHECKLIST.md` | `public/squad.html` として実装済み。39選手、17フォーメーション、8スタイル、ベンチ表示オプション（見せ方2×大きさ2）、PNG生成、LocalStorage保存に対応。PR #158でPR時・本番デプロイ前の静的契約とChromiumレイアウト検証を追加済み。 |
 
 ## 中期候補
 

@@ -92,4 +92,8 @@ PLAYWRIGHT_MODULE=$(npm root -g)/playwright/index.mjs node tools/measure-tile-of
 
 - 選手データは公式サイトを参照して手入力します。スクレイピングによる自動取得は行いません。
 - 移籍や新加入があった場合は、スプレッドシートを更新してJSONを再生成します。
+- 選手が抜けても `public/assets/players/<背番号>.webp` は消しません。`tools/compose-player-number.js` が
+  既存タイルから数字の字形を borrow するため（`DIGIT_SOURCES` に `1` `2` `5` `6` `7` `8` `9` `10` `40` を指定）、
+  消すと背番号一覧画像に無い選手のタイルを作れなくなります。選手一覧に出るかどうかは
+  `players.json` に載っているかで決まり、画像ファイルの有無とは関係しません。
 - 個人のスカッド作成内容はこのJSONに含めません。LocalStorageで扱います。

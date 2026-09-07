@@ -300,7 +300,7 @@ PR時と本番デプロイ前は、`.github/workflows/squad-checks.yml` を共�
 
 - スカッド用JavaScriptと検証スクリプトの構文
 - `tools/validate-players.js` による選手JSON
-- `tools/validate-squad-contract.mjs` による必須ファイル、DOM、参照、40選手、17フォーメーション、8スタイルの静的契約
+- `tools/validate-squad-contract.mjs` による必須ファイル、DOM、参照、39選手、17フォーメーション、8スタイルの静的契約
 - `tools/check-squad-layout.mjs` によるChromium実レイアウト
 
 実ブラウザ検証はスタメン11人を配置した状態で、幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルの全組み合わせを対象にし、カードの重なり、ピッチ外へのはみ出し、ベンチの見切れ、ページ内JavaScriptエラーを確認します。失敗した場合、本番デプロイはFTPアップロードへ進みません。
