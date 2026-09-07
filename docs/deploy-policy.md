@@ -22,7 +22,7 @@
 * GitHub Pagesは本番反映前の簡易確認環境として利用します。
 * FTP、SSH、サーバーパスワード、APIキー、トークンなどの認証情報は、リポジトリに作成・保存・変更しません。
 * `.env`、秘密鍵、サービスアカウントJSONなどの機密ファイルは、リポジトリにも本番アップロード対象にも含めません。
-* 本番反映前に、直前の本番ファイルを必ずバックアップします。
+* 本番反映前に、直前の本番ファイルを必ず退避します（Workflowが自動で行います）。
 
 ## サーバー上のリポジトリ外ファイル
 
@@ -138,7 +138,7 @@ CSSとJavaScriptの参照には、必ずバージョンクエリ（`?v=a21e3b0e`
 
 ## 本番反映手順
 
-1. 反映前の本番ファイルをローカルなど安全な場所へバックアップする。
+1. 反映前の本番ファイルを退避する（`deploy-production.yml` で反映する場合はWorkflowが自動で行う）。
 2. GitHub Pagesで確認済みのファイルと、アップロード予定ファイルが一致していることを確認する。
 3. `public/sanga202627season.html`、`public/assets/style.css`、`public/assets/app.js`、`public/data/matches.json` をアップロードする。
 4. 必要な場合のみ、`public/index.html` と `public/.nojekyll` もアップロードする。
@@ -176,7 +176,7 @@ CSSとJavaScriptの参照には、必ずバージョンクエリ（`?v=a21e3b0e`
 
 ## ロールバック方針
 
-問題が出た場合にすぐ戻せるよう、反映前の本番ファイルを必ずバックアップします。
+問題が出た場合にすぐ戻せるよう、反映前の本番ファイルを必ず退避します。Workflowで反映した場合は、その実行のアーティファクトが退避物です。
 
 * 問題が出た場合は、直前のHTML/CSS/JS/JSONへ戻します。
 * `matches.json` のみの不具合であれば、前回の `matches.json` に戻します。
@@ -196,7 +196,21 @@ CSSとJavaScriptの参照には、必ずバージョンクエリ（`?v=a21e3b0e`
 
 本番サーバーへの反映は、GitHub Actionsの手動実行ワークフロー `.github/workflows/deploy-production.yml` から行います。自動実行ではなく、GitHub Actions画面で明示的に実行した場合のみ動作します。
 
-このWorkflowは本番サーバー上の直前ファイルを自動バックアップしません。`Run workflow` を押す前に、本書「本番反映手順」のバックアップを別途完了し、実行者が確認します。
+このWorkflowは、アップロードの前に本番サーバー上の全ファイルを退避します（`backup` ジョブ）。
+退避に失敗した場合はアップロードへ進みません。`Run workflow` を押す前の人手でのバックアップは不要です。
+
+退避物は共通鍵で暗号化し、実行のアーティファクト `production-backup-<run_id>` として30日間保存します。
+このリポジトリは公開でアーティファクトは誰でも取得できるため、平文では保存しません。
+鍵はRepository Secretsの `BACKUP_PASSPHRASE` です。未設定の場合、Workflowはアップロードへ進まずに落ちます。
+
+戻すときは、アーティファクトを取得して次のように展開します。
+
+```bash
+gpg --batch --decrypt --passphrase "<BACKUP_PASSPHRASE>" \
+  --output production-backup.tar.gz production-backup.tar.gz.gpg
+tar -xzf production-backup.tar.gz
+# files/ 配下がサーバーのその時点の内容
+```
 
 ### Repository Secretsの登録
 
@@ -208,6 +222,7 @@ GitHubのリポジトリ画面で、次のRepository Secretsを登録します�
 * `STAR_SERVER_USER`: FTPユーザー名
 * `STAR_SERVER_PASSWORD`: FTPパスワード
 * `STAR_SERVER_REMOTE_DIR`: `public/` の中身を配置するサーバー側ディレクトリ
+* `BACKUP_PASSPHRASE`: 退避物を暗号化する共通鍵。任意の長い文字列を作って登録します。戻すときに必要なので、パスワード管理ツールなどGitHub以外の場所にも控えておきます。
 
 任意:
 
@@ -224,7 +239,7 @@ GitHubのリポジトリ画面で、次のRepository Secretsを登録します�
 
 ### 手動実行手順
 
-1. 直前の本番ファイルのバックアップが完了していることを確認する。Workflow自体はバックアップを作成しない。
+1. シークレット `BACKUP_PASSPHRASE` が登録されていることを確認する。退避はWorkflowが自動で行う。
 2. デプロイ対象の `main` のcommit SHAを確認し、記録する。
 3. GitHubで対象リポジトリを開く。
 4. `Actions` タブを開く。

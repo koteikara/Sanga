@@ -38,9 +38,91 @@ jobs:
     needs: confirm
     uses: ./.github/workflows/squad-checks.yml
 
+  # アップロードの前に、本番サーバーの現状をまるごと退避する。
+  # FTP-Deploy-Action は同期状態ファイルを基準に差分を反映するため、
+  # 取り違えたまま流すと元へ戻す手立てが無い。ここが失敗したら deploy へ進まない。
+  #
+  # このリポジトリは公開のため、Actionsのアーティファクトは誰でも取得できる。
+  # 退避物にはサーバー上の全ファイル（.htaccess や同期状態ファイルを含む）が
+  # 入るので、必ず共通鍵で暗号化してから上げる。鍵が無いときは平文で上げず落とす。
+  backup:
+    name: 本番ファイルを退避
+    needs: squad-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: mainブランチをチェックアウト
+        uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - name: Node.jsを設定
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      - name: 暗号化の鍵があることを確認
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "シークレット BACKUP_PASSPHRASE が未設定です。"
+            echo "公開リポジトリのアーティファクトは誰でも取得できるため、"
+            echo "退避物を平文では保存しません。設定してから再実行してください。"
+            exit 1
+          fi
+
+      - name: サーバー上の全ファイルを取得
+        env:
+          STAR_SERVER_HOST: ${{ secrets.STAR_SERVER_HOST }}
+          STAR_SERVER_USER: ${{ secrets.STAR_SERVER_USER }}
+          STAR_SERVER_PASSWORD: ${{ secrets.STAR_SERVER_PASSWORD }}
+          STAR_SERVER_REMOTE_DIR: ${{ secrets.STAR_SERVER_REMOTE_DIR }}
+          STAR_SERVER_PROTOCOL: ${{ secrets.STAR_SERVER_PROTOCOL }}
+          STAR_SERVER_PORT: ${{ secrets.STAR_SERVER_PORT }}
+        run: node tools/fetch-production-files.mjs --mode backup --out tmp/production-backup
+
+      - name: 取得できたことを確認
+        run: |
+          set -euo pipefail
+          count=$(find tmp/production-backup/files -type f | wc -l)
+          echo "取得ファイル数: $count"
+          # 空の退避を成功として通すと、戻せないまま上書きされる
+          if [ "$count" -lt 1 ]; then
+            echo "1件も取得できていません。退避に失敗しています。"
+            exit 1
+          fi
+          # 復元時に必要なので、公開ページの入口が入っていることまで見る
+          for required in squad.html index.html; do
+            if [ ! -f "tmp/production-backup/files/$required" ]; then
+              echo "$required が退避物にありません。取得範囲を確認してください。"
+              exit 1
+            fi
+          done
+
+      - name: 退避物を暗号化
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          tar -czf production-backup.tar.gz -C tmp/production-backup .
+          gpg --batch --yes --symmetric --cipher-algo AES256 \
+            --passphrase "$BACKUP_PASSPHRASE" \
+            --output production-backup.tar.gz.gpg production-backup.tar.gz
+          rm -f production-backup.tar.gz
+          ls -l production-backup.tar.gz.gpg
+
+      - name: 退避物をアーティファクトへ保存
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-backup-${{ github.run_id }}
+          path: production-backup.tar.gz.gpg
+          retention-days: 30
+          if-no-files-found: error
+
   deploy:
     name: スターレンタルサーバーへ手動デプロイ
-    needs: squad-checks
+    needs: backup
     runs-on: ubuntu-latest
     steps:
       - name: mainブランチをチェックアウト

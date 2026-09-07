@@ -372,7 +372,10 @@ body{
 [data-style="simple"] .tile{border-radius:50%;background:#750069;box-shadow:none}
 [data-style="simple"] .card.mascot .tile{background:#8b1a23}
 [data-style="simple"] .card.mascot .card-inner{background:#8b1a23}
-/* 名前は円の外（下）へ。円の幅より広く使えるよう左右へ張り出す */
+/* 名前は円の外（下）へ。円の幅より広く使えるよう左右へ張り出す。
+   張り出したぶんは枠からはみ出すため、ピッチの端の枠では名前がピッチの外へ
+   出ることがある。張り出し幅を狭めても比率で効くだけで解消しないので、
+   描画後に squad-builder.js の clampNamesToPitch() が実測で縮める。 */
 [data-style="simple"] .card-name{
   top:100%;left:-25%;right:-25%;padding:2.2cqw 0 0;overflow:visible;
 }

@@ -6,7 +6,7 @@ const path = require('path');
 const DEFAULT_INPUT = path.join('docs', 'sheets', 'players.csv');
 const DEFAULT_OUTPUT = path.join('public', 'data', 'players.json');
 const GENERATED_AT = new Date().toISOString().slice(0, 10);
-const REQUIRED_COLUMNS = ['背番号', 'ローマ字名'];
+const REQUIRED_COLUMNS = ['背番号', 'ローマ字名', '省略名'];
 const SOURCE_LABEL = '京都サンガF.C. 公式サイト';
 
 function usage() {
@@ -88,6 +88,7 @@ function buildPlayer(row) {
     nameEn: row['ローマ字名'],
     nameJa: row['日本語名'] || '',
     nameKana: row['かな'] || '',
+    nameShort: row['省略名'] || '',
     position: row['ポジション'] || '',
     nationality: row['国籍'] || '',
     image: row['画像'] || '',

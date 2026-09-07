@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-19",
+  "updatedAt": "2026-09-07",
   "source": "京都サンガF.C. 公式サイト",
   "players": [
     {
@@ -9,17 +9,6 @@
       "nameKana": "",
       "nameShort": "太田",
       "position": "GK",
-      "nationality": "jp",
-      "image": "",
-      "isMascot": false
-    },
-    {
-      "number": "2",
-      "nameEn": "FUKUDA",
-      "nameJa": "福田 心之助",
-      "nameKana": "",
-      "nameShort": "福田",
-      "position": "DF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
@@ -405,6 +394,17 @@
       "nameKana": "",
       "nameShort": "本田",
       "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false
+    },
+    {
+      "number": "62",
+      "nameEn": "SHICHI",
+      "nameJa": "志知 孝明",
+      "nameKana": "しち たかあき",
+      "nameShort": "志知",
+      "position": "DF",
       "nationality": "jp",
       "image": "",
       "isMascot": false
