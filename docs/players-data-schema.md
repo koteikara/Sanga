@@ -74,6 +74,20 @@ node tools/generate-players-from-csv.js docs/sheets/players.csv
 node tools/validate-players.js
 ```
 
+CSVの列は上の「項目」の表と同じ並びで、`省略名` も列として持ちます。ここが欠けていると、
+再生成でJSON側の `nameShort` が消えます（2026-09-07に実際に列が無い状態でした）。
+列の欠落は生成ツールが必須列として止めます。
+
+背番号タイルの画像を追加・差し替えたときは、中央寄せの補正値も作り直します。
+
+```bash
+python3 -m http.server 8123 --directory public &
+PLAYWRIGHT_MODULE=$(npm root -g)/playwright/index.mjs node tools/measure-tile-offsets.mjs
+```
+
+公開ファイルのキャッシュ用バージョンは内容ハッシュで決まるため、`players.json` を
+更新したら `node tools/asset-versions.mjs` で参照側を書き換えます。
+
 ## 注意
 
 - 選手データは公式サイトを参照して手入力します。スクレイピングによる自動取得は行いません。
