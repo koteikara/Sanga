@@ -1416,3 +1416,49 @@ code {
   color: var(--muted);
 }
 .ics-way-points li { margin-bottom: 4px; }
+
+/* 案内ページの題は日本語。DM Serif Display にはかなが無く、明朝へ落ちるため、
+   時系列の画面と字面が食い違って見える。ここだけゴシックにそろえる。 */
+.head-static h1 {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 5.8vw, 1.7rem);
+  letter-spacing: 0.01em;
+}
+
+/* 2つの入れ方の比べ物。同じ問いに対して両方の答えを並べる。
+   別々の箇条書きにすると、対応する項目を目で探すことになる。 */
+.cmp { margin: 0 0 4px; }
+.cmp-row {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+}
+.cmp-row:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.cmp-q {
+  margin: 0 0 6px !important;
+  font-weight: 700;
+  font-size: 0.86rem !important;
+  color: var(--muted);
+}
+.cmp-pair { display: grid; gap: 8px; }
+@media (min-width: 560px) {
+  .cmp-pair { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
+.cmp-pair > p {
+  margin: 0 !important;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: var(--paper);
+  font-size: 0.86rem !important;
+  line-height: 1.7;
+}
+.cmp-pair > p.is-keep { border-left: 3px solid var(--accent); }
+.cmp-pair > p.is-once { border-left: 3px solid var(--line); }
+.cmp-side {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
