@@ -872,15 +872,23 @@ a:focus-visible {
 .event.is-benefit { border-left-color: var(--benefit); }
 
 /* 折りたたみ */
+/* 中身の余白は器の padding で持つ。子に margin を置くと、`margin: 0 0 10px` のような
+   一括指定に丸ごと消される（同じ強さなら後勝ち）。実際、中身が右端にくっつく不具合が
+   これで出ていた。padding なら子が何を書いても消えない。 */
 .fold {
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--panel);
   color: var(--ink);
   margin-top: 12px;
+  padding: 0 14px 14px;
 }
+/* 閉じているときは中身が無いので、下の余白も要らない。 */
+.fold:not([open]) { padding-bottom: 0; }
+/* 見出しだけは器の端まで伸ばす。境界線を左右いっぱいに引くため。 */
 .fold > summary {
   min-height: 44px;
+  margin: 0 -14px;
   padding: 12px 14px;
   font-size: 0.9rem;
   font-weight: 700;
@@ -891,15 +899,10 @@ a:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: -3px;
 }
-/* 開いた中身が境界線にくっついて詰まって見えるため、見出しの側で下を空ける。
-   中身の側に margin-top を置くと、あとから来る .doc-sec p などの margin: 0 に
-   同じ強さで上書きされて効かない。 */
 .fold[open] > summary {
   border-bottom: 1px solid var(--line-soft);
   margin-bottom: 14px;
 }
-.fold > *:not(summary) { margin-left: 14px; margin-right: 14px; }
-.fold > *:last-child { margin-bottom: 14px; }
 .fold .my-form { border: 0; padding: 0; }
 
 .past {
@@ -1225,9 +1228,15 @@ select {
 }
 .field-check label { font-weight: 400; font-size: 0.94rem; }
 
+/* <button> と <a> の両方で使う。<a> は inline のままだと高さも中央ぞろえも効かず、
+   下線が付いたまま潰れて見える。実際に「登録のしかたを見る」がそうなっていた。 */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 44px;
   padding: 0 18px;
+  text-decoration: none;
   border-radius: 4px;
   border: 1px solid var(--accent);
   background: var(--accent);
