@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=a33c49d0";
+  var EVENTS_URL = "data/calendar-events.json?v=6d31ce21";
   var MATCHES_URL = "data/matches.json?v=e096ee41";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -1324,9 +1324,20 @@
       lines.push("SUMMARY:" + icsEscape(event.title));
       var description = [];
       var label = matchLabel(event);
+      // 販売の予定は試合日と別の日に出るため、題だけでは「どの試合のぶんか」は
+      // 分かっても「その試合がいつか」が分からない。画面と同じく試合日を添える。
+      // 試合そのものの予定では、予定の日付が試合日なので重ねて書かない。
+      if (event.type !== "match") {
+        var matchDate = matchDateLabel(event);
+        if (matchDate) label = label ? label + "（" + matchDate + "）" : matchDate;
+      }
       if (label) description.push(label);
       if (event.source_url) description.push(event.source_url);
       lines.push("DESCRIPTION:" + icsEscape(description.join("\n")));
+      // 空き時間を埋めない。販売開始はその時間に何かするわけではなく、キックオフも
+      // 観に行くとは限らない。埋めると、予定を共有している相手からは「その時間は
+      // 埋まっている人」に見えてしまう。Googleの公開フィード（祝日）と同じ扱い。
+      lines.push("TRANSP:TRANSPARENT");
       lines.push("END:VEVENT");
     });
 
