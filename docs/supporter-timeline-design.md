@@ -1364,7 +1364,11 @@ tools/build-ics-feed.js   ← 全部入り＋墓標を決めてから ics.js に
 
 ### 段階
 
-1. `public/assets/ics.js` を切り出し、`timeline.js` をそれに乗せ替える（見た目も出力も変えない）
+1. ~~`public/assets/ics.js` を切り出し、`timeline.js` をそれに乗せ替える~~ **完了（2026-09-08）。**
+   `ics.js` は「どう書くか」だけを持ち、DOM も window も使わない ES モジュール。
+   `timeline.js` は「何を出すか」を決めて `icsSpecOf()` で渡す形に変えた。
+   classic script からは `import` 文が書けないため、押されてから動的に読む。
+   切り出しの前後で、同じデータから出る `.ics` が**1バイトも変わらない**ことを確認済み
 2. `tools/build-ics-feed.js` で全部入りのフィードを生成する。墓標はまだ無し
 3. 墓標（`STATUS:CANCELLED`、試合日+1週間）を足す
 4. 説明ページを書き、`timeline.html` から導線を張る。**購読を主、単発を従の順で見せる**
