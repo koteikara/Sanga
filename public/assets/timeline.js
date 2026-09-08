@@ -1334,6 +1334,10 @@
       if (label) description.push(label);
       if (event.source_url) description.push(event.source_url);
       lines.push("DESCRIPTION:" + icsEscape(description.join("\n")));
+      // 空き時間を埋めない。販売開始はその時間に何かするわけではなく、キックオフも
+      // 観に行くとは限らない。埋めると、予定を共有している相手からは「その時間は
+      // 埋まっている人」に見えてしまう。Googleの公開フィード（祝日）と同じ扱い。
+      lines.push("TRANSP:TRANSPARENT");
       lines.push("END:VEVENT");
     });
 
