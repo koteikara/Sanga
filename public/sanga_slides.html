@@ -20,10 +20,15 @@
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
             color: #333;
-            margin: 20px;
+            /* 上端はサイト共通トップバー（assets/topbar.css）に譲るため、
+               外側の余白ではなく内側の余白で本文を寄せる。見た目の余白は変わらない。 */
+            margin: 0;
+            padding: 0 20px 20px;
         }
         table {
             width: 100%;
+            /* caption の 10px と合わせて、バーの下に元と同じ20pxを空ける */
+            margin-top: 10px;
             border-collapse: collapse;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             background-color: #fff;

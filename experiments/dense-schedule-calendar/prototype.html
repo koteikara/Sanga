@@ -47,13 +47,16 @@
 
 <h1 class="page-title">過密日程カレンダー<span class="page-season">2026/27</span></h1>
 
-<!-- 月ジャンプと使い方。説明と凡例はこのボタンの中にまとめ、画面はカレンダーへ譲る -->
+<!-- 説明と凡例は「使い方」にまとめ、画面はカレンダーへ譲る。
+     使い方は月ジャンプの囲みの外、一番左に置く -->
+<div class="controls">
+<button type="button" class="guide-button" id="guideOpen" aria-haspopup="dialog">
+<span aria-hidden="true" class="guide-button-icon">?</span>使い方
+</button>
 <nav class="toolbar" aria-label="月へ移動">
 <ul class="toolbar-months" id="monthNav"></ul>
-<button type="button" class="toolbar-guide" id="guideOpen" aria-haspopup="dialog">
-<span aria-hidden="true" class="toolbar-guide-icon">?</span>見かた
-</button>
 </nav>
+</div>
 
 <div class="stage">
 <div class="strip" id="strip" tabindex="-1">
@@ -71,7 +74,7 @@
 <div class="guide-inner">
 <div class="guide-handle" aria-hidden="true"></div>
 <!-- 開いた直後のフォーカスはここに。既定では最初のリンクに当たり、枠が出てしまう -->
-<h2 id="guide-title" tabindex="-1" autofocus>このカレンダーの見かた</h2>
+<h2 id="guide-title" tabindex="-1" autofocus>使い方</h2>
 
 <p class="guide-lead">試合と試合のあいだが何日空くかを、色で見るカレンダーです。シーズンの全日を1本に並べているので、リーグ戦とカップ戦・ACLが重なって詰まる時期がそのまま帯の色に出ます。</p>
 
