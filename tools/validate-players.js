@@ -15,6 +15,9 @@ const ALLOWED_POSITIONS = new Set(['GK', 'DF', 'MF', 'FW']);
 // 6を超えると圧縮が強くなりすぎて読みにくいため、ここで止める。
 const NAME_SHORT_MAX_WIDTH = 6;
 
+// 選手の状態。active は在籍中、loan-out は期限付き移籍で他クラブにいる。
+const ALLOWED_STATUSES = new Set(['active', 'loan-out']);
+
 // 国旗のCSS定義を探すファイル。squad.css は今後 public/assets/ に追加される予定だが、
 // 本タスクでは public/assets/ に触れないため、現時点で国旗が定義済みの
 // experiments/squad-builder/design-mockup.html も候補に含める。
@@ -140,6 +143,24 @@ function validatePlayers(data) {
       if (width > NAME_SHORT_MAX_WIDTH) {
         addError(location, 'nameShort', `全角${NAME_SHORT_MAX_WIDTH}文字ぶん以内にしてください（現在 ${width}）`);
       }
+    }
+
+    // 状態。空欄は生成時に active になる。loan-out は期限付き移籍で不在。
+    // 綴り違いを黙って通すと、選択肢から消えないまま「在籍中」として扱われる。
+    if (!ALLOWED_STATUSES.has(player.status)) {
+      addError(
+        location,
+        'status',
+        `${[...ALLOWED_STATUSES].join(' / ')} のいずれかにしてください（現在 ${JSON.stringify(player.status)}）`
+      );
+    }
+    // 復帰予定を選択肢に出すため、loan-out には期限を必須にする
+    if (player.status === 'loan-out') {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(player.statusUntil || '')) {
+        addError(location, 'statusUntil', 'loan-out のときは YYYY-MM-DD 形式の期限が必要です');
+      }
+    } else if (isNonEmptyString(player.statusUntil)) {
+      addError(location, 'statusUntil', 'loan-out 以外では空にしてください');
     }
 
     const isMascot = player.isMascot === true;

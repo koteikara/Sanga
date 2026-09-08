@@ -122,6 +122,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 
 #### 参照しているclass
 
+- `.away-note`
 - `.bench-edit-add`
 - `.bench-edit-remove`
 - `.bench-edit-slot`
