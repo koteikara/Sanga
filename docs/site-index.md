@@ -58,6 +58,7 @@
 | `sanga202627season.html` | `assets/topbar.css` | X | `index.html` |
 | `squad.html` | `assets/topbar.css` | X | `index.html` |
 | `timeline.html` | `assets/topbar.css` | X | `index.html` |
+| `timeline-calendar.html` | `assets/topbar.css` | X | `index.html` |
 | `sanga2025season.html` | `assets/topbar.css` | X | `index.html` |
 | `sanga_slides.html` | `assets/topbar.css` | X | `index.html` |
 | `TradePost/index-v1.html` | `../assets/topbar.css` | X | `../index.html` |
@@ -75,9 +76,9 @@
 - その計算に使っていた `--topbar-h` の宣言
 - ダイアログや画像生成画面と重ね順を取り合わないようにする指定
 
-`--topbar-h` を宣言しないため、`assets/timeline.css` の `top: var(--topbar-h, 0px)` と
-`assets/timeline.js` の監視位置はどちらも0に戻り、SUPPORTER TIMELINEの貼り付き見出しは
-画面上端で止まります。宣言そのものは残っているので、次に SUPPORTER TIMELINE を触るPRで外します。
+`--topbar-h` を宣言しないため、SUPPORTER TIMELINEの貼り付き見出しは画面上端で止まります。
+参照していた `assets/timeline.css` の `top` と `assets/timeline.js` の監視位置も削除済みです
+（2026-09-08）。リポジトリ内に `--topbar-h` を使う場所はもうありません。
 
 `assets/squad.css` にあった `--topbar-gap: 16px` は削除済みです（2026-09-08）。
 リポジトリ内に `--topbar-gap` を使う場所はもうありません。

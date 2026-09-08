@@ -49,6 +49,47 @@ export function toDateStamp(date) {
   return date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
 }
 
+/**
+ * 1行の上限（オクテット）。RFC 5545 3.1 が定める。超える行は次の行へ折り返し、
+ * 続きの行は空白1つで始める。
+ *
+ * **日本語の予定では簡単に超えます。** 1文字3オクテットなので、説明欄は25文字ほどで
+ * 上限に達します。折り返さないファイルでも Google と Apple は読めますが、規格どおりに
+ * しないと厳しい実装で弾かれます。
+ */
+const MAX_OCTETS = 75;
+
+/**
+ * 規格どおりに折り返す。**文字の途中では切りません。**
+ * オクテット数で数えつつ、UTF-8の文字境界を守る。
+ */
+export function foldLine(line) {
+  // TextEncoder はブラウザにも Node にもある。Buffer は Node にしかないので使わない。
+  const encoder = new TextEncoder();
+  if (encoder.encode(line).length <= MAX_OCTETS) return line;
+
+  const out = [];
+  let current = "";
+  let octets = 0;
+  // 続きの行は先頭の空白1つぶんだけ入る量が減る。
+  let limit = MAX_OCTETS;
+
+  for (const char of line) {
+    const size = encoder.encode(char).length;
+    if (octets + size > limit) {
+      out.push(current);
+      current = char;
+      octets = size;
+      limit = MAX_OCTETS - 1;
+    } else {
+      current += char;
+      octets += size;
+    }
+  }
+  out.push(current);
+  return out.join("\r\n ");
+}
+
 /** UIDのドメイン部分。実在しないことが保証された名前で、置き場所が変わっても動かない。 */
 export const UID_DOMAIN = "sanga-timeline.invalid";
 
@@ -64,6 +105,7 @@ export const UID_DOMAIN = "sanga-timeline.invalid";
  * @param {string} [spec.description] 説明
  * @param {number|null} [spec.sequence]     版。0以上の整数
  * @param {Date|null}   [spec.lastModified] 版を上げた時刻
+ * @param {string} [spec.status]     STATUS。省略時は CONFIRMED
  * @param {Date} now                 DTSTAMP に書く時刻
  */
 function buildEvent(spec, now) {
@@ -91,6 +133,11 @@ function buildEvent(spec, now) {
   lines.push("SUMMARY:" + icsEscape(spec.summary));
   lines.push("DESCRIPTION:" + icsEscape(spec.description || ""));
 
+  // **STATUS は常に出す。** 普段から出しておけば、中止のときの CANCELLED が
+  // 「値が変わった」だけになり、「無かった項目が増えた」という扱いにならない。
+  // Googleの公開フィード（祝日）も全イベントに CONFIRMED を出している。
+  lines.push("STATUS:" + (spec.status || "CONFIRMED"));
+
   // 空き時間を埋めない。販売開始はその時間に何かするわけではなく、キックオフも
   // 観に行くとは限らない。埋めると、予定を共有している相手からは「その時間は
   // 埋まっている人」に見えてしまう。Googleの公開フィード（祝日）と同じ扱い。
@@ -108,6 +155,10 @@ function buildEvent(spec, now) {
  * @param {Date}   options.now          DTSTAMP に書く時刻
  * @param {string} options.calendarName X-WR-CALNAME
  * @param {string} options.prodId       PRODID
+ * @param {string} [options.calendarDescription] X-WR-CALDESC
+ * @param {string} [options.refreshInterval]     取りに来る間隔の希望（`PT12H` の形）。
+ *   購読フィードだけが使う。どれを見るかはアプリによって違うので2つの形で書く。
+ *   **強制はできない。** 決めるのはカレンダーアプリ側
  */
 export function buildCalendar(specs, options) {
   const lines = [
@@ -119,11 +170,19 @@ export function buildCalendar(specs, options) {
     "X-WR-CALNAME:" + icsEscape(options.calendarName)
   ];
 
+  if (options.calendarDescription) {
+    lines.push("X-WR-CALDESC:" + icsEscape(options.calendarDescription));
+  }
+  if (options.refreshInterval) {
+    lines.push("REFRESH-INTERVAL;VALUE=DURATION:" + options.refreshInterval);
+    lines.push("X-PUBLISHED-TTL:" + options.refreshInterval);
+  }
+
   specs.forEach(function (spec) {
     if (!spec || !spec.start) return;
     buildEvent(spec, options.now).forEach(function (line) { lines.push(line); });
   });
 
   lines.push("END:VCALENDAR");
-  return lines.join("\r\n") + "\r\n";
+  return lines.map(foldLine).join("\r\n") + "\r\n";
 }

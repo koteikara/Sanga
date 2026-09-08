@@ -142,9 +142,7 @@ body {
    背景が動いているため、固定中だけ地の色を敷いて文字を読めるようにする。 */
 .head {
   position: sticky;
-  /* 共通トップバー（assets/topbar.css）の下に貼り付く。
-     topbar.css を読まない場合に備えて既定値は0にしておく。 */
-  top: var(--topbar-h, 0px);
+  top: 0;
   z-index: 15;
   padding: 24px 16px 18px;
   transition: padding 180ms ease, background-color 180ms ease;
@@ -1282,4 +1280,84 @@ code {
   .head { padding: 32px 16px 22px; }
   .head h1 { font-size: 1.8rem; }
   .my-form { padding: 20px; }
+}
+
+/* ---------- 案内ページ（timeline-calendar.html） ----------
+   購読の登録とやめ方を説明する読み物のページ。時系列の画面とは別ページにしている。
+   シートは操作するところで、読ませるところではないため。
+   色とトップバーは時系列と共有するので、このファイルに置く。 */
+
+.doc {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 16px 64px;
+  color: var(--ground-ink);
+}
+
+/* 説明は白い紙の面に載せる。地の上に長文を置くと読みづらい。 */
+.doc-sec {
+  --muted: var(--muted-on-paper);
+  --link: var(--accent);
+  margin-top: 16px;
+  padding: 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.doc-sec h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+.doc-sec h3 {
+  margin: 16px 0 8px;
+  font-size: 0.92rem;
+}
+.doc-sec p { margin: 0 0 10px; line-height: 1.75; font-size: 0.9rem; }
+.doc-sec ul,
+.doc-sec ol { margin: 0 0 10px; padding-left: 1.3em; line-height: 1.75; font-size: 0.9rem; }
+.doc-sec li { margin-bottom: 6px; }
+
+/* 入るもの／入らないものは並べて見比べたい。狭い画面では縦に積む。 */
+.doc-cols { display: grid; gap: 4px; }
+@media (min-width: 640px) {
+  .doc-cols { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+.doc-col h3 { margin-top: 8px; }
+
+/* 登録用アドレス。**リンクにしない。** リンクだとスマートフォンでは押した瞬間に
+   1回きりの取り込みが始まり、購読ではなく自分のカレンダーに混ざってしまう。 */
+.doc-url-label { margin-bottom: 6px; font-weight: 700; }
+.doc-url { display: flex; gap: 8px; align-items: stretch; }
+.doc-url-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+/* やめ方の2段階。1つめ（表示を消す）を先に、同じ重みで置く。 */
+.doc-step { margin-top: 14px; }
+.doc-step h3 { margin-top: 0; }
+
+.doc-how { margin: 0; font-size: 0.9rem; line-height: 1.75; }
+.doc-how dt {
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.doc-how dd { margin: 4px 0 0; }
+
+.doc-warn {
+  padding: 12px;
+  border-left: 3px solid var(--warn);
+  background: var(--warn-soft);
+  border-radius: 0 4px 4px 0;
 }
