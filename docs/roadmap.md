@@ -61,7 +61,7 @@
 | `validate-app-contract.js` の確認範囲 | 確認中 | 主要DOM/CSSフック、表示列、表示モード、フィルタ、共有画像生成、大会リボン関連の確認範囲拡張は一部実施済み。今後もCSS整理・JS整理に合わせて追加する。 |
 | SUPPORTER TIMELINE | 進行中 | Phase 1（タイムライン、MY予定、ICS書き出し）とPhase 2（会員種別・シーズンパスによる照合と強調）は `experiments/supporter-timeline/` で動作し、Android・iOSの実機確認も完了。次はチケット販売スケジュールのParserが有力。現在地と次の一手は `docs/supporter-timeline-design.md` の冒頭にある。 |
 | ホテルデータ検証 | 確認中 | `tools/validate-hotels.js` は `npm run check:data` で常時実行中。索引は0件のため、空索引を正常扱いする経路だけが動いている。 |
-| 過密日程カレンダー | 設計・プロトタイプ | 2026-09-08時点で `experiments/dense-schedule-calendar/` が実データを描く。別ページとして公開するか、年間スケジュールの表示モードにするかが未決。設計と比較は `docs/dense-schedule-calendar.md`。 |
+| 過密日程カレンダー | 設計・プロトタイプ | 2026-09-08時点で `experiments/dense-schedule-calendar/` が実データを描く。本番は別ページとして追加すると決定済み。次は実機確認と本番移植。設計と手順は `docs/dense-schedule-calendar.md`。 |
 | 実ブラウザ確認観点 | 確認中 | `docs/ai/BROWSER_CHECKLIST.md` に沿って、人間の目視確認を継続する。 |
 | Googleスプレッドシート運用 | 確認中 | 初期CSV、列定義、生成JSON、公開JSON反映手順を安全に運用する。 |
 | 本番デプロイ運用 | 確認中 | GitHub Pages確認後に手動デプロイし、本番URLで再確認する。 |
