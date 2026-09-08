@@ -1033,7 +1033,7 @@
     if (!benefitState().changes.length && !counts.planned && !counts.exchanged) {
       var none = document.createElement("p");
       none.className = "empty";
-      none.textContent = "枚数の増減を記録すると、残りと引き換え先の管理ができます。";
+      none.textContent = "枚数の増減を記録すると、残りと引き換え先が分かります。";
       box.appendChild(none);
       return;
     }
@@ -1052,10 +1052,10 @@
     var note = document.createElement("p");
     if (counts.left < 0) {
       note.className = "benefit-warn";
-      note.textContent = "注意: 持っている枚数より多く割り当てています。枚数か割り当てを見直してください。";
+      note.textContent = "持っている枚数より多く割り当てています。枚数か割り当てを見直してください。";
     } else if (counts.left > upcoming) {
       note.className = "benefit-warn";
-      note.textContent = "注意: 残り" + counts.left + "枚に対して、これからのホーム戦は" + upcoming +
+      note.textContent = "残り" + counts.left + "枚に対して、これからのホーム戦は" + upcoming +
         "試合です。1試合に複数枚まとめて引き換えないと、使わないまま残ります。";
     } else if (counts.left > 0) {
       note.className = "benefit-detail";
