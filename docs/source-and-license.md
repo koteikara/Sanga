@@ -15,6 +15,7 @@
 | 日程データ | `public/data/matches.json` | 各試合に `source_url` と `source_checked_at` を保持。Jリーグ・京都サンガF.C.等の公開情報を参照 |
 | チケット販売スケジュール | `docs/sheets/ticket-sales.2026-08-28.csv` | 公式のチケット販売スケジュールを2026-08-28に確認したスナップショット。全行に `source_url` と `retrieved_at_jst` を保持。保持するのは日時・対象・試合との対応という事実のみで、記事本文・画像は含まない。`experiments/supporter-timeline/` のプロトタイプが参照し、公開物には未反映 |
 | 特典チケットの条件 | `experiments/supporter-timeline/benefit-tickets.json` | SANGA CREWの各コースの特典チケット枚数と有効期間を2026-08-28に確認したもの。`sources` に公式ページのURLを保持。プロトタイプが枚数の初期値と利用条件の表示に使う |
+| 祝日データ | `experiments/dense-schedule-calendar/prototype.js` の `HOLIDAYS`（35件） | 内閣府「国民の祝日について」令和8年（2026年）・令和9年（2027年）を2026-09-08に確認して書き写したもの。出典 https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html 、機械可読版 https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv 。取り込んだのは祝日法（昭和23年法律第178号）が定める日付そのもので、ページの文章・画像は含まない。内閣府サイトの利用条件ページは確認基準日時点で所在を確認できておらず、利用条件は未確認 |
 | 選手データ | `public/data/players.json`、`docs/sheets/players.csv` | 公式サイトを参照して手入力。公式ページの具体的URLと確認日が未記録 |
 | 対戦相手ロゴ | `public/assets/logos/` 10件 | `docs/sources/` の画像を複製して配置。元ページURLと利用許諾が未確認 |
 | 背番号タイル | `public/assets/players/` 39件 | `docs/sources/players-numbers.jpeg` から切り出した加工物。元ページURLと利用許諾が未確認 |
