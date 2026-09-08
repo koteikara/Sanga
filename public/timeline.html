@@ -385,7 +385,6 @@
 <script src="assets/timeline.js?v=e384b55e"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
-  // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {
     try {
       const { startNebula } = await import("./assets/index-nebula.js?v=56428a80");
