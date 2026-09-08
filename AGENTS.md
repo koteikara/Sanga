@@ -43,7 +43,7 @@
 | 公開物の全体像・過去の公開ページ | `docs/production-inventory-audit.md` |
 | 入口ページ・ツール一覧 | `docs/site-index.md`、`docs/ui-prototype-workflow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
-| 過密日程カレンダー | `docs/dense-schedule-calendar.md`、`experiments/dense-schedule-calendar/README.md` |
+| 過密日程カレンダー | `docs/dense-schedule-calendar.md` |
 | SUPPORTER TIMELINE | `docs/supporter-timeline-design.md`（「現在地と次の一手」から読む）、`experiments/supporter-timeline/README.md` |
 | タイムラインのデータ生成 | `docs/supporter-timeline-design.md` の「生成と検証の道具」、`docs/sheets/ticket-sales.2026-08-28.csv` |
 | チケット販売スケジュールの取得・解析 | `docs/supporter-timeline-design.md` の「販売スケジュールの取得と解析」「公式サイトの利用条件」 |

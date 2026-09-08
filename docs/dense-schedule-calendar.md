@@ -6,8 +6,9 @@
 `public/assets/calendar.css`、`public/assets/calendar.js` です。
 入口ページの現役グリッドにも、予想スカッドの次として並んでいます。
 
-見た目と操作の検証用プロトタイプは `experiments/dense-schedule-calendar/` に残してあります。
-見せ方を試すときはそちらで、公開版に入れるときは `public/` 側を直します。
+検証用プロトタイプ（`experiments/dense-schedule-calendar/`）は、公開して見え方が固まったので
+2026-09-08に畳みました。以後の見た目の変更は `public/` 側を直し、Playwrightの実測で確かめます。
+プロトタイプの中身が要るときは、コミット `87ebefc` までのgit履歴から取り出せます。
 
 ## 索引
 
@@ -377,6 +378,7 @@ J1の紫と並べたときに大会の違いが色で読めるようにするた
 | 2026-09-08 | 速度カーブ | easeOutCubic では実機で減速が感じられなかったため、easeInOutCubic にして上限を1300ms→2000msへ伸ばす |
 | 2026-09-08 | 広い画面 | 幅の上限を430px→700pxへ広げるだけにする。カレンダー本体の多段組は今回は入れない |
 | 2026-09-08 | 「使い方」の折り返し | 本文の `max-width` はやめ、`column-width: 280px` の段組みにする。本文だけ左に寄って右半分が空くため |
+| 2026-09-08 | プロトタイプ | 役目を終えたものとして `experiments/dense-schedule-calendar/` を畳む。見出しが公開版と同じでPagesからも見えており、取り違えの元になるため |
 
 ## 見た目を変えたときにやること
 
@@ -410,4 +412,3 @@ J1の紫と並べたときに大会の違いが色で読めるようにするた
 - `docs/data-schema.md`: `matches.json` の項目
 - `docs/site-index.md`: 入口ページと `tools.json`
 - `docs/source-and-license.md`: 祝日データを含む出典の記録
-- `experiments/dense-schedule-calendar/README.md`: プロトタイプの確認手順と実データで分かったこと

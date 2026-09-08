@@ -39,6 +39,52 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-09-08 過密日程カレンダーのプロトタイプを畳む
+
+### 変更ファイル
+
+- `experiments/dense-schedule-calendar/`（削除。README・prototype.html/css/js の4件）
+- `AGENTS.md`、`docs/dense-schedule-calendar.md`、`docs/source-and-license.md`
+
+### 変更内容
+
+公開して見え方が固まったので、依頼を受けてプロトタイプを畳みました。
+
+畳む理由は取り違えです。プロトタイプの見出しは公開版と同じ「過密日程カレンダー 2026/27」で、
+`experiments/` は GitHub Pages に配信されます。直前のPRで「検証用の非公開ページです」を消したため、
+画面上で見分ける手がかりがタブのタイトルと `noindex` だけになっていました。
+
+参照元を3か所直しました。
+
+- `AGENTS.md` の文書索引から `experiments/dense-schedule-calendar/README.md` を外す
+- `docs/dense-schedule-calendar.md` の冒頭を、畳んだ旨と `87ebefc` までのgit履歴から取り出せる案内に差し替え、
+  関連文書の一覧からプロトタイプのREADMEを外す
+- `docs/source-and-license.md` の祝日データの所在を
+  `experiments/dense-schedule-calendar/prototype.js` から `public/assets/calendar.js` へ付け替え
+
+3つ目が肝心です。ここを直さないと、内閣府の祝日データを書き写した35件の正本が、消えたファイルを
+指したままになります。付け替え先に35件あることを確認しました。
+
+`docs/ai/WORKLOG.md` の過去の記録にある `experiments/dense-schedule-calendar/` は、そのときの
+作業内容を書いた履歴なので直していません。
+
+### 確認結果
+
+`npm run check` は終了コード0。`public/` には手を入れていないので、公開ページに変化はありません。
+`experiments/dense-schedule-calendar` を参照する箇所は、WORKLOGの履歴を除いて残っていません
+（今回書いた「畳んだ」という記述2件のみ）。
+
+### 残課題
+
+- `docs/ui-prototype-workflow.md` に、公開後にプロトタイプを畳むかどうかの決めごとがありません。
+  残っている5件（site-index・squad-builder・supporter-timeline・bench-emphasis・image-generation）は
+  すべて公開済み機能のプロトタイプで、残すのが今の慣例です。今回だけ例外にしたので、
+  方針として揃えるかどうかは別途決める必要があります。
+
+### 人間が確認すべき点
+
+- 他の5件も同じように畳むのか、過密日程カレンダーだけ畳むのか。
+
 ## 2026-09-08 「使い方」の折り返しを広い画面向けに直す
 
 ### 変更ファイル
