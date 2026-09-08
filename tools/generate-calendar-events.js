@@ -226,6 +226,32 @@ function applyVersions(events, snapshotAt, previousIndex) {
   return events;
 }
 
+/**
+ * 予定の終わりを決める。
+ *
+ * **`DTEND` を省くと、アプリごとに違う長さで表示されます。** RFC 5545 では
+ * 「DTSTART と同じ時刻に終わる（長さ0）」ですが、Microsoft は自社の仕様書で
+ * Outlook が1時間として取り込むと明記しており、Googleカレンダーも1時間の枠にします。
+ * 一方 `DTEND` に `DTSTART` と同じ値は書けません（仕様上「後でなければならない」）。
+ * 長さ0は表現できないので、**こちらで短い長さを明示して、どのアプリでも同じに見せます。**
+ *
+ * 販売開始は15分。題が「開始」なので、終わりを匂わせない短さにする。
+ * 1時間にすると「13:00までに買わないと終わる」と読めてしまい、事実と違う。
+ */
+const SALE_MINUTES = 15;
+/** キックオフは2時間。試合はおおむねこの長さで、1時間だと短すぎる。 */
+const MATCH_MINUTES = 120;
+
+/** JSTの `2026-07-25T11:00:00+09:00` に分を足して、同じ形で返す。 */
+function plusMinutes(startsAt, minutes) {
+  const at = new Date(startsAt);
+  if (Number.isNaN(at.getTime())) return '';
+  const jst = new Date(at.getTime() + minutes * 60000 + 9 * 3600000);
+  const pad = (value) => String(value).padStart(2, '0');
+  return `${jst.getUTCFullYear()}-${pad(jst.getUTCMonth() + 1)}-${pad(jst.getUTCDate())}`
+    + `T${pad(jst.getUTCHours())}:${pad(jst.getUTCMinutes())}:${pad(jst.getUTCSeconds())}+09:00`;
+}
+
 function ticketEvent(record, match, checkedAt) {
   const matchId = match.id;
   const opponent = match.opponent || '未定';
@@ -260,7 +286,7 @@ function ticketEvent(record, match, checkedAt) {
   return {
     id: `ticket-${matchId}-${stage.suffix}`,
     starts_at: record.sale_start,
-    ends_at: '',
+    ends_at: plusMinutes(record.sale_start, SALE_MINUTES),
     date_precision: 'datetime',
     date_candidates: [],
     type: 'ticket',
@@ -301,8 +327,11 @@ function matchEvent(match) {
 
   if (match.match_date) {
     const time = match.kickoff_time || '00:00';
+    const startsAt = `${match.match_date}T${time}:00+09:00`;
     return Object.assign(base, {
-      starts_at: `${match.match_date}T${time}:00+09:00`,
+      starts_at: startsAt,
+      // 時刻が分からない試合は終日として出るため、終わりは持たせない。
+      ends_at: match.kickoff_time ? plusMinutes(startsAt, MATCH_MINUTES) : '',
       date_precision: match.kickoff_time ? 'datetime' : 'date',
       date_candidates: [],
       title: `${opponent}戦 キックオフ（${match.venue || '会場未定'}）`,
@@ -376,7 +405,7 @@ function awaySaleEvent(record, match) {
   return {
     id: `ticket-${match.id}-away`,
     starts_at: record.starts_at,
-    ends_at: '',
+    ends_at: plusMinutes(record.starts_at, SALE_MINUTES),
     date_precision: 'datetime',
     date_candidates: [],
     type: 'ticket',
