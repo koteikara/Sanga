@@ -39,6 +39,82 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-09-08 トップバーの固定をやめ、カレンダーの画面をカレンダーに譲る
+
+### 変更ファイル
+
+- `public/assets/topbar.css`（固定をやめ、リンクを1本に）
+- `public/sanga202627season.html`、`public/squad.html`、`public/timeline.html`、
+  `public/sanga2025season.html`、`public/sanga_slides.html`、`public/TradePost/index-v1.html`
+  （バーのマークアップ差し替え。年間スケジュールは `<body class="topbar-row">` も付ける）
+- `experiments/dense-schedule-calendar/`（題を1行に、操作バー、「見かた」パネル）
+- `docs/site-index.md`、`docs/project-structure.md`、`docs/dense-schedule-calendar.md`、
+  `docs/roadmap.md`、`docs/ai/BROWSER_CHECKLIST.md`
+
+**`public/assets/squad.css`、`public/assets/timeline.css`、`public/assets/timeline.js` は
+今回いっさい触っていません。** 別セッションが予想スカッドとSUPPORTER TIMELINEを編集中のためです。
+`squad.html` と `timeline.html` はバーのマークアップとキャッシュ用の版数で衝突する可能性があります。
+`docs/parallel-work-policy.md` に従い、先にマージされたほうへ寄せて
+`npm run fix:asset-versions` を掛け直してください。
+
+### 変更内容
+
+利用者の実機確認で、画像生成画面でバーが消えること、生成画像に写り込まないこと、
+SUPPORTER TIMELINEの下部メニューと重ならないことを確認できました。そのうえでの指摘に対応しています。
+
+1. **トップバーを画面に固定しない。** 「邪魔になる場面が出てきそう」という判断で、
+   通常のフローに戻しました。固定をやめたことで、高さぶんの `body` の `padding-top`、
+   その計算に使っていた `--topbar-h` の宣言、ダイアログと重ね順を取り合わないための指定が
+   まとめて不要になりました。
+2. **リンクを `SANGA TOOLBOX` 1本にし、アイコンは入口ページと同じくXへ向けた。**
+3. **カレンダーの説明・凡例・注記を「見かた」パネル（`<dialog>`）へ移した。**
+   月ジャンプは枠で囲った操作バーに収め、その中に「見かた」ボタンを並べています。
+
+`--topbar-h` を宣言しなくなったことで、`timeline.css` の `top: var(--topbar-h, 0px)` と
+`timeline.js` の監視位置は0に戻り、貼り付き見出しは元どおり画面上端で止まります。
+`squad.css` の `--topbar-gap: 16px` は参照されなくなりました。どちらも上記の理由で残しています。
+
+固定をやめたぶん、帯を画面幅いっぱいに見せる指定が要りました。
+
+- `margin-inline: calc(50% - 50vw)`: `body` に左右の余白があるページ（予想スカッド、スライド）
+- `align-self: stretch`: 縦並びflexで中央寄せの `body`（予想スカッド、2025シーズン日程）。
+  無いと帯が中身の幅（実測220px）に縮む
+- `body.topbar-row` の折り返し: 横並びflexの `body`（年間スケジュールだけ）。
+  無いと帯が本文の隣に並び、実測で幅220px・高さ2850pxの縦帯になる
+
+### 確認結果
+
+`npm run check` 全項目成功。`npm run fix:asset-versions` で版数を更新済み。
+`docs/dom-inventory.md` は差分なし。
+
+Chromium（幅320px・390px・430px・768px・1280px）で確認しました。
+
+- 公開6ページすべてでバーが `position: static`、高さ65px、幅が画面いっぱい。
+  600pxスクロールすると画面外へ流れる（`top` が負になる）
+- アイコンが `https://x.com/kou_osakacity`、`SANGA TOOLBOX` が `index.html`
+  （`TradePost` は `../index.html`）
+- 横スクロールが出ない（`TradePost` の1pxは変更前からある既存のもの）
+- `--topbar-h` は未宣言。SUPPORTER TIMELINEの貼り付き見出しが `top: 0` に戻る
+- プロトタイプ: 画面上部の飾りが313px→155px。「見かた」がEscで閉じ、
+  背面のスクロール止めが戻る
+
+### 未確認項目
+
+実機（iPhone Safari・Android Chrome）でのバーの見え方と「見かた」パネル。
+`margin-inline: calc(50% - 50vw)` は、クラシックなスクロールバーを出すデスクトップブラウザで
+スクロールバーの幅ぶん横に溢れる可能性があります。スマートフォン最優先のためそのままにしています。
+
+### 残課題
+
+- 別セッションのPRがマージされたあと、`squad.css` の `--topbar-gap` と
+  `timeline.css` / `timeline.js` の `--topbar-h` まわりを外す。
+- 過密日程カレンダーの本番移植（別ページ）。
+
+### 人間が確認すべき点
+
+トップバーの位置。予想スカッドとスライドは、ページ自身の上余白ぶん（16px・20px）だけ
+バーが下がって始まります。ほかの4ページは画面上端です。
+
 ## 2026-09-08 公開ページ共通トップバーと、過密日程カレンダーの実機指摘対応
 
 ### 変更ファイル

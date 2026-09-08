@@ -50,60 +50,57 @@
 2026-09-08時点。正本は `public/assets/topbar.css` です。
 
 直URLで共有されたページに来た人が入口へ戻れないままだったため、入口ページ以外の公開ページに
-同じ見た目のバーを置きました。中身は左の作り手アイコンと `TOOLS` / `ABOUT` の2つで、
-いずれも `index.html` へ向きます。
+同じ地のバーを置きました。中身は2つで、**アイコンは作成者のX**（入口ページと同じ）、
+**`SANGA TOOLBOX` は入口ページ**へ向きます。
 
-| ページ | 読み込む | アイコンとリンクの向き先 |
-| --- | --- | --- |
-| `sanga202627season.html` | `assets/topbar.css` | `index.html` |
-| `squad.html` | `assets/topbar.css` | `index.html` |
-| `timeline.html` | `assets/topbar.css` | `index.html` |
-| `sanga2025season.html` | `assets/topbar.css` | `index.html` |
-| `sanga_slides.html` | `assets/topbar.css` | `index.html` |
-| `TradePost/index-v1.html` | `../assets/topbar.css` | `../index.html` |
+| ページ | 読み込む | アイコン | SANGA TOOLBOX |
+| --- | --- | --- | --- |
+| `sanga202627season.html` | `assets/topbar.css` | X | `index.html` |
+| `squad.html` | `assets/topbar.css` | X | `index.html` |
+| `timeline.html` | `assets/topbar.css` | X | `index.html` |
+| `sanga2025season.html` | `assets/topbar.css` | X | `index.html` |
+| `sanga_slides.html` | `assets/topbar.css` | X | `index.html` |
+| `TradePost/index-v1.html` | `../assets/topbar.css` | X | `../index.html` |
 
 `index.html` は読み込みません。入口ページのバーは `assets/index.css` に自前で持っており、
-アイコンが作成者のXへ向く点、ページ内アンカーを並べる点、背景の動きを止めるボタンを持つ点が違います。
+ページ内アンカー（TOOLS / ARCHIVE / ABOUT）と背景の動きを止めるボタンを持つ点が違います。
 
-実装上の判断は3つです。
+### 画面に固定しない
 
-1. **`position: fixed` にする。** 公開ページの `body` は「横並びflexで中央寄せ」（年間スケジュール）、
-   「縦並びflexで中央寄せ」（予想スカッド・2025シーズン日程）、「`margin: 20px`」（スライド）とまちまちで、
-   `position: sticky` では幅と位置が揃いませんでした。
-2. **高さぶんは `body` の `padding-top` で空ける。** 空の要素を1つ置く方法も試しましたが、
-   年間スケジュールの `body` は横並びのflexで、その要素が本文の隣に並んでページを右へ169px押し出しました。
-   ページ側が自前の上余白を持つ場合は、そのページのCSSで `--topbar-gap` を宣言します
-   （現在は `squad.css` の `16px` だけ）。
-3. **地を不透明にする。** 入口ページのバーは下端を透明にして背景を透かしますが、
-   共通バーの下には白い紙の面（SUPPORTER TIMELINE、過密日程カレンダー）や
-   白い表（スライド）が流れるため、白い文字が読めなくなります。
+**バーは通常のフローに置き、スクロールすればそのまま流れて消えます。**
+2026-09-08の実機確認で「固定は邪魔になる場面が出てきそう」という判断があり、
+それまでの `position: fixed` をやめました。固定をやめたことで次がまとめて要らなくなっています。
 
-### ダイアログとの重なり
+- 高さぶんを空けるための `body` の `padding-top`
+- その計算に使っていた `--topbar-h` の宣言
+- ダイアログや画像生成画面と重ね順を取り合わないようにする指定
 
-バーの `z-index` は100で、年間スケジュールの暗幕（20）とパネル（21）より前に出ます。
-前後を入れ替えると通常表示でカードがバーの上に乗るページが出るため、重ね順ではなく
-「開いている間だけ隠す」で解いています。
+`--topbar-h` を宣言しないため、`assets/timeline.css` の `top: var(--topbar-h, 0px)` と
+`assets/timeline.js` の監視位置はどちらも0に戻り、SUPPORTER TIMELINEの貼り付き見出しは
+画面上端で止まります。`assets/squad.css` の `--topbar-gap: 16px` も参照されなくなりました。
+どちらも別セッションが編集中のファイルのため、今回は残してあります。次にそれぞれを触るPRで外します。
 
-| 隠す条件 | どのページの何か |
-| --- | --- |
-| `body:has(.phone.is-screenshot-mode)` | 年間スケジュールの画像生成画面 |
-| `body:has(.settings-panel:not([hidden]))` | 年間スケジュールの設定パネル |
-| `body:has(.help-panel:not([hidden]))` | 年間スケジュールの使い方パネル |
-| `body.picker-open` | 予想スカッドの選手ピッカー |
+### 幅いっぱいに見せるための2つの指定
 
-`body.picker-open` はクラスなので `:has()` が無いブラウザでも効きます。
-`:has()` の3つは、無い場合にバーが残るだけで、パネルは元からバーより下（上端101px）に出るため
-隠れません。生成画像の対象も `[data-share-capture-target]` の中だけなので、画像にバーは入りません。
+公開ページの `body` はページごとにばらばらで、そのまま置くと帯が本文の幅に縮みます。
+`topbar.css` 側で吸収しています。
 
-SUPPORTER TIMELINEのシートは `<dialog>` で top layer に出るため、元からバーより前にあります。
+| 指定 | 効く相手 | 無いとどうなるか |
+| --- | --- | --- |
+| `margin-inline: calc(50% - 50vw)` | `body` に左右の余白があるページ（予想スカッド、スライド） | 帯がページの余白の内側に収まり、下の罫線が画面端まで届かない |
+| `align-self: stretch` | 縦並びの flex で中央寄せしている `body`（予想スカッド、2025シーズン日程） | 帯が中身の幅（実測220px）に縮む |
+| `body.topbar-row` の折り返し | 横並びの flex の `body`（年間スケジュールだけ） | 帯が本文の隣に並び、実測で幅220px・高さ2850pxの縦帯になる |
 
-### 各ページ側で必要になった調整
+`body.topbar-row` は `public/sanga202627season.html` の `<body>` にだけ付けています。
 
-| ファイル | 調整 |
-| --- | --- |
-| `assets/squad.css` | `--topbar-gap: 16px`。body が自前で持っていた上余白をバーのぶんに足す |
-| `assets/timeline.css` | 自前の貼り付き見出し `.head` を `top: var(--topbar-h, 0px)` にして、バーの下で止める |
-| `assets/timeline.js` | 上の見出しが帯に縮む判定（IntersectionObserver）の上端を、同じだけ下げる。下げないと貼り付いてから縮むまでがバーの高さぶん遅れる |
+`margin-inline` に `vw` を使うため、クラシックなスクロールバーを出すデスクトップブラウザでは
+スクロールバーの幅ぶん横に溢れる可能性があります。スマートフォン最優先のため、そのままにしています。
+
+### 画像生成画面では隠す
+
+年間スケジュールの画像生成画面は操作UIを隠す画面なので、`body:has(.phone.is-screenshot-mode)` で
+バーも隠します。`:has()` が無いブラウザではバーが残りますが、生成画像の対象は
+`[data-share-capture-target]` の中だけなので画像には入りません。
 
 ## 情報構造
 

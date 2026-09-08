@@ -18,8 +18,8 @@
 本番公開物の正本です。日程・選手・ホテル索引JSON、CSS、JavaScript、ロゴ、背番号タイル、静的配置した `modern-screenshot` を含みます。`hotel-index.json` は現在0件で画面表示は未実装です。
 
 `public/assets/topbar.css` は入口ページ以外の公開6ページが共通で読むトップバーです。各ページから
-`index.html` へ戻る導線をここにまとめています。仕様と実装上の判断、ページ側で必要になった調整
-（`squad.css` の `--topbar-gap`、`timeline.css` と `timeline.js` の貼り付き位置）は
+`index.html` へ戻る導線をここにまとめています。画面には固定せず、スクロールで流れて消えます。
+仕様と、ページごとの `body` の違いを吸収する指定は
 `docs/site-index.md` の「公開ページ共通のトップバー」を正とします。
 
 現行2ページのほかに、2025シーズンの日程ページ、スライドページ、求譲ツールなど過去に公開したページも含みます。全体像と各ページの位置づけは `docs/production-inventory-audit.md` を参照してください。`public/experiments/` は本番アップロードの対象外で、GitHub Pagesでのみ参照できます。
