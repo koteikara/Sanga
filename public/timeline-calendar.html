@@ -6,7 +6,7 @@
 <title>カレンダーに登録する｜SANGA SUPPORTER TIMELINE</title>
 <meta name="description" content="京都サンガF.C.のチケット販売開始と試合日程を、お使いのカレンダーに自動で届く形で登録する方法と、やめる方法の案内です。非公式のファンツールです。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
-<link rel="stylesheet" href="assets/timeline.css?v=f176203f">
+<link rel="stylesheet" href="assets/timeline.css?v=bd3e46d7">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
 </head>
 <body>
@@ -27,7 +27,9 @@
 
 <p class="notice" role="note">非公式のファンツールです。チケット販売の日程は公式サイトの掲載内容を写したもので、最新とは限りません。購入・応募の前に必ず公式サイトで確認してください。</p>
 
-<header class="head">
+<!-- 読み物のページなので見出しは貼り付かせない。時系列の画面は縦に長く、
+     いまどこを見ているか見失うので貼り付けているが、こちらは押す先が無い。 -->
+<header class="head head-static">
   <div class="head-row">
     <div class="head-title">
       <h1>カレンダーに登録する</h1>
@@ -42,6 +44,10 @@
 
 <section class="doc-sec">
   <h2>登録すると、どうなるか</h2>
+  <p class="section-note">
+    カレンダーに入れる方法は2つあります。このページは<strong>「登録する」</strong>ほうの案内です。
+    もう一方の「1回だけ入れる」は、いちばん下で説明しています。
+  </p>
   <p>
     お使いのカレンダーに<strong>「SANGA SUPPORTER TIMELINE」という名前のカレンダーが1つ増えます</strong>。
     チケットの販売開始と試合のキックオフが、そこに入ります。
@@ -71,8 +77,8 @@
         <li><strong>MY予定。</strong> ご自身で書いた予定は、この端末の中だけに保存しています</li>
       </ul>
       <p class="section-note">
-        引換とMY予定も入れたい方は、<a href="timeline.html">時系列</a>の「カレンダー」から
-        1回きりのファイルを作れます。下の「1回だけ入れたい方へ」もご覧ください。
+        引換とMY予定も入れたい方は、下の<strong>「もう一方の『1回だけ入れる』」</strong>を
+        ご覧ください。
       </p>
     </div>
   </div>
@@ -91,8 +97,9 @@
   <p id="feed-copy-status" class="section-note" role="status"></p>
 
   <details class="fold" open>
-    <summary>パソコン（Googleカレンダー）</summary>
+    <summary>Googleカレンダー（パソコン・Android）</summary>
     <ol>
+      <li>パソコンかスマートフォンの<strong>ブラウザ</strong>でGoogleカレンダーを開く</li>
       <li>左側の「他のカレンダー」の <strong>＋</strong> を押す</li>
       <li>「<strong>URLで追加</strong>」を選ぶ</li>
       <li>上のアドレスを貼り付けて「カレンダーを追加」</li>
@@ -101,10 +108,14 @@
       「カレンダーのURL」の欄に貼ります。ファイルを選ぶ「インポート」ではありません。
       インポートすると自動更新されず、自分の予定に混ざります。
     </p>
+    <p class="section-note">
+      <strong>Androidのカレンダーアプリからは登録できません。</strong> ブラウザで登録すれば、
+      同じGoogleアカウントのAndroidアプリにも出てきます。
+    </p>
   </details>
 
   <details class="fold">
-    <summary>iPhone・iPad・Mac（Appleのカレンダー）</summary>
+    <summary>Appleのカレンダー（iPhone・iPad・Mac）</summary>
     <p>
       <a class="btn" href="webcal://koteikara.github.io/Sanga/timeline.ics">カレンダーで開く</a>
     </p>
@@ -114,15 +125,6 @@
     <p class="section-note">
       うまく開かないときは、iPhoneなら「設定」→「アプリ」→「カレンダー」→「アカウント」→
       「アカウントを追加」→「その他」→「照会するカレンダーを追加」に、上のアドレスを貼ります。
-    </p>
-  </details>
-
-  <details class="fold">
-    <summary>Android</summary>
-    <p>
-      Androidのカレンダーアプリからは登録できません。<strong>パソコンかスマートフォンのブラウザで
-      Googleカレンダーを開き</strong>、上の「パソコン（Googleカレンダー）」の手順で登録してください。
-      同じGoogleアカウントなら、Androidのカレンダーアプリにも出てきます。
     </p>
   </details>
 
@@ -137,7 +139,7 @@
 </section>
 
 <section class="doc-sec">
-  <h2>やめる</h2>
+  <h2>登録をやめる</h2>
   <p>
     <strong>やめ方は2段階あります。</strong> ほとんどの場合は1つめで足ります。
   </p>
@@ -158,10 +160,11 @@
     <h3>2. 登録ごと削除する</h3>
     <p>入っている予定もまとめて消えます。<strong>戻すには登録し直しになります。</strong></p>
     <dl class="doc-how">
-      <dt>パソコン（Googleカレンダー）</dt>
+      <dt>Googleカレンダー（パソコン・Android）</dt>
       <dd>
-        設定（歯車）→ 左の一覧から「SANGA SUPPORTER TIMELINE」を選ぶ →
-        いちばん下の「<strong>登録解除</strong>」
+        <strong>ブラウザ</strong>でGoogleカレンダーを開く → 設定（歯車）→
+        左の一覧から「SANGA SUPPORTER TIMELINE」を選ぶ → いちばん下の「<strong>登録解除</strong>」。
+        Androidのカレンダーアプリからは消せません。
       </dd>
 
       <dt>iPhone・iPad</dt>
@@ -174,12 +177,6 @@
       <dd>
         カレンダーアプリの左の一覧で「SANGA SUPPORTER TIMELINE」を右クリック →
         「<strong>登録解除</strong>」
-      </dd>
-
-      <dt>Android</dt>
-      <dd>
-        Googleカレンダーで登録したものなので、<strong>パソコンかブラウザのGoogleカレンダー</strong>から
-        上の手順で解除します。Androidのカレンダーアプリからは消せません。
       </dd>
 
       <dt>Outlook</dt>
@@ -233,11 +230,11 @@
 </section>
 
 <section class="doc-sec">
-  <h2>1回だけ入れたい方へ</h2>
+  <h2>もう一方の「1回だけ入れる」</h2>
   <p>
     自動更新は要らない、特典チケットの引換やMY予定も入れたい、という場合は
-    <strong>1回きりのファイル</strong>を作れます。
-    <a href="timeline.html">時系列</a>の右上「カレンダー」から作れます。
+    <strong>いま表示している予定をその場でファイルにする</strong>方法があります。
+    <a href="timeline.html">時系列</a>の右上「カレンダー」から選べます。
   </p>
   <p class="doc-warn">
     <strong>こちらは自分のカレンダーに混ざります。</strong> あとで消したくなったとき、

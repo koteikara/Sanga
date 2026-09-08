@@ -893,6 +893,8 @@ a:focus-visible {
 }
 .fold[open] > summary { border-bottom: 1px solid var(--line-soft); }
 .fold > *:not(summary) { margin-left: 14px; margin-right: 14px; }
+/* 開いた中身が見出しの境界線にくっついて詰まって見えるため、最初の要素だけ上を空ける。 */
+.fold > summary + * { margin-top: 12px; }
 .fold > *:last-child { margin-bottom: 14px; }
 .fold .my-form { border: 0; padding: 0; }
 
@@ -1361,3 +1363,43 @@ code {
   background: var(--warn-soft);
   border-radius: 0 4px 4px 0;
 }
+
+/* 読み物のページの見出しは貼り付かせない。時系列の画面は縦に長く、いまどこを
+   見ているか見失うので貼り付けているが、こちらは押す先が無く、白い文字が
+   本文の上に残り続けるだけになる。 */
+.head-static { position: static; }
+
+/* 「カレンダーに入れる」シートの2つの道。どちらを選ぶかの画面なので、
+   説明ではなく選択肢として並べる。詳しい手順は案内ページに送る。 */
+.ics-way {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+}
+.ics-way + .ics-way { margin-top: 12px; }
+.ics-way-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+.ics-way-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.ics-way-points {
+  margin: 0 0 12px;
+  padding-left: 1.2em;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.ics-way-points li { margin-bottom: 4px; }
