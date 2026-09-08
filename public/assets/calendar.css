@@ -140,8 +140,11 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
    ページ本体
    ========================================================= */
 
+/* 430px は共有画像の枠を持つ年間スケジュールから引き継いだ数字で、このページは
+   画像化しないので狭いままにする理由がない。広い画面では横幅を使い、対戦相手名の
+   省略を減らす。min() なので狭い端末はこれまでどおり画面幅いっぱいになる。 */
 .screen{
-  width:min(100vw,430px);
+  width:min(100vw,700px);
   margin:0 auto;
   padding:10px 12px calc(16px + env(safe-area-inset-bottom));
 }
@@ -498,7 +501,7 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
    ========================================================= */
 
 .guide{
-  width:min(100vw,430px);
+  width:min(100vw,700px);
   max-width:100vw;
   max-height:88svh;
   margin:auto auto 0;
@@ -521,8 +524,10 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 /* 開いたときの着地点。読み上げに題を読ませるためで、枠は出さない */
 .guide h2:focus{outline:none}
 .guide h3{margin:16px 0 6px;font-size:12px;font-weight:800;color:var(--muted)}
-.guide-lead{margin:0;font-size:12px;line-height:1.8}
-.guide-note{margin:6px 0 0;font-size:11px;line-height:1.75;color:var(--muted)}
+/* 本文だけは横に伸ばさない。シートが700pxになると1行が長くなりすぎて、
+   次の行の頭を探すのに目が戻れなくなる。 */
+.guide-lead{margin:0;max-width:34em;font-size:12px;line-height:1.8}
+.guide-note{margin:6px 0 0;max-width:36em;font-size:11px;line-height:1.75;color:var(--muted)}
 .guide-note code{font-size:10.5px}
 .guide-note a{color:#1d6f7d}
 .guide-disclaimer{margin-top:14px;padding-top:10px;border-top:1px solid var(--line)}
