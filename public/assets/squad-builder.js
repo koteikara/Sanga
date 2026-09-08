@@ -50,6 +50,14 @@ function cloneSlots(slots) {
    public/data/players.json が読めない場合に備え、同梱のサンプルへ切り替える。
    その場合は同梱のサンプル配列にフォールバックし、理由をコンソールに出す。
 ------------------------------------------------------------------ */
+/**
+ * players.json を読めたか。サンプルへフォールバックしたときは false。
+ * 保存データの整理（dropMissingPlayers）は、公式データを読めたときだけ行う。
+ * サンプルは人数も背番号も違うため、フォールバック中に削ると、
+ * 一時的な読み込み失敗で保存済みのスカッドを壊してしまう。
+ */
+let playersAreOfficial = false;
+
 async function loadPlayers() {
   const candidates = [
     "/data/players.json?v=1a4a57fa",
@@ -62,6 +70,7 @@ async function loadPlayers() {
       const json = await res.json();
       if (Array.isArray(json.players) && json.players.length) {
         console.info("[squad-builder] players.json を読み込みました:", url);
+        playersAreOfficial = true;
         return json.players;
       }
     } catch (err) {
@@ -913,6 +922,7 @@ async function exportPng(node) {
 
 const exportBtn = $("#export-btn");
 const exportStatus = $("#export-status");
+const saveStatusEl = $("#save-status");
 const exportPreview = $("#export-preview");
 
 exportBtn.addEventListener("click", async () => {
@@ -1011,6 +1021,7 @@ function loadSquad(name) {
   state.slots.forEach((slot) => {
     if (slot.playerNumber) slot.playerNumber = String(slot.playerNumber);
   });
+  const dropped = dropMissingPlayers();
   state.title = data.title;
   state.matchInfo = data.matchInfo;
   state.poster = data.poster || "";
@@ -1036,6 +1047,41 @@ function loadSquad(name) {
   });
   formationNumEl.textContent = FORMATIONS[state.formationKey].label;
   renderAll();
+  reportDroppedPlayers(dropped);
+}
+
+/**
+ * 選手一覧に無い背番号を、登録メンバーとピッチの枠から取り除く。
+ *
+ * 移籍などで選手データから外れると、findPlayer() が null を返す。
+ * このときピッチの枠は空き枠として描かれ、ベンチは黙って消えるだけで、
+ * state.squad には番号が残り続ける。そのまま保存し直すと書き戻されるため、
+ * 読み込んだ時点で落として、データと画面を一致させる。
+ *
+ * @returns {string[]} 取り除いた背番号
+ */
+function dropMissingPlayers() {
+  // サンプルへフォールバックしている間は判断材料が無いので触らない
+  if (!playersAreOfficial) return [];
+  const missing = state.squad.filter((number) => !findPlayer(number));
+  if (!missing.length) return [];
+  state.squad = state.squad.filter((number) => findPlayer(number));
+  state.slots.forEach((slot) => {
+    if (slot.playerNumber && !findPlayer(slot.playerNumber)) slot.playerNumber = null;
+  });
+  return missing;
+}
+
+/** 取り除いた選手がいたことを利用者へ伝える。黙って消えると原因が分からない */
+function reportDroppedPlayers(dropped) {
+  if (!saveStatusEl) return;
+  if (!dropped || !dropped.length) {
+    saveStatusEl.textContent = "";
+    return;
+  }
+  saveStatusEl.textContent =
+    `背番号 ${dropped.join("・")} は選手一覧にないため、枠を空けました。` +
+    "移籍などで選手データから外れた場合に起こります。";
 }
 
 function deleteSquad(name) {
