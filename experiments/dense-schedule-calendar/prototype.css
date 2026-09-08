@@ -47,9 +47,12 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 html{
-  scroll-behavior:smooth;
-  /* 月見出しは画面上端に貼り付くので、月ジャンプの着地点も少しだけ下げる */
-  scroll-padding-top:4px;
+  /* なめらかな移動は calendar.js が減速つきで行う。ここでスムースを効かせると
+     ブラウザ側の曲線と二重になって競合する。 */
+  scroll-behavior:auto;
+  /* JavaScriptが動かないときに素のアンカー移動が使われる。
+     貼り付く月見出しに隠れないよう、着地点を下げておく。 */
+  scroll-padding-top:36px;
 }
 
 body{
@@ -122,7 +125,6 @@ body{
 }
 @media (prefers-reduced-motion:reduce){
   .bg-blob{animation:none}
-  html{scroll-behavior:auto}
 }
 :root[data-motion="off"] .bg-blob{animation:none}
 
@@ -244,6 +246,13 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
   white-space:nowrap;
 }
 .toolbar-months a:hover{background:rgba(255,255,255,.22)}
+
+/* 月より先に目に入ってほしいので、少しだけ強くする */
+.toolbar-months a.is-today-link{
+  background:var(--ground-ink);
+  color:var(--ground);
+}
+.toolbar-months a.is-today-link:hover{background:#fff}
 
 /* =========================================================
    リストとミニマップ
@@ -375,6 +384,23 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 
 /* 濃い地の上（中2日以下・試合日）は文字とバッジを白へ反転する */
 .on-dark{color:#fff}
+
+/* 今日。間隔の色は残したまま、左の太線と枠で浮かせる。
+   currentColor を使うので、明るい帯でも濃い帯でも自動で読める色になる。 */
+.is-today{
+  box-shadow:inset 4px 0 0 currentColor, 0 0 0 1.5px currentColor;
+}
+.today-chip{
+  flex:none;
+  padding:1px 5px;
+  border:1px solid currentColor;
+  border-radius:4px;
+  font-size:8.5px;
+  font-weight:800;
+  line-height:1.4;
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
 
 /* =========================================================
    曜日・HOME/AWAY バッジ

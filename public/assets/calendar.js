@@ -22,6 +22,13 @@
 
   var WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 
+  // 「今日」は端末のタイムゾーンではなく日本時間で決める。
+  // 日程がJSTなので、遠征先の時計で見ても暦とずれない。
+  // sv-SE ロケールは YYYY-MM-DD を返すので、そのまま日付キーとして使える。
+  var TODAY_KEY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" });
+  // 「今日」へ飛ぶための着地点。同じ日に箱が複数出ても、idは最初の1つだけに付ける。
+  var todayAnchorUsed = false;
+
   // 内閣府「国民の祝日について」令和8年（2026年）・令和9年（2027年）
   // https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html （2026-09-08確認）
   // 「休日」（祝日法第3条第2項・第3項）を含む。
@@ -186,6 +193,77 @@
   }
 
   // =========================================================
+  // スクロール
+  // =========================================================
+
+  // ブラウザ標準の behavior:"smooth" は速度カーブを変えられない。
+  // 最後にゆっくり減速して止まる余韻がほしいので、自前で動かす。
+  // 距離が長いほど少しだけ長くかけるが、上限は1.1秒。
+  var scrollAnimation = null;
+
+  function stopScrollAnimation() {
+    if (scrollAnimation === null) return;
+    cancelAnimationFrame(scrollAnimation);
+    scrollAnimation = null;
+    window.removeEventListener("wheel", stopScrollAnimation);
+    window.removeEventListener("touchstart", stopScrollAnimation);
+    window.removeEventListener("keydown", stopScrollAnimation);
+  }
+
+  function prefersNoMotion() {
+    if (document.documentElement.dataset.motion === "off") return true;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function scrollToY(target, smooth) {
+    stopScrollAnimation();
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var to = clamp(target, 0, Math.max(0, max));
+    if (!smooth || prefersNoMotion()) {
+      window.scrollTo(0, to);
+      return;
+    }
+
+    var from = window.scrollY;
+    var distance = to - from;
+    if (Math.abs(distance) < 2) return;
+    var duration = clamp(320 + Math.abs(distance) * 0.28, 420, 1300);
+    var start = performance.now();
+
+    // easeOutCubic。序盤で距離を稼ぎ、終盤をゆっくり引いて止まる。
+    // 5乗（easeOutQuint）も試したが、半分の時間で97%進んでしまい、
+    // 残りが「わずかに這う」だけになって余韻に見えない。3乗だと
+    // 折り返し時点で87%、最後の13%を後半いっぱいかけて減速する。
+    function ease(t) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+
+    // 途中で利用者が動かしたら、そちらを優先して止める。
+    window.addEventListener("wheel", stopScrollAnimation, { passive: true });
+    window.addEventListener("touchstart", stopScrollAnimation, { passive: true });
+    window.addEventListener("keydown", stopScrollAnimation);
+
+    function step(now) {
+      var t = Math.min(1, (now - start) / duration);
+      window.scrollTo(0, from + distance * ease(t));
+      if (t < 1) {
+        scrollAnimation = requestAnimationFrame(step);
+        return;
+      }
+      stopScrollAnimation();
+    }
+    scrollAnimation = requestAnimationFrame(step);
+  }
+
+  // 貼り付く月見出しの下に着地させる
+  var STICKY_OFFSET = 36;
+
+  function scrollToElement(element, smooth) {
+    if (!element) return;
+    scrollToY(element.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET, smooth);
+  }
+
+  // =========================================================
   // 描画
   // =========================================================
 
@@ -209,7 +287,13 @@
     var fill = document.createElement("span");
     fill.className = "d-fill";
 
-    li.append(num, weekdayBadge(day.date, day.key), fill);
+    li.append(num, weekdayBadge(day.date, day.key));
+    if (day.key === TODAY_KEY) {
+      li.classList.add("is-today");
+      if (!todayAnchorUsed) { li.id = "today"; todayAnchorUsed = true; }
+      li.append(todayChip());
+    }
+    li.append(fill);
 
     // 色だけに頼らないよう、間隔の先頭には中n日を文字でも出す。
     if (day.runHead && day.rest !== null) {
@@ -249,6 +333,11 @@
     }
     li.append(fill);
 
+    if (day.key === TODAY_KEY) {
+      li.classList.add("is-today");
+      if (!todayAnchorUsed) { li.id = "today"; todayAnchorUsed = true; }
+      li.append(todayChip());
+    }
     if (entry.isCandidate) {
       li.append(chip("候補" + (entry.candidateIndex + 1) + "/" + entry.candidateCount));
     }
@@ -275,6 +364,14 @@
     li.append(detail);
 
     return li;
+  }
+
+  // 「今日」の印。色だけに頼らないよう、枠線と一緒に文字も出す。
+  function todayChip() {
+    var span = document.createElement("span");
+    span.className = "today-chip";
+    span.textContent = "今日";
+    return span;
   }
 
   function chip(text) {
@@ -369,6 +466,28 @@
 
     strip.replaceChildren(fragment);
     monthNav.replaceChildren(navFragment);
+
+    // 「今日」はシーズンの中にいるときだけ出す。押したときだけ飛ぶ。
+    // <a href="#today"> にしておけば、JavaScriptが動かない環境でも着地する。
+    if (todayAnchorUsed) {
+      var todayItem = document.createElement("li");
+      var todayLink = document.createElement("a");
+      todayLink.className = "is-today-link";
+      todayLink.href = "#today";
+      todayLink.textContent = "今日";
+      todayItem.append(todayLink);
+      monthNav.prepend(todayItem);
+    }
+
+    // 月と「今日」の移動は、標準のジャンプではなく減速つきで動かす。
+    monthNav.addEventListener("click", function (event) {
+      var link = event.target.closest("a");
+      if (!link || event.metaKey || event.ctrlKey || event.shiftKey) return;
+      var target = document.getElementById(link.getAttribute("href").slice(1));
+      if (!target) return;
+      event.preventDefault();
+      scrollToElement(target, true);
+    });
   }
 
   // =========================================================
@@ -378,19 +497,22 @@
   // 1日1行の色帯。試合日は大会色、そうでない日は間隔の色をそのまま縮める。
   function minimapRows(days) {
     return days.map(function (day) {
+      var isToday = day.key === TODAY_KEY;
       if (day.entries) {
         var entry = day.entries[0];
         var comp = competitionOf(entry.match);
         return {
           color: comp ? comp.color : COMPETITIONS.J1.color,
           alpha: entry.isCandidate ? 0.45 : 1,
-          monthStart: day.date.getDate() === 1
+          monthStart: day.date.getDate() === 1,
+          isToday: isToday
         };
       }
       return {
         color: (day.band || NEUTRAL).color,
         alpha: 1,
-        monthStart: day.date.getDate() === 1
+        monthStart: day.date.getDate() === 1,
+        isToday: isToday
       };
     });
   }
@@ -422,6 +544,16 @@
           context.fillRect(0, top, width, 1);
         }
       });
+
+      // 今日の位置。どの帯の色の上でも見えるよう、白で縁取ってから黒い線を引く。
+      var todayIndex = rows.findIndex(function (row) { return row.isToday; });
+      if (todayIndex >= 0) {
+        var y = Math.floor(todayIndex / rows.length * height);
+        context.fillStyle = "rgba(255,255,255,.9)";
+        context.fillRect(0, y - 2, width, 5);
+        context.fillStyle = "#1c1922";
+        context.fillRect(0, y - 1, width, 2);
+      }
     }
 
     function stripMetrics() {
@@ -441,10 +573,7 @@
 
     function scrollToFraction(fraction, smooth) {
       var metrics = stripMetrics();
-      window.scrollTo({
-        top: metrics.top + fraction * metrics.height - window.innerHeight / 2,
-        behavior: smooth ? "smooth" : "auto"
-      });
+      scrollToY(metrics.top + fraction * metrics.height - window.innerHeight / 2, smooth);
     }
 
     function fractionAt(clientY) {
