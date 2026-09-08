@@ -60,7 +60,35 @@ jobs:
             exit 0
           fi
 
-          changed="$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")"
+          # 三点比較（BASE...HEAD）で、分岐したところからの変更だけを見る。
+          # 二点比較（BASE HEAD）だと、baseにあってheadに無いファイルまで
+          # 「変更された」と出る。ブランチがbaseより遅れていると、自分が
+          # 触っていないファイルが並び、省略できるはずのPRで検証が走る
+          # （2026-09-08、PR #249で実際に起きた）。
+          # なお、遅れていてもマージで相手の変更は消えない。実害は判定と、
+          # 古い土台のまま検証していること（下の警告）の2点。
+          merge_base="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+          changed="$(git diff --name-only "$merge_base" "$HEAD_SHA")"
+
+          # baseに追いついていないPRは、baseの最新と合わせた状態を検証していない。
+          # 落とすとbaseが動くたび全PRが赤くなり、赤が常態化して意味を失うため、
+          # 警告にとどめてマージ前の判断材料にする。
+          behind="$(git rev-list --count "$HEAD_SHA".."$BASE_SHA")"
+          if [ "$behind" -gt 0 ]; then
+            echo "::warning title=baseに${behind}件遅れています::" \
+              "このPRは最新のbaseと組み合わせた状態を検証していません。" \
+              "マージ前にbaseを取り込むと、その状態でCIが回ります。"
+            {
+              echo "### baseに${behind}件遅れています"
+              echo ""
+              echo "このPRは最新のbaseと組み合わせた状態を検証していません。"
+              echo "マージ前にbaseを取り込むと、その状態でCIが回ります。"
+              echo ""
+              echo '```'
+              git log --oneline "$HEAD_SHA".."$BASE_SHA" | sed 's/^/  /'
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
 
           if [ -z "$changed" ]; then
             echo "変更ファイルがないため、スカッド事前検証を実行します。"
