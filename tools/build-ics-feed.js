@@ -26,7 +26,8 @@ const DEFAULT_EVENTS = path.join(repoRoot, 'public', 'data', 'calendar-events.js
 const DEFAULT_MATCHES = path.join(repoRoot, 'public', 'data', 'matches.json');
 const DEFAULT_OUTPUT = path.join(repoRoot, 'public', 'timeline.ics');
 
-const CALENDAR_NAME = 'SANGA SUPPORTER TIMELINE';
+// 名前だけで公式の配信と見分けが付くようにする。カレンダーの一覧には常時出る。
+const CALENDAR_NAME = 'SANGA SUPPORTER TIMELINE（非公式）';
 const CALENDAR_DESC = '京都サンガF.C. のチケット販売日程と試合日程（非公式）。出典は公式サイト。';
 const PROD_ID = '-//SANGA TOOLBOX//SUPPORTER TIMELINE//JA';
 
@@ -115,7 +116,7 @@ function parseDate(value) {
 }
 
 /** 予定を、組み立て（assets/ics.js）が受け取る形に直す。 */
-function specOf(event, matches) {
+function specOf(event, matches, disclaimer) {
   const start = parseDate(event.starts_at);
   if (!start) return null;
 
@@ -128,6 +129,8 @@ function specOf(event, matches) {
   }
   if (label) description.push(label);
   if (event.source_url) description.push(event.source_url);
+  // 断り書きは最後。読み飛ばされても、題と試合日と出典は先に目に入る。
+  if (disclaimer) description.push(disclaimer);
 
   return {
     uid: event.id,
@@ -322,11 +325,11 @@ async function main(argv) {
 
   // 組み立てはブラウザと共通。ESモジュールなので import() で読む。
   const icsPath = path.join(repoRoot, 'public', 'assets', 'ics.js');
-  const { buildCalendar, UID_DOMAIN } = await import(pathToFileURL(icsPath).href);
+  const { buildCalendar, UID_DOMAIN, DISCLAIMER } = await import(pathToFileURL(icsPath).href);
 
   const all = data.events || [];
   const target = all.filter(isDated).filter(isFeedTarget);
-  const live = target.map((event) => specOf(event, matches)).filter(Boolean);
+  const live = target.map((event) => specOf(event, matches, DISCLAIMER)).filter(Boolean);
 
   const stamp = stampOf(target, data.meta);
 
