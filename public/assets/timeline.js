@@ -1672,14 +1672,9 @@
     sentinel.style.height = "1px";
     head.parentNode.insertBefore(sentinel, head);
 
-    // 見出しは共通トップバーの下（--topbar-h）で止まる。監視の上端も同じだけ下げないと、
-    // 貼り付いてから帯に縮むまでがバーの高さぶん遅れる。
-    var stickyTop = parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")
-    ) || 0;
     new IntersectionObserver(function (entries) {
       head.classList.toggle("is-stuck", !entries[0].isIntersecting);
-    }, { threshold: 0, rootMargin: -stickyTop + "px 0px 0px 0px" }).observe(sentinel);
+    }, { threshold: 0 }).observe(sentinel);
   }
 
   /**

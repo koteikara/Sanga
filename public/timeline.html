@@ -6,8 +6,8 @@
 <title>SANGA SUPPORTER TIMELINE｜京都サンガF.C. 非公式ファンツール</title>
 <meta name="description" content="京都サンガF.C.のチケット販売開始・応募締切・試合当日の予定を、ひとつの時系列にまとめる非公式ファンツールです。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
-<link rel="stylesheet" href="assets/timeline.css?v=19684b28">
-<link rel="stylesheet" href="assets/topbar.css?v=5c4c17a3">
+<link rel="stylesheet" href="assets/timeline.css?v=f176203f">
+<link rel="stylesheet" href="assets/topbar.css?v=2875c312">
 </head>
 <body>
 <!-- サイト共通トップバー。アイコンは作成者のXへ、名前は入口ページへ -->
@@ -256,6 +256,11 @@
     </p>
     <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を追加する</button>
     <p id="ics-status" class="my-status" role="status"></p>
+    <p class="section-note">
+      <strong>販売日程が変わっても自動で直る形</strong>で登録することもできます。こちらは
+      自分の予定に混ざらず、やめるのもまとめてできます。
+      <a href="timeline-calendar.html">カレンダーに登録する（購読）の案内</a>
+    </p>
   </div>
 </dialog>
 
@@ -345,7 +350,7 @@
   </div>
 </dialog>
 
-<script src="assets/timeline.js?v=47e4d069"></script>
+<script src="assets/timeline.js?v=385a64e8"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。
