@@ -935,6 +935,10 @@ button{
 .picker-item{
   display:flex;align-items:center;gap:10px;width:100%;text-align:left;
   background:#2b1238;border:1px solid #4a1e63;border-radius:10px;padding:8px 10px;min-height:48px;color:#fff;
+  /* 親（.picker-list）が縦のflexなので、既定では行が縮んで min-height まで
+     潰れ、中身がはみ出す。行数が増える選手（期限付き移籍の注記つき）で
+     見えるようになった。中身の高さを保たせる。 */
+  flex-shrink:0;
 }
 .picker-item:hover{background:#38195055}
 .picker-item .num{font-weight:900;color:var(--gold-300);width:2.4em;text-align:right}
