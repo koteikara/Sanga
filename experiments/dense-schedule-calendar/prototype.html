@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>過密日程カレンダー（検証用プロトタイプ）</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="2026/27シーズンの試合間隔を1本の縦リストで確認する検証用プロトタイプです。">
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+<main class="screen">
+
+<header class="head">
+<p class="eyebrow">検証用プロトタイプ</p>
+<h1>過密日程カレンダー</h1>
+<p class="lead">2026/27シーズンの全日を縦1本に並べ、前後の試合の間隔（中n日）で色分けします。リーグ戦とカップ戦・ACLが重なる時期の詰まり具合を、スクロールしながら確かめるためのものです。</p>
+</header>
+
+<nav class="monthnav" aria-labelledby="monthnav-title">
+<h2 class="sr-only" id="monthnav-title">月へ移動</h2>
+<ul class="monthnav-list" id="monthNav"></ul>
+</nav>
+
+<section class="legend" aria-labelledby="legend-title">
+<h2 class="sr-only" id="legend-title">凡例</h2>
+<ul class="legend-row">
+<li><span class="sw sw-danger"></span>中2日以下</li>
+<li><span class="sw sw-caution"></span>中3日</li>
+<li><span class="sw sw-mild"></span>中4日</li>
+<li><span class="sw sw-safe"></span>中5日以上</li>
+<li><span class="sw sw-neutral"></span>試合なし</li>
+</ul>
+<ul class="legend-row">
+<li><span class="sw sw-j1"></span>J1</li>
+<li><span class="sw sw-acl"></span>ACL</li>
+<li><span class="sw sw-emp"></span>天皇杯</li>
+<li><span class="sw sw-lev"></span>ルヴァン</li>
+<li><span class="sw sw-tentative"></span>未確定・候補日</li>
+</ul>
+</section>
+
+<div class="stage">
+<div class="strip" id="strip">
+<p class="status" id="status" role="status">日程を読み込んでいます…</p>
+</div>
+<div class="minimap" id="minimap" aria-hidden="true" hidden>
+<canvas class="minimap-canvas" id="minimapCanvas"></canvas>
+<div class="minimap-view" id="minimapView"></div>
+</div>
+</div>
+
+<footer class="foot">
+<p class="foot-note"><b>中n日</b>は「次の試合日 − 前の試合日 − 1」です。日付が未確定の試合は候補日すべてに枠だけの箱を置き、その前後の間隔には斜線を掛けています。斜線の区間は確定した間隔ではありません。</p>
+<p class="foot-note">日程は <code>public/data/matches.json</code>、祝日は内閣府「国民の祝日について」（<a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noopener noreferrer">令和8年・令和9年</a>、2026-09-08確認）を使っています。</p>
+<p class="foot-note foot-disclaimer">検証用の非公開ページです。本番の日程確認には <b>年間スケジュール</b> を使ってください。掲載内容の正確性・完全性・最新性は保証しません。</p>
+</footer>
+
+</main>
+<script src="prototype.js"></script>
+</body>
+</html>
