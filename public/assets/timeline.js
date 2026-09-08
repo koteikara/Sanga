@@ -20,7 +20,9 @@
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
   var BENEFIT_KEY = "sanga-timeline-benefit-tickets-v1";
-  var TOUR_KEY = "sanga-timeline-tour-v1";
+  // カレンダーの説明を足したので v2 にした。読み終えた人にももう一度出す。
+  // ここを上げないと、既に読んだ人には新しい段が届かない。
+  var TOUR_KEY = "sanga-timeline-tour-v2";
   var BENEFIT_URL = "data/benefit-tickets.json?v=a9a2e076";
 
   var WEEK = ["日", "月", "火", "水", "木", "金", "土"];

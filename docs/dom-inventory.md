@@ -265,4 +265,4 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `sanga-timeline-benefit-tickets-v1`
 - `sanga-timeline-personal-events-v1`
 - `sanga-timeline-profile-v1`
-- `sanga-timeline-tour-v1`
+- `sanga-timeline-tour-v2`
