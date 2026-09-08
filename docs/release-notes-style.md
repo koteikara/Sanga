@@ -174,8 +174,12 @@ sans-serifへ落ちる。**画像は問題なく生成されるため、見比�
 - 撮影の直前に、実際の見出し文字列で適用を検証し、外れていたら失敗させる。
 
 ```js
-const ok = await page.evaluate(() => {
-  const t = document.querySelector(".bar .t").textContent;
+const ok = await page.evaluate(async () => {
+  const t = [...document.querySelectorAll(".bar .t,.bar .d")].map((e) => e.textContent).join("");
+  // サブセットは「使われて初めて」読み込まれる。check() の前に load() で
+  // 読み込ませないと、当たっているのに false になる（2026-09-08に遭遇）。
+  await document.fonts.load('800 26px "M PLUS 1p"', t);
+  await document.fonts.ready;
   return document.fonts.check('800 26px "M PLUS 1p"', t);
 });
 if (!ok) throw new Error("M PLUS 1p が適用されていません");
