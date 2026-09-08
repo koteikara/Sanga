@@ -142,7 +142,9 @@ body {
    背景が動いているため、固定中だけ地の色を敷いて文字を読めるようにする。 */
 .head {
   position: sticky;
-  top: 0;
+  /* 共通トップバー（assets/topbar.css）の下に貼り付く。
+     topbar.css を読まない場合に備えて既定値は0にしておく。 */
+  top: var(--topbar-h, 0px);
   z-index: 15;
   padding: 24px 16px 18px;
   transition: padding 180ms ease, background-color 180ms ease;

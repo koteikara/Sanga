@@ -7,14 +7,51 @@
 <meta name="robots" content="noindex">
 <meta name="description" content="2026/27シーズンの試合間隔を1本の縦リストで確認する検証用プロトタイプです。">
 <link rel="stylesheet" href="prototype.css">
+<!-- サイト共通トップバー。GitHub Pagesでは public/ が直下へ展開されるので ../../assets/ で届く -->
+<link rel="stylesheet" href="../../assets/topbar.css">
+<script>
+  // 描画が始まる前に決める。入口ページと同じ先出し。
+  (function () {
+    var mode = "auto";
+    try { mode = localStorage.getItem("site-index:motion") || "auto"; } catch (e) {}
+    var reduced = mode === "off" ||
+      (mode !== "on" && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    document.documentElement.dataset.motion = reduced ? "off" : "on";
+  })();
+</script>
 </head>
 <body>
+
+<a class="skip-link" href="#strip">本文へ移動</a>
+
+<!-- 背景。入口ページ（public/assets/）の実装をそのまま借りる。
+     WebGLが使えない場合はCSSのぼかしがそのまま残る（進行的強化）。 -->
+<div class="bg" aria-hidden="true">
+  <span class="bg-blob bg-blob-1"></span>
+  <span class="bg-blob bg-blob-2"></span>
+  <span class="bg-blob bg-blob-3"></span>
+  <canvas id="nebula" class="bg-nebula"></canvas>
+</div>
+
+<header class="topbar">
+  <a class="topbar-mark" href="../../index.html" aria-label="SANGA TOOLBOX トップへ">
+    <!-- GitHub Pagesでは public/ が直下へ展開されるので ../../assets/ で届く。
+         手元でリポジトリ直下を配信している場合だけ public/ 側へ読み替える。 -->
+    <img src="../../assets/avatar.webp" alt="" width="128" height="128" decoding="async"
+         onerror="this.onerror=null;this.src='../../public/assets/avatar.webp'">
+  </a>
+  <nav class="topbar-nav" aria-label="サイト内">
+    <a href="../../index.html#works">TOOLS</a>
+    <a href="../../index.html#about">ABOUT</a>
+  </nav>
+</header>
+
 <main class="screen">
 
 <header class="head">
-<p class="eyebrow">検証用プロトタイプ</p>
+<p class="eyebrow">KYOTO SANGA F.C. 2026/27</p>
 <h1>過密日程カレンダー</h1>
-<p class="lead">2026/27シーズンの全日を縦1本に並べ、前後の試合の間隔（中n日）で色分けします。リーグ戦とカップ戦・ACLが重なる時期の詰まり具合を、スクロールしながら確かめるためのものです。</p>
+<p class="lead">試合と試合のあいだが何日空くかを、色で見るカレンダーです。シーズンの全日を1本に並べているので、リーグ戦とカップ戦・ACLが重なって詰まる時期がそのまま帯の色に出ます。</p>
 </header>
 
 <nav class="monthnav" aria-labelledby="monthnav-title">
@@ -24,25 +61,36 @@
 
 <section class="legend" aria-labelledby="legend-title">
 <h2 class="sr-only" id="legend-title">凡例</h2>
+<div class="legend-group">
+<h3 class="legend-label">間隔</h3>
 <ul class="legend-row">
 <li><span class="sw sw-danger"></span>中2日以下</li>
 <li><span class="sw sw-caution"></span>中3日</li>
 <li><span class="sw sw-mild"></span>中4日</li>
-<li><span class="sw sw-safe"></span>中5〜13日</li>
-<li><span class="sw sw-neutral"></span>中14日以上・シーズン外</li>
-<li><span class="sw sw-provisional"></span>未確定を含む区間</li>
+<li><span class="sw sw-safe"></span>中5日以上</li>
+<li><span class="sw sw-neutral"></span>中断・オフ</li>
 </ul>
+</div>
+<div class="legend-group">
+<h3 class="legend-label">大会</h3>
 <ul class="legend-row">
 <li><span class="sw sw-j1"></span>J1</li>
 <li><span class="sw sw-acl"></span>ACL</li>
 <li><span class="sw sw-emp"></span>天皇杯</li>
 <li><span class="sw sw-lev"></span>ルヴァン</li>
-<li><span class="sw sw-tentative"></span>候補日</li>
 </ul>
+</div>
+<div class="legend-group">
+<h3 class="legend-label">未確定</h3>
+<ul class="legend-row">
+<li><span class="sw sw-tentative"></span>候補日</li>
+<li><span class="sw sw-provisional"></span>間隔がずれる可能性</li>
+</ul>
+</div>
 </section>
 
 <div class="stage">
-<div class="strip" id="strip">
+<div class="strip" id="strip" tabindex="-1">
 <p class="status" id="status" role="status">日程を読み込んでいます…</p>
 </div>
 <div class="minimap" id="minimap" aria-hidden="true" hidden>
@@ -52,12 +100,30 @@
 </div>
 
 <footer class="foot">
-<p class="foot-note"><b>中n日</b>は「次の試合日 − 前の試合日 − 1」です。日付が未確定の試合は候補日すべてに枠だけの箱を置き、その前後の間隔には斜線を掛けています。斜線の区間は確定した間隔ではありません。</p>
+<p class="foot-note"><b>中n日</b>は「次の試合日 − 前の試合日 − 1」です。中14日以上あく期間は中断・オフとして中立色にしています。</p>
+<p class="foot-note">日付が決まっていない試合は、候補日すべてに点線の枠を置いています。その前後の間隔は開催日によってずれるため、斜線を掛けて確定の間隔と区別しています。</p>
 <p class="foot-note">日程は <code>public/data/matches.json</code>、祝日は内閣府「国民の祝日について」（<a href="https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html" target="_blank" rel="noopener noreferrer">令和8年・令和9年</a>、2026-09-08確認）を使っています。</p>
 <p class="foot-note foot-disclaimer">検証用の非公開ページです。本番の日程確認には <b>年間スケジュール</b> を使ってください。掲載内容の正確性・完全性・最新性は保証しません。</p>
 </footer>
 
 </main>
 <script src="prototype.js"></script>
+<script type="module">
+  // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
+  // ?nebula=off でCSSのぼかしと見比べられる（入口ページ・タイムラインと同じ）。
+  if (new URLSearchParams(location.search).get("nebula") !== "off") {
+    try {
+      const { startNebula } = await import("../../assets/index-nebula.js")
+        .catch(() => import("../../public/assets/index-nebula.js"));
+      const canvas = document.querySelector("#nebula");
+      // 先にクラスを付けてcanvasに大きさを与える。0×0では描けない
+      document.body.classList.add("has-nebula");
+      startNebula(canvas);
+    } catch (error) {
+      document.body.classList.remove("has-nebula");
+      console.info("[dense-schedule-calendar] ネビュラを使えないため、CSSの背景に戻します:", error.message);
+    }
+  }
+</script>
 </body>
 </html>

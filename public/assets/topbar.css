@@ -1,0 +1,116 @@
+/* サイト共通トップバー
+ *
+ * 入口ページ（`assets/index.css` の .topbar）と同じ見た目のバーを、入口ページ以外の
+ * 公開ページに置く。左のアイコンと TOOLS / ABOUT から入口ページへ戻れるようにする。
+ *
+ * 各ページのCSSより後に読み込む。入口ページは自前の .topbar を持つため読み込まない。
+ *
+ * 設計上の判断
+ *  - position: fixed にする。公開ページの body は
+ *    「flexで中央寄せ（squad.css・style.css）」「margin あり（sanga_slides.html）」と
+ *    まちまちで、sticky では幅と位置が揃わない。
+ *  - 高さぶんは body の padding-top で空ける。空の要素を1つ置く手も試したが、
+ *    年間スケジュールの body は横並びの flex で、その要素が本文の隣に並んで
+ *    ページを右へ押し出した。ページ側が自前の上余白を持つ場合は --topbar-gap で足す。
+ *  - 地は不透明にする。入口ページは下端を透明にして背景を透かすが、こちらは白い面や
+ *    画像が下を流れるページがあり、白い文字が読めなくなる。
+ */
+
+:root{
+  --topbar-h:65px;   /* padding 10px×2 + タップ領域 44px + 下の罫線 1px */
+  --topbar-tap:44px;
+}
+
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  box-sizing:border-box;
+  padding:10px clamp(14px,4vw,28px);
+  padding-left:max(clamp(14px,4vw,28px), env(safe-area-inset-left));
+  padding-right:max(clamp(14px,4vw,28px), env(safe-area-inset-right));
+  background:rgba(24,6,26,.94);
+  border-bottom:1px solid rgba(255,255,255,.14);
+  font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;
+}
+
+/* バーは fixed なので、そのぶんの場所をここで空ける。
+   ページ側が自前の上余白を持つ場合は、そのページのCSSで --topbar-gap を宣言する。 */
+body{
+  padding-top:calc(var(--topbar-h) + var(--topbar-gap, 0px));
+}
+
+.topbar-mark{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  /* 絵は34pxだが、リンクなので当たり判定は44px四方にする */
+  min-height:var(--topbar-tap);
+  width:var(--topbar-tap);
+  margin-left:-5px;
+  flex:none;
+}
+
+/* 元画像は白地の正方形。丸く抜いて、暗い地から浮くように縁を足す（入口ページと同じ）。
+   height:auto を落とすと height 属性の128pxが残り、バーが148pxまで伸びる。 */
+.topbar-mark img{
+  display:block;
+  width:34px;
+  height:auto;
+  border-radius:50%;
+  box-shadow:0 0 0 1px rgba(255,255,255,.28);
+}
+
+.topbar-nav{
+  display:flex;
+  gap:clamp(14px,4vw,30px);
+}
+
+.topbar-nav a{
+  /* 入口ページに寄せて、字間を広くとった小さな欧文にする */
+  font-size:.68rem;
+  letter-spacing:.22em;
+  font-weight:600;
+  color:rgba(255,255,255,.72);
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  min-height:var(--topbar-tap);
+  padding:0 2px;
+  transition:color .25s ease;
+}
+
+.topbar-nav a:hover,
+.topbar-nav a:focus-visible{color:#fff}
+
+.topbar a:focus-visible{outline:2px solid #6fd6e8;outline-offset:2px}
+
+/* 320px幅ではナビが収まらない。字間と間隔を詰めて収める（入口ページと同じ） */
+@media (max-width:360px){
+  .topbar{padding-left:6px;padding-right:8px}
+  .topbar-nav{gap:8px}
+  .topbar-nav a{letter-spacing:.08em}
+}
+
+/* ページ側のダイアログや専用画面が開いている間はバーを隠す。
+ *
+ * バーの z-index は 100 で、年間スケジュールの暗幕（20）とパネル（21）より前に出る。
+ * 前後を入れ替えると、今度は通常表示でカードがバーの上に乗るページが出るため、
+ * 重ね順ではなく開いている間だけ隠すことで解く。
+ *
+ * どのページのどれを見ているかは次のとおり。
+ *  - .phone.is-screenshot-mode : 年間スケジュールの画像生成画面
+ *  - .settings-panel / .help-panel : 年間スケジュールの設定・使い方（hidden属性で開閉する）
+ *  - body.picker-open : 予想スカッドの選手ピッカー（クラスなので :has() が無くても効く）
+ * SUPPORTER TIMELINE のシートは <dialog> で、top layer に出るため元からバーより前にある。
+ */
+body:has(.phone.is-screenshot-mode) .topbar,
+body:has(.settings-panel:not([hidden])) .topbar,
+body:has(.help-panel:not([hidden])) .topbar{display:none}
+body.picker-open .topbar{display:none}

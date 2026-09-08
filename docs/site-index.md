@@ -1,14 +1,18 @@
 # 公開サイト入口ページの設計
 
-確認基準日: 2026-08-26
+確認基準日: 2026-09-08
 
-状態: 設計。未実装です。実装前にプロトタイプで見た目・操作感を確認します（`docs/ui-prototype-workflow.md`）。
+状態: 実装済み。`public/index.html` が入口ページとして動いています（`assets/index.css`、`index-page.js`、
+`index-nebula.js`、`index-motion.js`、`public/data/tools.json` 5件）。
+2026-09-08に、入口ページ以外の公開ページへ共通トップバーを足しました（「公開ページ共通のトップバー」）。
+以降の見た目変更は、これまでどおりプロトタイプで確認してから入れます（`docs/ui-prototype-workflow.md`）。
 
 ## 索引
 
 | 知りたいこと | 節 |
 | --- | --- |
 | 何のための設計か | 目的と現状の問題 |
+| 各ページから入口へ戻る導線 | 公開ページ共通のトップバー |
 | 何を載せるか | 情報構造 |
 | データの形 | `tools.json` のスキーマ |
 | どう描画するか | 描画方式とJavaScript無効時の扱い |
@@ -35,9 +39,71 @@
 ## 位置づけ
 
 * `public/index.html` は公開サイトの入口として、各ツールへの導線を提供する。
+* 入口ページ以外の公開ページは、共通トップバーで入口へ戻れるようにする（2026-09-08追加）。
+  ツール同士は直接リンクせず、行き来は入口ページを経由する。
 * GitHub Pagesは引き続き本番反映前の確認環境として使う。入口ページもそこで確認する。
 * 検証用プロトタイプへは導線を作らない（`docs/roadmap.md` の開発方針）。
 * 非公式のファン作成物であることを入口で明示する。既存ページと同じ趣旨の表記を置く。
+
+## 公開ページ共通のトップバー
+
+2026-09-08時点。正本は `public/assets/topbar.css` です。
+
+直URLで共有されたページに来た人が入口へ戻れないままだったため、入口ページ以外の公開ページに
+同じ見た目のバーを置きました。中身は左の作り手アイコンと `TOOLS` / `ABOUT` の2つで、
+いずれも `index.html` へ向きます。
+
+| ページ | 読み込む | アイコンとリンクの向き先 |
+| --- | --- | --- |
+| `sanga202627season.html` | `assets/topbar.css` | `index.html` |
+| `squad.html` | `assets/topbar.css` | `index.html` |
+| `timeline.html` | `assets/topbar.css` | `index.html` |
+| `sanga2025season.html` | `assets/topbar.css` | `index.html` |
+| `sanga_slides.html` | `assets/topbar.css` | `index.html` |
+| `TradePost/index-v1.html` | `../assets/topbar.css` | `../index.html` |
+
+`index.html` は読み込みません。入口ページのバーは `assets/index.css` に自前で持っており、
+アイコンが作成者のXへ向く点、ページ内アンカーを並べる点、背景の動きを止めるボタンを持つ点が違います。
+
+実装上の判断は3つです。
+
+1. **`position: fixed` にする。** 公開ページの `body` は「横並びflexで中央寄せ」（年間スケジュール）、
+   「縦並びflexで中央寄せ」（予想スカッド・2025シーズン日程）、「`margin: 20px`」（スライド）とまちまちで、
+   `position: sticky` では幅と位置が揃いませんでした。
+2. **高さぶんは `body` の `padding-top` で空ける。** 空の要素を1つ置く方法も試しましたが、
+   年間スケジュールの `body` は横並びのflexで、その要素が本文の隣に並んでページを右へ169px押し出しました。
+   ページ側が自前の上余白を持つ場合は、そのページのCSSで `--topbar-gap` を宣言します
+   （現在は `squad.css` の `16px` だけ）。
+3. **地を不透明にする。** 入口ページのバーは下端を透明にして背景を透かしますが、
+   共通バーの下には白い紙の面（SUPPORTER TIMELINE、過密日程カレンダー）や
+   白い表（スライド）が流れるため、白い文字が読めなくなります。
+
+### ダイアログとの重なり
+
+バーの `z-index` は100で、年間スケジュールの暗幕（20）とパネル（21）より前に出ます。
+前後を入れ替えると通常表示でカードがバーの上に乗るページが出るため、重ね順ではなく
+「開いている間だけ隠す」で解いています。
+
+| 隠す条件 | どのページの何か |
+| --- | --- |
+| `body:has(.phone.is-screenshot-mode)` | 年間スケジュールの画像生成画面 |
+| `body:has(.settings-panel:not([hidden]))` | 年間スケジュールの設定パネル |
+| `body:has(.help-panel:not([hidden]))` | 年間スケジュールの使い方パネル |
+| `body.picker-open` | 予想スカッドの選手ピッカー |
+
+`body.picker-open` はクラスなので `:has()` が無いブラウザでも効きます。
+`:has()` の3つは、無い場合にバーが残るだけで、パネルは元からバーより下（上端101px）に出るため
+隠れません。生成画像の対象も `[data-share-capture-target]` の中だけなので、画像にバーは入りません。
+
+SUPPORTER TIMELINEのシートは `<dialog>` で top layer に出るため、元からバーより前にあります。
+
+### 各ページ側で必要になった調整
+
+| ファイル | 調整 |
+| --- | --- |
+| `assets/squad.css` | `--topbar-gap: 16px`。body が自前で持っていた上余白をバーのぶんに足す |
+| `assets/timeline.css` | 自前の貼り付き見出し `.head` を `top: var(--topbar-h, 0px)` にして、バーの下で止める |
+| `assets/timeline.js` | 上の見出しが帯に縮む判定（IntersectionObserver）の上端を、同じだけ下げる。下げないと貼り付いてから縮むまでがバーの高さぶん遅れる |
 
 ## 情報構造
 
