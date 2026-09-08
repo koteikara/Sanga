@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-26",
+  "updatedAt": "2026-09-08",
   "tools": [
     {
       "id": "season-schedule",
@@ -17,6 +17,15 @@
       "href": "squad.html",
       "thumb": "assets/thumbs/squad-builder.webp?v=06d75f8d",
       "accent": "#14532d",
+      "section": "live"
+    },
+    {
+      "id": "dense-calendar",
+      "name": "過密日程カレンダー",
+      "description": "2026/27シーズンの試合間隔を色で見て、日程の詰まり具合を確かめられます。",
+      "href": "calendar.html",
+      "thumb": "assets/thumbs/dense-calendar.webp?v=13d0547a",
+      "accent": "#c8402e",
       "section": "live"
     },
     {

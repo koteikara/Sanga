@@ -1,0 +1,551 @@
+/* 過密日程カレンダー
+ *
+ * 見た目の下敷き
+ *  - 地: 入口ページ `assets/index.css`（.bg / .bg-blob / #nebula）
+ *  - トップバー: `assets/topbar.css`（公開ページと共通）
+ *
+ * 仕様は docs/dense-schedule-calendar.md を正とする。
+ *  - 面: SUPPORTER TIMELINE `public/assets/timeline.css` の紙（--paper）とインク
+ *  - 大会色: 既存の大会リボン（.competition-*）を土台に、白文字で 4.5:1 を満たす濃さへ寄せた
+ *
+ * 制約
+ *  - 追加の依存なし。画像はトップバーの作り手アイコンだけ
+ *  - 色だけに頼らない。間隔は「中n日」の文字でも出す
+ *  - prefers-reduced-motion: reduce と data-motion="off" では動きを止める
+ */
+
+:root{
+  /* 地と面（入口ページ・タイムラインと同じ系統） */
+  --ground:#2a0a2b;          /* 入口ページ --purple-deep */
+  --paper:#fbfafc;
+  --ink:#1c1922;
+  --muted:#6a6577;
+  --line:#ded9e6;
+  --ground-ink:#ffffff;
+  --ground-ink-dim:rgba(255,255,255,.86);
+  --ground-line:rgba(255,255,255,.28);
+  --cyan-soft:#6fd6e8;       /* 入口ページ --cyan-soft。リンクとフォーカス */
+
+  /* 大会。既存リボンの色を、白文字で 4.5:1 以上になる濃さへ寄せた */
+  --j1:#7b0064;   /* 入口ページ --purple-base。白文字 10.4:1 */
+  --acl:#116b66;  /* リボン #1565c0 ではなくティール。白文字 6.3:1 */
+  --emp:#8a6212;  /* リボン #b8860b を濃く。白文字 5.5:1 */
+  --lev:#b2165b;  /* リボンと同色。白文字 6.7:1 */
+
+  /* 間隔の危険度 */
+  --danger:#c8402e;  /* 中2日以下。白文字 5.0:1 */
+  --caution:#e08a2e; /* 中3日。黒文字 6.5:1 */
+  --mild:#e3b23c;    /* 中4日。黒文字 8.8:1 */
+  --safe:#7fa687;    /* 中5〜13日。黒文字 6.4:1 */
+  --neutral:#edeae3; /* 中14日以上の中断・オフ、シーズン前後 */
+
+  /* 曜日 */
+  --sat:#2f6fb0;
+  --hol:#c8402e;
+
+  --tap:44px;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+html{
+  scroll-behavior:smooth;
+  /* 月見出しは画面上端に貼り付くので、月ジャンプの着地点も少しだけ下げる */
+  scroll-padding-top:4px;
+}
+
+body{
+  margin:0;
+  min-height:100svh;
+  background:var(--ground);
+  color:var(--ground-ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+.skip-link{
+  position:absolute;
+  left:-9999px;
+  top:8px;
+  padding:8px 14px;
+  border-radius:8px;
+  background:var(--ground-ink);
+  color:var(--ground);
+  z-index:10;
+}
+.skip-link:focus{left:12px}
+
+/* =========================================================
+   背景（入口ページから借りる）
+   ========================================================= */
+
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.bg-blob{position:absolute;display:block;border-radius:50%;opacity:.55;will-change:transform}
+.bg-blob-1{
+  width:70vmax;height:70vmax;top:-22vmax;left:-18vmax;
+  background:radial-gradient(circle, rgba(168,36,140,.55) 0%, rgba(168,36,140,0) 68%);
+  animation:drift-a 34s ease-in-out infinite;
+}
+.bg-blob-2{
+  width:58vmax;height:58vmax;bottom:-20vmax;right:-14vmax;
+  background:radial-gradient(circle, rgba(255,143,208,.34) 0%, rgba(255,143,208,0) 68%);
+  animation:drift-b 43s ease-in-out infinite;
+}
+.bg-blob-3{
+  width:44vmax;height:44vmax;top:38%;left:52%;
+  background:radial-gradient(circle, rgba(111,214,232,.20) 0%, rgba(111,214,232,0) 70%);
+  animation:drift-c 51s ease-in-out infinite;
+}
+.bg-nebula{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:none;opacity:0;transition:opacity 900ms ease-out;
+}
+.has-nebula .bg-nebula{display:block;opacity:1}
+.has-nebula .bg-blob{opacity:0;transition:opacity 900ms ease-out}
+
+@keyframes drift-a{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(6vmax,4vmax,0) scale(1.12)}
+}
+@keyframes drift-b{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(-5vmax,-3vmax,0) scale(1.09)}
+}
+@keyframes drift-c{
+  0%,100%{transform:translate3d(0,0,0) scale(1)}
+  50%{transform:translate3d(3vmax,-4vmax,0) scale(1.16)}
+}
+@media (prefers-reduced-motion:reduce){
+  .bg-blob{animation:none}
+  html{scroll-behavior:auto}
+}
+:root[data-motion="off"] .bg-blob{animation:none}
+
+/* トップバーの見た目は共通の `assets/topbar.css` を読む。
+   固定しないので、月見出しとミニマップは画面上端を基準にする。 */
+
+a:focus-visible,
+button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
+
+/* =========================================================
+   ページ本体
+   ========================================================= */
+
+.screen{
+  width:min(100vw,430px);
+  margin:0 auto;
+  padding:10px 12px calc(16px + env(safe-area-inset-bottom));
+}
+
+/* 説明と凡例は「見かた」へ追い出したので、題は1行に収める */
+.page-title{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  margin:0 0 8px;
+  padding:0 2px;
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.02em;
+  line-height:1.3;
+}
+.page-season{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  color:var(--ground-ink-dim);
+}
+
+/* =========================================================
+   「使い方」と月ジャンプ
+   ========================================================= */
+
+/* 使い方は囲みの外、一番左に置く */
+.controls{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:0 0 8px;
+}
+
+.guide-button{
+  flex:none;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-height:42px;
+  padding:0 12px;
+  border:1px solid var(--ground-line);
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:var(--ground-ink);
+  font-family:inherit;
+  font-size:11.5px;
+  font-weight:800;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.guide-button:hover{background:rgba(255,255,255,.18)}
+.guide-button-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:1px solid currentColor;
+  font-size:10px;
+  line-height:1;
+}
+
+/* 月ジャンプだけを四角い囲みに収める */
+.toolbar{
+  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  padding:5px;
+  border:1px solid var(--ground-line);
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+}
+
+.toolbar-months{
+  flex:1;
+  min-width:0;
+  display:flex;
+  gap:5px;
+  margin:0;
+  padding:0;
+  list-style:none;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.toolbar-months::-webkit-scrollbar{display:none}
+
+.toolbar-months a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:38px;
+  min-height:32px;
+  padding:0 9px;
+  border-radius:8px;
+  background:rgba(255,255,255,.10);
+  color:var(--ground-ink);
+  font-size:12px;
+  font-weight:800;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.toolbar-months a:hover{background:rgba(255,255,255,.22)}
+
+/* =========================================================
+   リストとミニマップ
+   ========================================================= */
+
+.stage{display:flex;gap:6px;align-items:flex-start}
+
+.strip{
+  flex:1;
+  min-width:0;
+  padding:0 6px 6px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+}
+.strip:focus{outline:none}
+
+.status{
+  margin:0;
+  padding:18px 6px;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
+.status[hidden]{display:none}
+
+.minimap{
+  position:sticky;
+  top:8px;
+  flex:none;
+  width:26px;
+  height:calc(100svh - 16px);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--paper);
+  cursor:pointer;
+  touch-action:none;
+}
+.minimap-canvas{display:block;width:100%;height:100%}
+.minimap-view{
+  position:absolute;
+  left:0;
+  right:0;
+  min-height:12px;
+  border:2px solid var(--ink);
+  border-radius:4px;
+  background:rgba(255,255,255,.34);
+  pointer-events:none;
+}
+
+/* =========================================================
+   月
+   ========================================================= */
+
+.month{margin:0}
+.month-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  margin:0;
+  padding:8px 4px 5px;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  font-weight:900;
+  line-height:1.2;
+  color:var(--ink);
+}
+.month-year{font-size:10px;font-weight:800;color:var(--muted)}
+.month-sum{
+  margin-left:auto;
+  font-size:10px;
+  font-weight:700;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.month-sum b{color:var(--danger)}
+
+.days{margin:0;padding:0;list-style:none}
+
+/* =========================================================
+   日付ボックス
+   ========================================================= */
+
+.day{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  height:22px;
+  margin:2px 0;
+  padding:0 8px;
+  border-radius:6px;
+  font-size:10.5px;
+  color:var(--ink);
+  background:var(--neutral);
+}
+.d-num{flex:none;width:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.d-fill{flex:1}
+.gap-label{
+  flex:none;
+  font-size:9.5px;
+  font-weight:800;
+  letter-spacing:.02em;
+  opacity:.9;
+}
+
+.band-danger{background:var(--danger)}
+.band-caution{background:var(--caution)}
+.band-mild{background:var(--mild)}
+.band-safe{background:var(--safe)}
+.band-break{background:var(--neutral)}
+.band-neutral{background:var(--neutral)}
+
+/* 未確定の試合をまたぐ区間。色は同じまま、斜線で「確定ではない」を出す。
+   薄い墨で掛けるのは、白い斜線だと中立の帯（#edeae3）の上で見えなくなるうえ、
+   中2日以下（#c8402e）の上で白文字のコントラストを下げるため。 */
+.is-provisional{
+  background-image:repeating-linear-gradient(
+    -45deg,
+    rgba(28,25,34,.12) 0 2px,
+    rgba(28,25,34,0) 2px 6px
+  );
+}
+
+/* 濃い地の上（中2日以下・試合日）は文字とバッジを白へ反転する */
+.on-dark{color:#fff}
+
+/* =========================================================
+   曜日・HOME/AWAY バッジ
+   ========================================================= */
+
+.badge{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  font-size:8.5px;
+  font-weight:800;
+  line-height:1;
+}
+.wd-sat{background:var(--sat);color:#fff}
+.wd-hol{background:var(--hol);color:#fff}
+.wd-plain{background:transparent;border:1px solid currentColor;color:inherit;opacity:.72}
+.on-dark .wd-sat{background:#fff;color:var(--sat)}
+.on-dark .wd-hol{background:#fff;color:var(--hol)}
+.on-dark .wd-plain{border-color:rgba(255,255,255,.7);color:#fff;opacity:1}
+
+/* =========================================================
+   試合日ボックス
+   ========================================================= */
+
+/* 大会色は --comp に持たせる。currentColor を使うと、同じルールで color を
+   変えたときに解決先がずれる（HOMEバッジが白地に白文字になっていた）。 */
+.match{
+  height:36px;
+  margin:3px 0;
+  padding:0 8px;
+  border-radius:8px;
+  font-size:12px;
+  color:#fff;
+  background:var(--comp);
+}
+.comp-j1{--comp:var(--j1)}
+.comp-acl{--comp:var(--acl)}
+.comp-emp{--comp:var(--emp)}
+.comp-lev{--comp:var(--lev)}
+
+.match .d-num{width:18px;font-size:13px}
+.m-opp{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-weight:700;
+}
+.ha-h{background:#fff;color:var(--comp)}
+.ha-a{background:rgba(255,255,255,.16);border:1.5px solid #fff;color:#fff}
+
+.comp-pill{
+  flex:none;
+  padding:3px 8px;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:20px;
+  font-size:9.5px;
+  font-weight:800;
+  line-height:1;
+  white-space:nowrap;
+}
+.m-chip{
+  flex:none;
+  padding:2px 6px;
+  border-radius:4px;
+  background:rgba(255,255,255,.22);
+  font-size:9px;
+  font-weight:800;
+  line-height:1.3;
+  white-space:nowrap;
+}
+
+/* 日付が未確定の試合。候補日ごとに枠だけの箱を置く */
+.is-candidate{
+  background:var(--paper);
+  border:1.5px dashed var(--comp);
+  color:var(--comp);
+}
+.is-candidate .wd-sat{background:var(--sat);color:#fff}
+.is-candidate .wd-hol{background:var(--hol);color:#fff}
+.is-candidate .wd-plain{border-color:var(--comp);color:var(--comp);opacity:.72}
+.is-candidate .ha-h{background:var(--comp);color:var(--paper)}
+.is-candidate .ha-a{background:transparent;border-color:var(--comp);color:var(--comp)}
+.is-candidate .comp-pill{border-color:var(--comp);color:var(--comp)}
+.is-candidate .m-chip{background:rgba(0,0,0,.07);color:var(--comp)}
+
+/* =========================================================
+   「見かた」パネル
+   ========================================================= */
+
+.guide{
+  width:min(100vw,430px);
+  max-width:100vw;
+  max-height:88svh;
+  margin:auto auto 0;
+  padding:0;
+  border:0;
+  border-radius:16px 16px 0 0;
+  background:var(--paper);
+  color:var(--ink);
+}
+.guide::backdrop{background:rgba(20,0,18,.55)}
+.guide-inner{padding:8px 16px calc(18px + env(safe-area-inset-bottom))}
+.guide-handle{
+  width:44px;
+  height:4px;
+  margin:0 auto 12px;
+  border-radius:2px;
+  background:var(--line);
+}
+.guide h2{margin:0 0 10px;font-size:15px;font-weight:900}
+/* 開いたときの着地点。読み上げに題を読ませるためで、枠は出さない */
+.guide h2:focus{outline:none}
+.guide h3{margin:16px 0 6px;font-size:12px;font-weight:800;color:var(--muted)}
+.guide-lead{margin:0;font-size:12px;line-height:1.8}
+.guide-note{margin:6px 0 0;font-size:11px;line-height:1.75;color:var(--muted)}
+.guide-note code{font-size:10.5px}
+.guide-note a{color:#1d6f7d}
+.guide-disclaimer{margin-top:14px;padding-top:10px;border-top:1px solid var(--line)}
+
+.guide-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px 12px;
+  margin:0;
+  padding:0;
+  list-style:none;
+  font-size:11.5px;
+}
+.guide-legend li{display:flex;align-items:center;gap:5px}
+.sw{width:13px;height:13px;border-radius:3px;flex:none}
+.sw-danger{background:var(--danger)}
+.sw-caution{background:var(--caution)}
+.sw-mild{background:var(--mild)}
+.sw-safe{background:var(--safe)}
+.sw-neutral{background:var(--neutral);border:1px solid var(--line)}
+.sw-j1{background:var(--j1)}
+.sw-acl{background:var(--acl)}
+.sw-emp{background:var(--emp)}
+.sw-lev{background:var(--lev)}
+.sw-tentative{background:var(--paper);border:1.5px dashed var(--j1)}
+.sw-provisional{
+  background:var(--safe);
+  background-image:repeating-linear-gradient(-45deg,rgba(28,25,34,.24) 0 2px,rgba(28,25,34,0) 2px 6px);
+}
+
+.guide-close{
+  display:block;
+  width:100%;
+  min-height:var(--tap);
+  margin:18px 0 0;
+  border:0;
+  border-radius:10px;
+  background:var(--j1);
+  color:#fff;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+/* iPhone SE などの狭い画面。対戦相手名が省略されすぎないよう少し詰める */
+@media (max-width:359px){
+  .day{gap:5px;padding:0 6px}
+  .match{font-size:11px}
+  .match .d-num{width:16px;font-size:12px}
+  .comp-pill{padding:3px 7px}
+}

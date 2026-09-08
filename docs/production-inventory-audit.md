@@ -31,6 +31,7 @@
 | --- | --- | --- | --- |
 | `sanga202627season.html` | 年間スケジュール（現行） | `index.html` | 現行 |
 | `squad.html` | 予想スカッド作成（現行） | `index.html` | 現行 |
+| `calendar.html` | 過密日程カレンダー（現行。2026-09-08追加） | `index.html` | 現行 |
 | `index.html` | 確認用トップ。現行2ページへの導線 | 直URL | 入口ページとして作り直す予定（`docs/site-index.md`） |
 | `sanga2025season.html` | 2025シーズンの日程 | `sanga2025.html` | 維持 |
 | `sanga2025.html` | `sanga2025season.html` への3秒リダイレクト | 被リンクなし | 維持 |

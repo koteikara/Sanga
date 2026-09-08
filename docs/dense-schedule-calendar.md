@@ -2,11 +2,12 @@
 
 確認基準日: 2026-09-08（実機確認と見た目の作り直しを反映）
 
-状態: **設計とプロトタイプ**。公開ページは未実装です。プロトタイプは
-`experiments/dense-schedule-calendar/` にあり、`public/` は変更していません。
+状態: **公開済み**（2026-09-08）。正本は `public/calendar.html`、
+`public/assets/calendar.css`、`public/assets/calendar.js` です。
+入口ページの現役グリッドにも、予想スカッドの次として並んでいます。
 
-**本番は別ページとして追加することが決まりました（2026-09-08）。** 構成案は「別ページにする場合の構成案」、
-実装前にやることは「本番移植前にやること」を参照してください。
+見た目と操作の検証用プロトタイプは `experiments/dense-schedule-calendar/` に残してあります。
+見せ方を試すときはそちらで、公開版に入れるときは `public/` 側を直します。
 
 ## 索引
 
@@ -14,7 +15,7 @@
 | --- | --- |
 | 何のための画面か | 目的 |
 | **別ページにするか既存ページに融合するか（決定済み）** | **本番の置きどころ** |
-| 本番実装の前にやること | 本番移植前にやること |
+| 公開したもののファイル構成 | 公開の構成 |
 | 画面の作り | 画面構成 |
 | 間隔の色をどう決めるか | 危険度の決め方 |
 | 未確定日程をどう見せるか | 未確定日程の扱い |
@@ -69,18 +70,23 @@
 予想スカッド（`public/squad.html`）とSUPPORTER TIMELINE（`public/timeline.html`）も、
 `matches.json` を共有しながら独立したページになっています。
 
-### 別ページにする場合の構成案
+### 公開の構成
 
-ページ名とURLは実装PRで確定します。以下は案です。
+2026-09-08に次の形で公開しました。
 
-| 項目 | 案 |
+| 項目 | 実際 |
 | --- | --- |
 | HTML | `public/calendar.html` |
 | CSS / JS | `public/assets/calendar.css`、`public/assets/calendar.js` |
-| データ | `public/data/matches.json`（正本を共有。新しい公開JSONは作らない） |
-| 入口 | `public/data/tools.json` に `section: "live"` で1件追加し、`assets/thumbs/` にスクリーンショットを置く（`docs/site-index.md`） |
-| 検証 | `tools/check-static-assets.mjs` の参照・版数チェックに乗る。DOM契約の検証を足すかは実装時に判断する |
+| 共通部品 | `public/assets/topbar.css`（トップバー）、`public/assets/index-nebula.js`（背景） |
+| データ | `public/data/matches.json`（年間スケジュールと同じ正本。新しい公開JSONは作らない） |
+| 入口 | `public/data/tools.json` に `id: "dense-calendar"`、`section: "live"` で追加。並びは予想スカッドの次。サムネイルは `assets/thumbs/dense-calendar.webp` |
+| 検証 | `tools/check-static-assets.mjs` に `calendar.css` / `topbar.css` の波括弧数と `calendar.html` の参照チェックを追加。版数と `tools.json` の突き合わせは既存の仕組みに乗る |
 | LocalStorage | 使わない。個人状態を持たない画面にする |
+
+年間スケジュールの `tools/validate-app-contract.js` にあたるDOM契約の検証は、まだ用意していません。
+このページはLocalStorageも個人状態も持たず、`matches.json` を読んで描くだけなので、
+まずは静的検証と実ブラウザ確認で足りると判断しています。
 
 ページ間の相互リンクは置きません。現在の公開ページ（年間スケジュール・予想スカッド・
 SUPPORTER TIMELINE）はいずれも相互リンクを持たず、導線は入口ページに集約されています。
@@ -248,6 +254,9 @@ J1の紫と並べたときに大会の違いが色で読めるようにするた
 実機（iPhone Safari・Android Chrome）では、月見出しの貼り付き、ミニマップのタップとドラッグ、
 10〜11月の色の読み取り、2027年2月以降の斜線について問題がないことを確認済みです（2026-09-08）。
 
+公開版（`public/calendar.html`）でも、Chromium（幅320px・390px）で11か月・71ボックス・
+候補日のHOMEバッジ15個が描かれ、ネビュラが動き、横スクロールが出ないことを確認しています。
+
 その確認のあとに直したものが2つあります。
 
 - **候補日のHOMEバッジが見えなかった。** `.is-candidate .ha-h` が同じルールで
@@ -271,29 +280,21 @@ J1の紫と並べたときに大会の違いが色で読めるようにするた
 | 2026-09-08 | 画面の配分 | 説明と凡例を「使い方」パネルへ移し、月ジャンプは枠で囲って並べ、「使い方」ボタンはその囲みの外の一番左に置く。空いた分をカレンダーに回す（画面上部の飾りが313px→155px、スクロール後は月見出しだけ） |
 | 2026-09-08 | トップバー | 画面に固定しない。スクロールで流れて消える |
 
-## 本番移植前にやること
+## 見た目を変えたときにやること
 
-別ページにすることは決まりましたが、実装はこのPRの範囲外です。移植PRでは次の順に進めます。
-
-1. GitHub Pagesでプロトタイプを開き、iPhone SafariとAndroid Chromeで貼り付き見出しと
-   ミニマップのドラッグを確認する（`docs/ai/BROWSER_CHECKLIST.md`）。
-2. 公開ページ名とURLを決める（`public/calendar.html` は案）。
-3. `public/` へHTML・CSS・JSを置き、`npm run fix:asset-versions` で `?v=` を内容ハッシュに揃える。
-4. `public/data/tools.json` に `section: "live"` で1件追加し、`assets/thumbs/` へスクリーンショットを置く
-   （`docs/site-index.md`）。`tools.json` の件数を検証する `tools/validate-tools.js` と、
-   `public/index.html` のnoscript一覧も一緒に更新する。
-5. `docs/project-structure.md` の「公開ページ」表と `docs/production-inventory-audit.md` を更新する。
-6. `npm run check` と実ブラウザ確認を通してからPRにする。
+公開後にこのページの見た目を変えたら、入口ページのサムネイルを撮り直します
+（`docs/ui-prototype-workflow.md` の「入口ページのサムネイル撮り直し」）。
+出力先は `public/assets/thumbs/dense-calendar.webp` と
+`experiments/site-index/thumbs/dense-calendar.webp` の2か所です。
+撮ったあとに `npm run fix:asset-versions` を実行してください。名前が同じままなので、
+版数を上げないと再訪した人には古い画像が使われ続けます。
 
 ## 未確定・保留事項
 
-1. **公開ページ名とURL**。`public/calendar.html` は案です。
-2. **実機確認**。iPhone Safariでの貼り付き見出しとミニマップのドラッグは未確認です。
-3. **入口ページのサムネイル**。公開する場合は `docs/site-index.md` の手順で撮り直しが必要です。
-4. **幅320pxでの対戦相手名**。大会名バッジを右端に固定するため、12文字の2件
+1. **幅320pxでの対戦相手名**。大会名バッジを右端に固定するため、12文字の2件
    （`ニューカッスル・ジェッツ`、`ブリーラム・ユナイテッド`）は省略記号になります。
-5. **DOM契約の検証**。年間スケジュールの `tools/validate-app-contract.js` にあたる検証を
-   新ページにも用意するかは、実装PRで判断します。
+2. **DOM契約の検証**。年間スケジュールの `tools/validate-app-contract.js` にあたる検証は
+   まだありません。このページが個人状態を持つようになったら用意します。
 
 ## 関連文書
 

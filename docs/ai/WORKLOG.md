@@ -39,6 +39,83 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-09-08 過密日程カレンダーを公開し、入口ページへ載せる
+
+### 変更ファイル
+
+- `public/calendar.html`、`public/assets/calendar.css`、`public/assets/calendar.js`（新規）
+- `public/assets/thumbs/dense-calendar.webp`、`experiments/site-index/thumbs/dense-calendar.webp`（新規）
+- `public/data/tools.json`（`dense-calendar` を予想スカッドの次に追加。現役4件・過去2件）
+- `public/index.html`（noscript の一覧に1行追加）
+- `tools/check-static-assets.mjs`（`calendar.css` / `topbar.css` の波括弧数と `calendar.html` の参照を検証）
+- `docs/dense-schedule-calendar.md`、`docs/site-index.md`、`docs/project-structure.md`、
+  `docs/roadmap.md`、`docs/production-inventory-audit.md`、
+  `experiments/dense-schedule-calendar/README.md`
+
+### 変更内容
+
+`experiments/dense-schedule-calendar/` のプロトタイプを `public/` へ移しました。
+`docs/dense-schedule-calendar.md` の「本番の置きどころ」で決めたとおり、
+年間スケジュールの表示モードには足さず、別ページにしています。
+
+プロトタイプからの差分は、外向けの体裁とデータの読み方だけです。
+
+- データの読み先を `data/matches.json` の1本にした。プロトタイプは配信の根が
+  GitHub Pagesと手元で違うため2つのURLを順に試していましたが、公開版では要りません。
+- `title`・`description`・OGP・favicon をほかの公開ページと同じ形で入れた。
+- 「使い方」の出典と免責を公開版の文面にし、年間スケジュールへのリンクを足した。
+  検証用ページである旨の注意書きは外しています。
+- トップバー・背景・「使い方」パネル・間隔の色分けの実装はプロトタイプのままです。
+
+入口ページには `id: "dense-calendar"`、`accent: "#c8402e"`（中2日以下の赤）で、
+**予想スカッドの次**に置きました。サムネイルは
+`docs/ui-prototype-workflow.md` の手順どおり、430×880・画素密度2倍・`Asia/Tokyo` で
+10〜11月（赤と橙が続くところ）を撮り、ブラウザの `canvas.toDataURL("image/webp", 0.82)` で
+344×704のWebPにしています。
+
+`tools/check-static-assets.mjs` に新ページの参照チェックを足しました。
+`tools.json` と noscript の突き合わせ、版数の突き合わせは既存の仕組みがそのまま効きます。
+
+`--topbar-gap` は、別セッションが `squad.css` の宣言を消したことでリポジトリから
+完全に消えました。`topbar.css` 側の記述は固定をやめた時点（#256）で既に落ちています。
+`docs/site-index.md` に残っていた「予想スカッド側でやること」を、完了した内容へ書き換えました。
+
+### 確認結果
+
+`npm run check` 全項目成功。内訳のうち今回に関係するものは次のとおりです。
+
+- `ツール一覧の検証に成功しました。現役4件、過去のページ2件です。`
+- `noscriptOK public/index.html: tools.json の live 4件と一致`
+- `波括弧OK public/assets/calendar.css`、`波括弧OK public/assets/topbar.css`
+- `参照OK public/calendar.html: assets/calendar.css, assets/topbar.css, assets/calendar.js, assets/index-nebula.js`
+- `版数OK`
+
+Chromium（幅320px・390px）で `calendar.html` を確認しました。
+
+- 11か月・71ボックス（確定40＋候補31）を描き、候補日のHOMEバッジ15個が見える
+- ネビュラが動く（`body.has-nebula`）、トップバーが上端、横スクロールなし
+- コンソールエラーなし、読み込み失敗なし
+
+入口ページでは、カードが年間スケジュール・予想スカッドの次に並び、サムネイルが表示され、
+`calendar.html` へリンクすることを確認しました。
+
+### 未確認項目
+
+実機（iPhone Safari・Android Chrome）での公開版。プロトタイプでは確認済みですが、
+公開版のURLでは未確認です。
+
+### 残課題
+
+- 幅320pxで12文字の対戦相手名2件が省略記号になる（大会名バッジを右端に固定する仕様のため）。
+- DOM契約の検証（`validate-app-contract.js` 相当）は用意していません。
+  このページが個人状態を持つようになったら検討します。
+- SUPPORTER TIMELINE 側に残る `--topbar-h` の記述。動きとしては0に戻っているだけです。
+
+### 人間が確認すべき点
+
+入口ページでの並び順（予想スカッドの次）とサムネイルの見え方。
+公開版の実機表示。
+
 ## 2026-09-08 トップバーの固定をやめ、カレンダーの画面をカレンダーに譲る
 
 ### 変更ファイル

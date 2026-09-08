@@ -41,6 +41,7 @@
 | 共有 | 共有画像の保存導線 | 本番反映済み | `docs/screenshot-social-share.md` | 生成画像プレビュー、保存リンク、長押し保存案内を用意。 |
 | 表記 | 作成者表記 | 本番反映済み | `README.md` | 非公式ページの作成者表記として扱う。 |
 | 表記 | 免責事項 | 本番反映済み | `README.md` | 正確な情報は公式情報を確認する前提。 |
+| 公開 | 過密日程カレンダー | 2026-09-08公開 | `docs/dense-schedule-calendar.md` | `public/calendar.html` として公開し、入口ページの現役グリッドへ追加した。日程は `matches.json` を年間スケジュールと共有する。 |
 | UI | 公開ページ共通のトップバー | 2026-09-08実装 | `docs/site-index.md` | 入口ページ以外の6ページにバーを置き、アイコンからXへ、`SANGA TOOLBOX` から `index.html` へ戻れるようにした。画面には固定しない。正本は `public/assets/topbar.css`。 |
 | 確認 | GitHub Pages確認 | 運用済み | `docs/deploy-policy.md` / `docs/operation-flow.md` | 本番反映前の確認環境として使う。 |
 | デプロイ | 本番サーバー手動デプロイ運用 | 運用済み | `docs/deploy-policy.md` / `docs/operation-flow.md` | 自動デプロイではなく手動実行を基本にする。 |
@@ -62,7 +63,6 @@
 | `validate-app-contract.js` の確認範囲 | 確認中 | 主要DOM/CSSフック、表示列、表示モード、フィルタ、共有画像生成、大会リボン関連の確認範囲拡張は一部実施済み。今後もCSS整理・JS整理に合わせて追加する。 |
 | SUPPORTER TIMELINE | 進行中 | Phase 1（タイムライン、MY予定、ICS書き出し）とPhase 2（会員種別・シーズンパスによる照合と強調）は `experiments/supporter-timeline/` で動作し、Android・iOSの実機確認も完了。次はチケット販売スケジュールのParserが有力。現在地と次の一手は `docs/supporter-timeline-design.md` の冒頭にある。 |
 | ホテルデータ検証 | 確認中 | `tools/validate-hotels.js` は `npm run check:data` で常時実行中。索引は0件のため、空索引を正常扱いする経路だけが動いている。 |
-| 過密日程カレンダー | 設計・プロトタイプ | 2026-09-08時点で `experiments/dense-schedule-calendar/` が実データを描く。本番は別ページとして追加すると決定済み。次は実機確認と本番移植。設計と手順は `docs/dense-schedule-calendar.md`。 |
 | 実ブラウザ確認観点 | 確認中 | `docs/ai/BROWSER_CHECKLIST.md` に沿って、人間の目視確認を継続する。 |
 | Googleスプレッドシート運用 | 確認中 | 初期CSV、列定義、生成JSON、公開JSON反映手順を安全に運用する。 |
 | 本番デプロイ運用 | 確認中 | GitHub Pages確認後に手動デプロイし、本番URLで再確認する。 |
