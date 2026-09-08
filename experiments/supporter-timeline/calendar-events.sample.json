@@ -7,6 +7,7 @@
     "ticket_csv": "docs/sheets/ticket-sales.2026-08-28.csv",
     "matches_source": "public/data/matches.json",
     "match_count": 19,
+    "ics_template_version": 1,
     "updated_at": "2026-08-28"
   },
   "events": [
@@ -32,7 +33,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -59,7 +60,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -86,7 +87,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -113,7 +114,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -140,7 +141,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -168,7 +169,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -196,7 +197,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -221,7 +222,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -244,7 +245,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -271,7 +272,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -298,7 +299,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -325,7 +326,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -352,7 +353,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -380,7 +381,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -408,7 +409,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -431,7 +432,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -453,7 +454,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "水戸戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -478,7 +479,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -505,7 +506,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -532,7 +533,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -559,7 +560,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -586,7 +587,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -614,7 +615,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -642,7 +643,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -665,7 +666,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -690,7 +691,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -712,7 +713,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "福岡戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -735,7 +736,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -760,7 +761,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -783,7 +784,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -808,7 +809,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -830,7 +831,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "柏戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -855,7 +856,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -882,7 +883,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -909,7 +910,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -936,7 +937,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -963,7 +964,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -991,7 +992,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1019,7 +1020,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1044,7 +1045,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1067,7 +1068,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1094,7 +1095,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1121,7 +1122,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1148,7 +1149,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1175,7 +1176,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1203,7 +1204,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1231,7 +1232,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1256,7 +1257,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1279,7 +1280,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1306,7 +1307,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1333,7 +1334,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1360,7 +1361,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1387,7 +1388,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1415,7 +1416,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1443,7 +1444,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1466,7 +1467,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1488,7 +1489,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "町田戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1510,7 +1511,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "鹿島戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1535,7 +1536,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1562,7 +1563,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1589,7 +1590,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1616,7 +1617,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1643,7 +1644,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1671,7 +1672,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1699,7 +1700,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1724,7 +1725,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1747,7 +1748,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1769,7 +1770,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "清水戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1796,7 +1797,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1823,7 +1824,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1850,7 +1851,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1877,7 +1878,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1905,7 +1906,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1933,7 +1934,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1956,7 +1957,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1981,7 +1982,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2008,7 +2009,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2035,7 +2036,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2062,7 +2063,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2089,7 +2090,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2117,7 +2118,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2145,7 +2146,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2168,7 +2169,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2190,7 +2191,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "浦和戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2212,7 +2213,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "C大阪戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2234,7 +2235,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "千葉戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2256,7 +2257,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "岡山戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2281,7 +2282,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2308,7 +2309,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2335,7 +2336,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2362,7 +2363,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2389,7 +2390,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2417,7 +2418,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2445,7 +2446,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2468,7 +2469,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2493,7 +2494,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2520,7 +2521,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2547,7 +2548,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2574,7 +2575,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2601,7 +2602,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2629,7 +2630,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2657,7 +2658,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2682,7 +2683,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2705,7 +2706,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2732,7 +2733,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2759,7 +2760,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2786,7 +2787,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2813,7 +2814,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2841,7 +2842,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2869,7 +2870,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2892,7 +2893,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2917,7 +2918,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2944,7 +2945,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2971,7 +2972,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2998,7 +2999,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3025,7 +3026,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3053,7 +3054,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3081,7 +3082,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3104,7 +3105,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3126,7 +3127,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "神戸戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3151,7 +3152,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3178,7 +3179,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3205,7 +3206,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3232,7 +3233,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3259,7 +3260,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3287,7 +3288,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3315,7 +3316,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3338,7 +3339,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3363,7 +3364,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3390,7 +3391,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3417,7 +3418,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3444,7 +3445,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3471,7 +3472,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3499,7 +3500,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3527,7 +3528,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3550,7 +3551,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3575,7 +3576,7 @@
         "2027-02-14"
       ],
       "title": "横浜FM戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3600,7 +3601,7 @@
         "2027-02-28"
       ],
       "title": "東京V戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3625,7 +3626,7 @@
         "2027-03-07"
       ],
       "title": "FC東京戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3650,7 +3651,7 @@
         "2027-03-14"
       ],
       "title": "川崎F戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3675,7 +3676,7 @@
         "2027-04-04"
       ],
       "title": "長崎戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3699,7 +3700,7 @@
         "2027-04-29"
       ],
       "title": "G大阪戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3724,7 +3725,7 @@
         "2027-05-16"
       ],
       "title": "広島戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3749,7 +3750,7 @@
         "2027-05-30"
       ],
       "title": "名古屋戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3773,7 +3774,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "公式販売スケジュールページに販売日程の記載なし",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3797,7 +3798,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3821,7 +3822,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3845,7 +3846,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     }
   ],
