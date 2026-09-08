@@ -1033,7 +1033,7 @@
     if (!benefitState().changes.length && !counts.planned && !counts.exchanged) {
       var none = document.createElement("p");
       none.className = "empty";
-      none.textContent = "枚数の増減を記録すると、残りと引き換え先の管理ができます。";
+      none.textContent = "枚数の増減を記録すると、残りと引き換え先が分かります。";
       box.appendChild(none);
       return;
     }
@@ -1052,10 +1052,10 @@
     var note = document.createElement("p");
     if (counts.left < 0) {
       note.className = "benefit-warn";
-      note.textContent = "注意: 持っている枚数より多く割り当てています。枚数か割り当てを見直してください。";
+      note.textContent = "持っている枚数より多く割り当てています。枚数か割り当てを見直してください。";
     } else if (counts.left > upcoming) {
       note.className = "benefit-warn";
-      note.textContent = "注意: 残り" + counts.left + "枚に対して、これからのホーム戦は" + upcoming +
+      note.textContent = "残り" + counts.left + "枚に対して、これからのホーム戦は" + upcoming +
         "試合です。1試合に複数枚まとめて引き換えないと、使わないまま残ります。";
     } else if (counts.left > 0) {
       note.className = "benefit-detail";
@@ -1309,7 +1309,7 @@
    * カレンダーを使わない人には取りに行かない。
    */
   function loadIcs() {
-    return import("./ics.js?v=57859ac9");
+    return import("./ics.js?v=531155e6");
   }
 
   async function exportIcs() {
@@ -1319,7 +1319,7 @@
     var target = dated.filter(isIcsTarget);
 
     if (!target.length) {
-      status.textContent = "追加できる予定がありません。日時が確定しているものだけが対象です。";
+      status.textContent = "入れられる予定がありません。日時が決まっているものだけを入れます。";
       return;
     }
 
@@ -1354,9 +1354,9 @@
     // 「追加した」とは言わず、次に何をすればいいかまで書く。
     // 外した理由は分けて書く。「日時が未確定」と「引き換え予定を決めていない」は
     // 利用者の次の行動が違うため。
-    status.textContent = target.length + "件をファイルにしました。カレンダーアプリで開くと追加されます。" +
-      (undated > 0 ? "日時が確定していない" + undated + "件は含めていません。" : "") +
-      (benefitSkipped > 0 ? "特典チケットの引換は、引き換え予定を決めた試合のぶんだけ入れます。決めていない" + benefitSkipped + "件は含めていません。" : "");
+    status.textContent = target.length + "件を書き出しました。ダウンロードしたものを開くと、カレンダーに入ります。" +
+      (undated > 0 ? "日時が決まっていない" + undated + "件は入れていません。" : "") +
+      (benefitSkipped > 0 ? "特典チケットの引換は、引き換え予定を決めた試合のぶんだけ入れます。決めていない" + benefitSkipped + "件は入れていません。" : "");
   }
 
   /* ---------- 操作 ---------- */
@@ -1672,14 +1672,9 @@
     sentinel.style.height = "1px";
     head.parentNode.insertBefore(sentinel, head);
 
-    // 見出しは共通トップバーの下（--topbar-h）で止まる。監視の上端も同じだけ下げないと、
-    // 貼り付いてから帯に縮むまでがバーの高さぶん遅れる。
-    var stickyTop = parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue("--topbar-h")
-    ) || 0;
     new IntersectionObserver(function (entries) {
       head.classList.toggle("is-stuck", !entries[0].isIntersecting);
-    }, { threshold: 0, rootMargin: -stickyTop + "px 0px 0px 0px" }).observe(sentinel);
+    }, { threshold: 0 }).observe(sentinel);
   }
 
   /**

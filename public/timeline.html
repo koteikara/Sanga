@@ -6,8 +6,8 @@
 <title>SANGA SUPPORTER TIMELINE｜京都サンガF.C. 非公式ファンツール</title>
 <meta name="description" content="京都サンガF.C.のチケット販売開始・応募締切・試合当日の予定を、ひとつの時系列にまとめる非公式ファンツールです。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
-<link rel="stylesheet" href="assets/timeline.css?v=19684b28">
-<link rel="stylesheet" href="assets/topbar.css?v=5c4c17a3">
+<link rel="stylesheet" href="assets/timeline.css?v=c4a81385">
+<link rel="stylesheet" href="assets/topbar.css?v=2875c312">
 </head>
 <body>
 <!-- サイト共通トップバー。アイコンは作成者のXへ、名前は入口ページへ -->
@@ -40,10 +40,10 @@
            読み上げは "TImeLINE" とそのまま読まれ、語としては変わらない -->
       <h1>TI<span class="head-mark">me</span>LINE</h1>
     </div>
-    <!-- カレンダーへの追加は常に見えるが押す頻度は低い。下部メニューの枠を使わず見出しの横に置く。
+    <!-- カレンダーに入れる導線は常に見えるが押す頻度は低い。下部メニューの枠を使わず見出しの横に置く。
          語は利用者から見た目的（自分のカレンダーに入れる）に合わせている。
          「取り込む」は「取り込まなかった記事」で逆向きに使っているため避けた -->
-    <button type="button" class="head-action" data-sheet="sheet-ics" aria-haspopup="dialog" aria-label="カレンダーに追加する">
+    <button type="button" class="head-action" data-sheet="sheet-ics" aria-haspopup="dialog" aria-label="カレンダーに入れる">
       <svg class="head-action-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 9.5h17M8 3.5V6M16 3.5V6"/><path d="M12 12.5v5M9.5 15h5"/></svg>
       <span class="head-action-label">カレンダー</span>
     </button>
@@ -242,20 +242,45 @@
 
 <dialog id="sheet-ics" class="sheet" aria-labelledby="sheet-ics-head">
   <div class="sheet-head">
-    <h2 id="sheet-ics-head">カレンダーに追加する</h2>
+    <h2 id="sheet-ics-head">カレンダーに入れる</h2>
     <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
   </div>
   <div class="sheet-body">
-    <p class="section-note">
-      日時が確定しているものだけを <code>.ics</code> にします。候補日のままのものと日程未定のものは含めません。
-      確定していない予定をカレンダーへ入れると、確定情報として届いてしまうためです。
-    </p>
-    <p class="section-note">
-      特典チケットの引換は、「特典」で引き換え予定を決めた試合のぶんだけ入れます。1試合に3件あり、
-      全ホーム戦ぶんを入れると、使う予定のない予定でカレンダーが埋まるためです。画面には全件出しています。
-    </p>
-    <button type="button" id="ics-btn" class="btn btn-primary">表示中の予定を追加する</button>
-    <p id="ics-status" class="my-status" role="status"></p>
+    <p class="section-note">入れ方は2つあります。</p>
+
+    <!-- 2つは並べて見比べるものなので、ボタンの見た目もそろえる。どちらを勧めるかは
+         印で示す。片方だけ目立たせると、比べる前に押してしまう。
+         詳しい手順は案内ページに送る。ここは選ぶところで、読むところではない。 -->
+    <section class="ics-way">
+      <h3 class="ics-way-head">1. ずっと受け取る<span class="ics-way-tag">おすすめ</span></h3>
+      <ul class="ics-way-points">
+        <li>販売日程が変わっても、あとから直ります。設定は一度だけ</li>
+        <li>自分の予定とは別のカレンダーに入るので、混ざりません</li>
+        <li>やめるときは、まとめて消せます</li>
+        <li>特典チケットの引換とMY予定は入りません</li>
+      </ul>
+      <a class="btn btn-primary" href="timeline-calendar.html">受け取りかたを見る</a>
+    </section>
+
+    <section class="ics-way">
+      <h3 class="ics-way-head">2. 今の内容だけ入れる</h3>
+      <ul class="ics-way-points">
+        <li>いま画面に出ている予定を、その場で取り込みます</li>
+        <li>あとから直りません。変わったら入れ直し</li>
+        <li>自分の予定に混ざります。消すときは1件ずつ</li>
+        <li>特典チケットの引換とMY予定も入ります</li>
+      </ul>
+      <button type="button" id="ics-btn" class="btn btn-primary">今の内容を取り込む</button>
+      <p id="ics-status" class="my-status" role="status"></p>
+      <p class="section-note">
+        入るのは日時が決まっているものだけです。候補日のままのものと日程未定のものは入りません。
+        決まっていない予定を入れると、決まったものとして届いてしまうので。
+      </p>
+      <p class="section-note">
+        特典チケットの引換は、「特典」で引き換え予定を決めた試合のぶんだけ入ります。1試合に3件あるので、
+        全ホーム戦ぶんを入れると使わない予定で埋まります。画面には全件出したままです。
+      </p>
+    </section>
   </div>
 </dialog>
 
@@ -334,7 +359,7 @@
         <span class="tour-tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.75"/><path d="M4.75 20a7.25 7.25 0 0 1 14.5 0"/></svg>設定</span>
       </div>
       <h2>操作は画面の下から開きます</h2>
-      <p>絞り込み・特典チケット・次にやること・MY予定・設定は、画面下のメニューから開きます。<strong>カレンダーへの追加は右上の「カレンダー」です。</strong></p>
+      <p>絞り込み・特典チケット・次にやること・MY予定・設定は、画面下のメニューから開きます。<strong>カレンダーに入れるときは右上の「カレンダー」です。</strong></p>
     </section>
   </div>
 
@@ -345,7 +370,7 @@
   </div>
 </dialog>
 
-<script src="assets/timeline.js?v=32ef006d"></script>
+<script src="assets/timeline.js?v=9871d1e2"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   // ?nebula=off でCSSのぼかしと見比べられる（入口ページと同じ）。

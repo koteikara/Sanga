@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ずっと受け取る｜SANGA SUPPORTER TIMELINE</title>
+<meta name="description" content="京都サンガF.C.のチケット販売開始と試合日程を、自分のカレンダーでずっと受け取る方法と、やめる方法の案内です。非公式のファンツールです。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
+<link rel="stylesheet" href="assets/timeline.css?v=c4a81385">
+<link rel="stylesheet" href="assets/topbar.css?v=2875c312">
+</head>
+<body>
+<!-- サイト共通トップバー。アイコンは作成者のXへ、名前は入口ページへ -->
+<header class="topbar">
+<a class="topbar-mark" href="https://x.com/kou_osakacity" target="_blank" rel="noopener noreferrer" aria-label="作成者のX（新しいタブで開きます）">
+<img src="assets/avatar.webp?v=8ef11115" alt="" width="128" height="128" decoding="async">
+</a>
+<a class="topbar-home" href="index.html">SANGA TOOLBOX</a>
+</header>
+
+<div class="bg" aria-hidden="true">
+  <span class="bg-blob bg-blob-1"></span>
+  <span class="bg-blob bg-blob-2"></span>
+  <span class="bg-blob bg-blob-3"></span>
+  <canvas id="nebula" class="bg-nebula"></canvas>
+</div>
+
+<p class="notice" role="note">非公式のファンツールです。チケット販売の日程は公式サイトの掲載内容を写したもので、最新とは限りません。購入・応募の前に必ず公式サイトで確認してください。</p>
+
+<!-- 読み物のページなので見出しは貼り付かせない。時系列の画面は縦に長く、
+     いまどこを見ているか見失うので貼り付けているが、こちらは押す先が無い。 -->
+<header class="head head-static">
+  <div class="head-row">
+    <div class="head-title">
+      <h1>ずっと受け取る</h1>
+    </div>
+    <a class="head-action" href="timeline.html">
+      <span class="head-action-label">時系列に戻る</span>
+    </a>
+  </div>
+</header>
+
+<main class="doc">
+
+<section class="doc-sec">
+  <h2>受け取ると、どうなるか</h2>
+  <p class="section-note">
+    カレンダーに入れる方法は2つあります。このページは「ずっと受け取る」ほうの説明です。
+    もう一方の「今の内容だけ入れる」は、いちばん下にあります。
+  </p>
+  <p>
+    カレンダーが1つ増えます。名前は「SANGA SUPPORTER TIMELINE」。
+    チケットの販売開始と試合のキックオフが、そこに入ります。
+  </p>
+  <p>
+    自分の予定とは別枠なので、混ざりません。いつでもまとめて消せますし、
+    見たくないときは表示だけ消せます。読み取り専用なので、こちらから自分の予定を書き換えることもありません。
+  </p>
+  <p>
+    販売日程が変わればカレンダー側も直ります。設定は一度だけで済みます。
+  </p>
+
+  <div class="doc-cols">
+    <div class="doc-col">
+      <h3>入るもの</h3>
+      <ul>
+        <li>チケットの販売・受付の開始（シーズンパス先行、プラチナ／ゴールド／レギュラー・キッズ先行、一般販売）</li>
+        <li>アウェイ席の一般発売の開始（分かっているぶん）</li>
+        <li>試合のキックオフ</li>
+      </ul>
+    </div>
+    <div class="doc-col">
+      <h3>入らないもの</h3>
+      <ul>
+        <li>日程がまだ決まっていない予定。入れると決まったものとして届いてしまいます</li>
+        <li>特典チケットの引換。コース別に3件あり、全ホーム戦ぶんだと使わない予定で埋まります</li>
+        <li>MY予定。自分で書いた予定は、この端末の中だけに置いています</li>
+      </ul>
+      <p class="section-note">
+        引換とMY予定も入れたいときは、いちばん下へ。
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="doc-sec">
+  <h2>受け取りはじめる</h2>
+  <p class="section-note">
+    カレンダーアプリでは「登録」「照会」と呼ばれています。下の手順はその言葉に合わせています。
+  </p>
+
+  <p class="doc-url-label" id="feed-url-label">受け取りに使うアドレス</p>
+  <div class="doc-url">
+    <input id="feed-url" class="doc-url-input" type="text" readonly
+           aria-labelledby="feed-url-label"
+           value="https://koteikara.github.io/Sanga/timeline.ics">
+    <button type="button" id="feed-copy" class="btn btn-quiet">コピー</button>
+  </div>
+  <p id="feed-copy-status" class="section-note" role="status"></p>
+
+  <details class="fold" open>
+    <summary>Googleカレンダー（パソコン・Android）</summary>
+    <ol>
+      <li>パソコンかスマートフォンの<strong>ブラウザ</strong>でGoogleカレンダーを開く</li>
+      <li>左側の「他のカレンダー」の <strong>＋</strong> を押す</li>
+      <li>「<strong>URLで追加</strong>」を選ぶ</li>
+      <li>上のアドレスを貼り付けて「カレンダーを追加」</li>
+    </ol>
+    <p class="section-note">
+      「カレンダーのURL」の欄に貼ります。ファイルを選ぶ「インポート」ではありません。
+      インポートすると自動更新されず、自分の予定に混ざります。
+    </p>
+    <p class="section-note">
+      Androidのカレンダーアプリからは登録できません。ブラウザで登録すれば、
+      同じGoogleアカウントのAndroidアプリにも出てきます。
+    </p>
+  </details>
+
+  <details class="fold">
+    <summary>Appleのカレンダー（iPhone・iPad・Mac）</summary>
+    <p>
+      <a class="btn" href="webcal://koteikara.github.io/Sanga/timeline.ics">カレンダーで開く</a>
+    </p>
+    <p class="section-note">
+      押すとカレンダーアプリが開き、「照会するカレンダーを追加」と聞かれます。「追加」で登録されます。
+    </p>
+    <p class="section-note">
+      うまく開かないときは、iPhoneなら「設定」→「アプリ」→「カレンダー」→「アカウント」→
+      「アカウントを追加」→「その他」→「照会するカレンダーを追加」に、上のアドレスを貼ります。
+    </p>
+  </details>
+
+  <details class="fold">
+    <summary>Outlook</summary>
+    <ol>
+      <li>「カレンダー」を開き、「カレンダーの追加」を選ぶ</li>
+      <li>「<strong>インターネットから登録</strong>」を選ぶ</li>
+      <li>上のアドレスを貼り付ける</li>
+    </ol>
+  </details>
+</section>
+
+<section class="doc-sec">
+  <h2>受け取りをやめる</h2>
+  <p>
+    やめ方は2つあります。たいていは1つめで足ります。
+  </p>
+
+  <div class="doc-step">
+    <h3>1. 表示だけを消す（おすすめ）</h3>
+    <p>
+      カレンダーの一覧で、<strong>「SANGA SUPPORTER TIMELINE」のチェックを外す</strong>だけです。
+      予定が見えなくなります。
+    </p>
+    <p>
+      受け取る設定は残るので、チェックを戻せばまた見えます。
+      「いまは見たくない」だけなら、こちらで足ります。
+    </p>
+  </div>
+
+  <div class="doc-step">
+    <h3>2. まるごと消す</h3>
+    <p>入っている予定もまとめて消えます。戻すには入れ直しです。</p>
+    <dl class="doc-how">
+      <dt>Googleカレンダー（パソコン・Android）</dt>
+      <dd>
+        <strong>ブラウザ</strong>でGoogleカレンダーを開く → 設定（歯車）→
+        左の一覧から「SANGA SUPPORTER TIMELINE」を選ぶ → いちばん下の「<strong>登録解除</strong>」。
+        Androidのカレンダーアプリからは消せません。
+      </dd>
+
+      <dt>iPhone・iPad</dt>
+      <dd>
+        カレンダーアプリの下にある「カレンダー」→ 「SANGA SUPPORTER TIMELINE」の右の
+        <strong>ⓘ</strong> → 「<strong>カレンダーを削除</strong>」
+      </dd>
+
+      <dt>Mac</dt>
+      <dd>
+        カレンダーアプリの左の一覧で「SANGA SUPPORTER TIMELINE」を右クリック →
+        「<strong>登録解除</strong>」
+      </dd>
+
+      <dt>Outlook</dt>
+      <dd>カレンダーの一覧で右クリック → 「削除」</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="doc-sec">
+  <h2>気をつけること</h2>
+
+  <details class="fold">
+    <summary>すぐには反映されません</summary>
+    <p>
+      カレンダーアプリが自分のタイミングで取りに来ます。こちらからは早められません。
+      数時間から1日ほど遅れます。
+    </p>
+    <p>
+      <strong>販売開始の直前は、カレンダーではなく
+      <a href="https://www.sanga-fc.jp/ticket/schedule" target="_blank" rel="noopener noreferrer">公式サイト</a>を見てください。</strong>
+      ここが遅れたせいで買い逃した、では困るので。
+    </p>
+  </details>
+
+  <details class="fold">
+    <summary>中止・延期になったとき</summary>
+    <p>
+      取り消しとして届きます。ただし端末が取りに来たあとなので、上と同じですぐではありません。
+    </p>
+  </details>
+
+  <details class="fold">
+    <summary>予定の時間について</summary>
+    <p>
+      販売開始は15分、キックオフは2時間の枠にしています。
+      <strong>販売が15分で終わるという意味ではありません。</strong>
+      始まる時刻を示すためのもので、終わりの時刻は扱っていません。
+    </p>
+    <p>
+      どの予定も「予定なし（空き時間）」として入ります。予定を共有している相手から、
+      その時間が埋まっているように見えると困るので。
+    </p>
+  </details>
+
+  <details class="fold">
+    <summary>出典について</summary>
+    <p>
+      それぞれの予定の説明欄に、元にした公式ページのアドレスを入れています。迷ったら公式を見てください。
+    </p>
+  </details>
+</section>
+
+<section class="doc-sec">
+  <h2>もう一方の「今の内容だけ入れる」</h2>
+  <p>
+    自動で直らなくてよくて、特典チケットの引換やMY予定も入れたいときは、
+    いま画面に出ている予定をその場で取り込む方法があります。
+    <a href="timeline.html">時系列</a>の右上「カレンダー」から選べます。
+  </p>
+  <p class="doc-warn">
+    こちらは自分のカレンダーに混ざります。あとで消したくなると、1件ずつ。
+    <strong>先に空のカレンダーを作って、そこに入れてください。</strong>
+    合わなければ、そのカレンダーごと消せば済みます。
+  </p>
+</section>
+
+</main>
+
+<script type="module">
+  // 登録用アドレスをコピーする。押せない環境では手で選べるよう、入力欄はそのまま残す。
+  const input = document.getElementById("feed-url");
+  const button = document.getElementById("feed-copy");
+  const status = document.getElementById("feed-copy-status");
+  button.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(input.value);
+      status.textContent = "コピーしました。";
+    } catch (error) {
+      // 権限が無い・古い環境。選択だけしておけば、あとは手で写せる。
+      input.select();
+      status.textContent = "コピーできませんでした。選択してあるので、手でコピーしてください。";
+    }
+  });
+
+  // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
+  if (new URLSearchParams(location.search).get("nebula") !== "off") {
+    try {
+      const { startNebula } = await import("./assets/index-nebula.js?v=56428a80");
+      document.body.classList.add("has-nebula");
+      startNebula(document.querySelector("#nebula"));
+    } catch (error) {
+      document.body.classList.remove("has-nebula");
+      console.info("[timeline-calendar] ネビュラを使えないため、CSSの背景に戻します:", error.message);
+    }
+  }
+</script>
+</body>
+</html>

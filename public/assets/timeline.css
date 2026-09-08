@@ -142,9 +142,7 @@ body {
    背景が動いているため、固定中だけ地の色を敷いて文字を読めるようにする。 */
 .head {
   position: sticky;
-  /* 共通トップバー（assets/topbar.css）の下に貼り付く。
-     topbar.css を読まない場合に備えて既定値は0にしておく。 */
-  top: var(--topbar-h, 0px);
+  top: 0;
   z-index: 15;
   padding: 24px 16px 18px;
   transition: padding 180ms ease, background-color 180ms ease;
@@ -874,15 +872,23 @@ a:focus-visible {
 .event.is-benefit { border-left-color: var(--benefit); }
 
 /* 折りたたみ */
+/* 中身の余白は器の padding で持つ。子に margin を置くと、`margin: 0 0 10px` のような
+   一括指定に丸ごと消される（同じ強さなら後勝ち）。実際、中身が右端にくっつく不具合が
+   これで出ていた。padding なら子が何を書いても消えない。 */
 .fold {
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--panel);
   color: var(--ink);
   margin-top: 12px;
+  padding: 0 14px 14px;
 }
+/* 閉じているときは中身が無いので、下の余白も要らない。 */
+.fold:not([open]) { padding-bottom: 0; }
+/* 見出しだけは器の端まで伸ばす。境界線を左右いっぱいに引くため。 */
 .fold > summary {
   min-height: 44px;
+  margin: 0 -14px;
   padding: 12px 14px;
   font-size: 0.9rem;
   font-weight: 700;
@@ -893,9 +899,10 @@ a:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: -3px;
 }
-.fold[open] > summary { border-bottom: 1px solid var(--line-soft); }
-.fold > *:not(summary) { margin-left: 14px; margin-right: 14px; }
-.fold > *:last-child { margin-bottom: 14px; }
+.fold[open] > summary {
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 14px;
+}
 .fold .my-form { border: 0; padding: 0; }
 
 .past {
@@ -1221,9 +1228,15 @@ select {
 }
 .field-check label { font-weight: 400; font-size: 0.94rem; }
 
+/* <button> と <a> の両方で使う。<a> は inline のままだと高さも中央ぞろえも効かず、
+   下線が付いたまま潰れて見える。実際に「登録のしかたを見る」がそうなっていた。 */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-height: 44px;
   padding: 0 18px;
+  text-decoration: none;
   border-radius: 4px;
   border: 1px solid var(--accent);
   background: var(--accent);
@@ -1283,3 +1296,123 @@ code {
   .head h1 { font-size: 1.8rem; }
   .my-form { padding: 20px; }
 }
+
+/* ---------- 案内ページ（timeline-calendar.html） ----------
+   購読の登録とやめ方を説明する読み物のページ。時系列の画面とは別ページにしている。
+   シートは操作するところで、読ませるところではないため。
+   色とトップバーは時系列と共有するので、このファイルに置く。 */
+
+.doc {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 16px 64px;
+  color: var(--ground-ink);
+}
+
+/* 説明は白い紙の面に載せる。地の上に長文を置くと読みづらい。 */
+.doc-sec {
+  --muted: var(--muted-on-paper);
+  --link: var(--accent);
+  margin-top: 16px;
+  padding: 18px 16px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.doc-sec h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+.doc-sec h3 {
+  margin: 16px 0 8px;
+  font-size: 0.92rem;
+}
+.doc-sec p { margin: 0 0 10px; line-height: 1.75; font-size: 0.9rem; }
+.doc-sec ul,
+.doc-sec ol { margin: 0 0 10px; padding-left: 1.3em; line-height: 1.75; font-size: 0.9rem; }
+.doc-sec li { margin-bottom: 6px; }
+
+/* 入るもの／入らないものは並べて見比べたい。狭い画面では縦に積む。 */
+.doc-cols { display: grid; gap: 4px; }
+@media (min-width: 640px) {
+  .doc-cols { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+.doc-col h3 { margin-top: 8px; }
+
+/* 登録用アドレス。**リンクにしない。** リンクだとスマートフォンでは押した瞬間に
+   1回きりの取り込みが始まり、購読ではなく自分のカレンダーに混ざってしまう。 */
+.doc-url-label { margin-bottom: 6px; font-weight: 700; }
+.doc-url { display: flex; gap: 8px; align-items: stretch; }
+.doc-url-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+/* やめ方の2段階。1つめ（表示を消す）を先に、同じ重みで置く。 */
+.doc-step { margin-top: 14px; }
+.doc-step h3 { margin-top: 0; }
+
+.doc-how { margin: 0; font-size: 0.9rem; line-height: 1.75; }
+.doc-how dt {
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.doc-how dd { margin: 4px 0 0; }
+
+.doc-warn {
+  padding: 12px;
+  border-left: 3px solid var(--warn);
+  background: var(--warn-soft);
+  border-radius: 0 4px 4px 0;
+}
+
+/* 読み物のページの見出しは貼り付かせない。時系列の画面は縦に長く、いまどこを
+   見ているか見失うので貼り付けているが、こちらは押す先が無く、白い文字が
+   本文の上に残り続けるだけになる。 */
+.head-static { position: static; }
+
+/* 「カレンダーに入れる」シートの2つの道。どちらを選ぶかの画面なので、
+   説明ではなく選択肢として並べる。詳しい手順は案内ページに送る。 */
+.ics-way {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+}
+.ics-way + .ics-way { margin-top: 12px; }
+.ics-way-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+.ics-way-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.ics-way-points {
+  margin: 0 0 12px;
+  padding-left: 1.2em;
+  font-size: 0.84rem;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.ics-way-points li { margin-bottom: 4px; }

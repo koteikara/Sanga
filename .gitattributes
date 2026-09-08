@@ -2,3 +2,8 @@
 # 行末を揃えるとファイル全体が差分になり、変更点が読めなくなるため、
 # 行末は現状のまま維持し、行末のCRを空白エラーとして扱わない。
 *.html whitespace=cr-at-eol
+
+# ICS（iCalendar）は改行がCRLFでなければならない（RFC 5545 3.1）。
+# textのままだと環境によってLFに変換され、購読フィードが壊れる。
+# 行末のCRは空白エラーとして扱わない（HTMLと同じ扱い）。
+public/timeline.ics -text whitespace=cr-at-eol
