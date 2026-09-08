@@ -42,15 +42,14 @@
   --hol:#c8402e;
 
   --tap:44px;
-  --topbar-h:65px;   /* padding 10px×2 + タップ領域 44px + 下の罫線 1px */
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 html{
   scroll-behavior:smooth;
-  /* 月見出しはトップバーの下に貼り付くので、月ジャンプの着地点もそのぶん下げる */
-  scroll-padding-top:calc(var(--topbar-h) + 4px);
+  /* 月見出しは画面上端に貼り付くので、月ジャンプの着地点も少しだけ下げる */
+  scroll-padding-top:4px;
 }
 
 body{
@@ -128,7 +127,7 @@ body{
 :root[data-motion="off"] .bg-blob{animation:none}
 
 /* トップバーの見た目は公開用の `public/assets/topbar.css` を読む。
-   ここでは、その下に潜り込む要素の基準だけ持つ（--topbar-h は同じ値を再宣言）。 */
+   固定しないので、月見出しとミニマップは画面上端を基準にする。 */
 
 a:focus-visible,
 button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
@@ -140,107 +139,111 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 .screen{
   width:min(100vw,430px);
   margin:0 auto;
-  padding:8px 12px calc(28px + env(safe-area-inset-bottom));
+  padding:10px 12px calc(16px + env(safe-area-inset-bottom));
 }
 
-.head{margin:0 0 14px}
-.eyebrow{
-  margin:0 0 6px;
-  font-size:.66rem;
-  font-weight:700;
-  letter-spacing:.18em;
-  color:var(--ground-ink-dim);
-}
-.head h1{
+/* 説明と凡例は「見かた」へ追い出したので、題は1行に収める */
+.page-title{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
   margin:0 0 8px;
-  font-size:22px;
-  line-height:1.25;
+  padding:0 2px;
+  font-size:15px;
   font-weight:900;
   letter-spacing:.02em;
+  line-height:1.3;
 }
-.lead{
-  margin:0;
-  font-size:12px;
-  line-height:1.75;
+.page-season{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
   color:var(--ground-ink-dim);
 }
 
 /* =========================================================
-   月ジャンプ（ミニマップのキーボード導線を兼ねる）
+   「使い方」と月ジャンプ
    ========================================================= */
 
-.monthnav{margin:14px 0 10px}
-.monthnav-list{
+/* 使い方は囲みの外、一番左に置く */
+.controls{
   display:flex;
-  gap:6px;
+  align-items:center;
+  gap:8px;
+  margin:0 0 8px;
+}
+
+.guide-button{
+  flex:none;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-height:42px;
+  padding:0 12px;
+  border:1px solid var(--ground-line);
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  color:var(--ground-ink);
+  font-family:inherit;
+  font-size:11.5px;
+  font-weight:800;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.guide-button:hover{background:rgba(255,255,255,.18)}
+.guide-button-icon{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:1px solid currentColor;
+  font-size:10px;
+  line-height:1;
+}
+
+/* 月ジャンプだけを四角い囲みに収める */
+.toolbar{
+  flex:1;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  padding:5px;
+  border:1px solid var(--ground-line);
+  border-radius:12px;
+  background:rgba(255,255,255,.08);
+}
+
+.toolbar-months{
+  flex:1;
+  min-width:0;
+  display:flex;
+  gap:5px;
   margin:0;
-  padding:0 2px 4px;
+  padding:0;
   list-style:none;
   overflow-x:auto;
   scrollbar-width:none;
 }
-.monthnav-list::-webkit-scrollbar{display:none}
-.monthnav a{
+.toolbar-months::-webkit-scrollbar{display:none}
+
+.toolbar-months a{
   display:flex;
   align-items:center;
   justify-content:center;
-  min-width:var(--tap);
-  min-height:34px;
-  padding:0 10px;
-  border:1px solid var(--ground-line);
-  border-radius:17px;
+  min-width:38px;
+  min-height:32px;
+  padding:0 9px;
+  border-radius:8px;
+  background:rgba(255,255,255,.10);
   color:var(--ground-ink);
   font-size:12px;
   font-weight:800;
   text-decoration:none;
   white-space:nowrap;
-  background:rgba(255,255,255,.08);
 }
-.monthnav a:hover{background:rgba(255,255,255,.16)}
-
-/* =========================================================
-   凡例
-   ========================================================= */
-
-.legend{margin:0 0 10px}
-.legend-group{display:flex;align-items:flex-start;gap:8px;margin:0 0 5px}
-.legend-label{
-  flex:none;
-  width:3em;
-  white-space:nowrap;
-  margin:0;
-  padding-top:1px;
-  font-size:9.5px;
-  font-weight:800;
-  letter-spacing:.08em;
-  color:rgba(255,255,255,.62);
-}
-.legend-row{
-  display:flex;
-  flex-wrap:wrap;
-  gap:3px 10px;
-  margin:0;
-  padding:0;
-  list-style:none;
-  font-size:10.5px;
-  color:var(--ground-ink-dim);
-}
-.legend-row li{display:flex;align-items:center;gap:4px}
-.sw{width:12px;height:12px;border-radius:3px;flex:none}
-.sw-danger{background:var(--danger)}
-.sw-caution{background:var(--caution)}
-.sw-mild{background:var(--mild)}
-.sw-safe{background:var(--safe)}
-.sw-neutral{background:var(--neutral)}
-.sw-j1{background:var(--j1)}
-.sw-acl{background:var(--acl)}
-.sw-emp{background:var(--emp)}
-.sw-lev{background:var(--lev)}
-.sw-tentative{background:var(--paper);border:1.5px dashed var(--muted)}
-.sw-provisional{
-  background:var(--safe);
-  background-image:repeating-linear-gradient(-45deg,rgba(28,25,34,.24) 0 2px,rgba(28,25,34,0) 2px 6px);
-}
+.toolbar-months a:hover{background:rgba(255,255,255,.22)}
 
 /* =========================================================
    リストとミニマップ
@@ -270,10 +273,10 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 
 .minimap{
   position:sticky;
-  top:calc(var(--topbar-h) + 8px);
+  top:8px;
   flex:none;
   width:26px;
-  height:calc(100svh - var(--topbar-h) - 16px);
+  height:calc(100svh - 16px);
   border:1px solid var(--line);
   border-radius:8px;
   overflow:hidden;
@@ -300,7 +303,7 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 .month{margin:0}
 .month-head{
   position:sticky;
-  top:var(--topbar-h);
+  top:0;
   z-index:2;
   display:flex;
   align-items:baseline;
@@ -463,19 +466,79 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 .is-candidate .m-chip{background:rgba(0,0,0,.07);color:var(--comp)}
 
 /* =========================================================
-   フッター
+   「見かた」パネル
    ========================================================= */
 
-.foot{margin:14px 0 0}
-.foot-note{
-  margin:0 0 8px;
-  font-size:10.5px;
-  line-height:1.75;
-  color:var(--ground-ink-dim);
+.guide{
+  width:min(100vw,430px);
+  max-width:100vw;
+  max-height:88svh;
+  margin:auto auto 0;
+  padding:0;
+  border:0;
+  border-radius:16px 16px 0 0;
+  background:var(--paper);
+  color:var(--ink);
 }
-.foot-note code{font-size:10px}
-.foot-note a{color:var(--cyan-soft)}
-.foot-disclaimer{color:rgba(255,255,255,.72)}
+.guide::backdrop{background:rgba(20,0,18,.55)}
+.guide-inner{padding:8px 16px calc(18px + env(safe-area-inset-bottom))}
+.guide-handle{
+  width:44px;
+  height:4px;
+  margin:0 auto 12px;
+  border-radius:2px;
+  background:var(--line);
+}
+.guide h2{margin:0 0 10px;font-size:15px;font-weight:900}
+/* 開いたときの着地点。読み上げに題を読ませるためで、枠は出さない */
+.guide h2:focus{outline:none}
+.guide h3{margin:16px 0 6px;font-size:12px;font-weight:800;color:var(--muted)}
+.guide-lead{margin:0;font-size:12px;line-height:1.8}
+.guide-note{margin:6px 0 0;font-size:11px;line-height:1.75;color:var(--muted)}
+.guide-note code{font-size:10.5px}
+.guide-note a{color:#1d6f7d}
+.guide-disclaimer{margin-top:14px;padding-top:10px;border-top:1px solid var(--line)}
+
+.guide-legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px 12px;
+  margin:0;
+  padding:0;
+  list-style:none;
+  font-size:11.5px;
+}
+.guide-legend li{display:flex;align-items:center;gap:5px}
+.sw{width:13px;height:13px;border-radius:3px;flex:none}
+.sw-danger{background:var(--danger)}
+.sw-caution{background:var(--caution)}
+.sw-mild{background:var(--mild)}
+.sw-safe{background:var(--safe)}
+.sw-neutral{background:var(--neutral);border:1px solid var(--line)}
+.sw-j1{background:var(--j1)}
+.sw-acl{background:var(--acl)}
+.sw-emp{background:var(--emp)}
+.sw-lev{background:var(--lev)}
+.sw-tentative{background:var(--paper);border:1.5px dashed var(--j1)}
+.sw-provisional{
+  background:var(--safe);
+  background-image:repeating-linear-gradient(-45deg,rgba(28,25,34,.24) 0 2px,rgba(28,25,34,0) 2px 6px);
+}
+
+.guide-close{
+  display:block;
+  width:100%;
+  min-height:var(--tap);
+  margin:18px 0 0;
+  border:0;
+  border-radius:10px;
+  background:var(--j1);
+  color:#fff;
+  font-family:inherit;
+  font-size:13px;
+  font-weight:800;
+  cursor:pointer;
+}
 
 /* iPhone SE などの狭い画面。対戦相手名が省略されすぎないよう少し詰める */
 @media (max-width:359px){

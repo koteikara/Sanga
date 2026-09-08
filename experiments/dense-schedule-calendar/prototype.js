@@ -491,6 +491,36 @@
   }
 
   // =========================================================
+  // 「見かた」パネル
+  // =========================================================
+
+  // <dialog> の showModal に任せる。Esc・フォーカスの閉じ込め・閉じたあとの
+  // フォーカス復帰は標準の挙動をそのまま使い、背面のスクロール止めだけ足す。
+  function bindGuide() {
+    var guide = document.getElementById("guide");
+    var openButton = document.getElementById("guideOpen");
+    var closeButton = document.getElementById("guideClose");
+    if (!guide || !openButton || typeof guide.showModal !== "function") return;
+
+    openButton.addEventListener("click", function () {
+      document.documentElement.style.overflow = "hidden";
+      guide.showModal();
+    });
+    if (closeButton) {
+      closeButton.addEventListener("click", function () { guide.close(); });
+    }
+    // 背景（::backdrop）を押したときはダイアログ自身が対象になる
+    guide.addEventListener("click", function (event) {
+      if (event.target === guide) guide.close();
+    });
+    guide.addEventListener("close", function () {
+      document.documentElement.style.overflow = "";
+    });
+  }
+
+  bindGuide();
+
+  // =========================================================
   // 読み込み
   // =========================================================
 
