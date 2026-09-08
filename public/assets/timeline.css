@@ -891,10 +891,14 @@ a:focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: -3px;
 }
-.fold[open] > summary { border-bottom: 1px solid var(--line-soft); }
+/* 開いた中身が境界線にくっついて詰まって見えるため、見出しの側で下を空ける。
+   中身の側に margin-top を置くと、あとから来る .doc-sec p などの margin: 0 に
+   同じ強さで上書きされて効かない。 */
+.fold[open] > summary {
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 14px;
+}
 .fold > *:not(summary) { margin-left: 14px; margin-right: 14px; }
-/* 開いた中身が見出しの境界線にくっついて詰まって見えるため、最初の要素だけ上を空ける。 */
-.fold > summary + * { margin-top: 12px; }
 .fold > *:last-child { margin-bottom: 14px; }
 .fold .my-form { border: 0; padding: 0; }
 
