@@ -1309,7 +1309,7 @@
    * カレンダーを使わない人には取りに行かない。
    */
   function loadIcs() {
-    return import("./ics.js?v=57859ac9");
+    return import("./ics.js?v=531155e6");
   }
 
   async function exportIcs() {

@@ -12,7 +12,9 @@
  * `?v=` を付けず、置き場所も動かさない。`tools/asset-versions.mjs` は `.ics` を
  * 対象にしていないが、これは偶然ではなく決めごととして守る。
  *
- * 墓標（STATUS:CANCELLED）はまだ無い。段階3で足す。
+ * **消えた予定は墓標として残す。** 生成物から消すだけでは、購読した人のカレンダーからは
+ * 消えない。前回のフィードを読み、今回いなくなったUIDを STATUS:CANCELLED で出し続ける。
+ * 残す期間は、その予定が結び付く試合の試合日から1週間後まで。
  */
 
 const fs = require('fs');
@@ -33,6 +35,14 @@ const PROD_ID = '-//SANGA TOOLBOX//SUPPORTER TIMELINE//JA';
  * 販売開始は日単位で動くため、半日あれば取りこぼさない。
  */
 const REFRESH = 'PT12H';
+
+/**
+ * 墓標を残す期間。試合日から数える。
+ *
+ * 終わった試合の予定をいつまでも配る意味は無い。かといって即座に消すと、その間に
+ * 同期しなかった端末には取り消しが届かない。1週間あれば行き渡る。
+ */
+const TOMBSTONE_DAYS = 7;
 
 const WEEK = ['日', '月', '火', '水', '木', '金', '土'];
 
@@ -149,22 +159,138 @@ function stampOf(events, meta) {
   return fallback || new Date(0);
 }
 
+/* ---------- 墓標 ---------- */
+
 /**
- * VCALENDAR に購読向けの行を足す。
+ * 前回のフィードを読み、UIDごとに中身を取り出す。
  *
- * `REFRESH-INTERVAL` と `X-PUBLISHED-TTL` は取りに来る間隔の**希望**で、強制はできない。
- * どちらを見るかはアプリによって違うため両方書く。
+ * 自分で書いた形なので、1行1項目・折り返しは空白1つ、という前提で読む。
+ * ここが唯一の「前回どこまで配ったか」の記録で、別ファイルを持たない。
  */
-function withRefresh(text) {
-  const marker = 'X-WR-CALNAME:';
-  const lines = text.split('\r\n');
-  const at = lines.findIndex((line) => line.startsWith(marker));
-  if (at < 0) throw new Error('X-WR-CALNAME が見つかりません');
-  lines.splice(at + 1, 0,
-    `X-WR-CALDESC:${CALENDAR_DESC}`,
-    `REFRESH-INTERVAL;VALUE=DURATION:${REFRESH}`,
-    `X-PUBLISHED-TTL:${REFRESH}`);
-  return lines.join('\r\n');
+function readPreviousFeed(feedPath) {
+  const index = new Map();
+  if (!fs.existsSync(feedPath)) return index;
+
+  // 折り返しをほどく。続きの行は空白1つで始まる（RFC 5545 3.1）。
+  const unfolded = fs.readFileSync(feedPath, 'utf8').replace(/\r\n[ \t]/g, '');
+
+  unfolded.split('\r\n').forEach((line) => {
+    if (line === 'BEGIN:VEVENT') index.set('__current__', {});
+    else if (line === 'END:VEVENT') {
+      const event = index.get('__current__');
+      index.delete('__current__');
+      if (event && event.uid) index.set(event.uid, event);
+    } else {
+      const event = index.get('__current__');
+      if (!event) return;
+      const at = line.indexOf(':');
+      if (at < 0) return;
+      const name = line.slice(0, at);
+      const value = line.slice(at + 1);
+      if (name === 'UID') event.uid = value;
+      else if (name === 'SEQUENCE') event.sequence = Number(value);
+      else if (name === 'STATUS') event.status = value;
+      else if (name === 'SUMMARY') event.summary = icsUnescape(value);
+      else if (name === 'DESCRIPTION') event.description = icsUnescape(value);
+      else if (name === 'DTSTART') event.dtstart = value;
+      else if (name === 'DTSTART;VALUE=DATE') { event.dtstart = value; event.allDay = true; }
+      else if (name === 'DTEND') event.dtend = value;
+      else if (name === 'LAST-MODIFIED') event.lastModified = value;
+    }
+  });
+
+  index.delete('__current__');
+  return index;
+}
+
+/**
+ * 逃がした文字を元に戻す。**読み戻すときに必ず要る。**
+ * 逃がしたまま渡すと組み立てでもう一度逃がされ、`\n` が `\\n` になって
+ * 説明欄に文字として出てしまう。
+ */
+function icsUnescape(text) {
+  return String(text).replace(/\\([\\;,nN])/g, (whole, char) => (
+    char === 'n' || char === 'N' ? '\n' : char
+  ));
+}
+
+/** `20260911T100000Z` を Date に戻す。 */
+function fromUtcStamp(value) {
+  const found = String(value).match(/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z$/);
+  if (found) {
+    const [, y, mo, d, h, mi, sec] = found.map(Number);
+    return new Date(Date.UTC(y, mo - 1, d, h, mi, sec));
+  }
+  const dateOnly = String(value).match(/^(\d{4})(\d{2})(\d{2})$/);
+  if (dateOnly) {
+    const [, y, mo, d] = dateOnly.map(Number);
+    return new Date(y, mo - 1, d);
+  }
+  return null;
+}
+
+/**
+ * UIDから試合を引く。**UIDを分解しない。**
+ * 試合IDにハイフンを含むもの（`acl-md1`）があり、区切りで切ると壊れるため、
+ * 実在する試合IDと突き合わせる。
+ */
+function matchOfUid(uid, matches) {
+  const id = uid.split('@')[0];
+  for (const [matchId, match] of matches) {
+    if (id === `match-${matchId}` || id.startsWith(`ticket-${matchId}-`)) return match;
+  }
+  return null;
+}
+
+/**
+ * 墓標を残す期限。試合日の TOMBSTONE_DAYS 日後の終わり。
+ * 試合日が分からないうちは消さない（まだ先の試合なので、消す理由がない）。
+ */
+function tombstoneExpiry(uid, matches) {
+  const match = matchOfUid(uid, matches);
+  if (!match || !match.match_date) return null;
+  const parts = String(match.match_date).split('-');
+  if (parts.length !== 3) return null;
+  const until = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]) + TOMBSTONE_DAYS, 23, 59, 59);
+  return Number.isNaN(until.getTime()) ? null : until;
+}
+
+/**
+ * 今回いなくなったUIDを墓標にする。
+ *
+ * **版は墓標になった一度だけ上げる。** 上げないと取り消しが更新として届かず、
+ * 毎回上げると同じ取り消しが何度も更新として届く。すでに墓標なら前回の版を持ち越す。
+ */
+function tombstonesFor(previous, liveUids, matches, now) {
+  const specs = [];
+  const expired = [];
+
+  previous.forEach((event, uid) => {
+    if (liveUids.has(uid)) return;
+
+    const until = tombstoneExpiry(uid, matches);
+    if (until && now > until) { expired.push(uid); return; }
+
+    const start = fromUtcStamp(event.dtstart);
+    if (!start) return;
+
+    const wasCancelled = event.status === 'CANCELLED';
+    specs.push({
+      uid: uid.split('@')[0],
+      start,
+      end: fromUtcStamp(event.dtend),
+      allDay: Boolean(event.allDay),
+      summary: event.summary || '',
+      description: event.description || '',
+      sequence: wasCancelled ? event.sequence : (Number(event.sequence) || 0) + 1,
+      // すでに墓標なら、取り消した時刻をそのまま持ち越す。毎回動かすと
+      // 同じ取り消しが更新として何度も届く。
+      lastModified: wasCancelled ? fromUtcStamp(event.lastModified) : now,
+      status: 'CANCELLED',
+    });
+  });
+
+  return { specs, expired };
 }
 
 async function main(argv) {
@@ -196,17 +322,28 @@ async function main(argv) {
 
   // 組み立てはブラウザと共通。ESモジュールなので import() で読む。
   const icsPath = path.join(repoRoot, 'public', 'assets', 'ics.js');
-  const { buildCalendar } = await import(pathToFileURL(icsPath).href);
+  const { buildCalendar, UID_DOMAIN } = await import(pathToFileURL(icsPath).href);
 
   const all = data.events || [];
   const target = all.filter(isDated).filter(isFeedTarget);
-  const specs = target.map((event) => specOf(event, matches)).filter(Boolean);
+  const live = target.map((event) => specOf(event, matches)).filter(Boolean);
 
-  const text = withRefresh(buildCalendar(specs, {
-    now: stampOf(target, data.meta),
+  const stamp = stampOf(target, data.meta);
+
+  // 前回配ったUIDのうち、今回いなくなったものを墓標にする。
+  const previous = readPreviousFeed(outputPath);
+  const liveUids = new Set(live.map((spec) => `${spec.uid}@${UID_DOMAIN}`));
+  const graves = tombstonesFor(previous, liveUids, matches, stamp);
+
+  const specs = live.concat(graves.specs);
+
+  const text = buildCalendar(specs, {
+    now: stamp,
     calendarName: CALENDAR_NAME,
     prodId: PROD_ID,
-  }));
+    calendarDescription: CALENDAR_DESC,
+    refreshInterval: REFRESH,
+  });
 
   if (options.check) {
     if (!fs.existsSync(outputPath)) {
@@ -226,6 +363,13 @@ async function main(argv) {
 
   const skipped = all.filter(isDated).length - target.length;
   console.log(`生成しました: ${path.relative(repoRoot, outputPath)}（${specs.length}件）`);
+  if (graves.specs.length) {
+    console.log(`  うち墓標（取り消し）${graves.specs.length}件:`);
+    graves.specs.forEach((spec) => { console.log(`    ${spec.uid} ${spec.summary}`); });
+  }
+  if (graves.expired.length) {
+    console.log(`  試合日から${TOMBSTONE_DAYS}日が過ぎたため落とした墓標: ${graves.expired.length}件`);
+  }
   if (skipped > 0) console.log(`  特典チケットの引換${skipped}件は入れていません（誰の予定か分からないため絞れない）`);
   console.log(`  日時が確定していない${all.length - all.filter(isDated).length}件も入れていません`);
   console.log('  このURLは変えないでください。購読者は最初に登録したURLを持ち続けます。');
