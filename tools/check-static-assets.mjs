@@ -114,8 +114,16 @@ function checkAssetVersions() {
 checkCssBraces("assets/style.css");
 checkCssBraces("assets/squad.css");
 checkCssBraces("assets/index.css");
+checkCssBraces("assets/calendar.css");
+checkCssBraces("assets/topbar.css");
 checkHtmlReferences("sanga202627season.html", ["assets/style.css", "assets/app.js"]);
 checkHtmlReferences("squad.html", ["assets/squad.css", "assets/squad-builder.js"]);
+checkHtmlReferences("calendar.html", [
+  "assets/calendar.css",
+  "assets/topbar.css",
+  "assets/calendar.js",
+  "assets/index-nebula.js",
+]);
 checkHtmlReferences("index.html", [
   "assets/index.css",
   "assets/index-page.js",
