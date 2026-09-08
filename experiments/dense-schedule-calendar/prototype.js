@@ -225,15 +225,16 @@
     var from = window.scrollY;
     var distance = to - from;
     if (Math.abs(distance) < 2) return;
-    var duration = clamp(320 + Math.abs(distance) * 0.28, 420, 1300);
+    var duration = clamp(320 + Math.abs(distance) * 0.45, 420, 2000);
     var start = performance.now();
 
-    // easeOutCubic。序盤で距離を稼ぎ、終盤をゆっくり引いて止まる。
-    // 5乗（easeOutQuint）も試したが、半分の時間で97%進んでしまい、
-    // 残りが「わずかに這う」だけになって余韻に見えない。3乗だと
-    // 折り返し時点で87%、最後の13%を後半いっぱいかけて減速する。
+    // easeInOutCubic。ゆっくり出て、中盤で距離を稼ぎ、終盤に引いて止まる。
+    // 片側だけの easeOutCubic は最初のフレームが最速なので、長い移動だと
+    // 出だしが一瞬で流れ、減速しているのかどうか読み取れなかった。両側にすると
+    // 加速と減速の対比が出て、止まり際が余韻として見える。
+    // 5乗（easeOutQuint）も試したが、半分の時間で97%進み、残りが這うだけになる。
     function ease(t) {
-      return 1 - Math.pow(1 - t, 3);
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
 
     // 途中で利用者が動かしたら、そちらを優先して止める。
