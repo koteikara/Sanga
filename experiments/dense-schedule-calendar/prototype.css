@@ -1,0 +1,432 @@
+/* 過密日程カレンダー（検証用プロトタイプ）
+ *
+ * 見た目の下敷き
+ *  - 地: 年間スケジュール `public/assets/style.css` の .phone と同じ紫のグラデーション
+ *  - 面: SUPPORTER TIMELINE `public/assets/timeline.css` と同じ紙（--paper）とインク
+ *  - 大会色: 既存の大会リボン（.competition-*）を土台に、白文字で 4.5:1 を満たす濃さへ寄せた
+ *
+ * 制約
+ *  - 追加の依存なし。画像なし
+ *  - 色だけに頼らない。間隔は「中n日」の文字でも出す
+ *  - prefers-reduced-motion: reduce ではスムーススクロールを止める
+ */
+
+:root{
+  /* 地と面（入口ページ・タイムラインと同じ系統） */
+  --ground-1:#24001f;
+  --ground-2:#8b0069;
+  --ground-3:#4b003c;
+  --paper:#fbfafc;
+  --ink:#1c1922;
+  --muted:#6a6577;
+  --line:#ded9e6;
+  --line-soft:#ece8f1;
+  --ground-ink:#ffffff;
+  --ground-ink-dim:rgba(255,255,255,.86);
+  --ground-line:rgba(255,255,255,.28);
+
+  /* 大会。既存リボンの色を、白文字で 4.5:1 以上になる濃さへ寄せた */
+  --j1:#7b0064;   /* 入口ページ --purple-base。白文字 10.4:1 */
+  --acl:#116b66;  /* リボン #1565c0 ではなくティール。白文字 6.3:1 */
+  --emp:#8a6212;  /* リボン #b8860b を濃く。白文字 5.5:1 */
+  --lev:#b2165b;  /* リボンと同色。白文字 6.7:1 */
+
+  /* 間隔の危険度 */
+  --danger:#c8402e;  /* 中2日以下。白文字 5.0:1 */
+  --caution:#e08a2e; /* 中3日。黒文字 6.5:1 */
+  --mild:#e3b23c;    /* 中4日。黒文字 8.8:1 */
+  --safe:#7fa687;    /* 中5日以上。黒文字 6.4:1 */
+  --neutral:#edeae3; /* 前後に試合が無い期間 */
+
+  /* 曜日 */
+  --sat:#2f6fb0;
+  --hol:#c8402e;
+
+  --tap:44px;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+html{
+  scroll-behavior:smooth;
+  /* 月見出しが貼り付くぶん、月ジャンプの着地点を下げる */
+  scroll-padding-top:4px;
+}
+
+body{
+  margin:0;
+  min-height:100svh;
+  background:var(--ground-1);
+  color:var(--ground-ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* 地は固定レイヤーにする。リストが1万px近くなるため、
+   本文側にグラデーションを敷くと引き伸ばされて色が飛ぶ */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background:
+    radial-gradient(circle at 80% 8%, rgba(255,0,153,.30), transparent 30%),
+    radial-gradient(circle at 20% 62%, rgba(130,0,120,.40), transparent 36%),
+    linear-gradient(145deg,var(--ground-1),var(--ground-2) 50%,var(--ground-3));
+}
+
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+.screen{
+  width:min(100vw,430px);
+  margin:0 auto;
+  padding:20px 12px calc(28px + env(safe-area-inset-bottom));
+}
+
+/* =========================================================
+   見出し
+   ========================================================= */
+
+.head{margin:0 0 14px}
+.eyebrow{
+  margin:0 0 6px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.08em;
+  color:var(--ground-ink-dim);
+}
+.head h1{
+  margin:0 0 6px;
+  font-size:22px;
+  line-height:1.25;
+  font-weight:900;
+  letter-spacing:.02em;
+}
+.lead{
+  margin:0;
+  font-size:12px;
+  line-height:1.7;
+  color:var(--ground-ink-dim);
+}
+
+/* =========================================================
+   月ジャンプ（ミニマップのキーボード導線を兼ねる）
+   ========================================================= */
+
+.monthnav{margin:14px 0 10px}
+.monthnav-list{
+  display:flex;
+  gap:6px;
+  margin:0;
+  padding:0 2px 4px;
+  list-style:none;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.monthnav-list::-webkit-scrollbar{display:none}
+.monthnav a{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:var(--tap);
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid var(--ground-line);
+  border-radius:17px;
+  color:var(--ground-ink);
+  font-size:12px;
+  font-weight:800;
+  text-decoration:none;
+  white-space:nowrap;
+  background:rgba(255,255,255,.08);
+}
+.monthnav a:hover{background:rgba(255,255,255,.16)}
+.monthnav a:focus-visible,
+.minimap:focus-visible{outline:2px solid #6fd6e8;outline-offset:2px}
+
+/* =========================================================
+   凡例
+   ========================================================= */
+
+.legend{margin:0 0 10px}
+.legend-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px 10px;
+  margin:0 0 6px;
+  padding:0;
+  list-style:none;
+  font-size:10.5px;
+  color:var(--ground-ink-dim);
+}
+.legend-row li{display:flex;align-items:center;gap:4px}
+.sw{width:12px;height:12px;border-radius:3px;flex:none}
+.sw-danger{background:var(--danger)}
+.sw-caution{background:var(--caution)}
+.sw-mild{background:var(--mild)}
+.sw-safe{background:var(--safe)}
+.sw-neutral{background:var(--neutral)}
+.sw-provisional{background:var(--safe);background-image:repeating-linear-gradient(-45deg,rgba(28,25,34,.24) 0 2px,rgba(28,25,34,0) 2px 6px)}
+.sw-j1{background:var(--j1)}
+.sw-acl{background:var(--acl)}
+.sw-emp{background:var(--emp)}
+.sw-lev{background:var(--lev)}
+.sw-tentative{
+  background:var(--paper);
+  border:1.5px dashed var(--muted);
+}
+
+/* =========================================================
+   リストとミニマップ
+   ========================================================= */
+
+.stage{display:flex;gap:6px;align-items:flex-start}
+
+.strip{
+  flex:1;
+  min-width:0;
+  padding:0 6px 6px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--paper);
+  color:var(--ink);
+}
+
+.status{
+  margin:0;
+  padding:18px 6px;
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
+.status[hidden]{display:none}
+
+.minimap{
+  position:sticky;
+  top:8px;
+  flex:none;
+  width:26px;
+  height:calc(100svh - 16px);
+  border:1px solid var(--line);
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--paper);
+  cursor:pointer;
+  touch-action:none;
+}
+.minimap-canvas{display:block;width:100%;height:100%}
+.minimap-view{
+  position:absolute;
+  left:0;
+  right:0;
+  min-height:12px;
+  border:2px solid var(--ink);
+  border-radius:4px;
+  background:rgba(255,255,255,.34);
+  pointer-events:none;
+}
+
+/* =========================================================
+   月
+   ========================================================= */
+
+.month{margin:0}
+.month-head{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:flex;
+  align-items:baseline;
+  gap:6px;
+  margin:0;
+  padding:8px 4px 5px;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  font-size:13px;
+  font-weight:900;
+  line-height:1.2;
+  color:var(--ink);
+}
+.month-year{font-size:10px;font-weight:800;color:var(--muted)}
+.month-sum{
+  margin-left:auto;
+  font-size:10px;
+  font-weight:700;
+  color:var(--muted);
+  white-space:nowrap;
+}
+.month-sum b{color:var(--danger)}
+
+.days{margin:0;padding:0;list-style:none}
+
+/* =========================================================
+   日付ボックス
+   ========================================================= */
+
+.day{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  height:22px;
+  margin:2px 0;
+  padding:0 8px;
+  border-radius:6px;
+  font-size:10.5px;
+  color:var(--ink);
+  background:var(--neutral);
+}
+.d-num{flex:none;width:16px;font-weight:800;font-variant-numeric:tabular-nums}
+.d-fill{flex:1}
+.gap-label{
+  flex:none;
+  font-size:9.5px;
+  font-weight:800;
+  letter-spacing:.02em;
+  opacity:.9;
+}
+
+.band-danger{background:var(--danger)}
+.band-caution{background:var(--caution)}
+.band-mild{background:var(--mild)}
+.band-safe{background:var(--safe)}
+.band-break{background:var(--neutral)}
+.band-neutral{background:var(--neutral)}
+
+/* 未確定の試合をまたぐ区間。色は同じまま、斜線で「確定ではない」を出す。
+   薄い墨で掛けるのは、白い斜線だと中立の帯（#edeae3）の上で見えなくなるうえ、
+   中2日以下（#c8402e）の上で白文字のコントラストを下げるため。 */
+.is-provisional{
+  background-image:repeating-linear-gradient(
+    -45deg,
+    rgba(28,25,34,.12) 0 2px,
+    rgba(28,25,34,0) 2px 6px
+  );
+}
+
+/* 濃い地の上（中2日以下・試合日）は文字とバッジを白へ反転する */
+.on-dark{color:#fff}
+
+/* =========================================================
+   曜日・HOME/AWAY バッジ
+   ========================================================= */
+
+.badge{
+  flex:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  font-size:8.5px;
+  font-weight:800;
+  line-height:1;
+}
+.wd-sat{background:var(--sat);color:#fff}
+.wd-hol{background:var(--hol);color:#fff}
+.wd-plain{background:transparent;border:1px solid currentColor;color:inherit;opacity:.72}
+.on-dark .wd-sat{background:#fff;color:var(--sat)}
+.on-dark .wd-hol{background:#fff;color:var(--hol)}
+.on-dark .wd-plain{border-color:rgba(255,255,255,.7);color:#fff;opacity:1}
+
+.ha-h{background:#fff;color:inherit}
+.ha-a{background:rgba(255,255,255,.16);border:1.5px solid #fff;color:#fff}
+
+/* =========================================================
+   試合日ボックス
+   ========================================================= */
+
+.match{
+  height:36px;
+  margin:3px 0;
+  padding:0 8px;
+  border-radius:8px;
+  font-size:12px;
+  color:#fff;
+}
+.comp-j1{background:var(--j1)}
+.comp-acl{background:var(--acl)}
+.comp-emp{background:var(--emp)}
+.comp-lev{background:var(--lev)}
+
+.match .d-num{width:18px;font-size:13px}
+.m-opp{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-weight:700;
+}
+.ha-h{color:var(--j1)}
+.comp-acl .ha-h{color:var(--acl)}
+.comp-emp .ha-h{color:var(--emp)}
+.comp-lev .ha-h{color:var(--lev)}
+
+.comp-pill{
+  flex:none;
+  padding:3px 8px;
+  border:1px solid rgba(255,255,255,.65);
+  border-radius:20px;
+  font-size:9.5px;
+  font-weight:800;
+  line-height:1;
+  white-space:nowrap;
+}
+.m-chip{
+  flex:none;
+  padding:2px 6px;
+  border-radius:4px;
+  background:rgba(255,255,255,.22);
+  font-size:9px;
+  font-weight:800;
+  line-height:1.3;
+  white-space:nowrap;
+}
+
+/* 日付が未確定の試合。候補日ごとに枠だけの箱を置く */
+.is-candidate{
+  background:var(--paper);
+  border:1.5px dashed currentColor;
+  color:var(--j1);
+}
+.is-candidate.comp-acl{color:var(--acl)}
+.is-candidate.comp-emp{color:var(--emp)}
+.is-candidate.comp-lev{color:var(--lev)}
+.is-candidate .wd-sat{background:var(--sat);color:#fff}
+.is-candidate .wd-hol{background:var(--hol);color:#fff}
+.is-candidate .wd-plain{border-color:currentColor;color:inherit;opacity:.72}
+.is-candidate .ha-h{background:currentColor;color:var(--paper)}
+.is-candidate .ha-a{background:transparent;border-color:currentColor;color:inherit}
+.is-candidate .comp-pill{border-color:currentColor}
+.is-candidate .m-chip{background:rgba(0,0,0,.07);color:inherit}
+
+/* =========================================================
+   フッター
+   ========================================================= */
+
+.foot{margin:14px 0 0}
+.foot-note{
+  margin:0 0 8px;
+  font-size:10.5px;
+  line-height:1.75;
+  color:var(--ground-ink-dim);
+}
+.foot-note code{font-size:10px}
+.foot-note a{color:#6fd6e8}
+.foot-disclaimer{color:rgba(255,255,255,.72)}
+
+/* iPhone SE などの狭い画面。対戦相手名が省略されすぎないよう少し詰める */
+@media (max-width:359px){
+  .day{gap:5px;padding:0 6px}
+  .match{font-size:11px}
+  .match .d-num{width:16px;font-size:12px}
+  .comp-pill{padding:3px 7px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+}
