@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=6d31ce21";
+  var EVENTS_URL = "data/calendar-events.json?v=5148df2f";
   var MATCHES_URL = "data/matches.json?v=e096ee41";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -1277,7 +1277,7 @@
    * **「何を出すか」を決めるのはここです。** 誰に向けた予定かで絞るのも、説明欄に
    * 何を書くかも、この画面の事情です。組み立て（どう書くか）は ics.js が受け持ちます。
    */
-  function icsSpecOf(event) {
+  function icsSpecOf(event, disclaimer) {
     var start = parseDate(event.starts_at);
     if (!start) return null;
 
@@ -1292,6 +1292,8 @@
     }
     if (label) description.push(label);
     if (event.source_url) description.push(event.source_url);
+    // 断り書きは最後。読み飛ばされても、題と試合日と出典は先に目に入る。
+    if (disclaimer) description.push(disclaimer);
 
     return {
       uid: event.id,
@@ -1311,7 +1313,7 @@
    * カレンダーを使わない人には取りに行かない。
    */
   function loadIcs() {
-    return import("./ics.js?v=531155e6");
+    return import("./ics.js?v=412b39a0");
   }
 
   async function exportIcs() {
@@ -1334,10 +1336,11 @@
       return;
     }
 
-    var specs = target.map(function (event) { return icsSpecOf(event); });
+    var specs = target.map(function (event) { return icsSpecOf(event, ics.DISCLAIMER); });
+    // カレンダーの一覧に並んだとき、名前だけで公式の配信と見分けが付くようにする。
     var text = ics.buildCalendar(specs, {
       now: now,
-      calendarName: "SANGA SUPPORTER TIMELINE",
+      calendarName: "SANGA SUPPORTER TIMELINE（非公式）",
       prodId: "-//SANGA TOOLBOX//SUPPORTER TIMELINE//JA"
     });
     var blob = new Blob([text], { type: "text/calendar;charset=utf-8" });

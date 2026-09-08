@@ -169,22 +169,44 @@ function buildMatchIndex(matchesPath) {
  */
 const ICS_FIELDS = ['starts_at', 'ends_at', 'date_precision', 'title', 'source_url', 'match_ids'];
 
+/**
+ * 書き出しの型そのものを変えたときに上げる番号。
+ *
+ * 上の6つはCSVから来る値で、**説明欄の作り方を変えても動きません。** 断り書きを足す、
+ * 試合日の書き方を変える、といった型の変更は、値が同じままなので版が上がらない。
+ * 版が上がらないと、既に受け取っている人の予定は古い形のまま残る。断り書きなら、
+ * 断りの無い予定を持ったままの人が残るということ。
+ *
+ * そこで型を変えたときはここを1つ上げる。**全件の版が1つ上がり、受け取っている
+ * 全員に届く。** 逆に、上げずに型を変えてはいけない。
+ *
+ * 1 … 断り書き（assets/ics.js の DISCLAIMER）を説明欄に足した（2026-09-08）
+ */
+const ICS_TEMPLATE_VERSION = 1;
+
 /** 同じ内容かどうかを比べるための指紋。 */
 function icsFingerprint(event) {
   return JSON.stringify(ICS_FIELDS.map((key) => event[key] === undefined ? null : event[key]));
 }
 
-/** 前回の生成物を UID ごとに引けるようにする。無ければ空。 */
+/**
+ * 前回の生成物を UID ごとに引けるようにする。無ければ空。
+ * 前回どの型で書き出したか（meta.ics_template_version）も一緒に返す。
+ */
 function readPrevious(outputPath) {
   const index = new Map();
-  if (!outputPath || !fs.existsSync(outputPath)) return index;
+  let templateVersion = null;
+  if (!outputPath || !fs.existsSync(outputPath)) return { index, templateVersion };
   try {
     const previous = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
     (previous.events || []).forEach((event) => { if (event.id) index.set(event.id, event); });
+    if (previous.meta && Number.isFinite(previous.meta.ics_template_version)) {
+      templateVersion = previous.meta.ics_template_version;
+    }
   } catch (error) {
     console.error(`前回の生成物を読めませんでした（版は作り直します）: ${error.message}`);
   }
-  return index;
+  return { index, templateVersion };
 }
 
 /**
@@ -198,8 +220,11 @@ function readPrevious(outputPath) {
  * 前回に無いUID（新しいイベント）は 0 から始める。前回の値は形を問わず引き継ぐので、
  * 取得時刻から作っていた頃の大きな番号もそのまま保たれ、下がることはない。
  */
-function applyVersions(events, snapshotAt, previousIndex) {
+function applyVersions(events, snapshotAt, previous) {
   const lastModified = snapshotAt.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const previousIndex = previous.index;
+  // 型が変わったなら、値が同じ行も書き出しの中身は変わっている。全件上げる。
+  const templateChanged = previous.templateVersion !== ICS_TEMPLATE_VERSION;
 
   events.forEach((event) => {
     const previous = previousIndex.get(event.id);
@@ -213,7 +238,7 @@ function applyVersions(events, snapshotAt, previousIndex) {
       ? Math.max(0, Math.floor(previous.calendar_sequence))
       : 0;
 
-    if (icsFingerprint(previous) === icsFingerprint(event)) {
+    if (!templateChanged && icsFingerprint(previous) === icsFingerprint(event)) {
       event.calendar_sequence = previousSequence;
       event.calendar_last_modified = previous.calendar_last_modified || lastModified;
       return;
@@ -578,6 +603,7 @@ function build(options) {
       ticket_csv: path.relative(repoRoot, path.resolve(options.csvPath)),
       matches_source: path.relative(repoRoot, path.resolve(options.matchesPath)),
       match_count: rounds.size,
+      ics_template_version: ICS_TEMPLATE_VERSION,
       updated_at: checkedAt,
     },
     events: applyVersions(sortEvents(events), snapshotAt, readPrevious(options.outputPath)),
