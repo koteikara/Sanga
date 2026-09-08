@@ -1269,83 +1269,50 @@
 
   /* ---------- ICS ---------- */
 
-  function icsEscape(text) {
-    return String(text)
-      .replace(/\\/g, "\\\\")
-      .replace(/;/g, "\\;")
-      .replace(/,/g, "\\,")
-      .replace(/\r?\n/g, "\\n");
+  /**
+   * 予定を、ICSの組み立て（assets/ics.js）が受け取る形に直す。
+   *
+   * **「何を出すか」を決めるのはここです。** 誰に向けた予定かで絞るのも、説明欄に
+   * 何を書くかも、この画面の事情です。組み立て（どう書くか）は ics.js が受け持ちます。
+   */
+  function icsSpecOf(event) {
+    var start = parseDate(event.starts_at);
+    if (!start) return null;
+
+    var description = [];
+    var label = matchLabel(event);
+    // 販売の予定は試合日と別の日に出るため、題だけでは「どの試合のぶんか」は
+    // 分かっても「その試合がいつか」が分からない。画面と同じく試合日を添える。
+    // 試合そのものの予定では、予定の日付が試合日なので重ねて書かない。
+    if (event.type !== "match") {
+      var matchDate = matchDateLabel(event);
+      if (matchDate) label = label ? label + "（" + matchDate + "）" : matchDate;
+    }
+    if (label) description.push(label);
+    if (event.source_url) description.push(event.source_url);
+
+    return {
+      uid: event.id,
+      start: start,
+      end: parseDate(event.ends_at),
+      allDay: event.date_precision === "date",
+      summary: event.title,
+      description: description.join("\n"),
+      sequence: event.calendar_sequence,
+      lastModified: parseDate(event.calendar_last_modified)
+    };
   }
 
-  function toUtcStamp(date) {
-    return date.getUTCFullYear() +
-      pad(date.getUTCMonth() + 1) +
-      pad(date.getUTCDate()) + "T" +
-      pad(date.getUTCHours()) +
-      pad(date.getUTCMinutes()) +
-      pad(date.getUTCSeconds()) + "Z";
+  /**
+   * ICSの組み立ては assets/ics.js に置いてあり、これはESモジュールなので動的に読む。
+   * このファイルは classic script のため `import` 文が書けない。押されてから読むので、
+   * カレンダーを使わない人には取りに行かない。
+   */
+  function loadIcs() {
+    return import("./ics.js?v=57859ac9");
   }
 
-  function toDateStamp(date) {
-    return date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
-  }
-
-  function buildIcs(list, now) {
-    var lines = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//SANGA TOOLBOX//SUPPORTER TIMELINE//JA",
-      "CALSCALE:GREGORIAN",
-      "METHOD:PUBLISH",
-      "X-WR-CALNAME:" + icsEscape("SANGA SUPPORTER TIMELINE")
-    ];
-
-    list.forEach(function (event) {
-      var start = parseDate(event.starts_at);
-      if (!start) return;
-      lines.push("BEGIN:VEVENT");
-      lines.push("UID:" + icsEscape(event.id) + "@sanga-timeline.invalid");
-      lines.push("DTSTAMP:" + toUtcStamp(now));
-      // 版が無いと、同じUIDでもカレンダー側は更新と判断できない。
-      // 版を上げるかどうかは tools/generate-calendar-events.js の ICS_FIELDS が決める。
-      // ここで VEVENT に書く項目を足し引きしたら、あちらの一覧も合わせること。
-      if (typeof event.calendar_sequence === "number" && event.calendar_sequence >= 0) {
-        lines.push("SEQUENCE:" + Math.floor(event.calendar_sequence));
-      }
-      var lastModified = parseDate(event.calendar_last_modified);
-      if (lastModified) lines.push("LAST-MODIFIED:" + toUtcStamp(lastModified));
-      if (event.date_precision === "date") {
-        lines.push("DTSTART;VALUE=DATE:" + toDateStamp(start));
-      } else {
-        lines.push("DTSTART:" + toUtcStamp(start));
-        var end = parseDate(event.ends_at);
-        if (end) lines.push("DTEND:" + toUtcStamp(end));
-      }
-      lines.push("SUMMARY:" + icsEscape(event.title));
-      var description = [];
-      var label = matchLabel(event);
-      // 販売の予定は試合日と別の日に出るため、題だけでは「どの試合のぶんか」は
-      // 分かっても「その試合がいつか」が分からない。画面と同じく試合日を添える。
-      // 試合そのものの予定では、予定の日付が試合日なので重ねて書かない。
-      if (event.type !== "match") {
-        var matchDate = matchDateLabel(event);
-        if (matchDate) label = label ? label + "（" + matchDate + "）" : matchDate;
-      }
-      if (label) description.push(label);
-      if (event.source_url) description.push(event.source_url);
-      lines.push("DESCRIPTION:" + icsEscape(description.join("\n")));
-      // 空き時間を埋めない。販売開始はその時間に何かするわけではなく、キックオフも
-      // 観に行くとは限らない。埋めると、予定を共有している相手からは「その時間は
-      // 埋まっている人」に見えてしまう。Googleの公開フィード（祝日）と同じ扱い。
-      lines.push("TRANSP:TRANSPARENT");
-      lines.push("END:VEVENT");
-    });
-
-    lines.push("END:VCALENDAR");
-    return lines.join("\r\n") + "\r\n";
-  }
-
-  function exportIcs() {
+  async function exportIcs() {
     var status = document.getElementById("ics-status");
     var now = new Date();
     var dated = allEvents().filter(matchesFilter).filter(isDated);
@@ -1356,7 +1323,21 @@
       return;
     }
 
-    var text = buildIcs(target, now);
+    var ics;
+    try {
+      ics = await loadIcs();
+    } catch (error) {
+      status.textContent = "カレンダー用の部品を読み込めませんでした。通信を確認して、もう一度お試しください。";
+      console.error("[timeline] assets/ics.js を読めません:", error);
+      return;
+    }
+
+    var specs = target.map(function (event) { return icsSpecOf(event); });
+    var text = ics.buildCalendar(specs, {
+      now: now,
+      calendarName: "SANGA SUPPORTER TIMELINE",
+      prodId: "-//SANGA TOOLBOX//SUPPORTER TIMELINE//JA"
+    });
     var blob = new Blob([text], { type: "text/calendar;charset=utf-8" });
     var url = URL.createObjectURL(blob);
     var link = document.createElement("a");
