@@ -47,7 +47,9 @@
     { max: 2, cls: "band-danger", color: "#c8402e", dark: true },
     { max: 3, cls: "band-caution", color: "#e08a2e", dark: false },
     { max: 4, cls: "band-mild", color: "#e3b23c", dark: false },
-    { max: Infinity, cls: "band-safe", color: "#7fa687", dark: false }
+    { max: 13, cls: "band-safe", color: "#7fa687", dark: false },
+    // 中14日以上は中断期間。中6日と同じ緑にすると「安全」の意味が薄れるため中立にする。
+    { max: Infinity, cls: "band-break", color: "#edeae3", dark: false }
   ];
   var NEUTRAL = { cls: "band-neutral", color: "#edeae3", dark: false };
   var PAPER = "#fbfafc";
