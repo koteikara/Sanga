@@ -93,6 +93,9 @@ function buildPlayer(row) {
     nationality: row['国籍'] || '',
     image: row['画像'] || '',
     isMascot: parseBoolean(row['マスコット']),
+    // 空欄は在籍中。期限付き移籍は loan-out（players-data-schema.md を参照）
+    status: row['状態'] || 'active',
+    statusUntil: row['状態の期限'] || '',
   };
 }
 

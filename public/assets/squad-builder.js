@@ -37,6 +37,9 @@ const state = {
   showJa: true,
   showPill: true,
   showMascot: false,
+  // 期限付き移籍などで不在の選手を選択肢に出すか。既定は出さない。
+  // 今節の予想をする人に、出られない選手を並べないため。
+  showLoan: false,
 };
 
 let players = []; // players.json または サンプルの players 配列
@@ -60,8 +63,8 @@ let playersAreOfficial = false;
 
 async function loadPlayers() {
   const candidates = [
-    "/data/players.json?v=1a4a57fa",
-    "data/players.json?v=1a4a57fa",
+    "/data/players.json?v=35a2300f",
+    "data/players.json?v=35a2300f",
   ];
   for (const url of candidates) {
     try {
@@ -847,6 +850,9 @@ function renderPickerList() {
   const list = players.filter((p) => {
     if (p.isMascot && !state.showMascot) return false;
     if (p.isMascot && pickerTarget?.kind === "slot") return false; // マスコットはベンチのみ
+    // 不在の選手は既定で隠す。ただし、すでに置かれている選手は隠さない。
+    // 保存した来期構想を開いたあとに一覧から消えると、入れ替えられなくなる。
+    if (isAway(p) && !state.showLoan && !isAssigned(p.number)) return false;
     if (pickerFilter !== "ALL" && p.position !== pickerFilter) return false;
     return true;
   });
@@ -857,10 +863,11 @@ function renderPickerList() {
   list.forEach((p) => {
     const item = document.createElement("button");
     item.type = "button";
-    item.className = "picker-item" + (isAssigned(p.number) ? " is-used" : "");
+    item.className =
+      "picker-item" + (isAssigned(p.number) ? " is-used" : "") + (isAway(p) ? " is-away" : "");
     item.innerHTML = `
       <span class="num">${escapeHtml(p.number)}</span>
-      <span class="names"><span class="en">${escapeHtml(p.nameEn)}</span><br><span class="ja">${escapeHtml(p.nameJa || "")}</span></span>
+      <span class="names"><span class="en">${escapeHtml(p.nameEn)}</span><br><span class="ja">${escapeHtml(p.nameJa || "")}</span>${awayNoteMarkup(p)}</span>
       <span class="pos-tag">${escapeHtml(p.position || "MASCOT")}</span>
     `;
     item.addEventListener("click", () => {
@@ -869,6 +876,24 @@ function renderPickerList() {
     });
     pickerList.appendChild(item);
   });
+}
+
+/**
+ * いま出場できない選手か。期限付き移籍で他クラブにいる場合など。
+ *
+ * 選択肢に出すかどうかだけに使い、カードの見た目には持ち込まない。
+ * 生成画像は単体で出回るため、そこに「移籍中」の印を入れても、
+ * 注記が読めない大きさだと誤った情報になる。
+ */
+function isAway(player) {
+  return player.status === "loan-out";
+}
+
+/** 選択肢に添える不在の注記。復帰予定が分かるよう期限も出す */
+function awayNoteMarkup(player) {
+  if (!isAway(player)) return "";
+  const until = player.statusUntil ? `${escapeHtml(player.statusUntil)}まで ` : "";
+  return `<br><span class="away-note">${until}期限付き移籍中</span>`;
 }
 
 function assignPlayer(number) {
@@ -990,6 +1015,7 @@ function saveSquad(name) {
     showJa: state.showJa,
     showPill: state.showPill,
     showMascot: state.showMascot,
+    showLoan: state.showLoan,
     savedAt: new Date().toISOString(),
   };
   localStorage.setItem(saveKeyFor(name), JSON.stringify(data));
@@ -1032,6 +1058,8 @@ function loadSquad(name) {
   state.showJa = data.showJa;
   state.showPill = data.showPill;
   state.showMascot = data.showMascot;
+  // 後から足した項目。古い保存データには無いので既定へ倒す
+  state.showLoan = data.showLoan === true;
 
   $("#field-title").value = state.title;
   setMatchSelectValue(state.matchInfo);
@@ -1042,6 +1070,7 @@ function loadSquad(name) {
   $("#tg-ja").checked = state.showJa;
   $("#tg-pill").checked = state.showPill;
   $("#tg-mascot").checked = state.showMascot;
+  $("#tg-loan").checked = state.showLoan;
   $$("#formation-grid .btn").forEach((btn, i) => {
     btn.setAttribute("aria-pressed", String(Object.keys(FORMATIONS)[i] === state.formationKey));
   });
@@ -1165,6 +1194,9 @@ function wireControls() {
   });
   $("#tg-mascot").addEventListener("change", (e) => {
     state.showMascot = e.target.checked;
+  });
+  $("#tg-loan").addEventListener("change", (e) => {
+    state.showLoan = e.target.checked;
   });
   $("#reset-positions").addEventListener("click", resetPositions);
   $("#save-form").addEventListener("submit", (e) => {

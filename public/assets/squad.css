@@ -964,3 +964,12 @@ body.picker-open{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 
 /* タップ判定を select-btn に一本化するため、カード本体はポインタイベントを受けない */
 .player .card{pointer-events:none;position:relative;z-index:0}
+
+/* 選手を選ぶ画面で、いま出場できない選手を控えめに見せる。
+   選べなくはしない（来期の構想を立てる用途があるため）。
+   キャンバス側には持ち込まない。生成画像は単体で出回るので、
+   注記が読めない大きさだと「移籍中」の印が誤った情報になる。 */
+.picker-item.is-away{opacity:.55}
+.picker-item .away-note{
+  font-size:11px;color:#c9a7dd;letter-spacing:.02em;
+}
