@@ -62,6 +62,8 @@
   ];
   var NEUTRAL = { cls: "band-neutral", color: "#edeae3", dark: false };
   var PAPER = "#fbfafc";
+  // ミニマップに月の目盛りを出す最小幅。これより狭いと「10月」が入らない。
+  var MINIMAP_LABEL_WIDTH = 56;
 
   var strip = document.getElementById("strip");
   var statusLine = document.getElementById("status");
@@ -506,6 +508,7 @@
           color: comp ? comp.color : COMPETITIONS.J1.color,
           alpha: entry.isCandidate ? 0.45 : 1,
           monthStart: day.date.getDate() === 1,
+          month: day.date.getMonth() + 1,
           isToday: isToday
         };
       }
@@ -513,6 +516,7 @@
         color: (day.band || NEUTRAL).color,
         alpha: 1,
         monthStart: day.date.getDate() === 1,
+        month: day.date.getMonth() + 1,
         isToday: isToday
       };
     });
@@ -545,6 +549,23 @@
           context.fillRect(0, top, width, 1);
         }
       });
+
+      // 幅があるときだけ月の目盛りを入れる。色の帯だけでは、詰まっている時期が
+      // 「いつ」なのか読めない。26pxでは文字が入らないので出さない。
+      if (width >= MINIMAP_LABEL_WIDTH) {
+        context.font = "700 9px system-ui,-apple-system,'Hiragino Sans','Noto Sans JP',sans-serif";
+        context.textBaseline = "top";
+        rows.forEach(function (row, index) {
+          if (index > 0 && !row.monthStart) return;
+          var top = Math.floor(index / rows.length * height);
+          var label = row.month + "月";
+          // 帯の色の上に直接置くと読めないので、薄い地を敷いてから字を載せる。
+          context.fillStyle = "rgba(251,250,252,.88)";
+          context.fillRect(0, top, context.measureText(label).width + 8, 12);
+          context.fillStyle = "#6a6577";
+          context.fillText(label, 4, top + 2);
+        });
+      }
 
       // 今日の位置。どの帯の色の上でも見えるよう、白で縁取ってから黒い線を引く。
       var todayIndex = rows.findIndex(function (row) { return row.isToday; });
