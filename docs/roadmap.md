@@ -41,6 +41,7 @@
 | 共有 | 共有画像の保存導線 | 本番反映済み | `docs/screenshot-social-share.md` | 生成画像プレビュー、保存リンク、長押し保存案内を用意。 |
 | 表記 | 作成者表記 | 本番反映済み | `README.md` | 非公式ページの作成者表記として扱う。 |
 | 表記 | 免責事項 | 本番反映済み | `README.md` | 正確な情報は公式情報を確認する前提。 |
+| UI | 公開ページ共通のトップバー | 2026-09-08実装 | `docs/site-index.md` | 入口ページ以外の6ページに同じ見た目のバーを置き、`index.html` へ戻れるようにした。正本は `public/assets/topbar.css`。 |
 | 確認 | GitHub Pages確認 | 運用済み | `docs/deploy-policy.md` / `docs/operation-flow.md` | 本番反映前の確認環境として使う。 |
 | デプロイ | 本番サーバー手動デプロイ運用 | 運用済み | `docs/deploy-policy.md` / `docs/operation-flow.md` | 自動デプロイではなく手動実行を基本にする。 |
 | 運用 | スプレッドシート更新から本番反映までの運用整理 | 整理済み | `docs/operation-flow.md` | CSV出力、JSON生成、検証、PR、確認、本番反映の流れを整理。 |
