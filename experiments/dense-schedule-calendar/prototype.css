@@ -522,10 +522,20 @@ button:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
 /* 開いたときの着地点。読み上げに題を読ませるためで、枠は出さない */
 .guide h2:focus{outline:none}
 .guide h3{margin:16px 0 6px;font-size:12px;font-weight:800;color:var(--muted)}
-/* 本文だけは横に伸ばさない。シートが700pxになると1行が長くなりすぎて、
-   次の行の頭を探すのに目が戻れなくなる。 */
-.guide-lead{margin:0;max-width:34em;font-size:12px;line-height:1.8}
-.guide-note{margin:6px 0 0;max-width:36em;font-size:11px;line-height:1.75;color:var(--muted)}
+.guide-lead{margin:0;font-size:12px;line-height:1.8}
+.guide-note{margin:6px 0 0;font-size:11px;line-height:1.75;color:var(--muted)}
+/* シートが700pxになると1行が55字ほどになり、次の行の頭に目が戻れなくなる。
+   かといって本文だけ max-width で止めると、見出し・凡例・閉じるボタンは幅いっぱいのまま
+   本文だけ左に寄り、右半分が縦長に空いて間の抜けた見た目になった（実機確認での指摘）。
+   段の幅の下限を280pxにして、入るだけ段を作る。狭い端末では1段のまま変わらない。
+   column-width は下限なので、2段になったあとは段が伸びて幅いっぱいを使う。 */
+.guide-body{column-width:280px;column-gap:28px}
+/* 見出し・凡例・注記が段の切れ目でばらけないようにする */
+.guide-block{break-inside:avoid;margin:0 0 16px}
+.guide-block:last-child{margin-bottom:0}
+/* 段の頭を左右で揃える。上の余白は .guide-block 側で持つ */
+.guide-block>h3:first-child{margin-top:0}
+
 .guide-note code{font-size:10.5px}
 .guide-note a{color:#1d6f7d}
 .guide-disclaimer{margin-top:14px;padding-top:10px;border-top:1px solid var(--line)}
