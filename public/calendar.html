@@ -140,7 +140,6 @@
 <script src="assets/calendar.js?v=fc523a85"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
-  // ?nebula=off でCSSのぼかしと見比べられる（入口ページ・タイムラインと同じ）。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {
     try {
       const { startNebula } = await import("./assets/index-nebula.js?v=56428a80");

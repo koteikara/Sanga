@@ -149,7 +149,6 @@
 
   const canvas = document.querySelector("#nebula");
 
-  // 実機でCSS背景と見比べられるようにする。?nebula=off でCSSのぼかしに戻る
   if (new URLSearchParams(location.search).get("nebula") === "off") {
     console.info("[site-index] ?nebula=off のため、CSSの背景を使います。");
   } else {
