@@ -665,30 +665,85 @@ body.sheet-open { overflow: hidden; }
   margin: 0;
   padding: 0;
 }
-.drawer-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line-soft);
-}
-.drawer-list li:last-child { border-bottom: 0; }
-.drawer-when {
+
+/* 予定を1枚の券に見立てる。半券にあたる右側は残り時間だけに使い、
+   切り取り線の位置を全部の券でそろえる。目を動かさずに縦に読み比べられる。
+   券らしさは切り欠きと破線で出す。傾けたり影を重ねたりはしない。 */
+.ticket {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: stretch;
+  position: relative;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+.ticket:last-child { margin-bottom: 0; }
+.ticket-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 14px;
+}
+.ticket-when {
   margin: 0;
   font-size: 0.78rem;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
-/* 残り時間。この画面を開く理由なので、日付より先に、濃く出す */
-.drawer-until {
-  /* 桁数が変わっても日付の頭がそろうように幅を取る（あと3時間／あと10日） */
-  min-width: 5.4em;
-  font-size: 0.86rem;
+.ticket-title {
+  margin: 2px 0 0;
+  font-size: 0.96rem;
   font-weight: 700;
-  color: var(--ink);
+  line-height: 1.5;
 }
-.drawer-until.is-soon { color: var(--action); }
+
+/* 半券。破線と、上下の切り欠きで切り取り線に見せる。
+   切り欠きはシートの地（--panel）で塗って穴に見せている。 */
+.ticket-stub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 78px;
+  padding: 10px 6px;
+  border-left: 1px dashed var(--line);
+  border-radius: 0 5px 5px 0;
+  text-align: center;
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  right: 72px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--panel);
+  pointer-events: none;
+}
+.ticket::before { top: -6px; }
+.ticket::after { bottom: -6px; }
+
+.ticket-stub-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.ticket-stub-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+/* 48時間を切ったものだけ半券に色を敷く。全部に敷くと券の区別が付かない */
+.ticket.is-soon { border-color: var(--action); }
+.ticket.is-soon .ticket-stub {
+  background: var(--action-soft);
+  border-left-color: var(--action);
+}
+.ticket.is-soon .ticket-stub-value,
+.ticket.is-soon .ticket-stub-label { color: var(--action); }
 .drawer-item-title {
   margin: 2px 0 0;
   font-size: 0.96rem;

@@ -202,11 +202,8 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.chip`
 - `.day`
 - `.day-label`
-- `.drawer-item-title`
 - `.drawer-list`
 - `.drawer-meta`
-- `.drawer-until`
-- `.drawer-when`
 - `.empty`
 - `.event`
 - `.event-also`
@@ -242,6 +239,13 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.sheet`
 - `.sheet-open`
 - `.tag`
+- `.ticket`
+- `.ticket-main`
+- `.ticket-stub`
+- `.ticket-stub-label`
+- `.ticket-stub-value`
+- `.ticket-title`
+- `.ticket-when`
 - `.today`
 - `.tour`
 - `.visually-hidden`

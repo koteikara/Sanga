@@ -585,31 +585,28 @@
     var ul = document.createElement("ul");
     ul.className = "drawer-list";
     upcoming.slice(0, 5).forEach(function (item) {
+      // 券の形にする。半券にあたる右側へ残り時間だけを置き、左に日時と用件を置く。
+      // 「あとどれだけか」が、切り取り線の右にいつも同じ場所で出る。
       var li = document.createElement("li");
+      li.className = "ticket";
+      if (item.date.getTime() - now.getTime() <= 48 * 3600 * 1000) {
+        li.classList.add("is-soon");
+      }
+
+      var main = document.createElement("div");
+      main.className = "ticket-main";
 
       var when = document.createElement("p");
-      when.className = "drawer-when";
-
-      // 残り時間を先に、大きく出す。この画面を開く理由は「あとどれだけか」なので、
-      // 日付と同じ大きさの灰色の中に混ぜない。
-      var until = document.createElement("span");
-      until.className = "drawer-until";
-      if (item.date.getTime() - now.getTime() <= 48 * 3600 * 1000) {
-        until.classList.add("is-soon");
-      }
-      until.textContent = untilText(item.date, now);
-
-      var whenText = document.createElement("span");
-      whenText.textContent = formatDay(item.date) + " " +
+      when.className = "ticket-when";
+      when.textContent = formatDay(item.date) + " " +
         (item.event.date_precision === "date" ? "時刻未定" : formatTime(item.date));
-      when.append(until, whenText);
 
       var title = document.createElement("p");
-      title.className = "drawer-item-title";
+      title.className = "ticket-title";
       // 試合名は下の行に出すので、題の頭からは落とす
       title.textContent = stripMatchPrefix(item.event.title);
 
-      li.append(when, title);
+      main.append(when, title);
 
       var meta = document.createElement("p");
       meta.className = "drawer-meta";
@@ -641,7 +638,27 @@
         meta.appendChild(link);
       }
 
-      if (meta.childNodes.length) li.appendChild(meta);
+      if (meta.childNodes.length) main.appendChild(meta);
+
+      var stub = document.createElement("div");
+      stub.className = "ticket-stub";
+      var text = untilText(item.date, now);
+      if (text.indexOf("あと") === 0) {
+        var head = document.createElement("span");
+        head.className = "ticket-stub-label";
+        head.textContent = "あと";
+        var value = document.createElement("span");
+        value.className = "ticket-stub-value";
+        value.textContent = text.slice(2);
+        stub.append(head, value);
+      } else {
+        var only = document.createElement("span");
+        only.className = "ticket-stub-label";
+        only.textContent = text;
+        stub.appendChild(only);
+      }
+
+      li.append(main, stub);
       ul.appendChild(li);
     });
     box.appendChild(ul);
