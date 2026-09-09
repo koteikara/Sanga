@@ -205,6 +205,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.drawer-item-title`
 - `.drawer-list`
 - `.drawer-meta`
+- `.drawer-until`
 - `.drawer-when`
 - `.empty`
 - `.event`
@@ -225,6 +226,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.is-closing`
 - `.is-mine`
 - `.is-on`
+- `.is-soon`
 - `.is-stuck`
 - `.match-away`
 - `.match-date`
@@ -233,6 +235,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.match-side`
 - `.month`
 - `.month-label`
+- `.next-lead`
 - `.note-tentative`
 - `.past`
 - `.reason`

@@ -478,16 +478,21 @@ section h2 {
 }
 .sheet-body > *:first-child { margin-top: 0; }
 
-/* 「次にやること」のいちばん近い1件 */
+/* 「次にやること」の要約。件数だけを言う平文で、急ぎのときだけ色が付く。
+   いつも色が付いていると、本当に近いときに気づけない。 */
 .next-lead {
   margin: 0 0 14px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.next-lead.is-soon {
   padding: 12px 14px;
   border-radius: 8px;
   background: var(--action-soft);
   color: var(--action);
-  font-size: 0.92rem;
   font-weight: 700;
-  line-height: 1.6;
+  font-size: 0.92rem;
 }
 
 /* 使い方の説明。シートは下から出る操作盤、こちらは画面中央に出る読みもの。
@@ -666,18 +671,35 @@ body.sheet-open { overflow: hidden; }
 }
 .drawer-list li:last-child { border-bottom: 0; }
 .drawer-when {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
   margin: 0;
   font-size: 0.78rem;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
+/* 残り時間。この画面を開く理由なので、日付より先に、濃く出す */
+.drawer-until {
+  /* 桁数が変わっても日付の頭がそろうように幅を取る（あと3時間／あと10日） */
+  min-width: 5.4em;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.drawer-until.is-soon { color: var(--action); }
 .drawer-item-title {
   margin: 2px 0 0;
   font-size: 0.96rem;
   line-height: 1.55;
 }
 .drawer-meta {
-  margin: 4px 0 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 6px 0 0;
   font-size: 0.78rem;
   color: var(--muted);
 }
@@ -1384,6 +1406,18 @@ code {
 
 /* 「カレンダーに入れる」シートの2つの道。どちらを選ぶかの画面なので、
    説明ではなく選択肢として並べる。詳しい手順は案内ページに送る。 */
+/* シートの中の区切り。用が2つ以上あるとき、見出しと線で分ける。
+   囲みにすると入れ子の枠が二重になるので、線だけにする。 */
+.sheet-section + .sheet-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.sheet-section-head {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
 .ics-way {
   margin-top: 14px;
   padding: 14px;
