@@ -1,10 +1,11 @@
 // 求・譲 投稿ツール プロトタイプ
 //
-// 設計は docs/trade-post-design.md。ここで確かめたいのは次の4点。
-//   1. 商品と背番号を「選ぶ」だけで、実際の投稿と同じ形の文章になるか
-//   2. 文字数を重み付き280で数えたとき、実用的な長さに収まるか
-//   3. 「さがす」が、いま出ている投稿へ実際に届くか
-//   4. スマホ幅で背番号を選ぶ操作が成立するか
+// 設計は docs/trade-post-design.md。
+//
+// 1つの投稿に商品を複数組のせられる。実際の投稿がそうなっているため
+// （「譲）ユニ型缶バッジ 2 求）同種44 / 譲）ユニ型キーホルダー 2、23、38 求）同種44」）。
+// 「同種」は直前に挙げた商品と同じもの、という意味。組の中では商品名を1回だけ書き、
+// 求の行は「同種」で受ける。
 //
 // データはローカルのサンプルを読む（experiments/ の他のプロトタイプと同じ方式）。
 // 本番移植時は public/data/ を読む。
@@ -19,13 +20,11 @@
   var INVITE = "検索からお気軽にお声かけください";
   var MAX_WEIGHTED = 280;
   var MATCH_LIMIT = 6;
+  var CARD_WIDTH = 1200;
+  var CARD_HEIGHT = 675;
 
   var state = {
-    goodsId: "",
-    variant: "",
-    offer: [],
-    want: [],
-    wantAny: false,
+    blocks: [],
     matches: [],
     findGoodsId: "",
     find: []
@@ -55,7 +54,7 @@
   }
 
   // --- データの整形 -------------------------------------------------------
-  function selectedGoods(id) {
+  function findGoods(id) {
     for (var i = 0; i < data.goods.length; i++) {
       if (data.goods[i].id === id) { return data.goods[i]; }
     }
@@ -63,8 +62,8 @@
   }
 
   // 背番号は数値順。マスコットは番号が大きく離れているため末尾に置く。
-  function sortPlayers(players) {
-    return players.slice().sort(function (a, b) {
+  function sortedPlayers() {
+    return data.players.slice().sort(function (a, b) {
       if (a.isMascot !== b.isMascot) { return a.isMascot ? 1 : -1; }
       return Number(a.number) - Number(b.number);
     });
@@ -74,13 +73,20 @@
   // 実際に #2（期限付き移籍中）を含む投稿がある。
   function isOut(player) { return player.status !== "active"; }
 
-  function upcomingMatches(matches, today) {
-    return matches
-      .filter(function (m) {
-        return m.is_visible !== false && m.match_date && m.match_date >= today;
-      })
-      .sort(function (a, b) { return a.match_date < b.match_date ? -1 : 1; })
-      .slice(0, MATCH_LIMIT);
+  function toggle(list, value) {
+    var index = list.indexOf(value);
+    if (index === -1) { list.push(value); } else { list.splice(index, 1); }
+  }
+
+  function numberList(list) {
+    return list.slice().sort(function (a, b) { return Number(a) - Number(b); }).join(".");
+  }
+
+  function todayISO() {
+    var now = new Date();
+    return now.getFullYear() + "-" +
+      String(now.getMonth() + 1).padStart(2, "0") + "-" +
+      String(now.getDate()).padStart(2, "0");
   }
 
   var WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
@@ -95,60 +101,33 @@
     return head + " " + match.opponent + "戦（" + match.venue + "）";
   }
 
-  // --- 描画 ---------------------------------------------------------------
-  function renderGoodsSelect(select, selectedId) {
+  function upcomingMatches() {
+    var today = todayISO();
+    return data.matches
+      .filter(function (m) { return m.is_visible !== false && m.match_date && m.match_date >= today; })
+      .sort(function (a, b) { return a.match_date < b.match_date ? -1 : 1; })
+      .slice(0, MATCH_LIMIT);
+  }
+
+  // --- 商品ブロック -------------------------------------------------------
+  function newBlock() {
+    return { goodsId: data.goods[0].id, variant: "", offer: [], want: [] };
+  }
+
+  function fillGoodsSelect(select, selectedId) {
     select.textContent = "";
     data.goods.forEach(function (item) {
       var option = document.createElement("option");
       option.value = item.id;
-      option.textContent = item.name + (item.tentative ? "（名称未確認）" : "");
+      option.textContent = item.name;
       if (item.id === selectedId) { option.selected = true; }
       select.appendChild(option);
     });
   }
 
-  function renderVariants() {
-    var goods = selectedGoods(state.goodsId);
-    var field = $("variant-field");
-    var box = $("variants");
-    box.textContent = "";
-    if (!goods || !goods.variants || goods.variants.length === 0) {
-      field.hidden = true;
-      state.variant = "";
-      return;
-    }
-    field.hidden = false;
-    if (goods.variants.indexOf(state.variant) === -1) { state.variant = ""; }
-    var options = [""].concat(goods.variants);
-    options.forEach(function (variant) {
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "chip";
-      button.textContent = variant === "" ? "指定しない" : variant;
-      button.setAttribute("aria-pressed", String(state.variant === variant));
-      button.addEventListener("click", function () {
-        state.variant = variant;
-        renderVariants();
-        compose();
-      });
-      box.appendChild(button);
-    });
-  }
-
-  // 背番号を選ぶ盤は3か所（譲・求・さがす）にある。押されたら自分を描き直すので、
-  // 種類をキーにして「どのリストを持ち、押されたあと何をするか」だけを表で分ける。
-  var PICKERS = {
-    offer: { container: "offer-numbers", list: "offer", count: "offer-count", after: compose },
-    want: { container: "want-numbers", list: "want", count: "want-count", after: compose },
-    find: { container: "find-numbers", list: "find", count: "find-count", after: renderFind }
-  };
-
-  function renderPicker(kind) {
-    var picker = PICKERS[kind];
-    var container = $(picker.container);
-    var list = state[picker.list];
+  function fillNumbers(container, list, onToggle) {
     container.textContent = "";
-    sortPlayers(data.players).forEach(function (player) {
+    sortedPlayers().forEach(function (player) {
       var button = document.createElement("button");
       button.type = "button";
       button.className = "num" + (isOut(player) ? " is-out" : "");
@@ -157,25 +136,94 @@
       number.textContent = player.number;
       button.appendChild(number);
       button.appendChild(document.createTextNode(player.nameShort || player.nameJa));
-      button.addEventListener("click", function () {
-        toggle(list, player.number);
-        renderPicker(kind);
-        picker.after();
-      });
+      button.addEventListener("click", function () { onToggle(player.number); });
       container.appendChild(button);
     });
-    $(picker.count).textContent = String(list.length);
   }
 
-  function toggle(list, value) {
-    var index = list.indexOf(value);
-    if (index === -1) { list.push(value); } else { list.splice(index, 1); }
+  function goodsNote(goods) {
+    var parts = [];
+    parts.push(goods.kind === "gacha" ? "ガチャ（中身が選べない）" : "選んで買える商品");
+    if (goods.lineup) { parts.push("ラインナップ" + goods.lineup + "種"); }
+    return parts.join(" / ");
+  }
+
+  function renderBlocks() {
+    var host = $("blocks");
+    host.textContent = "";
+    var template = $("block-template");
+
+    state.blocks.forEach(function (block, index) {
+      var node = template.content.cloneNode(true);
+      var root = node.querySelector(".block");
+      var goods = findGoods(block.goodsId);
+
+      node.querySelector(".block-title").textContent = "商品 " + (index + 1);
+
+      var remove = node.querySelector(".remove-block");
+      remove.hidden = state.blocks.length < 2;
+      remove.addEventListener("click", function () {
+        state.blocks.splice(index, 1);
+        renderBlocks();
+        refresh();
+      });
+
+      var select = node.querySelector(".block-goods");
+      select.id = "block-goods-" + index;
+      node.querySelector("label").setAttribute("for", select.id);
+      fillGoodsSelect(select, block.goodsId);
+      select.addEventListener("change", function () {
+        block.goodsId = this.value;
+        block.variant = "";
+        renderBlocks();
+        refresh();
+      });
+
+      node.querySelector(".block-note").textContent = goods ? goodsNote(goods) : "";
+
+      // 種別（1st / 2nd）は商品が持つときだけ出す
+      var variantField = node.querySelector(".block-variant-field");
+      var variants = (goods && goods.variants) || [];
+      if (variants.length) {
+        variantField.hidden = false;
+        var chips = node.querySelector(".block-variants");
+        [""].concat(variants).forEach(function (variant) {
+          var chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "chip";
+          chip.textContent = variant === "" ? "指定しない" : variant;
+          chip.setAttribute("aria-pressed", String(block.variant === variant));
+          chip.addEventListener("click", function () {
+            block.variant = variant;
+            renderBlocks();
+            refresh();
+          });
+          chips.appendChild(chip);
+        });
+      }
+
+      node.querySelector(".block-offer-count").textContent = String(block.offer.length);
+      node.querySelector(".block-want-count").textContent = String(block.want.length);
+
+      fillNumbers(node.querySelector(".block-offer"), block.offer, function (number) {
+        toggle(block.offer, number);
+        renderBlocks();
+        refresh();
+      });
+      fillNumbers(node.querySelector(".block-want"), block.want, function (number) {
+        toggle(block.want, number);
+        renderBlocks();
+        refresh();
+      });
+
+      host.appendChild(root);
+    });
   }
 
   function renderMatches() {
     var box = $("matches");
     box.textContent = "";
-    upcomingMatches(data.matches, todayISO()).forEach(function (match) {
+    upcomingMatches().forEach(function (match) {
       var button = document.createElement("button");
       button.type = "button";
       button.className = "match";
@@ -187,64 +235,63 @@
       button.addEventListener("click", function () {
         toggle(state.matches, match.id);
         renderMatches();
-        compose();
+        refresh();
       });
       box.appendChild(button);
     });
   }
 
-  function todayISO() {
-    var now = new Date();
-    return now.getFullYear() + "-" +
-      String(now.getMonth() + 1).padStart(2, "0") + "-" +
-      String(now.getDate()).padStart(2, "0");
-  }
-
-  // --- 投稿文の組み立て ---------------------------------------------------
-  // 実際の投稿の書き方に合わせる（docs/trade-post-design.md「Xでの交換の実態」）。
-  // 背番号はドット区切り、商品名は1回だけ。
-  function numberList(list) {
-    return list.slice().sort(function (a, b) { return Number(a) - Number(b); }).join(".");
+  // --- 投稿文 -------------------------------------------------------------
+  function blockLines(block) {
+    var goods = findGoods(block.goodsId);
+    if (!goods) { return []; }
+    var name = goods.name + (block.variant ? "（" + block.variant + "）" : "");
+    var lines = [];
+    if (block.offer.length) {
+      lines.push("譲）" + name + " " + numberList(block.offer));
+      // 「同種」＝いま挙げた商品と同じもの。組の中で商品名を繰り返さずに済む。
+      if (block.want.length) { lines.push("求）同種 " + numberList(block.want)); }
+    } else if (block.want.length) {
+      lines.push("求）" + name + " " + numberList(block.want));
+    }
+    return lines;
   }
 
   function compose() {
-    var goods = selectedGoods(state.goodsId);
-    if (!goods) { return; }
+    var lines = ["【交換】京都サンガ"];
 
-    var lines = [];
-    var title = "【交換】" + goods.name;
-    if (state.variant) { title += "（" + state.variant + "）"; }
-    lines.push(title);
+    state.blocks.forEach(function (block) {
+      lines = lines.concat(blockLines(block));
+    });
 
-    if (state.offer.length) { lines.push("譲 " + numberList(state.offer)); }
-    if (state.wantAny) {
-      lines.push("求 同種");
-    } else if (state.want.length) {
-      lines.push("求 " + numberList(state.want));
-    }
-
-    var handover = [];
+    var tail = [];
     state.matches.forEach(function (id) {
       for (var i = 0; i < data.matches.length; i++) {
-        if (data.matches[i].id === id) { handover.push(matchLabel(data.matches[i])); }
+        if (data.matches[i].id === id) { tail.push(matchLabel(data.matches[i])); }
       }
     });
-    if ($("by-mail").checked) { handover.push("郵送も可"); }
-    if (handover.length) { lines.push("", handover.join(" / ")); }
+    if ($("by-mail").checked) { tail.push("郵送も可"); }
+    if (tail.length) { lines.push("", tail.join(" / ")); }
 
     var extra = $("extra").value.trim();
-    if (extra) { if (!handover.length) { lines.push(""); } lines.push(extra); }
+    if (extra) { if (!tail.length) { lines.push(""); } lines.push(extra); }
 
     if ($("add-invite").checked) {
-      if (!handover.length && !extra) { lines.push(""); }
+      if (!tail.length && !extra) { lines.push(""); }
       lines.push(INVITE);
     }
 
     if ($("add-tags").checked) {
-      var tags = (goods.tags || []).slice();
-      data.hashtags.forEach(function (tag) {
-        if (tag === "#京都サンガ" && tags.indexOf(tag) === -1) { tags.push(tag); }
+      var tags = [];
+      state.blocks.forEach(function (block) {
+        var goods = findGoods(block.goodsId);
+        (goods && goods.tags ? goods.tags : []).forEach(function (tag) {
+          if (tags.indexOf(tag) === -1) { tags.push(tag); }
+        });
       });
+      if (data.hashtags.indexOf("#京都サンガ") !== -1 && tags.indexOf("#京都サンガ") === -1) {
+        tags.push("#京都サンガ");
+      }
       if (tags.length) { lines.push("", tags.join(" ")); }
     }
 
@@ -261,6 +308,123 @@
     $("post-to-x").href = "https://x.com/intent/post?text=" + encodeURIComponent(text);
   }
 
+  // --- 画像 ---------------------------------------------------------------
+  // Xでは文章より画像が先に見られる。番号の羅列はテキストだと読みにくいので、
+  // 譲・求を色で分けて並べる。canvasの2Dだけで描くので、外部ライブラリを足さない。
+  var CARD = {
+    bg: "#fbf9fc",
+    ink: "#1c1220",
+    weak: "#5c5364",
+    accent: "#5b1f7e",
+    offer: "#14532d",
+    want: "#8a1f6b"
+  };
+
+  function drawChips(ctx, numbers, color, x, y, maxWidth) {
+    var size = 62;
+    var gap = 10;
+    var cursorX = x;
+    var cursorY = y;
+    numbers.forEach(function (number) {
+      ctx.font = "bold 30px system-ui, sans-serif";
+      var width = Math.max(size, ctx.measureText(number).width + 28);
+      if (cursorX + width > x + maxWidth) {
+        cursorX = x;
+        cursorY += size + gap;
+      }
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      // roundRect は iOS Safari 16.4 より前に無い。角丸は飾りなので、無ければ角のまま描く。
+      if (ctx.roundRect) {
+        ctx.roundRect(cursorX, cursorY, width, size, 12);
+      } else {
+        ctx.rect(cursorX, cursorY, width, size);
+      }
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(number, cursorX + width / 2, cursorY + size / 2 + 1);
+      cursorX += width + gap;
+    });
+    // 呼び出し側が左揃えで描き続けられるように戻す
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    return cursorY + size;
+  }
+
+  function drawCard() {
+    var canvas = document.createElement("canvas");
+    canvas.width = CARD_WIDTH;
+    canvas.height = CARD_HEIGHT;
+    var ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = CARD.bg;
+    ctx.fillRect(0, 0, CARD_WIDTH, CARD_HEIGHT);
+    ctx.fillStyle = CARD.accent;
+    ctx.fillRect(0, 0, CARD_WIDTH, 12);
+
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = CARD.accent;
+    ctx.font = "bold 42px system-ui, sans-serif";
+    ctx.fillText("京都サンガ　交換", 56, 84);
+
+    var id = $("card-id").value.trim();
+    if (id) {
+      ctx.textAlign = "right";
+      ctx.fillStyle = CARD.weak;
+      ctx.font = "28px system-ui, sans-serif";
+      ctx.fillText(id, CARD_WIDTH - 56, 84);
+      ctx.textAlign = "left";
+    }
+
+    var y = 140;
+    state.blocks.forEach(function (block) {
+      var goods = findGoods(block.goodsId);
+      if (!goods) { return; }
+      if (!block.offer.length && !block.want.length) { return; }
+      if (y > CARD_HEIGHT - 120) { return; }
+
+      ctx.fillStyle = CARD.ink;
+      ctx.font = "bold 30px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "alphabetic";
+      ctx.fillText(goods.name + (block.variant ? "（" + block.variant + "）" : ""), 56, y);
+      y += 20;
+
+      [["譲", block.offer, CARD.offer], ["求", block.want, CARD.want]].forEach(function (row) {
+        if (!row[1].length) { return; }
+        ctx.fillStyle = row[2];
+        ctx.font = "bold 34px system-ui, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText(row[0], 56, y + 31);
+        y = drawChips(ctx, row[1].slice().sort(function (a, b) {
+          return Number(a) - Number(b);
+        }), row[2], 110, y, CARD_WIDTH - 170) + 14;
+      });
+      y += 18;
+    });
+
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = CARD.weak;
+    ctx.font = "26px system-ui, sans-serif";
+    var footer = [];
+    state.matches.forEach(function (matchId) {
+      for (var i = 0; i < data.matches.length; i++) {
+        if (data.matches[i].id === matchId) { footer.push(matchLabel(data.matches[i])); }
+      }
+    });
+    if ($("by-mail").checked) { footer.push("郵送も可"); }
+    if (footer.length) { ctx.fillText(footer.join(" / "), 56, CARD_HEIGHT - 44); }
+
+    var url = canvas.toDataURL("image/png");
+    $("card").src = url;
+    $("save-card").href = url;
+  }
+
   // --- さがす -------------------------------------------------------------
   // 商品名の表記ゆれ（「ユニ型缶バッジ」「ユニホーム缶バッチ」）を拾うため、
   // 短くて特徴のある呼び方を検索語に使う。
@@ -272,7 +436,7 @@
   }
 
   function findQuery() {
-    var goods = selectedGoods(state.findGoodsId);
+    var goods = findGoods(state.findGoodsId);
     if (!goods) { return ""; }
     var words = ["サンガ", searchTerm(goods), "譲"];
     // 番号は1つだけ選ばれたときに足す。複数をANDで並べると1件も出なくなる。
@@ -287,10 +451,18 @@
     var hint = $("find-hint");
     hint.hidden = state.find.length < 2;
     hint.textContent = "背番号は1つだけ選ぶと絞り込みます。いまは商品だけで探しています。";
+    $("find-count").textContent = String(state.find.length);
     $("find-yahoo").href =
       "https://search.yahoo.co.jp/realtime/search?ei=UTF-8&p=" + encodeURIComponent(query);
-    $("find-x").href =
-      "https://x.com/search?f=live&q=" + encodeURIComponent(query);
+    $("find-x").href = "https://x.com/search?f=live&q=" + encodeURIComponent(query);
+  }
+
+  function renderFindNumbers() {
+    fillNumbers($("find-numbers"), state.find, function (number) {
+      toggle(state.find, number);
+      renderFindNumbers();
+      renderFind();
+    });
   }
 
   function renderFindTags() {
@@ -335,35 +507,27 @@
     try { document.execCommand("copy") ? done() : fail(); } catch (error) { fail(); }
   }
 
+  function refresh() {
+    compose();
+    drawCard();
+  }
+
   // --- 起動 ---------------------------------------------------------------
   function bind() {
     $("tab-make").addEventListener("click", function () { showPanel("make"); });
     $("tab-find").addEventListener("click", function () { showPanel("find"); });
 
-    $("goods").addEventListener("change", function () {
-      state.goodsId = this.value;
-      var goods = selectedGoods(state.goodsId);
-      var note = $("goods-note");
-      if (goods && goods.tentative) {
-        note.hidden = false;
-        note.textContent = "この商品名は未確認です（" + goods.checkedAt + " 時点）。公式表記と違う可能性があります。";
-      } else {
-        note.hidden = true;
-      }
-      renderVariants();
-      compose();
-    });
-
-    $("want-any").addEventListener("change", function () {
-      state.wantAny = this.checked;
-      $("want-numbers").setAttribute("aria-disabled", String(this.checked));
-      compose();
+    $("add-block").addEventListener("click", function () {
+      state.blocks.push(newBlock());
+      renderBlocks();
+      refresh();
     });
 
     ["by-mail", "add-invite", "add-tags"].forEach(function (id) {
-      $(id).addEventListener("change", compose);
+      $(id).addEventListener("change", refresh);
     });
     $("extra").addEventListener("input", compose);
+    $("card-id").addEventListener("input", drawCard);
     $("post").addEventListener("input", updateCounter);
     $("copy").addEventListener("click", copyPost);
 
@@ -383,19 +547,16 @@
     data.players = results[1].players;
     data.matches = Array.isArray(results[2]) ? results[2] : results[2].matches;
 
-    state.goodsId = data.goods[0].id;
+    state.blocks = [newBlock()];
     state.findGoodsId = data.goods[0].id;
 
-    renderGoodsSelect($("goods"), state.goodsId);
-    renderGoodsSelect($("find-goods"), state.findGoodsId);
-    renderVariants();
-    renderPicker("offer");
-    renderPicker("want");
-    renderPicker("find");
+    fillGoodsSelect($("find-goods"), state.findGoodsId);
+    renderBlocks();
     renderMatches();
+    renderFindNumbers();
     renderFindTags();
     bind();
-    compose();
+    refresh();
     renderFind();
   });
 }());

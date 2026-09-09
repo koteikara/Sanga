@@ -21,29 +21,8 @@
 <main>
   <section id="panel-make" class="panel" role="tabpanel" aria-labelledby="tab-make">
 
-    <div class="field">
-      <label for="goods">交換する商品</label>
-      <select id="goods"></select>
-      <p class="hint" id="goods-note" hidden></p>
-    </div>
-
-    <fieldset class="field" id="variant-field" hidden>
-      <legend>種別</legend>
-      <div class="chips" id="variants"></div>
-    </fieldset>
-
-    <fieldset class="field">
-      <legend>譲る背番号<span class="count" id="offer-count">0</span></legend>
-      <div class="numbers" id="offer-numbers"></div>
-    </fieldset>
-
-    <fieldset class="field">
-      <legend>求める背番号<span class="count" id="want-count">0</span></legend>
-      <label class="check">
-        <input type="checkbox" id="want-any"> 番号は問わない（同種）
-      </label>
-      <div class="numbers" id="want-numbers"></div>
-    </fieldset>
+    <div id="blocks"></div>
+    <button type="button" id="add-block">商品をもう1つ足す</button>
 
     <fieldset class="field">
       <legend>受け渡し</legend>
@@ -73,6 +52,17 @@
       <a class="button" id="post-to-x" href="#" target="_blank" rel="noopener noreferrer">Xで投稿</a>
     </div>
     <p class="status" id="copy-status" role="status"></p>
+
+    <div class="field image-field">
+      <label for="card-id">画像に入れるID（任意）</label>
+      <input type="text" id="card-id" placeholder="@your_id" maxlength="20">
+      <p class="hint">画像はXでは文章より先に見られます。投稿に添えてください。</p>
+      <img id="card" alt="譲る背番号と求める背番号を並べた画像">
+      <div class="actions">
+        <a class="button secondary" id="save-card" download="sanga-trade.png" href="#">画像を保存</a>
+      </div>
+      <p class="hint">保存できないときは画像を長押しして保存してください。<strong>現物の写真と手書きIDの代わりにはなりません。</strong></p>
+    </div>
   </section>
 
   <section id="panel-find" class="panel" role="tabpanel" aria-labelledby="tab-find" hidden>
@@ -106,6 +96,32 @@
     </div>
   </section>
 </main>
+
+<template id="block-template">
+  <article class="block">
+    <div class="block-head">
+      <h2 class="block-title"></h2>
+      <button type="button" class="remove-block">この組を消す</button>
+    </div>
+    <div class="field">
+      <label>商品</label>
+      <select class="block-goods"></select>
+      <p class="hint block-note"></p>
+    </div>
+    <fieldset class="field block-variant-field" hidden>
+      <legend>種別</legend>
+      <div class="chips block-variants"></div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>譲る背番号<span class="count block-offer-count">0</span></legend>
+      <div class="numbers block-offer"></div>
+    </fieldset>
+    <fieldset class="field">
+      <legend>求める背番号<span class="count block-want-count">0</span></legend>
+      <div class="numbers block-want"></div>
+    </fieldset>
+  </article>
+</template>
 
 <script src="prototype.js"></script>
 </body>
