@@ -36,7 +36,7 @@
 | `sanga2025season.html` | 2025シーズンの日程 | `sanga2025.html` | 維持 |
 | `sanga2025.html` | `sanga2025season.html` への3秒リダイレクト | 被リンクなし | 維持 |
 | `sanga_slides.html` | 「選手が思う"サンガのみりょく"」 | 被リンクなし | 維持 |
-| `TradePost/index-v1.html` | 求・譲 投稿フォーマット生成ツール | 被リンクなし | 維持 |
+| `TradePost/index-v1.html` | 求・譲 投稿フォーマット生成ツール | `index.html` | 現行。改修中（`docs/trade-post-design.md`） |
 | `experiments/bench-emphasis/prototype.html` | ベンチ強調オプションの検証 | 被リンクなし | 本番公開から除外 |
 | `experiments/image-generation/prototype.html` | 画像生成ライブラリの検証 | 被リンクなし | 本番公開から除外 |
 
@@ -94,7 +94,9 @@
 
 ### 3. 被リンクのない旧ページは維持する
 
-`sanga2025.html`、`sanga2025season.html`、`sanga_slides.html`、`TradePost/index-v1.html` は、直URLで共有されている可能性を考慮して残します。現行機能ではないため、仕様変更や改修の対象にはしません。
+`sanga2025.html`、`sanga2025season.html`、`sanga_slides.html` は、直URLで共有されている可能性を考慮して残します。現行機能ではないため、仕様変更や改修の対象にはしません。
+
+**`TradePost/index-v1.html` はこの分類から外れました（2026-09-09）。** 2026-09-08の入口ページ整備で `public/data/tools.json` の `live` に載り、`public/index.html` から導線が通ったためです。現行ツールとして改修対象に含めます。設計は `docs/trade-post-design.md` を正とします。
 
 ## FTP同期が削除できる範囲
 
