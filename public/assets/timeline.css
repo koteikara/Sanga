@@ -478,16 +478,21 @@ section h2 {
 }
 .sheet-body > *:first-child { margin-top: 0; }
 
-/* 「次にやること」のいちばん近い1件 */
+/* 「次にやること」の要約。件数だけを言う平文で、急ぎのときだけ色が付く。
+   いつも色が付いていると、本当に近いときに気づけない。 */
 .next-lead {
   margin: 0 0 14px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.next-lead.is-soon {
   padding: 12px 14px;
   border-radius: 8px;
   background: var(--action-soft);
   color: var(--action);
-  font-size: 0.92rem;
   font-weight: 700;
-  line-height: 1.6;
+  font-size: 0.92rem;
 }
 
 /* 使い方の説明。シートは下から出る操作盤、こちらは画面中央に出る読みもの。
@@ -660,24 +665,95 @@ body.sheet-open { overflow: hidden; }
   margin: 0;
   padding: 0;
 }
-.drawer-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line-soft);
+
+/* 予定を1枚の券に見立てる。半券にあたる右側は残り時間だけに使い、
+   切り取り線の位置を全部の券でそろえる。目を動かさずに縦に読み比べられる。
+   券らしさは切り欠きと破線で出す。傾けたり影を重ねたりはしない。 */
+.ticket {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  margin-bottom: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
 }
-.drawer-list li:last-child { border-bottom: 0; }
-.drawer-when {
+.ticket:last-child { margin-bottom: 0; }
+.ticket-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 14px;
+}
+.ticket-when {
   margin: 0;
   font-size: 0.78rem;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
+.ticket-title {
+  margin: 2px 0 0;
+  font-size: 0.96rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+/* 半券。破線と、上下の切り欠きで切り取り線に見せる。
+   切り欠きはシートの地（--panel）で塗って穴に見せている。 */
+.ticket-stub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 78px;
+  padding: 10px 6px;
+  /* 切り取り線は白の破線。紫の上に置くので、地の線の色では見えない */
+  border-left: 1px dashed rgba(255, 255, 255, 0.55);
+  border-radius: 0 5px 5px 0;
+  background: var(--anchor);
+  color: #fff;
+  text-align: center;
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  right: 72px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--panel);
+  pointer-events: none;
+}
+.ticket::before { top: -6px; }
+.ticket::after { bottom: -6px; }
+
+.ticket-stub-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.82);
+}
+.ticket-stub-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+/* 48時間を切ったものは半券を明るい紫に上げ、券の枠も同じ色にする。
+   半券はもともと紫なので、急ぎは色の濃さで示す。 */
+.ticket.is-soon { border-color: var(--accent); }
+.ticket.is-soon .ticket-stub { background: var(--accent); }
 .drawer-item-title {
   margin: 2px 0 0;
   font-size: 0.96rem;
   line-height: 1.55;
 }
 .drawer-meta {
-  margin: 4px 0 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 6px 0 0;
   font-size: 0.78rem;
   color: var(--muted);
 }
@@ -1384,6 +1460,18 @@ code {
 
 /* 「カレンダーに入れる」シートの2つの道。どちらを選ぶかの画面なので、
    説明ではなく選択肢として並べる。詳しい手順は案内ページに送る。 */
+/* シートの中の区切り。用が2つ以上あるとき、見出しと線で分ける。
+   囲みにすると入れ子の枠が二重になるので、線だけにする。 */
+.sheet-section + .sheet-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.sheet-section-head {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
 .ics-way {
   margin-top: 14px;
   padding: 14px;

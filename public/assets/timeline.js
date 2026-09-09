@@ -143,6 +143,14 @@
     return "あと" + Math.floor(hours / 24) + "日";
   }
 
+  /**
+   * 題の先頭にある試合名を落とす。試合名を別に出している場所では、
+   * 「ラーチャブリーFC戦 ラーチャブリーFC戦 先行販売」と2度読ませることになる。
+   */
+  function stripMatchPrefix(title) {
+    return String(title || "").replace(/^[^ ]+戦 /, "");
+  }
+
   /* ---------- データ ---------- */
 
   function loadPersonal() {
@@ -545,7 +553,8 @@
     }
 
     if (!upcoming.length) {
-      lead.textContent = "直近の期限つきの予定はありません。";
+      lead.className = "next-lead";
+      lead.textContent = "期限のある予定はありません。";
       var none = document.createElement("p");
       none.className = "empty";
       none.textContent = "これから始まる販売や締切が出ると、ここに並びます。";
@@ -553,40 +562,103 @@
       return;
     }
 
-    var first = upcoming[0];
-    lead.textContent = formatDay(first.date) + " " +
-      (first.event.date_precision === "date" ? "時刻未定" : formatTime(first.date)) + " " +
-      first.event.title + "（" + untilText(first.date, now) + "）";
+    // 見出しは件数と急ぎ具合だけにする。1件目の日時と題を書くと、すぐ下の
+    // 1行目とまったく同じ文が2度並ぶ。48時間を切ったときだけ色を付ける。
+    // 1週間先の予定に赤い箱を出していては、本当に急ぐときに効かない。
+    var soon = upcoming[0].date.getTime() - now.getTime() <= 48 * 3600 * 1000;
+    // 数えるのは2週間ぶんだけにする。シーズン全体だと128件などになり、
+    // 数字が大きいだけで今週なにをすればいいのかは分からない。
+    var limit = now.getTime() + 14 * 24 * 3600 * 1000;
+    var near = upcoming.filter(function (item) { return item.date.getTime() <= limit; }).length;
+    lead.className = soon ? "next-lead is-soon" : "next-lead";
+    if (soon) {
+      lead.textContent = "いちばん近いものは、" + untilText(upcoming[0].date, now) +
+        "で始まります。2週間以内は" + near + "件です。";
+    } else if (near > 0) {
+      lead.textContent = "2週間以内に" + near + "件あります。近い順に" +
+        Math.min(upcoming.length, 5) + "件を出しています。";
+    } else {
+      lead.textContent = "2週間以内はありません。いちばん近いものは、" +
+        untilText(upcoming[0].date, now) + "です。";
+    }
 
     var ul = document.createElement("ul");
     ul.className = "drawer-list";
     upcoming.slice(0, 5).forEach(function (item) {
+      // 券の形にする。半券にあたる右側へ残り時間だけを置き、左に日時と用件を置く。
+      // 「あとどれだけか」が、切り取り線の右にいつも同じ場所で出る。
       var li = document.createElement("li");
-
-      var when = document.createElement("p");
-      when.className = "drawer-when";
-      when.textContent = formatDay(item.date) + " " +
-        (item.event.date_precision === "date" ? "時刻未定" : formatTime(item.date)) +
-        " ・ " + untilText(item.date, now);
-
-      var title = document.createElement("p");
-      title.className = "drawer-item-title";
-      title.textContent = item.event.title;
-
-      li.append(when, title);
-
-      var sub = [];
-      var label = matchLabel(item.event);
-      if (label) sub.push(label);
-      var reason = profileMatch(item.event);
-      if (reason) sub.push(reason + "が対象");
-      if (sub.length) {
-        var meta = document.createElement("p");
-        meta.className = "drawer-meta";
-        meta.textContent = sub.join(" ・ ");
-        li.appendChild(meta);
+      li.className = "ticket";
+      if (item.date.getTime() - now.getTime() <= 48 * 3600 * 1000) {
+        li.classList.add("is-soon");
       }
 
+      var main = document.createElement("div");
+      main.className = "ticket-main";
+
+      var when = document.createElement("p");
+      when.className = "ticket-when";
+      when.textContent = formatDay(item.date) + " " +
+        (item.event.date_precision === "date" ? "時刻未定" : formatTime(item.date));
+
+      var title = document.createElement("p");
+      title.className = "ticket-title";
+      // 試合名は下の行に出すので、題の頭からは落とす
+      title.textContent = stripMatchPrefix(item.event.title);
+
+      main.append(when, title);
+
+      var meta = document.createElement("p");
+      meta.className = "drawer-meta";
+
+      var label = matchLabel(item.event);
+      if (label) {
+        var m = document.createElement("span");
+        m.textContent = label;
+        meta.appendChild(m);
+      }
+
+      var reason = profileMatch(item.event);
+      if (reason) {
+        var mine = document.createElement("span");
+        mine.className = "badge-mine";
+        mine.textContent = reason + "が対象";
+        meta.appendChild(mine);
+      }
+
+      // 「次にやること」と言う以上、そこから公式の案内へ行けるようにする。
+      // 出典が無いと、この画面でできるのは眺めることだけになる。
+      if (item.event.source_url) {
+        var link = document.createElement("a");
+        link.href = item.event.source_url;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.className = "event-source";
+        link.textContent = "公式の案内を見る";
+        meta.appendChild(link);
+      }
+
+      if (meta.childNodes.length) main.appendChild(meta);
+
+      var stub = document.createElement("div");
+      stub.className = "ticket-stub";
+      var text = untilText(item.date, now);
+      if (text.indexOf("あと") === 0) {
+        var head = document.createElement("span");
+        head.className = "ticket-stub-label";
+        head.textContent = "あと";
+        var value = document.createElement("span");
+        value.className = "ticket-stub-value";
+        value.textContent = text.slice(2);
+        stub.append(head, value);
+      } else {
+        var only = document.createElement("span");
+        only.className = "ticket-stub-label";
+        only.textContent = text;
+        stub.appendChild(only);
+      }
+
+      li.append(main, stub);
       ul.appendChild(li);
     });
     box.appendChild(ul);
@@ -594,7 +666,7 @@
     if (upcoming.length > 5) {
       var more = document.createElement("p");
       more.className = "drawer-meta";
-      more.textContent = "ほか" + (upcoming.length - 5) + "件はタイムラインで見られます。";
+      more.textContent = "これより先の" + (upcoming.length - 5) + "件はタイムラインで見られます。";
       box.appendChild(more);
     }
   }
@@ -662,7 +734,7 @@
     title.className = "event-title";
     // 見出しで試合名を出しているときは、題からも繰り返さない
     title.textContent = (options && options.hideMatch)
-      ? event.title.replace(/^[^ ]+戦 /, "")
+      ? stripMatchPrefix(event.title)
       : event.title;
 
     var meta = document.createElement("p");
@@ -714,7 +786,7 @@
       var also = document.createElement("p");
       also.className = "event-also";
       also.textContent = "同時に " + options.companions.map(function (e) {
-        return e.title.replace(/^[^ ]+戦 /, "").replace(/\s*開始/, "");
+        return stripMatchPrefix(e.title).replace(/\s*開始/, "");
       }).join("、") + " も始まります";
       li.appendChild(also);
     }
