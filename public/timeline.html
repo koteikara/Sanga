@@ -16,7 +16,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="SANGA TOOLBOX — 観戦をちょっと楽しくする道具を、サンガを応援する人みんなに。">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/timeline.css?v=8794a99c">
+<link rel="stylesheet" href="assets/timeline.css?v=4c1058e4">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
 </head>
 <body>
@@ -303,10 +303,13 @@
     <button type="button" class="sheet-close" data-close-sheet>閉じる</button>
   </div>
   <div class="sheet-body">
+    <!-- 2つの用が同じ面に並ぶので、見出しと区切り線で分ける。
+         見出しが無いと、下のボタンがどこに属すのか分からない。 -->
+    <section class="sheet-section">
+      <h3 class="sheet-section-head">自分に関係するものに印を付ける</h3>
     <p id="profile-status" class="my-status" role="status"></p>
     <p class="section-note">
-      会員種別とシーズンパスの有無から、自分に関係する先行販売を上に出します。
-      この端末にだけ保存し、公開データにも外部にも送りません。未設定でもすべての予定が見えます。
+      会員種別とシーズンパスの有無から、自分が申し込めるものに「対象」の印を付けます。この端末にだけ保存し、公開データにも外部にも送りません。未設定でもすべての予定が見えます。
     </p>
     <form id="profile-form" class="my-form">
       <div class="field">
@@ -329,9 +332,13 @@
         <button type="button" id="profile-clear" class="btn btn-quiet">保存した設定を削除する</button>
       </div>
     </form>
-    <p class="section-note">
+    </section>
+
+    <section class="sheet-section">
+      <h3 class="sheet-section-head">使い方を見直す</h3>
+      <p class="section-note">初めて開いたときに出る4ページの説明を、もう一度最初から見られます。上の設定は消えません。</p>
       <button type="button" id="tour-open" class="btn btn-quiet">使い方をもう一度見る</button>
-    </p>
+    </section>
   </div>
 </dialog>
 
@@ -392,7 +399,7 @@
   </div>
 </dialog>
 
-<script src="assets/timeline.js?v=fa15493e"></script>
+<script src="assets/timeline.js?v=3fbf9926"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {
