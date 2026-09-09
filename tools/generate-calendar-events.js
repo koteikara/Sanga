@@ -27,6 +27,14 @@ const STAGES = {
     audience: { season_ticket: true },
     label: 'シーズンパス先行受付 開始',
   },
+  // ACLだけ「受付」ではなく「販売」と呼ぶ。対象も役割も上と同じなので、
+  // suffix と対象者はそろえる。題だけ公式の呼び方に合わせる。
+  'シーズンパス先行販売': {
+    suffix: 'season',
+    kind: 'sale',
+    audience: { season_ticket: true },
+    label: 'シーズンパス先行販売 開始',
+  },
   'SC最速先行販売（プラチナ）': {
     suffix: 'platinum',
     kind: 'sale',
@@ -140,12 +148,28 @@ function readCsvRecords(csvPath) {
   });
 }
 
-function matchIdForRound(round) {
+/**
+ * CSVの大会名と節番号から、matches.json の試合IDを作る。
+ *
+ * **節番号だけでは足りない。** 節は大会ごとに1から振り直されるので、J1の第2節と
+ * ACLリーグステージの第2節が同じIDになる。別の試合の日程を、別の試合の販売予定に
+ * 結び付けてしまう。
+ *
+ * 知らない大会が来たら止める。黙って `sec02` に落とすより、気付けるほうがよい。
+ */
+const MATCH_ID_BY_COMPETITION = [
+  { test: /AFCチャンピオンズリーグ/, id: (n) => `acl-md${n}` },
+  { test: /Ｊ１リーグ|J1リーグ/, id: (n) => `sec${String(n).padStart(2, '0')}` },
+];
+
+function matchIdFor(competition, round) {
   const number = Number(round);
   if (!Number.isInteger(number) || number < 1) {
     throw new Error(`節の値を数として読めません: ${round}`);
   }
-  return `sec${String(number).padStart(2, '0')}`;
+  const rule = MATCH_ID_BY_COMPETITION.find((entry) => entry.test.test(competition || ''));
+  if (!rule) throw new Error(`知らない大会です（試合IDの作り方が決まっていません）: ${competition}`);
+  return rule.id(number);
 }
 
 function buildMatchIndex(matchesPath) {
@@ -538,7 +562,7 @@ function build(options) {
   const rounds = new Set();
 
   records.forEach((record) => {
-    const matchId = matchIdForRound(record.round);
+    const matchId = matchIdFor(record.competition, record.round);
     const match = matchIndex.get(matchId);
     if (!match) throw new Error(`matches.json に該当する試合がありません: ${matchId}`);
     rounds.add(matchId);
