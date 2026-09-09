@@ -56,6 +56,9 @@ const VOLATILE_COLUMNS = ['official_display_status', 'retrieved_at_jst'];
  */
 const KNOWN_SALE_TYPES = new Set([
   'シーズンパス先行受付（ホーム指定席をご購入の方）',
+  // ACLだけ呼び方が違う。同じ「シーズンパスを持っている人向けの先行」だが、
+  // 公式の表記をそのまま持つ方針なので、別の段階名として並べる。
+  'シーズンパス先行販売',
   'SC最速先行販売（プラチナ）',
   'SC先々行販売（ゴールド）',
   'SC先行販売（レギュラー・キッズ）',
@@ -284,7 +287,7 @@ function parseSchedule(html, options) {
   const rows = [];
   for (const block of blocks) {
     const heading = parseHeading(block[0], season, years);
-    const context = `第${heading.round}節`;
+    const context = `${heading.competition} 第${heading.round}節`;
     const sales = parseSaleTables(block[2], years, context);
 
     const base = {
@@ -366,14 +369,19 @@ function comparableRows(csvText) {
   return JSON.stringify(rows.map((cells) => keep.map((index) => cells[index] ?? '')));
 }
 
-/** 行を見分ける鍵。1試合の中で段階名は重複しない。 */
+/**
+ * 行を見分ける鍵。1試合の中で段階名は重複しない。
+ *
+ * **大会を入れないと足りない。** 節番号は大会ごとに振り直され、J1の第2節と
+ * ACLリーグステージの第2節が同じ鍵になる。別の試合が同じ行として扱われる。
+ */
 function rowKey(row) {
-  return [row.round, row.entry_group, row.sale_type].join('\u0000');
+  return [row.competition, row.round, row.entry_group, row.sale_type].join('\u0000');
 }
 
 /** 行の見出し。変更報告を読む人が、どの試合のどの段階か分かるように。 */
 function rowLabel(row) {
-  const match = `第${row.round}節 ${row.opponent}`;
+  const match = `${row.competition} 第${row.round}節 ${row.opponent}`;
   return row.sale_type ? `${match} / ${row.sale_type}` : match;
 }
 
