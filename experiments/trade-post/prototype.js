@@ -73,13 +73,30 @@
   // 実際に #2（期限付き移籍中）を含む投稿がある。
   function isOut(player) { return player.status !== "active"; }
 
+  function playerName(number) {
+    for (var i = 0; i < data.players.length; i++) {
+      if (data.players[i].number === number) {
+        return data.players[i].nameShort || data.players[i].nameJa;
+      }
+    }
+    return "";
+  }
+
   function toggle(list, value) {
     var index = list.indexOf(value);
     if (index === -1) { list.push(value); } else { list.splice(index, 1); }
   }
 
+  function sortNumbers(list) {
+    return list.slice().sort(function (a, b) { return Number(a) - Number(b); });
+  }
+
+  // 背番号だけだと、覚えていない人が確認したり取り違えたりする。既定では名前を添える。
+  // ただし名前は1人あたり重み8前後かかるため、280に収まらないときは外せるようにしている。
   function numberList(list) {
-    return list.slice().sort(function (a, b) { return Number(a) - Number(b); }).join(".");
+    var sorted = sortNumbers(list);
+    if (!$("add-names").checked) { return sorted.join("."); }
+    return sorted.map(function (number) { return number + playerName(number); }).join(" ");
   }
 
   function todayISO() {
@@ -303,8 +320,10 @@
     var text = $("post").value;
     var used = weightedLength(text);
     var counter = $("counter");
-    counter.textContent = used + " / " + MAX_WEIGHTED;
-    counter.classList.toggle("over", used > MAX_WEIGHTED);
+    var over = used > MAX_WEIGHTED;
+    counter.textContent = used + " / " + MAX_WEIGHTED +
+      (over && $("add-names").checked ? "　選手名を外すと収まります" : "");
+    counter.classList.toggle("over", over);
     $("post-to-x").href = "https://x.com/intent/post?text=" + encodeURIComponent(text);
   }
 
@@ -320,37 +339,52 @@
     want: "#8a1f6b"
   };
 
+  // 画像は文字数の制約が無いので、背番号には常に選手名を添える。
+  // タイムラインでは画像が先に見られるため、ここで取り違えを防ぐ。
   function drawChips(ctx, numbers, color, x, y, maxWidth) {
-    var size = 62;
+    var height = 78;
     var gap = 10;
     var cursorX = x;
     var cursorY = y;
+
     numbers.forEach(function (number) {
-      ctx.font = "bold 30px system-ui, sans-serif";
-      var width = Math.max(size, ctx.measureText(number).width + 28);
+      var name = playerName(number);
+      ctx.font = "bold 32px system-ui, sans-serif";
+      var numberWidth = ctx.measureText(number).width;
+      ctx.font = "20px system-ui, sans-serif";
+      var nameWidth = ctx.measureText(name).width;
+      var width = Math.max(76, numberWidth + 28, nameWidth + 24);
+
       if (cursorX + width > x + maxWidth) {
         cursorX = x;
-        cursorY += size + gap;
+        cursorY += height + gap;
       }
+
       ctx.fillStyle = color;
       ctx.beginPath();
       // roundRect は iOS Safari 16.4 より前に無い。角丸は飾りなので、無ければ角のまま描く。
       if (ctx.roundRect) {
-        ctx.roundRect(cursorX, cursorY, width, size, 12);
+        ctx.roundRect(cursorX, cursorY, width, height, 12);
       } else {
-        ctx.rect(cursorX, cursorY, width, size);
+        ctx.rect(cursorX, cursorY, width, height);
       }
       ctx.fill();
+
       ctx.fillStyle = "#ffffff";
       ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(number, cursorX + width / 2, cursorY + size / 2 + 1);
+      ctx.textBaseline = "alphabetic";
+      ctx.font = "bold 32px system-ui, sans-serif";
+      ctx.fillText(number, cursorX + width / 2, cursorY + 38);
+      ctx.font = "20px system-ui, sans-serif";
+      ctx.fillText(name, cursorX + width / 2, cursorY + 64);
+
       cursorX += width + gap;
     });
+
     // 呼び出し側が左揃えで描き続けられるように戻す
     ctx.textAlign = "left";
     ctx.textBaseline = "alphabetic";
-    return cursorY + size;
+    return cursorY + height;
   }
 
   function drawCard() {
@@ -399,7 +433,7 @@
         ctx.font = "bold 34px system-ui, sans-serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        ctx.fillText(row[0], 56, y + 31);
+        ctx.fillText(row[0], 56, y + 39);
         y = drawChips(ctx, row[1].slice().sort(function (a, b) {
           return Number(a) - Number(b);
         }), row[2], 110, y, CARD_WIDTH - 170) + 14;
@@ -523,7 +557,7 @@
       refresh();
     });
 
-    ["by-mail", "add-invite", "add-tags"].forEach(function (id) {
+    ["by-mail", "add-names", "add-invite", "add-tags"].forEach(function (id) {
       $(id).addEventListener("change", refresh);
     });
     $("extra").addEventListener("input", compose);
