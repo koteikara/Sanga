@@ -707,8 +707,11 @@ body.sheet-open { overflow: hidden; }
   flex: none;
   width: 78px;
   padding: 10px 6px;
-  border-left: 1px dashed var(--line);
+  /* 切り取り線は白の破線。紫の上に置くので、地の線の色では見えない */
+  border-left: 1px dashed rgba(255, 255, 255, 0.55);
   border-radius: 0 5px 5px 0;
+  background: var(--anchor);
+  color: #fff;
   text-align: center;
 }
 .ticket::before,
@@ -728,7 +731,7 @@ body.sheet-open { overflow: hidden; }
 .ticket-stub-label {
   font-size: 0.68rem;
   letter-spacing: 0.08em;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.82);
 }
 .ticket-stub-value {
   font-size: 1.15rem;
@@ -736,14 +739,10 @@ body.sheet-open { overflow: hidden; }
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
 }
-/* 48時間を切ったものだけ半券に色を敷く。全部に敷くと券の区別が付かない */
-.ticket.is-soon { border-color: var(--action); }
-.ticket.is-soon .ticket-stub {
-  background: var(--action-soft);
-  border-left-color: var(--action);
-}
-.ticket.is-soon .ticket-stub-value,
-.ticket.is-soon .ticket-stub-label { color: var(--action); }
+/* 48時間を切ったものは半券を明るい紫に上げ、券の枠も同じ色にする。
+   半券はもともと紫なので、急ぎは色の濃さで示す。 */
+.ticket.is-soon { border-color: var(--accent); }
+.ticket.is-soon .ticket-stub { background: var(--accent); }
 .drawer-item-title {
   margin: 2px 0 0;
   font-size: 0.96rem;
