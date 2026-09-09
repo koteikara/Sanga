@@ -1,0 +1,228 @@
+/* 求・譲 投稿ツール プロトタイプ
+   本番移植時は public/assets/ 側の書き方に合わせ直す。ここでは最小構成で見た目と操作感だけ確認する。 */
+
+:root {
+  --accent: #5b1f7e;
+  --accent-strong: #431560;
+  --ink: #1c1220;
+  --ink-weak: #5c5364;
+  --line: #d8cfe0;
+  --bg: #f7f4f9;
+  --card: #ffffff;
+  --focus: #0b6bcb;
+  --offer: #14532d;
+  --want: #8a1f6b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0 16px 64px;
+  font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+}
+
+.page-head { max-width: 640px; margin: 0 auto; padding: 24px 0 8px; }
+h1 { font-size: 1.35rem; margin: 0 0 4px; color: var(--accent); }
+.lead { margin: 0 0 4px; color: var(--ink-weak); }
+.proto-note { margin: 0; font-size: 0.8rem; color: var(--ink-weak); }
+
+/* タブ */
+.tabs {
+  max-width: 640px;
+  margin: 16px auto 0;
+  display: flex;
+  gap: 8px;
+}
+.tab {
+  flex: 1;
+  min-height: 44px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--accent);
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 10px 10px 0 0;
+  border-bottom-width: 0;
+  cursor: pointer;
+}
+.tab[aria-selected="true"] {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+main { max-width: 640px; margin: 0 auto; }
+
+.panel {
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 0 0 12px 12px;
+  padding: 16px;
+}
+
+/* 入力 */
+.field { margin: 0 0 20px; padding: 0; border: 0; }
+.field > label,
+.field > legend {
+  display: block;
+  padding: 0;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.count {
+  display: inline-block;
+  min-width: 1.6em;
+  margin-left: 8px;
+  padding: 0 6px;
+  font-size: 0.8rem;
+  color: #fff;
+  text-align: center;
+  background: var(--ink-weak);
+  border-radius: 999px;
+}
+.hint { margin: 4px 0 0; font-size: 0.85rem; color: var(--ink-weak); }
+.hint-inline { margin-left: 8px; font-size: 0.8rem; font-weight: 400; color: var(--ink-weak); }
+
+select,
+input[type="text"],
+textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+textarea { line-height: 1.7; resize: vertical; }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* 背番号の選択 */
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 6px;
+}
+.num {
+  min-height: 48px;
+  padding: 4px 2px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.num b { display: block; font-size: 1.05rem; }
+.num[aria-pressed="true"] { color: #fff; border-color: transparent; }
+#offer-numbers .num[aria-pressed="true"] { background: var(--offer); }
+#want-numbers .num[aria-pressed="true"],
+#find-numbers .num[aria-pressed="true"] { background: var(--want); }
+.num.is-out { opacity: 0.55; }
+.numbers[aria-disabled="true"] { opacity: 0.4; pointer-events: none; }
+
+/* 種別・タグ */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-height: 44px;
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--accent);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.chip[aria-pressed="true"] { color: #fff; background: var(--accent); border-color: var(--accent); }
+
+/* 試合 */
+.matches { display: grid; gap: 6px; margin-bottom: 8px; }
+.match {
+  min-height: 44px;
+  padding: 8px 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  color: var(--ink);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.match[aria-pressed="true"] { color: #fff; background: var(--accent); border-color: var(--accent); }
+.match .home { font-weight: 700; }
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  font-weight: 400;
+  color: var(--ink);
+}
+.check input { width: 20px; height: 20px; }
+
+/* 出力 */
+.counter { margin: 6px 0 0; font-size: 0.85rem; font-weight: 700; color: var(--ink-weak); }
+.counter.over { color: #b3261e; }
+
+.actions { display: flex; gap: 8px; margin-top: 8px; }
+.actions-column { flex-direction: column; }
+
+button:not(.tab):not(.num):not(.match):not(.chip),
+.button {
+  flex: 1;
+  min-height: 48px;
+  padding: 12px 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  background: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.button.secondary { color: var(--accent); background: #fff; }
+button:not(.tab):not(.num):not(.match):not(.chip):hover,
+.button:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+
+.status { margin: 8px 0 0; min-height: 1.4em; font-size: 0.9rem; color: var(--offer); }
+
+.query {
+  margin: 0;
+  padding: 10px;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: var(--bg);
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

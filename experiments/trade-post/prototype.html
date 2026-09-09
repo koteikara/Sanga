@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>求・譲 投稿ツール（プロトタイプ）</title>
+<link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+<header class="page-head">
+  <h1>求・譲 投稿ツール</h1>
+  <p class="lead">京都サンガのガチャ・グッズの交換募集を、見つけてもらえる形に整えます。</p>
+  <p class="proto-note">検証用のプロトタイプです。<a href="../../docs/trade-post-design.md">設計は docs/trade-post-design.md</a></p>
+</header>
+
+<nav class="tabs" aria-label="画面の切り替え">
+  <button type="button" class="tab" id="tab-make" aria-selected="true" aria-controls="panel-make">投稿をつくる</button>
+  <button type="button" class="tab" id="tab-find" aria-selected="false" aria-controls="panel-find">募集をさがす</button>
+</nav>
+
+<main>
+  <section id="panel-make" class="panel" role="tabpanel" aria-labelledby="tab-make">
+
+    <div class="field">
+      <label for="goods">交換する商品</label>
+      <select id="goods"></select>
+      <p class="hint" id="goods-note" hidden></p>
+    </div>
+
+    <fieldset class="field" id="variant-field" hidden>
+      <legend>種別</legend>
+      <div class="chips" id="variants"></div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend>譲る背番号<span class="count" id="offer-count">0</span></legend>
+      <div class="numbers" id="offer-numbers"></div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend>求める背番号<span class="count" id="want-count">0</span></legend>
+      <label class="check">
+        <input type="checkbox" id="want-any"> 番号は問わない（同種）
+      </label>
+      <div class="numbers" id="want-numbers"></div>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend>受け渡し</legend>
+      <div class="matches" id="matches"></div>
+      <label class="check"><input type="checkbox" id="by-mail"> 郵送も可</label>
+    </fieldset>
+
+    <div class="field">
+      <label for="extra">補足（任意）</label>
+      <input type="text" id="extra" placeholder="定価買取も可 / フォロワーさん優先 など">
+    </div>
+
+    <fieldset class="field">
+      <legend>投稿に入れるもの</legend>
+      <label class="check"><input type="checkbox" id="add-invite" checked> 「検索からお気軽にお声かけください」を入れる</label>
+      <label class="check"><input type="checkbox" id="add-tags" checked> ハッシュタグを入れる</label>
+    </fieldset>
+
+    <div class="field">
+      <label for="post">投稿文<span class="hint-inline">そのまま直せます</span></label>
+      <textarea id="post" rows="12" spellcheck="false"></textarea>
+      <p class="counter" id="counter" aria-live="polite">0 / 280</p>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="copy">コピー</button>
+      <a class="button" id="post-to-x" href="#" target="_blank" rel="noopener noreferrer">Xで投稿</a>
+    </div>
+    <p class="status" id="copy-status" role="status"></p>
+  </section>
+
+  <section id="panel-find" class="panel" role="tabpanel" aria-labelledby="tab-find" hidden>
+    <p class="lead">いま出ている募集を探します。<strong>投稿する前でも使えます。</strong></p>
+
+    <div class="field">
+      <label for="find-goods">探す商品</label>
+      <select id="find-goods"></select>
+    </div>
+
+    <fieldset class="field">
+      <legend>探す背番号（任意）<span class="count" id="find-count">0</span></legend>
+      <div class="numbers" id="find-numbers"></div>
+    </fieldset>
+
+    <div class="field">
+      <p class="hint">検索に使う言葉</p>
+      <pre class="query" id="find-query"></pre>
+      <p class="hint" id="find-hint" hidden></p>
+    </div>
+
+    <div class="actions actions-column">
+      <a class="button" id="find-yahoo" href="#" target="_blank" rel="noopener noreferrer">Yahoo!リアルタイム検索でさがす</a>
+      <a class="button secondary" id="find-x" href="#" target="_blank" rel="noopener noreferrer">Xでさがす</a>
+    </div>
+    <p class="hint">Yahoo!リアルタイム検索はログインなしでXの投稿を検索できます。</p>
+
+    <div class="field">
+      <p class="hint">タグから見る</p>
+      <div class="chips" id="find-tags"></div>
+    </div>
+  </section>
+</main>
+
+<script src="prototype.js"></script>
+</body>
+</html>
