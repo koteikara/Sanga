@@ -27,11 +27,19 @@
      4.5:1 を満たす 0.86 にする（0.72 では 3.86:1 で不足）。 */
   --ground-ink-dim: rgba(255, 255, 255, 0.86);
   --ground-line: rgba(255, 255, 255, 0.28);
+  /* 種別の色。**罫線と文字で値を分ける。**
+     タグの文字は白場で4.5:1が要り、暗くせざるを得ない。1つの値を両方に使うと
+     罫線までその暗さに揃い、3色が「同じ濃さの違う色」になって見分けが付かなくなる
+     （2026-09-11 まで実際そうだった。罫線どうしのコントラストが1.08〜1.28）。
+     罫線は文字ではないので3:1でよく、そのぶん明るさを散らせる。 */
   --action: #8a2f5f;
+  --action-bar: #b3005c;        /* いちばん濃い。行動が要るものを強く */
   --action-soft: #fbeaf2;
   --info: #2f5f8a;
+  --info-bar: #4a8fd4;          /* いちばん淡い。知らせは引く */
   --info-soft: #e9f1f8;
   --personal: #3f6b3f;
+  --personal-bar: #1f7a4a;      /* 中 */
   --personal-soft: #ecf4ec;
   --tentative: #8a5a2f;
   --tentative-soft: #f8f0e6;
@@ -1146,7 +1154,8 @@ a:focus-visible {
   flex-direction: column;
 }
 .event {
-  border-left: 4px solid var(--line);
+  /* 4pxでは種別の違いが読み取れなかった（2026-09-11 実機で確認）。 */
+  border-left: 6px solid var(--line);
   border-top: 1px solid var(--line-soft);
   padding: 11px 14px;
 }
@@ -1209,11 +1218,11 @@ a:focus-visible {
   border: 1px solid currentColor;
   flex: none;
 }
-.is-action { border-left-color: var(--action); }
+.is-action { border-left-color: var(--action-bar); }
 .is-action .tag { color: var(--action); background: var(--action-soft); }
-.is-information { border-left-color: var(--info); }
+.is-information { border-left-color: var(--info-bar); }
 .is-information .tag { color: var(--info); background: var(--info-soft); }
-.is-personal { border-left-color: var(--personal); }
+.is-personal { border-left-color: var(--personal-bar); }
 .is-personal .tag { color: var(--personal); background: var(--personal-soft); }
 
 .note-tentative {
