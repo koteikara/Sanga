@@ -1075,6 +1075,10 @@ function viewFromSelectedSeat() {
 
   mode = "seat";
 
+  // ブロックの色板はスタンド全体を覆う1枚の箱で、選ぶための目印。
+  // 着席視点では段床と座席をふさいでしまうので、座ったら消す。
+  groups.blocks.visible = false;
+
   camera.position.copy(position);
   camera.fov = 66;
   camera.updateProjectionMatrix();
@@ -1092,6 +1096,7 @@ function viewFromSelectedSeat() {
 
 function overview() {
   mode = "overview";
+  groups.blocks.visible = true;
   controls.enabled = true;
   controls.enableDamping = false;
 
