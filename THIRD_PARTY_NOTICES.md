@@ -51,6 +51,25 @@
 
 パッケージ本体はリポジトリへ同梱していません。バージョンを変更するときは、上流のライセンスと配布内容を再確認します。
 
+## three.js
+
+| 項目 | 内容 |
+| --- | --- |
+| パッケージ | `three` |
+| バージョン | 0.170.0 |
+| 著作権表示 | Copyright © 2010-2024 three.js authors |
+| ライセンス | MIT License |
+| 上流 | https://github.com/mrdoob/three.js |
+| npm | https://www.npmjs.com/package/three/v/0.170.0 |
+| 確認日 | 2026-09-10（npmパッケージ同梱の `LICENSE` で確認） |
+
+利用箇所:
+
+- `experiments/stadium-3d/prototype.html`: importmapで `https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js` と `https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/` を固定バージョンで読み込む。
+- `experiments/stadium-3d/prototype.js`: `three` と `three/addons/controls/OrbitControls.js` を読み込む。
+
+パッケージ本体はリポジトリへ同梱していません。検証用プロトタイプでのみ使い、公開物（`public/`）からは読み込みません。バージョンを変更するときは、上流のライセンスと配布内容を再確認します。
+
 ## フォント
 
 年間スケジュールと予想スカッドのCSS、画像生成元HTMLは、利用環境のシステムフォントを候補として指定しています。同梱しているフォントは次の1件です。

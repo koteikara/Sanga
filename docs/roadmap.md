@@ -63,6 +63,7 @@
 | `validate-app-contract.js` の確認範囲 | 確認中 | 主要DOM/CSSフック、表示列、表示モード、フィルタ、共有画像生成、大会リボン関連の確認範囲拡張は一部実施済み。今後もCSS整理・JS整理に合わせて追加する。 |
 | SUPPORTER TIMELINE | 進行中 | Phase 1（タイムライン、MY予定、ICS書き出し）とPhase 2（会員種別・シーズンパスによる照合と強調）は `experiments/supporter-timeline/` で動作し、Android・iOSの実機確認も完了。次はチケット販売スケジュールのParserが有力。現在地と次の一手は `docs/supporter-timeline-design.md` の冒頭にある。 |
 | 求・譲 投稿ツールの作り直し | 進行中 | 現行ツールが使われていない原因（実在しないタグの出力、自由文入力）を特定済み。`experiments/trade-post/` でプロトタイプを検証中。設計は `docs/trade-post-design.md`。次は商品マスタの正式名称確認と実機確認。 |
+| サンガスタジアム 座席ビュー | 進行中 | 座席からの見え方を3Dで確かめられるかを `experiments/stadium-3d/` で検証中。寸法・傾斜は公開資料、座席数・段の奥行きなどはモデル上の仮定値。次は仮定値の裏取りと実機確認。 |
 | ホテルデータ検証 | 確認中 | `tools/validate-hotels.js` は `npm run check:data` で常時実行中。索引は0件のため、空索引を正常扱いする経路だけが動いている。 |
 | 実ブラウザ確認観点 | 確認中 | `docs/ai/BROWSER_CHECKLIST.md` に沿って、人間の目視確認を継続する。 |
 | Googleスプレッドシート運用 | 確認中 | 初期CSV、列定義、生成JSON、公開JSON反映手順を安全に運用する。 |
