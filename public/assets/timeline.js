@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=e94f2da6";
+  var EVENTS_URL = "data/calendar-events.json?v=f1e70053";
   var MATCHES_URL = "data/matches.json?v=e096ee41";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -466,16 +466,26 @@
    * **載っていない試合には何も出さない。** Jリーグチケットに無い理由が、
    * 未発売なのか別のプレイガイドで売っているのか区別できないため、
    * 「発売前」とは言わない。
+   *
+   * **載っている行に「発売前」と書いてある場合だけは、そう出す。**
+   * こちらは推測ではなく、ページが書いている事実。
+   * 知らない語（`unknown`）のときも何も言わない。
    */
+  var AWAY_STATE_LABELS = {
+    on_sale: "アウェイ席 発売中",
+    before_sale: "アウェイ席 発売前",
+    sold_out: "アウェイ席 完売",
+  };
+
   function awayTicketLabel(event) {
     var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
     if (ids.length !== 1) return "";
     var found = null;
     state.awayTickets.forEach(function (item) {
-      if (item && item.match_id === ids[0] && item.state === "on_sale") found = item;
+      if (item && item.match_id === ids[0] && AWAY_STATE_LABELS[item.state]) found = item;
     });
     if (!found) return "";
-    return "アウェイ席 発売中" + (found.checked_at ? "（" + found.checked_at + "確認）" : "");
+    return AWAY_STATE_LABELS[found.state] + (found.checked_at ? "（" + found.checked_at + "確認）" : "");
   }
 
   /**
