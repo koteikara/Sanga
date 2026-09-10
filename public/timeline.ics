@@ -159,6 +159,36 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-sec01@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260809T100000Z
+DTEND:20260809T120000Z
+SUMMARY:長崎戦 キックオフ（ピースタ）
+DESCRIPTION:第1節 長崎戦\nhttps://www.jleague.jp/news/article/34406/\n
+ ※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec02@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260815T100000Z
+DTEND:20260815T120000Z
+SUMMARY:川崎F戦 キックオフ（U等々力）
+DESCRIPTION:第2節 川崎F戦\nhttps://www.jleague.jp/news/article/34406/\
+ n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:match-sec03@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
@@ -185,6 +215,22 @@ DESCRIPTION:第7節 柏戦（試合日 9/11（金））\nhttps://www.sanga-
  fc.jp/ticket/schedule\n※非公式のファンツールによる予定で
  す。日程が変わっている場合があります。購入・応募
  の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec39@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260826T100000Z
+DTEND:20260826T120000Z
+SUMMARY:FCマルヤス岡崎戦 キックオフ（たけびしスタジア
+ ム京都）
+DESCRIPTION:2回戦 FCマルヤス岡崎戦\nhttps://www.sanga-fc.jp/news/d
+ etail/20976\n※非公式のファンツールによる予定です。日
+ 程が変わっている場合があります。購入・応募の前に
+ 公式サイトで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -264,6 +310,21 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-sec05@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260902T100000Z
+DTEND:20260902T120000Z
+SUMMARY:横浜FM戦 キックオフ（日産ス）
+DESCRIPTION:第5節 横浜FM戦\nhttps://www.jleague.jp/news/article/34406/
+ \n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ticket-sec45-away@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:0
@@ -276,6 +337,21 @@ DESCRIPTION:4回戦 FC町田ゼルビア戦（試合日 10/3（土））\nh
  ァンツールによる予定です。日程が変わっている場合
  があります。購入・応募の前に公式サイトで確認して
  ください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec06@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260906T103000Z
+DTEND:20260906T123000Z
+SUMMARY:FC東京戦 キックオフ（味スタ）
+DESCRIPTION:第6節 FC東京戦\nhttps://www.jleague.jp/news/article/34406/
+ \n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -491,6 +567,21 @@ DESCRIPTION:第9節 町田戦（試合日 10/10（土））\nhttps://www.sa
  nga-fc.jp/ticket/schedule\n※非公式のファンツールによる予
  定です。日程が変わっている場合があります。購入・
  応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec40@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260923T080000Z
+DTEND:20260923T100000Z
+SUMMARY:藤枝MYFC戦 キックオフ（サンガスタジアム）
+DESCRIPTION:3回戦 藤枝MYFC戦\nhttps://www.sanga-fc.jp/news/detail/2137
+ 2\n※非公式のファンツールによる予定です。日程が変
+ わっている場合があります。購入・応募の前に公式サ
+ イトで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1035,6 +1126,22 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-acl-md4@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261103T121500Z
+DTEND:20261103T141500Z
+SUMMARY:コンアン・ハノイ戦 キックオフ（ハンダイスタジ
+ アム）
+DESCRIPTION:MD4 コンアン・ハノイ戦\nhttps://www.sanga-fc.jp/news/d
+ etail/21321\n※非公式のファンツールによる予定です。日
+ 程が変わっている場合があります。購入・応募の前に
+ 公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ticket-sec17-gold@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
@@ -1113,6 +1220,35 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-sec14@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261107T050000Z
+DTEND:20261107T070000Z
+SUMMARY:名古屋戦 キックオフ（豊田ス）
+DESCRIPTION:第14節 名古屋戦\nhttps://www.jleague.jp/news/article/3440
+ 6/\n※非公式のファンツールによる予定です。日程が変
+ わっている場合があります。購入・応募の前に公式サ
+ イトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec46@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261110
+SUMMARY:ルヴァン杯 準々決勝 第1戦 キックオフ
+DESCRIPTION:準々決勝 第1戦 未定戦\nhttps://www.sanga-fc.jp/news/de
+ tail/21171\n※非公式のファンツールによる予定です。日
+ 程が変わっている場合があります。購入・応募の前に
+ 公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ticket-sec19-season@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
@@ -1124,6 +1260,20 @@ DESCRIPTION:第19節 千葉戦（試合日 12/13（日））\nhttps://www.s
  anga-fc.jp/ticket/schedule\n※非公式のファンツールによる予
  定です。日程が変わっている場合があります。購入・
  応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec47@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261114
+SUMMARY:ルヴァン杯 準々決勝 第2戦 キックオフ
+DESCRIPTION:準々決勝 第2戦 未定戦\nhttps://www.sanga-fc.jp/news/de
+ tail/21171\n※非公式のファンツールによる予定です。日
+ 程が変わっている場合があります。購入・応募の前に
+ 公式サイトで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1234,6 +1384,51 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-acl-md6@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261201T121500Z
+DTEND:20261201T141500Z
+SUMMARY:ブリーラム・ユナイテッド戦 キックオフ（ブリー
+ ラムスタジアム）
+DESCRIPTION:MD6 ブリーラム・ユナイテッド戦\nhttps://www.sanga-
+ fc.jp/news/detail/21321\n※非公式のファンツールによる予定
+ です。日程が変わっている場合があります。購入・応
+ 募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec18@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261205T050000Z
+DTEND:20261205T070000Z
+SUMMARY:東京V戦 キックオフ（味スタ）
+DESCRIPTION:第18節 東京V戦\nhttps://www.jleague.jp/news/article/34406/
+ \n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec41@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261208
+SUMMARY:天皇杯 R16 キックオフ
+DESCRIPTION:ラウンド16 未定戦\nhttps://www.sanga-fc.jp/news/detail/2
+ 0976\n※非公式のファンツールによる予定です。日程が
+ 変わっている場合があります。購入・応募の前に公式
+ サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:match-sec19@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
@@ -1257,6 +1452,48 @@ DTSTART:20261219T040000Z
 DTEND:20261219T060000Z
 SUMMARY:岡山戦 キックオフ（サンガスタジアム）
 DESCRIPTION:第20節 岡山戦\nhttps://www.sanga-fc.jp/news/detail/21194\n
+ ※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec42@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261222
+SUMMARY:天皇杯 準々決勝 キックオフ
+DESCRIPTION:準々決勝 未定戦\nhttps://www.sanga-fc.jp/news/detail/209
+ 76\n※非公式のファンツールによる予定です。日程が変
+ わっている場合があります。購入・応募の前に公式サ
+ イトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec43@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261226
+SUMMARY:天皇杯 準決勝 キックオフ
+DESCRIPTION:準決勝 未定戦\nhttps://www.sanga-fc.jp/news/detail/20976\
+ n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec44@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261231
+SUMMARY:天皇杯 決勝 キックオフ
+DESCRIPTION:決勝 未定戦\nhttps://www.sanga-fc.jp/news/detail/20976\n
  ※非公式のファンツールによる予定です。日程が変わ
  っている場合があります。購入・応募の前に公式サイ
  トで確認してください。
@@ -1587,6 +1824,21 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-acl-md8@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20270216T100000Z
+DTEND:20270216T120000Z
+SUMMARY:ポートFC戦 キックオフ（タマサートスタジアム）
+DESCRIPTION:MD8 ポートFC戦\nhttps://www.sanga-fc.jp/news/detail/21321\n
+ ※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ticket-sec28-season@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
@@ -1658,6 +1910,34 @@ DESCRIPTION:第28節 長崎戦（試合日未定）\nhttps://www.sanga-fc.j
  p/ticket/schedule\n※非公式のファンツールによる予定です
  。日程が変わっている場合があります。購入・応募の
  前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec48@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20270323
+SUMMARY:ルヴァン杯 準決勝 第1戦 キックオフ
+DESCRIPTION:準決勝 第1戦 未定戦\nhttps://www.sanga-fc.jp/news/detai
+ l/21171\n※非公式のファンツールによる予定です。日程
+ が変わっている場合があります。購入・応募の前に公
+ 式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec49@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20270327
+SUMMARY:ルヴァン杯 準決勝 第2戦 キックオフ
+DESCRIPTION:準決勝 第2戦 未定戦\nhttps://www.sanga-fc.jp/news/detai
+ l/21171\n※非公式のファンツールによる予定です。日程
+ が変わっている場合があります。購入・応募の前に公
+ 式サイトで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1827,18 +2107,17 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:match-sec05@sanga-timeline.invalid
+UID:match-sec38@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
-SEQUENCE:2
+SEQUENCE:0
 LAST-MODIFIED:20260909T031317Z
-DTSTART:20260902T100000Z
-DTEND:20260902T120000Z
-SUMMARY:横浜FM戦 キックオフ（日産ス）
-DESCRIPTION:第5節 横浜FM戦\nhttps://www.jleague.jp/news/article/34406/
- \n※非公式のファンツールによる予定です。日程が変わ
+DTSTART;VALUE=DATE:20270605
+SUMMARY:神戸戦 キックオフ（ノエスタ）
+DESCRIPTION:第38節 神戸戦\nhttps://www.jleague.jp/news/article/34406/\
+ n※非公式のファンツールによる予定です。日程が変わ
  っている場合があります。購入・応募の前に公式サイ
  トで確認してください。
-STATUS:CANCELLED
+STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
@@ -1854,21 +2133,6 @@ DESCRIPTION:第5節 横浜FM戦（試合日 9/2（水））\nhttps://www.jl
  ルによる予定です。日程が変わっている場合がありま
  す。購入・応募の前に公式サイトで確認してください
  。
-STATUS:CANCELLED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:match-sec06@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:2
-LAST-MODIFIED:20260909T031317Z
-DTSTART:20260906T103000Z
-DTEND:20260906T123000Z
-SUMMARY:FC東京戦 キックオフ（味スタ）
-DESCRIPTION:第6節 FC東京戦\nhttps://www.jleague.jp/news/article/34406/
- \n※非公式のファンツールによる予定です。日程が変わ
- っている場合があります。購入・応募の前に公式サイ
- トで確認してください。
 STATUS:CANCELLED
 TRANSP:TRANSPARENT
 END:VEVENT

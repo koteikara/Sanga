@@ -6,7 +6,7 @@
     "ticket_checked_at": "2026-09-09",
     "ticket_csv": "docs/sheets/ticket-sales.current.csv",
     "matches_source": "public/data/matches.json",
-    "match_count": 28,
+    "match_count": 48,
     "ics_template_version": 1,
     "updated_at": "2026-09-09"
   },
@@ -436,6 +436,50 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-sec01",
+      "ends_at": "2026-08-09T21:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec01"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-08-09T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "長崎戦 キックオフ（ピースタ）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec02",
+      "ends_at": "2026-08-15T21:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec02"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-08-15T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "川崎F戦 キックオフ（U等々力）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "match-sec03",
       "ends_at": "2026-08-22T21:00:00+09:00",
       "type": "match",
@@ -481,6 +525,28 @@
       "is_visible": true,
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec39",
+      "ends_at": "2026-08-26T21:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec39"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/20976",
+      "source_checked_at": "2026-06-22",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-08-26T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "FCマルヤス岡崎戦 キックオフ（たけびしスタジアム京都）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-benefit-platinum",
@@ -692,6 +758,28 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-sec05",
+      "ends_at": "2026-09-02T21:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec05"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-02T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "横浜FM戦 キックオフ（日産ス）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "ticket-sec45-away",
       "starts_at": "2026-09-03T12:00:00+09:00",
       "ends_at": "2026-09-03T12:15:00+09:00",
@@ -711,6 +799,28 @@
       "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec06",
+      "ends_at": "2026-09-06T21:30:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec06"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-06T19:30:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "FC東京戦 キックオフ（味スタ）",
       "calendar_sequence": 0,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
@@ -1193,6 +1303,28 @@
       "is_visible": true,
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec40",
+      "ends_at": "2026-09-23T19:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec40"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21372",
+      "source_checked_at": "2026-09-02",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-23T17:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "藤枝MYFC戦 キックオフ（サンガスタジアム）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec09-benefit-regular",
@@ -2510,6 +2642,28 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-acl-md4",
+      "ends_at": "2026-11-03T23:15:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md4"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21321",
+      "source_checked_at": "2026-08-20",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-11-03T21:15:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "コンアン・ハノイ戦 キックオフ（ハンダイスタジアム）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "ticket-sec17-benefit-gold",
       "starts_at": "2026-11-04T12:00:00+09:00",
       "ends_at": "2026-11-04T12:15:00+09:00",
@@ -2722,6 +2876,50 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-sec14",
+      "ends_at": "2026-11-07T16:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec14"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-11-07T14:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "名古屋戦 キックオフ（豊田ス）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec46",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec46"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21171",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2026-11-11T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "ルヴァン杯 準々決勝 第1戦 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "ticket-sec19-season",
       "starts_at": "2026-11-14T11:00:00+09:00",
       "ends_at": "2026-11-14T11:15:00+09:00",
@@ -2745,6 +2943,28 @@
       "is_visible": true,
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec47",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec47"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21171",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2026-11-15T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "ルヴァン杯 準々決勝 第2戦 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-benefit-platinum",
@@ -3000,6 +3220,72 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-acl-md6",
+      "ends_at": "2026-12-01T23:15:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md6"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21321",
+      "source_checked_at": "2026-08-20",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-12-01T21:15:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "ブリーラム・ユナイテッド戦 キックオフ（ブリーラムスタジアム）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec18",
+      "ends_at": "2026-12-05T16:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec18"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-12-05T14:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "東京V戦 キックオフ（味スタ）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec41",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec41"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/20976",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2026-12-09T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "天皇杯 R16 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "match-sec19",
       "ends_at": "2026-12-13T16:00:00+09:00",
       "type": "match",
@@ -3042,6 +3328,72 @@
       "title": "岡山戦 キックオフ（サンガスタジアム）",
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec42",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec42"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/20976",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2026-12-23T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "天皇杯 準々決勝 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec43",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec43"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/20976",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2026-12-27T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "天皇杯 準決勝 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec44",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec44"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/20976",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2027-01-01T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "天皇杯 決勝 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md7-season",
@@ -3914,6 +4266,28 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-acl-md8",
+      "ends_at": "2027-02-16T21:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md8"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21321",
+      "source_checked_at": "2026-08-20",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2027-02-16T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "ポートFC戦 キックオフ（タマサートスタジアム）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "ticket-sec28-season",
       "starts_at": "2027-03-06T11:00:00+09:00",
       "ends_at": "2027-03-06T11:15:00+09:00",
@@ -4124,6 +4498,50 @@
       "is_visible": true,
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec48",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec48"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21171",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2027-03-24T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "ルヴァン杯 準決勝 第1戦 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-sec49",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec49"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21171",
+      "source_checked_at": "2026-06-22",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2027-03-28T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "ルヴァン杯 準決勝 第2戦 キックオフ",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec16",
@@ -4570,6 +4988,28 @@
       "is_visible": true,
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec38",
+      "ends_at": "",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec38"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "tentative",
+      "is_visible": true,
+      "starts_at": "2027-06-06T00:00:00+09:00",
+      "date_precision": "date",
+      "date_candidates": [],
+      "title": "神戸戦 キックオフ（ノエスタ）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec21",
