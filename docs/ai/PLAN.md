@@ -26,9 +26,11 @@
 2. Xでの交換の実態調査（実在タグと投稿の書き方の確認） — 完了
 3. 設計文書 `docs/trade-post-design.md` — 完了
 4. プロトタイプ `experiments/trade-post/` — 完了
-5. 商品マスタの正式名称確認 — **未完了。人の目で確認が必要**
-6. iPhone Safariでの実機確認 — **未完了**
-7. 本番移植 — 別PR
+5. 商品名の取得元の確定（公式ニュース＋オンラインショップ）と商品マスタの更新 — 完了
+6. 複数商品ブロック、「同種」の意味の修正、画像出力 — 完了
+7. 商品マスタ取得の自動化（`ticket-sales-sync.yml` と同じ形） — **未着手。別PR**
+8. iPhone Safariでの実機確認 — **未完了**
+9. 本番移植 — 別PR
 
 ### 検証方法
 
@@ -46,6 +48,7 @@
 
 ### 別PRへ分けるもの
 
+- 商品マスタ取得の自動化（公式ニュースの新商品告知を1日1回取得し、差分があればPRを作る）
 - 本番移植（`public/TradePost/`）
 - `public/data/goods.json` の追加
 - `TradePost/` に `index.html` がない問題（`docs/production-inventory-audit.md` の未解決課題）

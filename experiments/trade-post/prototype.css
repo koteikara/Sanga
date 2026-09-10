@@ -187,7 +187,7 @@ textarea { line-height: 1.7; resize: vertical; }
 .actions { display: flex; gap: 8px; margin-top: 8px; }
 .actions-column { flex-direction: column; }
 
-button:not(.tab):not(.num):not(.match):not(.chip),
+button:not(.tab):not(.num):not(.match):not(.chip):not(.remove-block):not(#add-block),
 .button {
   flex: 1;
   min-height: 48px;
@@ -207,7 +207,7 @@ button:not(.tab):not(.num):not(.match):not(.chip),
   justify-content: center;
 }
 .button.secondary { color: var(--accent); background: #fff; }
-button:not(.tab):not(.num):not(.match):not(.chip):hover,
+button:not(.tab):not(.num):not(.match):not(.chip):not(.remove-block):not(#add-block):hover,
 .button:hover { background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
 
 .status { margin: 8px 0 0; min-height: 1.4em; font-size: 0.9rem; color: var(--offer); }
@@ -225,4 +225,64 @@ button:not(.tab):not(.num):not(.match):not(.chip):hover,
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
+}
+
+/* 商品ブロック。1つの投稿に複数の商品を並べられる（実際の投稿がそうなっている） */
+.block {
+  margin: 0 0 16px;
+  padding: 12px;
+  background: var(--bg);
+  border: 2px solid var(--line);
+  border-radius: 10px;
+}
+.block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.block-title {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--accent);
+}
+.remove-block {
+  min-height: 44px;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--ink-weak);
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.block .field:last-child { margin-bottom: 0; }
+.block .numbers { background: #fff; }
+
+#add-block {
+  display: block;
+  width: 100%;
+  margin: 0 0 20px;
+  min-height: 48px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: #fff;
+  border: 2px dashed var(--accent);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 画像 */
+.image-field { margin-top: 24px; padding-top: 20px; border-top: 2px solid var(--line); }
+#card {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 12px 0;
+  border: 2px solid var(--line);
+  border-radius: 8px;
 }
