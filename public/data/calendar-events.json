@@ -6,7 +6,7 @@
     "ticket_checked_at": "2026-09-09",
     "ticket_csv": "docs/sheets/ticket-sales.current.csv",
     "matches_source": "public/data/matches.json",
-    "match_count": 27,
+    "match_count": 28,
     "ics_template_version": 1,
     "updated_at": "2026-09-09"
   },
@@ -758,6 +758,51 @@
       "title": "柏戦 キックオフ（サンガスタジアム）",
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "ticket-acl-md1-away",
+      "starts_at": "2026-09-15T17:00:00+09:00",
+      "ends_at": "2026-09-15T17:15:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "away_sale",
+      "title": "大田ハナ・シチズン戦 アウェイ席 当日券 発売開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md1"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21368",
+      "source_checked_at": "2026-09-10",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "match-acl-md1",
+      "ends_at": "2026-09-15T21:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md1"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21321",
+      "source_checked_at": "2026-08-20",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-09-15T19:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "大田ハナ・シチズン戦 キックオフ（大田ワールドカップスタジアム）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md2-season",

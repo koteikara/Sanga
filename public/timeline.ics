@@ -310,6 +310,39 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:ticket-acl-md1-away@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260915T080000Z
+DTEND:20260915T081500Z
+SUMMARY:大田ハナ・シチズン戦 アウェイ席 当日券 発売開
+ 始
+DESCRIPTION:MD1 大田ハナ・シチズン戦（試合日 9/15（火））
+ \nhttps://www.sanga-fc.jp/news/detail/21368\n※非公式のファンツ
+ ールによる予定です。日程が変わっている場合があり
+ ます。購入・応募の前に公式サイトで確認してくださ
+ い。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-acl-md1@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260915T100000Z
+DTEND:20260915T120000Z
+SUMMARY:大田ハナ・シチズン戦 キックオフ（大田ワールド
+ カップスタジアム）
+DESCRIPTION:MD1 大田ハナ・シチズン戦\nhttps://www.sanga-fc.jp/new
+ s/detail/21321\n※非公式のファンツールによる予定です。
+ 日程が変わっている場合があります。購入・応募の前
+ に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ticket-acl-md2-season@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:0
