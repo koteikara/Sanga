@@ -7,7 +7,7 @@
     "check:static": "npm run check:data && npm run check:js && node tools/check-static-assets.mjs && node tools/generate-dom-inventory.mjs --check && npm run check:tools",
     "check:data": "node tools/validate-matches.js && node tools/validate-generated-matches.js public/data/matches.json --expected-count 57 --strict && node tools/validate-hotels.js && node tools/validate-players.js && node tools/validate-tools.js && npm run check:timeline",
     "check:js": "node --check public/assets/app.js && node tools/validate-app-contract.js",
-    "check:away-tickets": "node --check tools/fetch-away-tickets.js && node --check tools/parse-away-tickets.js && node --check tools/fetch-away-sales.js && node --check tools/parse-away-sales.js && node tools/parse-away-sales.js --input tools/fixtures/away-tickets.sample.csv --html tools/fixtures/away-perform --out tools/fixtures/away-sales.sample.csv --checked-at 2030-07-01 --check && node tools/parse-away-tickets.js tools/fixtures/away-tickets.sample.html tools/fixtures/away-tickets.sample.csv --retrieved-at 2030-07-01T10:00:00+09:00 --check",
+    "check:away-tickets": "node --check tools/fetch-away-tickets.js && node --check tools/parse-away-tickets.js && node --check tools/fetch-away-sales.js && node --check tools/parse-away-sales.js && node --check tools/report-away-gaps.js && node tools/report-away-gaps.js --today 2030-01-01 >/dev/null && node tools/parse-away-sales.js --input tools/fixtures/away-tickets.sample.csv --html tools/fixtures/away-perform --out tools/fixtures/away-sales.sample.csv --checked-at 2030-07-01 --check && node tools/parse-away-tickets.js tools/fixtures/away-tickets.sample.html tools/fixtures/away-tickets.sample.csv --retrieved-at 2030-07-01T10:00:00+09:00 --check",
     "check:ticket-sales": "node --check tools/fetch-ticket-sales.js && node --check tools/parse-ticket-sales.js && node tools/parse-ticket-sales.js tools/fixtures/ticket-sales.sample.html tools/fixtures/ticket-sales.sample.csv --retrieved-at 2030-07-01T10:00:00+09:00 --check",
     "check:ticket-sales:current": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv tmp/calendar-events.current.json && node tools/validate-calendar-events.js tmp/calendar-events.current.json",
     "check:timeline": "npm run check:ticket-sales && npm run check:away-tickets && npm run check:ticket-sales:current && node tools/generate-calendar-events.js docs/sheets/ticket-sales.2026-08-28.csv experiments/supporter-timeline/calendar-events.sample.json --samples experiments/supporter-timeline/sample-events.json --check && node tools/validate-calendar-events.js experiments/supporter-timeline/calendar-events.sample.json && npm run check:timeline:public",
@@ -28,6 +28,7 @@
     "parse:away-tickets": "node tools/parse-away-tickets.js",
     "fetch:away-sales": "node tools/fetch-away-sales.js",
     "parse:away-sales": "node tools/parse-away-sales.js",
+    "report:away-gaps": "node tools/report-away-gaps.js",
     "parse:ticket-sales": "node tools/parse-ticket-sales.js"
   }
 }
