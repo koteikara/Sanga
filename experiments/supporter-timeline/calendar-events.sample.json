@@ -7,7 +7,7 @@
     "ticket_csv": "docs/sheets/ticket-sales.2026-08-28.csv",
     "matches_source": "public/data/matches.json",
     "match_count": 48,
-    "ics_template_version": 1,
+    "ics_template_version": 2,
     "updated_at": "2026-08-28"
   },
   "events": [
@@ -33,7 +33,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -60,7 +60,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -87,7 +87,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -114,7 +114,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -141,7 +141,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -169,7 +169,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -197,7 +197,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -222,7 +222,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -245,7 +245,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -272,7 +272,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -299,7 +299,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -326,7 +326,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -353,7 +353,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -381,7 +381,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -409,7 +409,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -432,7 +432,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -454,7 +454,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "長崎戦 キックオフ（ピースタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -476,7 +476,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "川崎F戦 キックオフ（U等々力）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -498,7 +498,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "水戸戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -523,7 +523,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -545,7 +545,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "FCマルヤス岡崎戦 キックオフ（たけびしスタジアム京都）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -572,7 +572,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -599,7 +599,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -626,7 +626,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -653,7 +653,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -681,7 +681,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -709,7 +709,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -732,7 +732,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -757,7 +757,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -779,7 +779,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "福岡戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -802,7 +802,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -827,7 +827,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -849,7 +849,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "横浜FM戦 キックオフ（日産ス）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -872,7 +872,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -897,7 +897,7 @@
       "status": "confirmed",
       "is_visible": true,
       "is_sample": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -919,7 +919,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "FC東京戦 キックオフ（味スタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -941,7 +941,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "柏戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -963,7 +963,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "大田ハナ・シチズン戦 キックオフ（大田ワールドカップスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -988,7 +988,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1010,7 +1010,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "岡山戦 キックオフ（JFEス）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1037,7 +1037,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1064,7 +1064,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1091,7 +1091,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1118,7 +1118,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1140,7 +1140,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "藤枝MYFC戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1168,7 +1168,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1196,7 +1196,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1221,7 +1221,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1244,7 +1244,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1271,7 +1271,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1298,7 +1298,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1325,7 +1325,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1352,7 +1352,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1380,7 +1380,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1408,7 +1408,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1433,7 +1433,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1456,7 +1456,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1478,7 +1478,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "FC町田ゼルビア戦 キックオフ（Gスタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1505,7 +1505,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1532,7 +1532,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1559,7 +1559,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1586,7 +1586,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1614,7 +1614,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1642,7 +1642,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1665,7 +1665,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1687,7 +1687,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "町田戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1709,7 +1709,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ラーチャブリーFC戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1731,7 +1731,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "広島戦 キックオフ（Eピース）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1753,7 +1753,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "鹿島戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1778,7 +1778,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1800,7 +1800,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "G大阪戦 キックオフ（パナスタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1827,7 +1827,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1854,7 +1854,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1876,7 +1876,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ニューカッスル・ジェッツ戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1903,7 +1903,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1930,7 +1930,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1958,7 +1958,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -1986,7 +1986,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2011,7 +2011,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2034,7 +2034,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2056,7 +2056,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "清水戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2083,7 +2083,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2110,7 +2110,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2132,7 +2132,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "コンアン・ハノイ戦 キックオフ（ハンダイスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2159,7 +2159,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2186,7 +2186,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2214,7 +2214,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2242,7 +2242,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2265,7 +2265,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2287,7 +2287,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "名古屋戦 キックオフ（豊田ス）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2309,7 +2309,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準々決勝 第1戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2334,7 +2334,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2356,7 +2356,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準々決勝 第2戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2383,7 +2383,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2410,7 +2410,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2437,7 +2437,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2464,7 +2464,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2492,7 +2492,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2520,7 +2520,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2543,7 +2543,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2565,7 +2565,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "浦和戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2587,7 +2587,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "浦項スティーラーズ戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2609,7 +2609,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "C大阪戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2631,7 +2631,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ブリーラム・ユナイテッド戦 キックオフ（ブリーラムスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2653,7 +2653,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "東京V戦 キックオフ（味スタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2675,7 +2675,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 R16 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2697,7 +2697,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "千葉戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2719,7 +2719,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "岡山戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2741,7 +2741,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 準々決勝 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2763,7 +2763,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 準決勝 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2785,7 +2785,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 決勝 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2810,7 +2810,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2837,7 +2837,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2864,7 +2864,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2891,7 +2891,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2918,7 +2918,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2946,7 +2946,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2974,7 +2974,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -2997,7 +2997,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3022,7 +3022,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3049,7 +3049,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3076,7 +3076,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3103,7 +3103,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3130,7 +3130,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3158,7 +3158,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3186,7 +3186,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3211,7 +3211,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3234,7 +3234,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3261,7 +3261,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3288,7 +3288,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3310,7 +3310,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "全北現代モータース戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3337,7 +3337,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3364,7 +3364,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3392,7 +3392,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3420,7 +3420,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3443,7 +3443,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3465,7 +3465,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ポートFC戦 キックオフ（タマサートスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3490,7 +3490,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3517,7 +3517,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3544,7 +3544,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3571,7 +3571,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3598,7 +3598,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3626,7 +3626,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3654,7 +3654,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3677,7 +3677,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3699,7 +3699,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準決勝 第1戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3721,7 +3721,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準決勝 第2戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3743,7 +3743,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "神戸戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3768,7 +3768,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3795,7 +3795,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3822,7 +3822,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3849,7 +3849,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3876,7 +3876,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3904,7 +3904,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3932,7 +3932,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3955,7 +3955,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -3980,7 +3980,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4007,7 +4007,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4034,7 +4034,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4061,7 +4061,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4088,7 +4088,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4116,7 +4116,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4144,7 +4144,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4167,7 +4167,7 @@
       "source_checked_at": "2026-08-28",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4189,7 +4189,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "神戸戦 キックオフ（ノエスタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4214,7 +4214,7 @@
         "2027-02-14"
       ],
       "title": "横浜FM戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4239,7 +4239,7 @@
         "2027-02-28"
       ],
       "title": "東京V戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4264,7 +4264,7 @@
         "2027-03-07"
       ],
       "title": "FC東京戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4289,7 +4289,7 @@
         "2027-03-14"
       ],
       "title": "川崎F戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4314,7 +4314,7 @@
         "2027-04-04"
       ],
       "title": "長崎戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4338,7 +4338,7 @@
         "2027-04-29"
       ],
       "title": "G大阪戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4363,7 +4363,7 @@
         "2027-05-16"
       ],
       "title": "広島戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4388,7 +4388,7 @@
         "2027-05-30"
       ],
       "title": "名古屋戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4412,7 +4412,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "公式販売スケジュールページに販売日程の記載なし",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4436,7 +4436,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4460,7 +4460,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     },
     {
@@ -4484,7 +4484,7 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1,
+      "calendar_sequence": 2,
       "calendar_last_modified": "2026-08-28T02:00:00Z"
     }
   ],

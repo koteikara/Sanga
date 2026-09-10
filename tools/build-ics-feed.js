@@ -88,8 +88,34 @@ function matchLabel(event, matches) {
   if (!ids.length) return '';
   return ids.map((id) => {
     const match = matches.get(id);
-    return match ? `${match.round} ${match.opponent || '未定'}戦` : id;
+    if (!match) return id;
+    // 相手が決まっていない試合（勝ち上がり枠）を「未定戦」と呼ばない。
+    if (!match.opponent || match.opponent === '未定') {
+      return `${match.competition_label || ''} ${match.round || ''}`.trim() || id;
+    }
+    return `${match.round} ${match.opponent}戦`;
   }).join(' / ');
+}
+
+/**
+ * カレンダーの題に付けるホーム／アウェイ。
+ *
+ * **画面と違い、カレンダーには印を添える場所がない。** 画面は試合名の後ろに
+ * H / A のしるしを別に出せるが、ICSで月表示に出るのは SUMMARY だけ。
+ * 会場名から察してもらうしかない状態だったので、題そのものに入れる。
+ * 遠征が要るかどうかは、予定を見た人がまず知りたいこと。
+ *
+ * `home_away` が空の試合（勝ち上がり枠）には付けない。分からないものを言い切らない。
+ */
+function matchSideLabel(event, matches) {
+  if (event.type !== 'match') return '';
+  const ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+  if (ids.length !== 1) return '';
+  const match = matches.get(ids[0]);
+  if (!match) return '';
+  if (match.home_away === 'H') return 'ホーム';
+  if (match.home_away === 'A') return 'アウェイ';
+  return '';
 }
 
 /**
@@ -132,12 +158,14 @@ function specOf(event, matches, disclaimer) {
   // 断り書きは最後。読み飛ばされても、題と試合日と出典は先に目に入る。
   if (disclaimer) description.push(disclaimer);
 
+  const side = matchSideLabel(event, matches);
+
   return {
     uid: event.id,
     start,
     end: parseDate(event.ends_at),
     allDay: event.date_precision === 'date',
-    summary: event.title,
+    summary: side ? `【${side}】${event.title}` : event.title,
     description: description.join('\n'),
     sequence: event.calendar_sequence,
     lastModified: parseDate(event.calendar_last_modified),

@@ -205,8 +205,9 @@ const ICS_FIELDS = ['starts_at', 'ends_at', 'date_precision', 'title', 'source_u
  * 全員に届く。** 逆に、上げずに型を変えてはいけない。
  *
  * 1 … 断り書き（assets/ics.js の DISCLAIMER）を説明欄に足した（2026-09-08）
+ * 2 … 試合の題に【ホーム】【アウェイ】を付け、説明欄の「未定戦」をやめた（2026-09-10）
  */
-const ICS_TEMPLATE_VERSION = 1;
+const ICS_TEMPLATE_VERSION = 2;
 
 /** 同じ内容かどうかを比べるための指紋。 */
 function icsFingerprint(event) {

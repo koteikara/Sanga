@@ -7,7 +7,7 @@
     "ticket_csv": "docs/sheets/ticket-sales.current.csv",
     "matches_source": "public/data/matches.json",
     "match_count": 48,
-    "ics_template_version": 1,
+    "ics_template_version": 2,
     "updated_at": "2026-09-09"
   },
   "events": [
@@ -33,8 +33,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-benefit-platinum",
@@ -60,8 +60,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-platinum",
@@ -87,8 +87,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-benefit-gold",
@@ -114,8 +114,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-gold",
@@ -141,8 +141,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-benefit-regular",
@@ -169,8 +169,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-regular",
@@ -197,8 +197,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-season",
@@ -222,8 +222,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec03-general",
@@ -245,8 +245,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-benefit-platinum",
@@ -272,8 +272,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-platinum",
@@ -299,8 +299,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-benefit-gold",
@@ -326,8 +326,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-gold",
@@ -353,8 +353,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-benefit-regular",
@@ -381,8 +381,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-regular",
@@ -409,8 +409,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec04-general",
@@ -432,8 +432,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec01",
@@ -454,7 +454,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "長崎戦 キックオフ（ピースタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -476,7 +476,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "川崎F戦 キックオフ（U等々力）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -498,8 +498,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "水戸戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-season",
@@ -523,8 +523,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec39",
@@ -545,7 +545,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "FCマルヤス岡崎戦 キックオフ（たけびしスタジアム京都）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -572,8 +572,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-platinum",
@@ -599,8 +599,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-benefit-gold",
@@ -626,8 +626,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-gold",
@@ -653,8 +653,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-benefit-regular",
@@ -681,8 +681,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-regular",
@@ -709,8 +709,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec04",
@@ -731,8 +731,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "福岡戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec07-general",
@@ -754,8 +754,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec05",
@@ -776,7 +776,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "横浜FM戦 キックオフ（日産ス）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -799,7 +799,7 @@
       "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -821,7 +821,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "FC東京戦 キックオフ（味スタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -844,7 +844,7 @@
       "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -866,8 +866,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "柏戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md1-away",
@@ -889,7 +889,7 @@
       "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -911,7 +911,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "大田ハナ・シチズン戦 キックオフ（大田ワールドカップスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -936,7 +936,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -963,7 +963,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -990,7 +990,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1013,7 +1013,7 @@
       "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1038,8 +1038,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec08",
@@ -1060,8 +1060,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "岡山戦 キックオフ（JFEス）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md2-benefit-gold",
@@ -1087,7 +1087,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1114,7 +1114,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1141,8 +1141,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec09-platinum",
@@ -1168,8 +1168,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md2-benefit-regular",
@@ -1196,7 +1196,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1224,7 +1224,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1247,7 +1247,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1274,8 +1274,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec09-gold",
@@ -1301,8 +1301,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec40",
@@ -1323,7 +1323,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "藤枝MYFC戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1351,8 +1351,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec09-regular",
@@ -1379,8 +1379,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec11-season",
@@ -1404,8 +1404,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec09-general",
@@ -1427,8 +1427,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec11-benefit-platinum",
@@ -1454,8 +1454,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec11-platinum",
@@ -1481,8 +1481,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md3-season",
@@ -1506,7 +1506,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1533,8 +1533,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec11-gold",
@@ -1560,8 +1560,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md3-benefit-platinum",
@@ -1587,7 +1587,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1614,7 +1614,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1642,8 +1642,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec11-regular",
@@ -1670,8 +1670,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec13-season",
@@ -1695,8 +1695,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec11-general",
@@ -1718,8 +1718,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec45",
@@ -1740,7 +1740,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "FC町田ゼルビア戦 キックオフ（Gスタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1767,7 +1767,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1794,7 +1794,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1821,8 +1821,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec13-platinum",
@@ -1848,8 +1848,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md3-benefit-regular",
@@ -1876,7 +1876,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1904,7 +1904,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1927,7 +1927,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -1954,8 +1954,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec13-gold",
@@ -1981,8 +1981,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec13-benefit-regular",
@@ -2009,8 +2009,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec13-regular",
@@ -2037,8 +2037,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec13-general",
@@ -2060,8 +2060,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec09",
@@ -2082,8 +2082,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "町田戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-acl-md2",
@@ -2104,7 +2104,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ラーチャブリーFC戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2126,7 +2126,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "広島戦 キックオフ（Eピース）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2148,8 +2148,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "鹿島戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec15-season",
@@ -2173,8 +2173,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec12",
@@ -2195,7 +2195,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "G大阪戦 キックオフ（パナスタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2222,8 +2222,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec15-platinum",
@@ -2249,8 +2249,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md5-season",
@@ -2274,7 +2274,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2296,7 +2296,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ニューカッスル・ジェッツ戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2323,8 +2323,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec15-gold",
@@ -2350,8 +2350,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md5-benefit-platinum",
@@ -2377,7 +2377,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2404,7 +2404,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2432,8 +2432,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec15-regular",
@@ -2460,8 +2460,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec17-season",
@@ -2485,8 +2485,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec15-general",
@@ -2508,8 +2508,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec13",
@@ -2530,8 +2530,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "清水戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md5-benefit-gold",
@@ -2557,7 +2557,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2584,7 +2584,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2611,8 +2611,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec17-platinum",
@@ -2638,8 +2638,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-acl-md4",
@@ -2660,7 +2660,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "コンアン・ハノイ戦 キックオフ（ハンダイスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2687,8 +2687,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec17-gold",
@@ -2714,8 +2714,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md5-benefit-regular",
@@ -2742,7 +2742,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2770,7 +2770,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2793,7 +2793,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2821,8 +2821,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec17-regular",
@@ -2849,8 +2849,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec17-general",
@@ -2872,8 +2872,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec14",
@@ -2894,7 +2894,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "名古屋戦 キックオフ（豊田ス）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2916,7 +2916,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準々決勝 第1戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2941,8 +2941,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec47",
@@ -2963,7 +2963,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準々決勝 第2戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -2990,8 +2990,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-platinum",
@@ -3017,8 +3017,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-benefit-gold",
@@ -3044,8 +3044,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-gold",
@@ -3071,8 +3071,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-benefit-regular",
@@ -3099,8 +3099,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-regular",
@@ -3127,8 +3127,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec19-general",
@@ -3150,8 +3150,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec15",
@@ -3172,8 +3172,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "浦和戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-acl-md5",
@@ -3194,7 +3194,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "浦項スティーラーズ戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3216,8 +3216,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "C大阪戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-acl-md6",
@@ -3238,7 +3238,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ブリーラム・ユナイテッド戦 キックオフ（ブリーラムスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3260,7 +3260,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "東京V戦 キックオフ（味スタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3282,7 +3282,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 R16 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3304,8 +3304,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "千葉戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec20",
@@ -3326,8 +3326,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "岡山戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec42",
@@ -3348,7 +3348,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 準々決勝 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3370,7 +3370,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 準決勝 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3392,7 +3392,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 決勝 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3417,7 +3417,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3444,7 +3444,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3471,7 +3471,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3496,8 +3496,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md7-benefit-gold",
@@ -3523,7 +3523,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3550,7 +3550,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3577,8 +3577,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec21-platinum",
@@ -3604,8 +3604,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-acl-md7-benefit-regular",
@@ -3632,7 +3632,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3660,7 +3660,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3683,7 +3683,7 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -3710,8 +3710,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec21-gold",
@@ -3737,8 +3737,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec21-benefit-regular",
@@ -3765,8 +3765,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec21-regular",
@@ -3793,8 +3793,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec21-general",
@@ -3816,8 +3816,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-season",
@@ -3841,8 +3841,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-benefit-platinum",
@@ -3868,8 +3868,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-platinum",
@@ -3895,8 +3895,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-benefit-gold",
@@ -3922,8 +3922,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-gold",
@@ -3949,8 +3949,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-benefit-regular",
@@ -3977,8 +3977,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-regular",
@@ -4005,8 +4005,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-season",
@@ -4030,8 +4030,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec23-general",
@@ -4053,8 +4053,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-benefit-platinum",
@@ -4080,8 +4080,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-platinum",
@@ -4107,8 +4107,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-acl-md7",
@@ -4129,7 +4129,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "全北現代モータース戦 キックオフ（京都府立京都スタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -4156,8 +4156,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-gold",
@@ -4183,8 +4183,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-benefit-regular",
@@ -4211,8 +4211,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-regular",
@@ -4239,8 +4239,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec24-general",
@@ -4262,8 +4262,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-acl-md8",
@@ -4284,7 +4284,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "ポートFC戦 キックオフ（タマサートスタジアム）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -4309,8 +4309,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-benefit-platinum",
@@ -4336,8 +4336,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-platinum",
@@ -4363,8 +4363,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-benefit-gold",
@@ -4390,8 +4390,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-gold",
@@ -4417,8 +4417,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-benefit-regular",
@@ -4445,8 +4445,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-regular",
@@ -4473,8 +4473,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec28-general",
@@ -4496,8 +4496,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec48",
@@ -4518,7 +4518,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準決勝 第1戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -4540,7 +4540,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "ルヴァン杯 準決勝 第2戦 キックオフ",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -4562,8 +4562,8 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "神戸戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-season",
@@ -4587,8 +4587,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-benefit-platinum",
@@ -4614,8 +4614,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-platinum",
@@ -4641,8 +4641,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-benefit-gold",
@@ -4668,8 +4668,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-gold",
@@ -4695,8 +4695,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-benefit-regular",
@@ -4723,8 +4723,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-regular",
@@ -4751,8 +4751,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec35-general",
@@ -4774,8 +4774,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-season",
@@ -4799,8 +4799,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-benefit-platinum",
@@ -4826,8 +4826,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-platinum",
@@ -4853,8 +4853,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-benefit-gold",
@@ -4880,8 +4880,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-gold",
@@ -4907,8 +4907,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-benefit-regular",
@@ -4935,8 +4935,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-regular",
@@ -4963,8 +4963,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec37-general",
@@ -4986,8 +4986,8 @@
       "source_checked_at": "2026-09-09",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec38",
@@ -5008,7 +5008,7 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "神戸戦 キックオフ（ノエスタ）",
-      "calendar_sequence": 0,
+      "calendar_sequence": 1,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -5033,8 +5033,8 @@
         "2027-02-14"
       ],
       "title": "横浜FM戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec23",
@@ -5058,8 +5058,8 @@
         "2027-02-28"
       ],
       "title": "東京V戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec24",
@@ -5083,8 +5083,8 @@
         "2027-03-07"
       ],
       "title": "FC東京戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec26",
@@ -5108,8 +5108,8 @@
         "2027-03-14"
       ],
       "title": "川崎F戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec28",
@@ -5133,8 +5133,8 @@
         "2027-04-04"
       ],
       "title": "長崎戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec32",
@@ -5157,8 +5157,8 @@
         "2027-04-29"
       ],
       "title": "G大阪戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec35",
@@ -5182,8 +5182,8 @@
         "2027-05-16"
       ],
       "title": "広島戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "match-sec37",
@@ -5207,8 +5207,8 @@
         "2027-05-30"
       ],
       "title": "名古屋戦 キックオフ（開催日が候補のまま）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec16-unscheduled",
@@ -5231,8 +5231,8 @@
       "status": "tentative",
       "is_visible": true,
       "note": "公式販売スケジュールページに販売日程の記載なし",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec20-unscheduled",
@@ -5255,8 +5255,8 @@
       "status": "tentative",
       "is_visible": true,
       "note": "公式販売スケジュールページに販売日程の記載なし",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec26-unscheduled",
@@ -5279,8 +5279,8 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec32-unscheduled",
@@ -5303,8 +5303,8 @@
       "status": "tentative",
       "is_visible": true,
       "note": "試合開催日決定後、チケット販売スケジュールをお知らせ",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     }
   ],
   "skipped": [],
