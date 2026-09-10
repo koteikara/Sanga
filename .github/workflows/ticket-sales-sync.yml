@@ -24,6 +24,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # 「手で確かめるアウェイ戦」の一覧をIssue1本で持ち、毎日書き換える。
+  issues: write
 
 concurrency:
   group: ticket-sales-sync
@@ -113,6 +115,58 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # **差分の有無と関係なく走らせる。** 手で確かめるアウェイ戦は、CSVが動かない
+      # 静かな日にも残り続ける。PRが立つ日にしか出さないと、いちばん気付きたい
+      # 「誰も見ていないまま試合が近づく」状態を拾えない。
+      - name: 手で確かめるアウェイ戦を挙げる
+        id: gaps
+        run: |
+          set -euo pipefail
+          mkdir -p tmp
+          node tools/report-away-gaps.js > tmp/away-gaps.md
+          if [ -s tmp/away-gaps.md ]; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            {
+              echo '## 手で確かめるアウェイ戦'
+              echo
+              cat tmp/away-gaps.md
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # **Issueは1本だけ持ち、中身を書き換える。** 毎日新しく立てると溜まって読まれなくなる。
+      # GitHubは内容が変わったときだけ通知するので、同じ状態が続く日は静かなまま。
+      - name: 一覧のIssueを更新する
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FOUND: ${{ steps.gaps.outputs.found }}
+        run: |
+          set -euo pipefail
+
+          title='手で確かめるアウェイ戦'
+          label='away-gaps'
+
+          # ラベルが無いとIssueを作れない。すでにあれば失敗するので握りつぶす。
+          gh label create "$label"             --description 'アウェイ席の情報を手で入れる必要がある試合の一覧'             --color 'B60205' 2>/dev/null || true
+
+          number=$(gh issue list --state open --label "$label"             --json number --jq '.[0].number // empty')
+
+          if [ "${FOUND}" = "true" ]; then
+            if [ -n "$number" ]; then
+              gh issue edit "$number" --body-file tmp/away-gaps.md
+              echo "Issue #${number} を更新しました。"
+            else
+              gh issue create --title "$title" --label "$label" --body-file tmp/away-gaps.md
+              echo "Issueを作成しました。"
+            fi
+          elif [ -n "$number" ]; then
+            gh issue close "$number"               --comment '手で確かめるアウェイ戦は無くなりました。必要になればまた開きます。'
+            echo "Issue #${number} を閉じました。"
+          else
+            echo "手で確かめるアウェイ戦はありません。"
           fi
 
       # retrieved_at_jst は全行で動くため、生のdiffでは124行すべてが書き換わったように
