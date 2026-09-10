@@ -264,48 +264,18 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:match-sec05@sanga-timeline.invalid
+UID:ticket-sec45-away@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260828T031900Z
-DTSTART:20260902T100000Z
-DTEND:20260902T120000Z
-SUMMARY:横浜FM戦 キックオフ（日産ス）
-DESCRIPTION:第5節 横浜FM戦\nhttps://www.jleague.jp/news/article/34406/
- \n※非公式のファンツールによる予定です。日程が変わ
- っている場合があります。購入・応募の前に公式サイ
- トで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:ticket-sec05-away@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260828T031900Z
-DTSTART:20260902T103000Z
-DTEND:20260902T104500Z
-SUMMARY:横浜FM戦 アウェイ席 一般発売 開始
-DESCRIPTION:第5節 横浜FM戦（試合日 9/2（水））\nhttps://www.jl
- eague-ticket.jp/sales/perform/2628602/001\n※非公式のファンツー
- ルによる予定です。日程が変わっている場合がありま
- す。購入・応募の前に公式サイトで確認してください
- 。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:match-sec06@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260828T031900Z
-DTSTART:20260906T103000Z
-DTEND:20260906T123000Z
-SUMMARY:FC東京戦 キックオフ（味スタ）
-DESCRIPTION:第6節 FC東京戦\nhttps://www.jleague.jp/news/article/34406/
- \n※非公式のファンツールによる予定です。日程が変わ
- っている場合があります。購入・応募の前に公式サイ
- トで確認してください。
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260903T030000Z
+DTEND:20260903T031500Z
+SUMMARY:FC町田ゼルビア戦 アウェイ席 一般発売 開始
+DESCRIPTION:4回戦 FC町田ゼルビア戦（試合日 10/3（土））\nh
+ ttps://www.jleague-ticket.jp/sales/perform/2634301/001\n※非公式のフ
+ ァンツールによる予定です。日程が変わっている場合
+ があります。購入・応募の前に公式サイトで確認して
+ ください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -366,6 +336,22 @@ DESCRIPTION:MD2 ラーチャブリーFC戦（試合日 10/13（火））\nh
  ttps://www.sanga-fc.jp/ticket/schedule\n※非公式のファンツール
  による予定です。日程が変わっている場合があります
  。購入・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ticket-sec12-away@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260919T010000Z
+DTEND:20260919T011500Z
+SUMMARY:G大阪戦 アウェイ席 一般発売 開始
+DESCRIPTION:第12節 G大阪戦（試合日 10/24（土））\nhttps://www.
+ jleague-ticket.jp/sales/perform/2632955/001\n※非公式のファンツ
+ ールによる予定です。日程が変わっている場合があり
+ ます。購入・応募の前に公式サイトで確認してくださ
+ い。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -630,6 +616,21 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:match-sec45@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261003T070000Z
+DTEND:20261003T090000Z
+SUMMARY:FC町田ゼルビア戦 キックオフ（Gスタ）
+DESCRIPTION:4回戦 FC町田ゼルビア戦\nhttps://www.sanga-fc.jp/news/d
+ etail/21171\n※非公式のファンツールによる予定です。日
+ 程が変わっている場合があります。購入・応募の前に
+ 公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:ticket-acl-md3-gold@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:0
@@ -812,6 +813,21 @@ DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
  anga-fc.jp/ticket/schedule\n※非公式のファンツールによる予
  定です。日程が変わっている場合があります。購入・
  応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec12@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261024T070000Z
+DTEND:20261024T090000Z
+SUMMARY:G大阪戦 キックオフ（パナスタ）
+DESCRIPTION:第12節 G大阪戦\nhttps://www.jleague.jp/news/article/34406/
+ \n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1775,6 +1791,52 @@ DESCRIPTION:第37節 名古屋戦（試合日未定）\nhttps://www.sanga-f
  す。日程が変わっている場合があります。購入・応募
  の前に公式サイトで確認してください。
 STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec05@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260902T100000Z
+DTEND:20260902T120000Z
+SUMMARY:横浜FM戦 キックオフ（日産ス）
+DESCRIPTION:第5節 横浜FM戦\nhttps://www.jleague.jp/news/article/34406/
+ \n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:ticket-sec05-away@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260902T103000Z
+DTEND:20260902T104500Z
+SUMMARY:横浜FM戦 アウェイ席 一般発売 開始
+DESCRIPTION:第5節 横浜FM戦（試合日 9/2（水））\nhttps://www.jl
+ eague-ticket.jp/sales/perform/2628602/001\n※非公式のファンツー
+ ルによる予定です。日程が変わっている場合がありま
+ す。購入・応募の前に公式サイトで確認してください
+ 。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec06@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260906T103000Z
+DTEND:20260906T123000Z
+SUMMARY:FC東京戦 キックオフ（味スタ）
+DESCRIPTION:第6節 FC東京戦\nhttps://www.jleague.jp/news/article/34406/
+ \n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
+STATUS:CANCELLED
 TRANSP:TRANSPARENT
 END:VEVENT
 END:VCALENDAR

@@ -692,71 +692,27 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
-      "id": "match-sec05",
-      "ends_at": "2026-09-02T21:00:00+09:00",
-      "type": "match",
-      "source": "official",
-      "action_type": "information",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec05"
-      ],
-      "source_url": "https://www.jleague.jp/news/article/34406/",
-      "source_checked_at": "2026-07-09",
-      "status": "confirmed",
-      "is_visible": true,
-      "starts_at": "2026-09-02T19:00:00+09:00",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "title": "横浜FM戦 キックオフ（日産ス）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
-    },
-    {
-      "id": "ticket-sec05-away",
-      "starts_at": "2026-09-02T19:30:00+09:00",
-      "ends_at": "2026-09-02T19:45:00+09:00",
+      "id": "ticket-sec45-away",
+      "starts_at": "2026-09-03T12:00:00+09:00",
+      "ends_at": "2026-09-03T12:15:00+09:00",
       "date_precision": "datetime",
       "date_candidates": [],
       "type": "ticket",
       "ticket_kind": "away_sale",
-      "title": "横浜FM戦 アウェイ席 一般発売 開始",
+      "title": "FC町田ゼルビア戦 アウェイ席 一般発売 開始",
       "source": "official",
       "action_type": "action",
       "audience": {},
       "interest_tags": [],
       "match_ids": [
-        "sec05"
+        "sec45"
       ],
-      "source_url": "https://www.jleague-ticket.jp/sales/perform/2628602/001",
-      "source_checked_at": "2026-09-01",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2634301/001",
+      "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
-    },
-    {
-      "id": "match-sec06",
-      "ends_at": "2026-09-06T21:30:00+09:00",
-      "type": "match",
-      "source": "official",
-      "action_type": "information",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec06"
-      ],
-      "source_url": "https://www.jleague.jp/news/article/34406/",
-      "source_checked_at": "2026-07-09",
-      "status": "confirmed",
-      "is_visible": true,
-      "starts_at": "2026-09-06T19:30:00+09:00",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "title": "FC東京戦 キックオフ（味スタ）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-08-28T03:19:00Z"
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec10-away",
@@ -877,6 +833,29 @@
       ],
       "source_url": "https://www.sanga-fc.jp/ticket/schedule",
       "source_checked_at": "2026-09-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "ticket-sec12-away",
+      "starts_at": "2026-09-19T10:00:00+09:00",
+      "ends_at": "2026-09-19T10:15:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "away_sale",
+      "title": "G大阪戦 アウェイ席 一般発売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec12"
+      ],
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2632955/001",
+      "source_checked_at": "2026-09-10",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -1566,6 +1545,28 @@
       "calendar_last_modified": "2026-08-28T03:19:00Z"
     },
     {
+      "id": "match-sec45",
+      "ends_at": "2026-10-03T18:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec45"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21171",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-10-03T16:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "FC町田ゼルビア戦 キックオフ（Gスタ）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "ticket-acl-md3-benefit-gold",
       "starts_at": "2026-10-04T12:00:00+09:00",
       "ends_at": "2026-10-04T12:15:00+09:00",
@@ -1997,6 +1998,28 @@
       "is_visible": true,
       "calendar_sequence": 1,
       "calendar_last_modified": "2026-08-28T03:19:00Z"
+    },
+    {
+      "id": "match-sec12",
+      "ends_at": "2026-10-24T18:00:00+09:00",
+      "type": "match",
+      "source": "official",
+      "action_type": "information",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec12"
+      ],
+      "source_url": "https://www.jleague.jp/news/article/34406/",
+      "source_checked_at": "2026-07-09",
+      "status": "confirmed",
+      "is_visible": true,
+      "starts_at": "2026-10-24T16:00:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "title": "G大阪戦 キックオフ（パナスタ）",
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
       "id": "ticket-sec15-benefit-platinum",
@@ -4802,25 +4825,25 @@
   "skipped": [],
   "away_tickets": [
     {
-      "match_id": "sec05",
-      "state": "on_sale",
-      "state_note": "空席あり",
-      "checked_at": "2026-08-31",
-      "source_url": "https://www.jleague-ticket.jp/sales/perform/2628602/001"
-    },
-    {
-      "match_id": "sec06",
-      "state": "on_sale",
-      "state_note": "空席あり",
-      "checked_at": "2026-08-31",
-      "source_url": "https://www.jleague-ticket.jp/sales/perform/2628263/001"
-    },
-    {
       "match_id": "sec08",
       "state": "on_sale",
       "state_note": "空席あり",
-      "checked_at": "2026-08-31",
+      "checked_at": "2026-09-10",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2630702/001"
+    },
+    {
+      "match_id": "sec12",
+      "state": "before_sale",
+      "state_note": "発売前",
+      "checked_at": "2026-09-10",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2632955/001"
+    },
+    {
+      "match_id": "sec45",
+      "state": "on_sale",
+      "state_note": "空席あり",
+      "checked_at": "2026-09-10",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2634301/001"
     }
   ]
 }

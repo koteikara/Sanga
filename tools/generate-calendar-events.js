@@ -405,6 +405,29 @@ function matchEvent(match) {
 }
 
 /**
+ * 画面に出る状態は、ページが実際に書いている語からだけ決める。
+ *
+ * **`before_sale` を持つのは、行に「発売前」と書いてある場合だけ。**
+ * 行そのものが無いことは、いまも「発売前」を意味しない（未発売なのか、
+ * 別のプレイガイドで売っているのか区別できない）。両者は別の話で、
+ * 前者は観測できる事実、後者は観測できない推測。
+ *
+ * 知らない語は `unknown` にして、画面では何も言わない。
+ * 取り違えて「発売中」と言い切るより、黙るほうがよい。
+ */
+const AWAY_STATE_BY_RAW = new Map([
+  ['空席あり', 'on_sale'],
+  ['空席わずか', 'on_sale'],
+  ['残りわずか', 'on_sale'],
+  ['完売', 'sold_out'],
+  ['発売前', 'before_sale'],
+]);
+
+function awayStateOf(stateRaw) {
+  return AWAY_STATE_BY_RAW.get((stateRaw || '').trim()) || 'unknown';
+}
+
+/**
  * アウェイ戦の販売状態。Jリーグチケットに載っている試合だけが対象で、
  * 全アウェイ戦ではない。載っていない試合は何も持たない（「発売前」と扱わない）。
  *
@@ -430,7 +453,7 @@ function buildAwayTickets(csvPath, matches) {
     }
     tickets.push({
       match_id: match.id,
-      state: 'on_sale',
+      state: awayStateOf(record.state_raw),
       state_note: record.state_raw || '',
       checked_at: (record.retrieved_at_jst || '').slice(0, 10),
       source_url: record.perform_url,

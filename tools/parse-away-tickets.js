@@ -7,9 +7,14 @@
  * 文章や画像は持たない。設計は docs/supporter-timeline-design.md の
  * 「アウェイ戦のチケット」を正とする。
  *
- * ここに出るのは「そのサイトで売っている発売中の試合」だけで、全アウェイ戦ではない。
- * 載っていない試合を「発売前」と解釈しないこと。未発売なのか、別のプレイガイドで
- * 売っているのか（神戸は楽天チケット、柏はローソンチケットなど）区別できない。
+ * ここに出るのは「そのサイトが載せている試合」だけで、全アウェイ戦ではない。
+ * 2026-09-10 から発売前の試合も載るようになったため、行の `state_raw` には
+ * 「空席あり」だけでなく「発売前」「完売」も現れる。
+ *
+ * **載っていない試合を「発売前」と解釈しないこと。** 行が無い理由は、未発売なのか、
+ * 別のプレイガイドで売っているのか区別できない（広島と柏は、どのクラブのアウェイ節にも
+ * ホストとして現れない＝Jリーグチケットを使っていない）。
+ * 行に書いてある語は事実、行が無いことは何も意味しない。
  *
  * HTMLの取得は tools/fetch-away-tickets.js が行う。ここは取得しない。
  */
@@ -40,7 +45,27 @@ function usage() {
   console.error('使い方: node tools/parse-away-tickets.js <away.html> [output.csv] [options]');
   console.error('  --retrieved-at <ISO8601> 取得日時。省略時は実行時刻');
   console.error('  --check                  出力先と比べ、違えば終了コード1（書き換えない）');
+  console.error('  --keep-unchanged         違いが取得日時だけなら書き換えない');
   console.error(`出力先を省略した場合: ${path.relative(repoRoot, DEFAULT_OUTPUT)}`);
+}
+
+/**
+ * 取得日時は毎回動く。ここだけが違う場合に書き換えると、中身の変わらないPRが
+ * 毎日立ち、やがて誰も開かなくなる。ホーム戦の parse-ticket-sales.js と同じ考え方。
+ */
+const VOLATILE_COLUMNS = ['retrieved_at_jst'];
+
+function comparableCsv(text) {
+  const lines = text.replace(/^\uFEFF/, '').split('\n').filter((line) => line.trim() !== '');
+  if (lines.length === 0) return null;
+  const header = lines[0].split(',');
+  const keep = header
+    .map((name, index) => (VOLATILE_COLUMNS.includes(name.trim()) ? -1 : index))
+    .filter((index) => index >= 0);
+  return JSON.stringify(lines.map((line) => {
+    const cells = line.split(',');
+    return keep.map((index) => cells[index] ?? '');
+  }));
 }
 
 function stripTags(value) {
@@ -147,13 +172,14 @@ function jstStamp(date) {
 }
 
 function main(argv) {
-  const options = { retrievedAt: null, check: false };
+  const options = { retrievedAt: null, check: false, keepUnchanged: false };
   const positional = [];
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--help' || arg === '-h') { usage(); return 0; }
     if (arg === '--check') { options.check = true; continue; }
+    if (arg === '--keep-unchanged') { options.keepUnchanged = true; continue; }
     if (arg === '--retrieved-at') { options.retrievedAt = argv[i += 1]; continue; }
     if (arg.startsWith('--')) { console.error(`不明なオプション: ${arg}`); usage(); return 1; }
     positional.push(arg);
@@ -187,16 +213,23 @@ function main(argv) {
 
   const csv = toCsv(parsed.rows);
 
+  const existing = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : null;
+
   if (options.check) {
-    const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
+    const current = existing || '';
     // 取得日時は毎回動くため、中身の比較からは外す。
-    const withoutStamp = (text) => text.split('\n').map((line) => line.replace(/,[^,]*$/, '')).join('\n');
-    if (withoutStamp(current) !== withoutStamp(csv)) {
+    if (comparableCsv(current) !== comparableCsv(csv)) {
       console.error(`${path.relative(repoRoot, outputPath)} がHTMLの内容と一致しません。`);
       console.error('  node tools/parse-away-tickets.js を実行して作り直してください。');
       return 1;
     }
     console.log(`生成物OK: ${path.relative(repoRoot, outputPath)} はHTMLと一致しています（${parsed.rows.length}件）`);
+    return 0;
+  }
+
+  if (options.keepUnchanged && existing !== null && comparableCsv(existing) === comparableCsv(csv)) {
+    console.log(`変化なし: ${path.relative(repoRoot, outputPath)} は書き換えていません`);
+    console.log(`  違いは取得日時だけでした（試合${parsed.rows.length}件）`);
     return 0;
   }
 
@@ -214,7 +247,7 @@ function main(argv) {
     console.log(`  読めなかった行: ${parsed.skipped.length}件`);
     parsed.skipped.forEach((line) => { console.log(`    ${line}`); });
   }
-  console.log('  ここに出るのは発売中の試合だけです。載っていない試合を「発売前」と扱わないでください。');
+  console.log('  ここに出るのはページが載せている試合だけです。載っていない試合を「発売前」と扱わないでください。');
   return 0;
 }
 

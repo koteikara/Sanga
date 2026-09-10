@@ -36,6 +36,7 @@ function usage() {
   console.error('  --html <dir>    HTMLの置き場（既定: tmp/away-perform）');
   console.error('  --out <csv>     出力先（既定: docs/sheets/away-sales.current.csv）');
   console.error('  --checked-at <日付> 確認日。省略時は今日');
+  console.error('  --keep-unchanged 違いが確認日だけなら書き換えない');
   console.error('  --check         出力先と比べ、違えば終了コード1（書き換えない）');
 }
 
@@ -125,6 +126,25 @@ function toCsv(rows) {
   return `${lines.join('\n')}\n`;
 }
 
+/**
+ * 確認日は毎回動く。ここだけが違う場合に書き換えると、中身の変わらないPRが
+ * 毎日立つ。ホーム戦の parse-ticket-sales.js と同じ考え方。
+ */
+const VOLATILE_COLUMNS = ['checked_at'];
+
+function comparableCsv(text) {
+  const lines = text.replace(/^\uFEFF/, '').split('\n').filter((line) => line.trim() !== '');
+  if (lines.length === 0) return null;
+  const header = lines[0].split(',');
+  const keep = header
+    .map((name, index) => (VOLATILE_COLUMNS.includes(name.trim()) ? -1 : index))
+    .filter((index) => index >= 0);
+  return JSON.stringify(lines.map((line) => {
+    const cells = line.split(',');
+    return keep.map((index) => cells[index] ?? '');
+  }));
+}
+
 function todayStamp() {
   const jst = new Date(Date.now() + 9 * 3600000);
   return `${jst.getUTCFullYear()}-${pad(jst.getUTCMonth() + 1)}-${pad(jst.getUTCDate())}`;
@@ -137,12 +157,14 @@ function main(argv) {
     outputPath: DEFAULT_OUTPUT,
     checkedAt: '',
     check: false,
+    keepUnchanged: false,
   };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--help' || arg === '-h') { usage(); return 0; }
     if (arg === '--check') { options.check = true; continue; }
+    if (arg === '--keep-unchanged') { options.keepUnchanged = true; continue; }
     if (arg === '--input') { options.inputPath = path.resolve(argv[i += 1]); continue; }
     if (arg === '--html') { options.htmlDir = path.resolve(argv[i += 1]); continue; }
     if (arg === '--out') { options.outputPath = path.resolve(argv[i += 1]); continue; }
@@ -190,16 +212,23 @@ function main(argv) {
   rows.sort((a, b) => a.match_date.localeCompare(b.match_date));
   const csv = toCsv(rows);
 
+  const existing = fs.existsSync(options.outputPath) ? fs.readFileSync(options.outputPath, 'utf8') : null;
+
   if (options.check) {
-    const current = fs.existsSync(options.outputPath) ? fs.readFileSync(options.outputPath, 'utf8') : '';
+    const current = existing || '';
     // 確認日は毎回動くため、中身の比較からは外す。
-    const withoutStamp = (text) => text.split('\n').map((line) => line.replace(/,[^,]*$/, '')).join('\n');
-    if (withoutStamp(current) !== withoutStamp(csv)) {
+    if (comparableCsv(current) !== comparableCsv(csv)) {
       console.error(`${path.relative(repoRoot, options.outputPath)} がHTMLの内容と一致しません。`);
       console.error('  node tools/parse-away-sales.js を実行して作り直してください。');
       return 1;
     }
     console.log(`生成物OK: ${path.relative(repoRoot, options.outputPath)} はHTMLと一致しています（${rows.length}件）`);
+    return 0;
+  }
+
+  if (options.keepUnchanged && existing !== null && comparableCsv(existing) === comparableCsv(csv)) {
+    console.log(`変化なし: ${path.relative(repoRoot, options.outputPath)} は書き換えていません`);
+    console.log(`  違いは確認日だけでした（${rows.length}件）`);
     return 0;
   }
 

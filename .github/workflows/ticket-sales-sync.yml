@@ -68,6 +68,12 @@ jobs:
 
       # アウェイ席の販売状態も同じ流れで取り込む。取得先が別サイトなので、
       # 失敗してもホーム戦の取り込みは止めない（continue-on-error）。
+      # **ただし黙って終わらせない。** 最後の「アウェイの取り込み結果を確かめる」で
+      # ジョブを失敗させる。2026-08-31から2026-09-10まで、ここが毎回失敗していたのに
+      # 実行は成功と表示され、10日間気付けなかった。
+      #
+      # 取得日時・確認日しか変わらない日に書き換えないよう --keep-unchanged を付ける。
+      # 付けないと中身の変わらないPRが毎日立ち、やがて誰も開かなくなる。
       - name: アウェイの販売状態を取得
         id: away
         continue-on-error: true
@@ -75,11 +81,27 @@ jobs:
           set -euo pipefail
           sleep 10
           node tools/fetch-away-tickets.js tmp/away-tickets.html --force
-          node tools/parse-away-tickets.js
+          node tools/parse-away-tickets.js tmp/away-tickets.html --keep-unchanged
           # 段階1が拾った試合ページから一般発売の開始日時を取る。
-          # 開始が読めるのは「先行は開いたが一般発売はこれから」の試合だけで、0件が普通。
+          # Jリーグチケットは「発売前」の試合も載せるようになったため、
+          # 発売より前に開始日時が読める試合がある。
           node tools/fetch-away-sales.js --force
-          node tools/parse-away-sales.js tmp/away-tickets.html
+          node tools/parse-away-sales.js --keep-unchanged
+
+      # アウェイが失敗した日も、静かな日（PRが立たない日）にこそ気付けるようにする。
+      - name: アウェイの失敗を記録
+        if: steps.away.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          {
+            echo '## アウェイの取り込みに失敗しました'
+            echo
+            echo 'ホーム戦の取り込みは続けています。アウェイ席の販売状態と発売日時は、'
+            echo 'この実行では更新されていません（前回の値のままです）。'
+            echo
+            echo "実行ログ: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::アウェイの取り込みに失敗しました。アウェイ席の情報は更新されていません。"
 
       - name: 差分の有無を判定
         id: judge
@@ -124,6 +146,7 @@ jobs:
         if: steps.judge.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          AWAY_OUTCOME: ${{ steps.away.outcome }}
         run: |
           set -euo pipefail
 
@@ -142,8 +165,11 @@ jobs:
             echo '- **公開JSONを変更するPRです。** 同じCSVから `public/data/calendar-events.json` を作り直しています。公開ページ（`public/timeline.html`）が読むデータです。'
             echo '- **購読フィード（`public/timeline.ics`）も作り直しています。** マージすると購読している人のカレンダーに届きます。取り消しはまだできないため（墓標は未実装）、予定が消えていないかは特に確認してください。'
             echo '- 内容を確認してからマージしてください。自動ではマージしません。'
-            echo '- アウェイ席の販売状態（`docs/sheets/away-tickets.current.csv`）も更新しています。**ここに出るのは発売中の試合だけで、載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。'
+            echo '- アウェイ席の販売状態（`docs/sheets/away-tickets.current.csv`）も更新しています。発売中の試合に加え、**発売前の試合も載ります**。**ただし載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。'
             echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'
+            if [ "${AWAY_OUTCOME}" = "failure" ]; then
+              echo '- **アウェイの取り込みは失敗しました。** このPRのアウェイ関連ファイルは前回の値のままです。実行ログを確認してください。'
+            fi
             echo '- 取得日時と画面表示（受付中・販売中）だけの違いでは更新しません。このPRがあるということは、販売日程か掲載状態が変わっています。'
             echo
             echo '## 変更内容'
@@ -192,3 +218,12 @@ jobs:
           fi
 
           rm -f pr-body.md
+
+      # ここで初めてジョブを赤くする。ホーム戦の取り込みとPR作成は先に終わっているので、
+      # アウェイの失敗でホーム戦が止まることはない。**沈黙だけをやめる。**
+      - name: アウェイの取り込み結果を確かめる
+        if: always() && steps.away.outcome == 'failure'
+        run: |
+          echo 'アウェイの取り込みに失敗しています。ホーム戦の取り込みは終わっています。'
+          echo '上の「アウェイの販売状態を取得」のログを見てください。'
+          exit 1

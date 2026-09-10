@@ -22,8 +22,10 @@ const SOURCES = new Set(['official', 'personal']);
 const STATUSES = new Set(['confirmed', 'tentative']);
 const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled', 'away_sale']);
 const GRADES = new Set(['platinum', 'gold', 'regular', 'kids']);
-// `before_sale` は観測できないため持たない（docs/supporter-timeline-design.md「アウェイ戦のチケット」）。
-const AWAY_STATES = new Set(['on_sale', 'unknown']);
+// `before_sale` は「行に『発売前』と書いてある」ときだけ持つ。
+// 行そのものが無いことは、いまも「発売前」を意味しない
+// （docs/supporter-timeline-design.md「アウェイ戦のチケット」）。
+const AWAY_STATES = new Set(['on_sale', 'before_sale', 'sold_out', 'unknown']);
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const UTC_STAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
@@ -353,7 +355,13 @@ function main(argv) {
   console.log(`calendar-events の検証に成功しました: ${path.relative(repoRoot, path.resolve(targetPath))}`);
   console.log(`  イベント${data.events.length}件（チケット${ticketCount}件・作り物${sampleCount}件）、取り込まなかった記事${(data.skipped || []).length}件`);
   if (Array.isArray(data.away_tickets)) {
-    console.log(`  アウェイ戦の販売中${data.away_tickets.length}件（載っていない試合は「発売前」ではなく、状態が分からない）`);
+    const byState = data.away_tickets.reduce((counts, item) => {
+      counts[item.state] = (counts[item.state] || 0) + 1;
+      return counts;
+    }, {});
+    const breakdown = Object.entries(byState).map(([key, count]) => `${key}${count}件`).join('・');
+    const detail = breakdown ? `（${breakdown}）` : '';
+    console.log(`  アウェイ戦の掲載${data.away_tickets.length}件${detail}。載っていない試合は「発売前」ではなく、状態が分からない`);
   }
   return 0;
 }
