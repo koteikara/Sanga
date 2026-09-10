@@ -310,6 +310,21 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:ticket-sec10-away@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260911T030000Z
+DTEND:20260911T031500Z
+SUMMARY:広島戦 アウェイ席 一般発売 開始
+DESCRIPTION:第10節 広島戦（試合日 10/17（土））\nhttps://www.s
+ anfrecce.co.jp/tickets/schedule\n※非公式のファンツールによ
+ る予定です。日程が変わっている場合があります。購
+ 入・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:match-sec07@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
@@ -752,6 +767,21 @@ DESCRIPTION:MD2 ラーチャブリーFC戦\nhttps://www.sanga-fc.jp/news/de
  tail/21321\n※非公式のファンツールによる予定です。日
  程が変わっている場合があります。購入・応募の前に
  公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec10@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261017T050000Z
+DTEND:20261017T070000Z
+SUMMARY:広島戦 キックオフ（Eピース）
+DESCRIPTION:第10節 広島戦\nhttps://www.jleague.jp/news/article/34406/\
+ n※非公式のファンツールによる予定です。日程が変わ
+ っている場合があります。購入・応募の前に公式サイ
+ トで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
