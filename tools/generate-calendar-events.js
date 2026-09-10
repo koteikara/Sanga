@@ -205,8 +205,9 @@ const ICS_FIELDS = ['starts_at', 'ends_at', 'date_precision', 'title', 'source_u
  * 全員に届く。** 逆に、上げずに型を変えてはいけない。
  *
  * 1 … 断り書き（assets/ics.js の DISCLAIMER）を説明欄に足した（2026-09-08）
+ * 2 … 試合の題に【ホーム】【アウェイ】を付け、説明欄の「未定戦」をやめた（2026-09-10）
  */
-const ICS_TEMPLATE_VERSION = 1;
+const ICS_TEMPLATE_VERSION = 2;
 
 /** 同じ内容かどうかを比べるための指紋。 */
 function icsFingerprint(event) {
@@ -357,8 +358,27 @@ function ticketEvent(record, match, checkedAt) {
  * 試合そのもののイベント。日時の確からしさは matches.json の状態をそのまま写す。
  * 試合が未確定でも販売日時は確定して告知されるため、両者の date_precision は別に持つ。
  */
+/**
+ * 試合の呼び名。**相手が決まっていない試合がある。**
+ * ルヴァン杯と天皇杯の勝ち上がり枠は、日程だけ先に決まって相手と会場が「未定」で入る。
+ * そのまま並べると「未定戦」になるので、大会と回戦で呼ぶ（`share_title`）。
+ */
+function matchLabel(match) {
+  const opponent = match.opponent && match.opponent !== '未定' ? match.opponent : '';
+  if (opponent) return `${opponent}戦`;
+  return match.share_title
+    || `${match.competition_label || ''} ${match.round || ''}`.trim()
+    || '試合';
+}
+
+/** 会場も「未定」で入ることがある。分からないものを括弧で見せない。 */
+function venueSuffix(match) {
+  const venue = match.venue && match.venue !== '未定' ? match.venue : '';
+  return venue ? `（${venue}）` : '';
+}
+
 function matchEvent(match) {
-  const opponent = match.opponent || '未定';
+  const label = matchLabel(match);
   const base = {
     id: `match-${match.id}`,
     ends_at: '',
@@ -383,7 +403,7 @@ function matchEvent(match) {
       ends_at: match.kickoff_time ? plusMinutes(startsAt, MATCH_MINUTES) : '',
       date_precision: match.kickoff_time ? 'datetime' : 'date',
       date_candidates: [],
-      title: `${opponent}戦 キックオフ（${match.venue || '会場未定'}）`,
+      title: `${label} キックオフ${venueSuffix(match)}`,
     });
   }
 
@@ -392,7 +412,7 @@ function matchEvent(match) {
       starts_at: '',
       date_precision: 'candidates',
       date_candidates: match.date_candidates.slice(),
-      title: `${opponent}戦 キックオフ（開催日が候補のまま）`,
+      title: `${label} キックオフ（開催日が候補のまま）`,
     });
   }
 
@@ -400,7 +420,7 @@ function matchEvent(match) {
     starts_at: '',
     date_precision: 'unknown',
     date_candidates: [],
-    title: `${opponent}戦 キックオフ（試合日が未定）`,
+    title: `${label} キックオフ（試合日が未定）`,
   });
 }
 
@@ -623,6 +643,18 @@ function build(options) {
     // 販売状態を添える先が画面に無い。
     awayTickets.forEach((ticket) => { rounds.add(ticket.match_id); });
   }
+
+  // **日程が確定した試合は、チケットの情報が無くても時系列に出す。**
+  // これを入れる前は、試合イベントはチケット情報の副産物だった。ホーム戦は公式の
+  // 販売スケジュールに1試合8段階ぶん載るので自動的に揃うが、アウェイ戦は情報源が
+  // 試合ごとに違い、揃わない試合は**試合そのものが画面から消えていた**。
+  // 2026-09-10 時点でアウェイ24試合のうち20試合、ACL4試合が全部そうだった。
+  //
+  // 日程未定の試合は足さない。ただしチケット情報を持つ試合（販売日程だけ先に
+  // 決まっているホーム戦など）は、これまでどおり上で rounds に入っている。
+  matchIndex.forEach((match) => {
+    if (match.match_date) rounds.add(match.id);
+  });
 
   Array.from(rounds).sort().forEach((matchId) => {
     events.push(matchEvent(matchIndex.get(matchId)));

@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=da2926bb";
+  var EVENTS_URL = "data/calendar-events.json?v=22177b01";
   var MATCHES_URL = "data/matches.json?v=e096ee41";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -427,13 +427,37 @@
     return state.events.concat(loadPersonal());
   }
 
+  /**
+   * 試合の呼び名。**相手が決まっていない試合がある。**
+   * ルヴァン杯・天皇杯の勝ち上がり枠は日程だけ先に決まり、相手が「未定」で入る。
+   * そのまま並べると「未定戦」になるので、大会と回戦で呼ぶ。
+   */
+  function matchName(match) {
+    if (!match.opponent || match.opponent === "未定") {
+      return ((match.competition_label || "") + " " + (match.round || "")).trim() || match.id;
+    }
+    return match.round + " " + match.opponent + "戦";
+  }
+
+  /** 書き出す予定の題に付けるホーム／アウェイ。未定の試合には付けない。 */
+  function icsMatchSide(event) {
+    if (event.type !== "match") return "";
+    var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+    if (ids.length !== 1) return "";
+    var match = state.matches.find(function (m) { return m.id === ids[0]; });
+    if (!match) return "";
+    if (match.home_away === "H") return "ホーム";
+    if (match.home_away === "A") return "アウェイ";
+    return "";
+  }
+
   function matchLabel(event) {
     var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
     if (!ids.length) return "";
     var labels = ids.map(function (id) {
       var match = state.matches.find(function (m) { return m.id === id; });
       if (!match) return id;
-      return match.round + " " + (match.opponent || "未定") + "戦";
+      return matchName(match);
     });
     return labels.join(" / ");
   }
@@ -1096,13 +1120,13 @@
       if (!match.match_date) return;
       var option = document.createElement("option");
       option.value = match.id;
-      option.textContent = match.round + " " + (match.opponent || "未定") + "戦（" + match.match_date + "）";
+      option.textContent = matchName(match) + "（" + match.match_date + "）";
       select.appendChild(option);
     });
   }
 
   function matchTitle(match) {
-    return match.round + " " + (match.opponent || "未定") + "戦" +
+    return matchName(match) +
       (match.match_date ? "（" + match.match_date + "）"
         : (match.date_candidates && match.date_candidates.length
           ? "（" + formatCandidates(match.date_candidates) + "）"
@@ -1382,7 +1406,9 @@
       start: start,
       end: parseDate(event.ends_at),
       allDay: event.date_precision === "date",
-      summary: event.title,
+      // 購読フィードと同じ見え方に揃える。カレンダーの月表示に出るのは題だけで、
+      // 画面のように H / A のしるしを別に添えられない。
+      summary: icsMatchSide(event) ? "【" + icsMatchSide(event) + "】" + event.title : event.title,
       description: description.join("\n"),
       sequence: event.calendar_sequence,
       lastModified: parseDate(event.calendar_last_modified)
