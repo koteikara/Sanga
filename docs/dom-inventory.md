@@ -229,6 +229,13 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.match-date`
 - `.match-label`
 - `.match-name`
+- `.match-news`
+- `.match-news-count`
+- `.match-news-date`
+- `.match-news-head`
+- `.match-news-kinds`
+- `.match-news-list`
+- `.match-news-note`
 - `.match-side`
 - `.month`
 - `.month-label`
@@ -265,6 +272,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 #### 操作しているaria属性
 
 - `aria-hidden`
+- `aria-label`
 - `aria-pressed`
 
 #### LocalStorageキー

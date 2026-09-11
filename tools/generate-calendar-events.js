@@ -18,6 +18,7 @@ const DEFAULT_MATCHES = path.join(repoRoot, 'public', 'data', 'matches.json');
 const DEFAULT_OUTPUT = path.join(repoRoot, 'tmp', 'calendar-events.generated.json');
 
 const SOURCE_URL = 'https://www.sanga-fc.jp/ticket/schedule';
+const NEWS_SOURCE_URL = 'https://www.sanga-fc.jp/news';
 
 /** 公式の段階名 → 保存する事実。題は自分の言葉で書き、公式の表記を転載しない。 */
 const STAGES = {
@@ -83,6 +84,7 @@ function usage() {
   console.error('使い方: node tools/generate-calendar-events.js <ticket-sales.csv> [output.json] [options]');
   console.error('  --matches <path>   試合データ（既定: public/data/matches.json）');
   console.error('  --samples <path>   検証用の作り物イベントを足す（events と skipped を持つJSON）');
+  console.error('  --news <csv>       ニュース一覧のCSV。試合ごとの案内の件数を足す');
   console.error('  --checked-at <日付> 出典の確認日。省略時はCSVの retrieved_at_jst から取る');
   console.error('  --check            出力先の既存ファイルと突き合わせ、差分があれば失敗する');
   console.error(`出力先を省略した場合: ${DEFAULT_OUTPUT}`);
@@ -454,6 +456,60 @@ function awayStateOf(stateRaw) {
  * 試合との対応付けは日付で行う。相手の表記が「横浜Ｆ・マリノス」と「横浜FM」で
  * 揃わないため、名前では結び付けない。1日に2試合はないので日付が鍵になる。
  */
+/**
+ * ニュース一覧のCSVから、試合ごとの案内の件数をまとめる。
+ *
+ * **日時を持たない。** ここで作るのは「この試合の案内が何件あり、どこにあるか」だけで、
+ * 時系列のイベントにはしない。記事の中の日時は揺れるため、層1では扱わない
+ * （docs/supporter-timeline-design.md の「イベント・配布・物販の取り込み」）。
+ *
+ * **題も持たない。** 公式の記事タイトルは保存も転載もしないため、CSVにも入っていない。
+ * 画面に出せるのは公開日・カテゴリ・リンクの3つで、中身はリンク先で読んでもらう。
+ */
+function buildNews(csvPath, matches, checkedAt) {
+  const records = readCsvRecords(csvPath);
+  const known = new Set(matches.map((match) => match.id));
+  const byMatch = new Map();
+  let linked = 0;
+
+  records.forEach((record) => {
+    const ids = (record.match_ids || "").split(" ").filter(Boolean).filter((id) => known.has(id));
+    if (!ids.length) return;
+    linked += 1;
+    ids.forEach((id) => {
+      if (!byMatch.has(id)) byMatch.set(id, []);
+      byMatch.get(id).push({
+        published_on: record.published_on,
+        category: record.category,
+        source_url: record.source_url,
+      });
+    });
+  });
+
+  const list = Array.from(byMatch.entries()).map(([matchId, articles]) => {
+    // 新しい順。同じ日なら記事IDの大きいほうが新しいが、CSVがすでにその順で並ぶ。
+    const counts = new Map();
+    articles.forEach((article) => { counts.set(article.category, (counts.get(article.category) || 0) + 1); });
+    return {
+      match_id: matchId,
+      count: articles.length,
+      categories: Array.from(counts.entries())
+        .sort((x, y) => (y[1] - x[1]) || (x[0] < y[0] ? -1 : 1))
+        .map(([name, count]) => ({ name, count })),
+      articles,
+    };
+  }).sort((x, y) => (x.match_id < y.match_id ? -1 : 1));
+
+  return {
+    source: NEWS_SOURCE_URL,
+    csv: path.relative(repoRoot, path.resolve(csvPath)),
+    checked_at: checkedAt,
+    article_count: records.length,
+    linked_count: linked,
+    by_match: list,
+  };
+}
+
 function buildAwayTickets(csvPath, matches) {
   const records = readCsvRecords(csvPath).filter((record) => record.match_date);
   const byDate = new Map();
@@ -660,6 +716,11 @@ function build(options) {
     events.push(matchEvent(matchIndex.get(matchId)));
   });
 
+  let news = null;
+  if (options.newsPath) {
+    news = buildNews(options.newsPath, Array.from(matchIndex.values()), checkedAt);
+  }
+
   let skipped = [];
   if (options.samplesPath) {
     const samples = JSON.parse(fs.readFileSync(options.samplesPath, 'utf8'));
@@ -688,12 +749,13 @@ function build(options) {
     events: applyVersions(sortEvents(events), snapshotAt, readPrevious(options.outputPath)),
     skipped,
     away_tickets: awayTickets,
+    news,
   };
 }
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', newsPath: '', checkedAt: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -702,6 +764,7 @@ function main(argv) {
     if (arg === '--away') { options.awayPath = argv[i += 1]; continue; }
     if (arg === '--away-sales') { options.awaySalesPath = argv[i += 1]; continue; }
     if (arg === '--away-sales-current') { options.awaySalesCurrentPath = argv[i += 1]; continue; }
+    if (arg === '--news') { options.newsPath = argv[i += 1]; continue; }
     if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '-h' || arg === '--help') { usage(); return 0; }
@@ -757,7 +820,8 @@ function main(argv) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, text);
   const awayNote = data.away_tickets.length ? `・アウェイ販売中${data.away_tickets.length}件` : '';
-  console.log(`生成しました: ${path.relative(repoRoot, outputPath)}（イベント${data.events.length}件・試合${data.meta.match_count}件${awayNote}）`);
+  const newsNote = data.news ? `・案内${data.news.linked_count}件（${data.news.by_match.length}試合）` : '';
+  console.log(`生成しました: ${path.relative(repoRoot, outputPath)}（イベント${data.events.length}件・試合${data.meta.match_count}件${awayNote}${newsNote}）`);
   return 0;
 }
 

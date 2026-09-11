@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=22177b01";
+  var EVENTS_URL = "data/calendar-events.json?v=738e27a9";
   var MATCHES_URL = "data/matches.json?v=e096ee41";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -98,7 +98,8 @@
     profile: null,
     benefit: null,
     benefitRule: null,
-    awayTickets: []
+    awayTickets: [],
+    news: null
   };
 
   /* ---------- 日時 ---------- */
@@ -512,6 +513,85 @@
     });
     if (!found) return "";
     return AWAY_STATE_LABELS[found.state] + (found.checked_at ? "（" + found.checked_at + "確認）" : "");
+  }
+
+  /**
+   * その試合の公式の案内。無ければ null。
+   *
+   * **日時を持たない。** 出せるのは「何件あるか」「どのカテゴリか」「どこにあるか」だけで、
+   * 記事の中の時刻は扱わない（docs/supporter-timeline-design.md の
+   * 「イベント・配布・物販の取り込み」）。**題も持たない。** 公式の記事タイトルは
+   * 保存も転載もしないため、公開JSONに入っていない。
+   */
+  function newsFor(event) {
+    if (!state.news || !Array.isArray(state.news.by_match)) return null;
+    var ids = Array.isArray(event.match_ids) ? event.match_ids : [];
+    if (ids.length !== 1) return null;
+    var found = null;
+    state.news.by_match.forEach(function (item) {
+      if (item && item.match_id === ids[0]) found = item;
+    });
+    return found && found.count ? found : null;
+  }
+
+  /** 「試合情報7・グッズ3」のような内訳。多い順にそのまま並べる。 */
+  function newsBreakdown(summary) {
+    return (summary.categories || []).map(function (c) {
+      return c.name + c.count;
+    }).join("・");
+  }
+
+  /**
+   * 案内の一覧を開閉する枠を作る。
+   *
+   * 既定は閉じている。件数と内訳だけで「見に行くかどうか」は決められるうえ、
+   * 13件のリンクが常に開いていると、時系列そのものが読みにくくなる。
+   */
+  function createNewsNode(summary) {
+    var box = document.createElement("details");
+    box.className = "match-news";
+
+    var head = document.createElement("summary");
+    head.className = "match-news-head";
+    var count = document.createElement("span");
+    count.className = "match-news-count";
+    count.textContent = "公式の案内 " + summary.count + "件";
+    head.appendChild(count);
+    var breakdown = newsBreakdown(summary);
+    if (breakdown) {
+      var detail = document.createElement("span");
+      detail.className = "match-news-kinds";
+      detail.textContent = breakdown;
+      head.appendChild(detail);
+    }
+    box.appendChild(head);
+
+    var note = document.createElement("p");
+    note.className = "match-news-note";
+    note.textContent = "公式サイトの記事です。中身はリンク先でご確認ください。";
+    box.appendChild(note);
+
+    var list = document.createElement("ul");
+    list.className = "match-news-list";
+    (summary.articles || []).forEach(function (article) {
+      var item = document.createElement("li");
+      var when = document.createElement("span");
+      when.className = "match-news-date";
+      when.textContent = article.published_on;
+      item.appendChild(when);
+      var link = document.createElement("a");
+      link.href = article.source_url;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.textContent = article.category;
+      // 題を持たないので、読み上げだけでは何のリンクか分からない。日付と種類を補う。
+      link.setAttribute("aria-label", article.published_on + "の" + article.category + "の案内を公式サイトで開く");
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    box.appendChild(list);
+
+    return box;
   }
 
   /**
@@ -946,6 +1026,8 @@
             head.appendChild(awayNode);
           }
           blockNode.appendChild(head);
+          var news = newsFor(block.items[0].event);
+          if (news) blockNode.appendChild(createNewsNode(news));
         }
         var listNode = document.createElement("ul");
         listNode.className = "events";
@@ -1889,6 +1971,7 @@
       state.events = (results[0].events || []).filter(function (e) { return e.is_visible !== false; });
       state.skipped = results[0].skipped || [];
       state.awayTickets = results[0].away_tickets || [];
+      state.news = results[0].news || null;
       state.matches = results[1].matches || [];
       state.benefitRule = results[2];
       renderMatchOptions();

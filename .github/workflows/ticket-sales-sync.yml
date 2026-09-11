@@ -90,6 +90,37 @@ jobs:
           node tools/fetch-away-sales.js --force
           node tools/parse-away-sales.js --keep-unchanged
 
+      # ニュース一覧から、試合ごとの公式の案内を拾う。
+      #
+      # **一覧だけを取る。記事は開かない。** 一覧のHTMLはCMSが出しており、日付・カテゴリ・
+      # 題・記事URLが書き手の手を経ずに並ぶ。本文の日時は書き手ごとに揺れるため、ここでは
+      # 扱わない（docs/supporter-timeline-design.md の「イベント・配布・物販の取り込み」）。
+      #
+      # アウェイと同じく、失敗してもホーム戦の取り込みは止めない。ただし黙って終わらせず、
+      # 最後の確認ステップでジョブを失敗させる。
+      - name: 公式の案内を取り込む
+        id: news
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          sleep 10
+          node tools/fetch-news-list.js --force
+          node tools/parse-news-list.js --keep-unchanged
+
+      - name: 公式の案内の失敗を記録
+        if: steps.news.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          {
+            echo '## 公式の案内の取り込みに失敗しました'
+            echo
+            echo 'ホーム戦の取り込みは続けています。試合ごとの案内の件数は、'
+            echo 'この実行では更新されていません（前回の値のままです）。'
+            echo
+            echo "実行ログ: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::公式の案内の取り込みに失敗しました。案内の件数は更新されていません。"
+
       # アウェイが失敗した日も、静かな日（PRが立たない日）にこそ気付けるようにする。
       - name: アウェイの失敗を記録
         if: steps.away.outcome == 'failure'
@@ -110,8 +141,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv)" ]; then
-            echo "販売スケジュールとアウェイの販売状態に変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv)" ]; then
+            echo "販売スケジュール・アウェイの販売状態・公式の案内に変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -208,7 +239,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv public/data/calendar-events.json public/timeline.ics
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv public/data/calendar-events.json public/timeline.ics
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 
@@ -275,9 +306,16 @@ jobs:
 
       # ここで初めてジョブを赤くする。ホーム戦の取り込みとPR作成は先に終わっているので、
       # アウェイの失敗でホーム戦が止まることはない。**沈黙だけをやめる。**
-      - name: アウェイの取り込み結果を確かめる
-        if: always() && steps.away.outcome == 'failure'
+      # **緑のままにしない。** continue-on-error で飲み込んだ失敗を、ここでジョブの失敗に
+      # 変える。赤くなるものは直り、緑のままのものは放置される。
+      - name: アウェイと案内の取り込み結果を確かめる
+        if: always() && (steps.away.outcome == 'failure' || steps.news.outcome == 'failure')
         run: |
-          echo 'アウェイの取り込みに失敗しています。ホーム戦の取り込みは終わっています。'
-          echo '上の「アウェイの販売状態を取得」のログを見てください。'
+          if [ "${{ steps.away.outcome }}" = "failure" ]; then
+            echo 'アウェイの取り込みに失敗しています。「アウェイの販売状態を取得」のログを見てください。'
+          fi
+          if [ "${{ steps.news.outcome }}" = "failure" ]; then
+            echo '公式の案内の取り込みに失敗しています。「公式の案内を取り込む」のログを見てください。'
+          fi
+          echo 'ホーム戦の取り込みは終わっています。'
           exit 1

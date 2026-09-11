@@ -1116,6 +1116,105 @@ a:focus-visible {
   color: var(--muted-on-paper);
 }
 
+/* 試合ごとの公式の案内。帯の下に畳んで置く。
+   既定は閉じる。件数と内訳だけで見に行くかは決められ、13件のリンクが常に開いていると
+   時系列そのものが読みにくくなる。 */
+.match-news {
+  border-bottom: 1px solid var(--line-soft);
+  background: #fbfafc;
+  font-size: 0.78rem;
+}
+
+.match-news-head {
+  padding: 8px 14px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  color: var(--muted-on-paper);
+  /* summary を flex にすると既定の三角が消えるので、自分で描く */
+  list-style: none;
+}
+
+.match-news-head::-webkit-details-marker {
+  display: none;
+}
+
+/* 開閉の目印。閉じているとき右向き、開くと下向き */
+.match-news-head::before {
+  content: "";
+  flex: none;
+  align-self: center;
+  width: 0;
+  height: 0;
+  border-left: 5px solid var(--anchor);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform-origin: 30% 50%;
+  transition: transform 0.12s ease-out;
+}
+
+.match-news[open] > .match-news-head::before {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .match-news-head::before { transition: none; }
+}
+
+.match-news-head:hover {
+  background: #f5f2f7;
+}
+
+.match-news-head:focus-visible {
+  outline: 2px solid var(--anchor);
+  outline-offset: -2px;
+}
+
+.match-news-count {
+  font-weight: 700;
+  color: var(--anchor);
+}
+
+.match-news-kinds {
+  font-size: 0.74rem;
+}
+
+.match-news-note {
+  margin: 0;
+  padding: 0 14px 6px 34px;
+  font-size: 0.72rem;
+  color: var(--muted-on-paper);
+}
+
+.match-news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 14px 10px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.match-news-list li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.match-news-date {
+  color: var(--muted-on-paper);
+  font-size: 0.72rem;
+  flex: none;
+  /* 日付の幅をそろえて、種類が縦に並んで読めるようにする */
+  min-width: 5.4em;
+}
+
+.match-news-list a {
+  color: var(--anchor);
+}
+
 /* タイムライン */
 .day {
   margin-top: 22px;
