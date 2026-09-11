@@ -1,0 +1,12 @@
+{
+  "meta": {
+    "note": "tools/parse-news-list.js の回帰確認用の試合データです。実在の試合ではありません。"
+  },
+  "matches": [
+    { "id": "smp01", "match_date": "2026-07-04", "opponent": "サンプルA", "home_away": "H" },
+    { "id": "smp02", "match_date": "2026-07-11", "opponent": "サンプルB", "home_away": "A" },
+    { "id": "smp03", "match_date": "2026-07-18", "opponent": "サンプルC・フットボールクラブ", "home_away": "H" },
+    { "id": "smp04", "match_date": "2026-07-25", "opponent": "サンプルD", "home_away": "A" },
+    { "id": "smp05", "match_date": "", "opponent": "サンプルE", "home_away": "H" }
+  ]
+}

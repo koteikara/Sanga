@@ -254,6 +254,73 @@ function checkAwayTickets(list, awayMatchIds, allMatchIds) {
 }
 
 /**
+ * 試合ごとの公式の案内。
+ *
+ * **日時も題も持たないことを、ここで担保する。** 記事の中の時刻は揺れるので層1では扱わず
+ * （docs/supporter-timeline-design.md の「イベント・配布・物販の取り込み」）、
+ * 公式の記事タイトルは保存も転載もしない（「利用規約から決めたこと」）。
+ * うっかり足したときに、検証で止める。
+ */
+function checkNews(news, allMatchIds) {
+  if (news === undefined || news === null) return;
+  if (typeof news !== 'object' || Array.isArray(news)) {
+    addError('news', 'オブジェクトである必要があります');
+    return;
+  }
+  if (!isNonEmptyString(news.checked_at) || !DATE_PATTERN.test(news.checked_at)) {
+    addError('news', `checked_at の日付が不正です: ${news.checked_at}`);
+  }
+  if (!Array.isArray(news.by_match)) {
+    addError('news.by_match', '配列である必要があります');
+    return;
+  }
+
+  const seen = new Set();
+  news.by_match.forEach((item, index) => {
+    const location = `news.by_match[${index}]`;
+    if (!item || typeof item !== 'object') {
+      addError(location, 'オブジェクトである必要があります');
+      return;
+    }
+    if (!isNonEmptyString(item.match_id)) {
+      addError(location, 'match_id がありません');
+    } else if (!allMatchIds.has(item.match_id)) {
+      addError(location, `matches.json にない試合IDです: ${item.match_id}`);
+    } else if (seen.has(item.match_id)) {
+      addError(location, `match_id が重複しています: ${item.match_id}`);
+    }
+    seen.add(item.match_id);
+
+    const articles = Array.isArray(item.articles) ? item.articles : null;
+    if (!articles) {
+      addError(location, 'articles が配列ではありません');
+      return;
+    }
+    if (item.count !== articles.length) {
+      addError(location, `count が articles の件数と合いません: ${item.count} / ${articles.length}`);
+    }
+    articles.forEach((article, articleIndex) => {
+      const where = `${location}.articles[${articleIndex}]`;
+      if (!article || typeof article !== 'object') {
+        addError(where, 'オブジェクトである必要があります');
+        return;
+      }
+      if (!isNonEmptyString(article.published_on) || !DATE_PATTERN.test(article.published_on)) {
+        addError(where, `published_on の日付が不正です: ${article.published_on}`);
+      }
+      if (!isNonEmptyString(article.category)) addError(where, 'category がありません');
+      if (!isNonEmptyString(article.source_url)) addError(where, 'source_url がありません');
+      if (article.title !== undefined) {
+        addError(where, '題（title）は持ちません。公式の記事タイトルは保存も転載もしません');
+      }
+      if (article.starts_at !== undefined) {
+        addError(where, '日時（starts_at）は持ちません。記事の中の時刻は層1では扱いません');
+      }
+    });
+  });
+}
+
+/**
  * アウェイ席の発売イベント。ホーム戦の8段階とは別の規則で見る。
  * 特典チケットはホーム戦のチケットに引き換えるものなので、アウェイ戦には出ない。
  */
@@ -336,6 +403,7 @@ function main(argv) {
   checkTicketStages(data.events);
   checkAwaySales(data.events, awayMatchIds);
   checkAwayTickets(data.away_tickets, awayMatchIds, matchIds);
+  checkNews(data.news, matchIds);
 
   if (Array.isArray(data.skipped)) {
     data.skipped.forEach((item, index) => {
@@ -362,6 +430,9 @@ function main(argv) {
     const breakdown = Object.entries(byState).map(([key, count]) => `${key}${count}件`).join('・');
     const detail = breakdown ? `（${breakdown}）` : '';
     console.log(`  アウェイ戦の掲載${data.away_tickets.length}件${detail}。載っていない試合は「発売前」ではなく、状態が分からない`);
+  }
+  if (data.news && Array.isArray(data.news.by_match)) {
+    console.log(`  公式の案内${data.news.linked_count}件を${data.news.by_match.length}試合に結び付けた（一覧${data.news.article_count}件中）`);
   }
   return 0;
 }
