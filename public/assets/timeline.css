@@ -1329,6 +1329,16 @@ a:focus-visible {
   font-weight: 700;
 }
 
+/* 記事から読み取った日時。公式の販売スケジュール表から取ったものと見分けを付ける。
+   目立たせるのではなく、確かさが一段違うことが読めればよい。 */
+.note-derived {
+  color: var(--muted-on-paper);
+  border: 1px dashed var(--line);
+  border-radius: 3px;
+  padding: 0 5px;
+  font-size: 0.68rem;
+}
+
 /* 日程未定・取り込まなかった記事 */
 .undated {
   display: flex;

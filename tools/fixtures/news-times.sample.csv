@@ -1,0 +1,7 @@
+event_id,article_id,match_id,kind,label,starts_at,source_url,retrieved_at_jst
+news-90011-smp01-0500,90011,smp01,当日券,当日券の発売（オンライン・時刻は目安）,2026-07-04T05:00:00+09:00,https://www.sanga-fc.jp/news/detail/90011,2030-07-01T10:00:00+09:00
+news-90011-smp01-1300,90011,smp01,当日券,当日券の発売（窓口）,2026-07-04T13:00:00+09:00,https://www.sanga-fc.jp/news/detail/90011,2030-07-01T10:00:00+09:00
+news-90010-smp01-1400,90010,smp01,物販ブース,グッズ販売開始,2026-07-04T14:00:00+09:00,https://www.sanga-fc.jp/news/detail/90010,2030-07-01T10:00:00+09:00
+news-90012-smp01-1400,90012,smp01,当日の流れ,場外ブース開始,2026-07-04T14:00:00+09:00,https://www.sanga-fc.jp/news/detail/90012,2030-07-01T10:00:00+09:00
+news-90012-smp01-1500,90012,smp01,当日の流れ,入場開始,2026-07-04T15:00:00+09:00,https://www.sanga-fc.jp/news/detail/90012,2030-07-01T10:00:00+09:00
+news-90013-smp02-1800,90013,smp02,応募の締切,応募の締切,2026-07-08T18:00:00+09:00,https://www.sanga-fc.jp/news/detail/90013,2030-07-01T10:00:00+09:00

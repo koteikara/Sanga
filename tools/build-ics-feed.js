@@ -71,7 +71,13 @@ function isDated(event) {
  * 引換を追いたい人は、画面から引き換え予定を決めてダウンロードする道が残っている。
  */
 function isFeedTarget(event) {
-  return event.ticket_kind !== 'benefit_exchange';
+  if (event.ticket_kind === 'benefit_exchange') return false;
+  // **記事から読み取った日時は、このフィードに混ぜない。**
+  // 1試合で10件を超える。いま timeline.ics を登録している人は「チケットの発売開始と
+  // 試合」が来ると思って登録しており、当日のブースや入場の時刻が黙って増えると、
+  // 登録した覚えのないものが届くことになる。先に配ったURLの意味は変えない。
+  // これらは2本目のフィードで配る（docs/supporter-timeline-design.md の「2本目を足す」）。
+  return !event.derived_from;
 }
 
 function matchIndexOf(matchesPath) {

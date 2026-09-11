@@ -106,6 +106,11 @@ jobs:
           sleep 10
           node tools/fetch-news-list.js --force
           node tools/parse-news-list.js --keep-unchanged
+          # これからの試合に結び付いた記事だけ本文を取り、日時を読む。
+          # 記事は上書きで更新される（題に「(9/8追記)」が付く）ので毎日取り直す。
+          # 取った本文は tmp/ に置き、リポジトリには入れない。
+          node tools/fetch-news-articles.js --force
+          node tools/parse-news-times.js --keep-unchanged
 
       - name: 公式の案内の失敗を記録
         if: steps.news.outcome == 'failure'
@@ -141,7 +146,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv)" ]; then
+          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv)" ]; then
             echo "販売スケジュール・アウェイの販売状態・公式の案内に変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -239,7 +244,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv public/data/calendar-events.json public/timeline.ics
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 

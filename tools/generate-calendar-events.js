@@ -85,6 +85,8 @@ function usage() {
   console.error('  --matches <path>   試合データ（既定: public/data/matches.json）');
   console.error('  --samples <path>   検証用の作り物イベントを足す（events と skipped を持つJSON）');
   console.error('  --news <csv>       ニュース一覧のCSV。試合ごとの案内の件数を足す');
+  console.error('  --news-times <csv>        記事から読んだ日時。イベントとして並べる');
+  console.error('  --news-times-manual <csv> 上の手直し（drop / edit）');
   console.error('  --checked-at <日付> 出典の確認日。省略時はCSVの retrieved_at_jst から取る');
   console.error('  --check            出力先の既存ファイルと突き合わせ、差分があれば失敗する');
   console.error(`出力先を省略した場合: ${DEFAULT_OUTPUT}`);
@@ -136,9 +138,11 @@ function parseCsv(text) {
   return rows;
 }
 
-function readCsvRecords(csvPath) {
+function readCsvRecords(csvPath, { allowEmpty = false } = {}) {
   const text = fs.readFileSync(csvPath, 'utf8').replace(/^﻿/, '');
   const rows = parseCsv(text).filter((row) => row.some((cell) => cell.trim() !== ''));
+  // 手直し用のCSVは、見出しだけで中身が無いのが**ふつうの状態**。空を失敗にしない。
+  if (rows.length === 1 && allowEmpty) return [];
   if (rows.length < 2) throw new Error('CSVに行がありません');
   const header = rows[0].map((cell) => cell.trim());
   return rows.slice(1).map((row) => {
@@ -457,6 +461,87 @@ function awayStateOf(stateRaw) {
  * 揃わないため、名前では結び付けない。1日に2試合はないので日付が鍵になる。
  */
 /**
+ * 記事から読み取った日時を、タイムラインのイベントにする。
+ *
+ * **種類ごとに出し方が違う。** 買う・申し込むものは ACTION、開く・始まるものは
+ * INFORMATION（docs/supporter-timeline-design.md の「表示カテゴリ」）。
+ */
+const NEWS_TIME_KINDS = {
+  '当日の流れ': { type: 'event', action_type: 'information' },
+  '物販ブース': { type: 'goods', action_type: 'information' },
+  // 当日券は公式の販売スケジュール表（先行5段階＋引換3件）には載らない別口。
+  // ticket_kind を分けて、8段階の数え上げから外す。
+  '当日券': { type: 'ticket', action_type: 'action', ticket_kind: 'same_day' },
+  '応募の締切': { type: 'entry', action_type: 'action' },
+};
+
+/**
+ * 記事から読み取った日時を読み込み、手入力で上書きする。
+ *
+ * **上書きできる余地を必ず残す。** チケットの販売スケジュールは公式の表という
+ * 構造化された出典から取るが、こちらは記事の本文から読み取っている。取り違えは起きうる。
+ * 量が多い（1シーズン150件ほどの見込み）ので人が全部入力するのは回らないが、
+ * **間違いを見つけたら1行で直せる**ようにしておく。
+ *
+ * `docs/sheets/news-times.manual.csv` の `action` が `drop` なら消し、
+ * `edit` なら `label` と `starts_at` を差し替える。
+ */
+function buildNewsTimes(csvPath, manualPath, matchIndex) {
+  const manual = new Map();
+  const problems = [];
+  if (manualPath) {
+    readCsvRecords(manualPath, { allowEmpty: true }).forEach((record) => {
+      if (!record.event_id) return;
+      if (record.action !== 'drop' && record.action !== 'edit') {
+        problems.push(`action は drop か edit です: ${record.event_id}（${record.action}）`);
+        return;
+      }
+      manual.set(record.event_id, record);
+    });
+  }
+
+  const events = [];
+  readCsvRecords(csvPath, { allowEmpty: true }).forEach((record) => {
+    if (!record.event_id || !record.starts_at || !record.match_id) return;
+    const match = matchIndex.get(record.match_id);
+    if (!match) { problems.push(`matches.json にない試合IDです: ${record.match_id}`); return; }
+    const shape = NEWS_TIME_KINDS[record.kind];
+    if (!shape) { problems.push(`知らない種類です: ${record.kind}（${record.event_id}）`); return; }
+
+    const override = manual.get(record.event_id);
+    if (override && override.action === 'drop') return;
+    const label = (override && override.label) || record.label;
+    const startsAt = (override && override.starts_at) || record.starts_at;
+
+    events.push({
+      id: record.event_id,
+      starts_at: startsAt,
+      ends_at: '',
+      date_precision: 'datetime',
+      date_candidates: [],
+      type: shape.type,
+      ...(shape.ticket_kind ? { ticket_kind: shape.ticket_kind } : {}),
+      title: `${matchLabel(match)} ${label}`,
+      source: 'official',
+      action_type: shape.action_type,
+      // **記事の本文から読み取ったものだと画面で分かるようにする。**
+      // 公式の販売スケジュール表から取るチケットと、同じ確かさに見せない。
+      derived_from: override ? 'news_article_edited' : 'news_article',
+      news_kind: record.kind,
+      audience: {},
+      interest_tags: [],
+      match_ids: [record.match_id],
+      source_url: record.source_url,
+      source_checked_at: (record.retrieved_at_jst || '').slice(0, 10),
+      status: 'confirmed',
+      is_visible: true,
+    });
+  });
+
+  return { events, problems };
+}
+
+/**
  * ニュース一覧のCSVから、試合ごとの案内の件数をまとめる。
  *
  * **日時を持たない。** ここで作るのは「この試合の案内が何件あり、どこにあるか」だけで、
@@ -721,6 +806,16 @@ function build(options) {
     news = buildNews(options.newsPath, Array.from(matchIndex.values()), checkedAt);
   }
 
+  let newsTimeProblems = [];
+  if (options.newsTimesPath) {
+    const built = buildNewsTimes(options.newsTimesPath, options.newsTimesManualPath, matchIndex);
+    built.events.forEach((event) => {
+      events.push(event);
+      rounds.add(event.match_ids[0]);
+    });
+    newsTimeProblems = built.problems;
+  }
+
   let skipped = [];
   if (options.samplesPath) {
     const samples = JSON.parse(fs.readFileSync(options.samplesPath, 'utf8'));
@@ -733,6 +828,7 @@ function build(options) {
   return {
     awayUnmatched,
     awaySaleProblems,
+    newsTimeProblems,
     meta: {
       note: options.samplesPath
         ? 'チケット販売と試合は実データ。作り物のイベントには is_sample: true が付く。tools/generate-calendar-events.js が生成する。手で編集しない。'
@@ -755,7 +851,7 @@ function build(options) {
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', newsPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', newsPath: '', newsTimesPath: '', newsTimesManualPath: '', checkedAt: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -765,6 +861,8 @@ function main(argv) {
     if (arg === '--away-sales') { options.awaySalesPath = argv[i += 1]; continue; }
     if (arg === '--away-sales-current') { options.awaySalesCurrentPath = argv[i += 1]; continue; }
     if (arg === '--news') { options.newsPath = argv[i += 1]; continue; }
+    if (arg === '--news-times') { options.newsTimesPath = argv[i += 1]; continue; }
+    if (arg === '--news-times-manual') { options.newsTimesManualPath = argv[i += 1]; continue; }
     if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '-h' || arg === '--help') { usage(); return 0; }
@@ -791,6 +889,13 @@ function main(argv) {
   delete data.awayUnmatched;
   const awaySaleProblems = data.awaySaleProblems || [];
   delete data.awaySaleProblems;
+  const newsTimeProblems = data.newsTimeProblems || [];
+  delete data.newsTimeProblems;
+
+  if (newsTimeProblems.length) {
+    console.error(`記事から読んだ日時に問題があります（${newsTimeProblems.length}件）。その行は取り込んでいません。`);
+    newsTimeProblems.forEach((line) => { console.error(`  ${line}`); });
+  }
 
   if (awaySaleProblems.length) {
     console.error(`アウェイ席の手入力に問題があります（${awaySaleProblems.length}件）。その行は取り込んでいません。`);
