@@ -240,6 +240,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 - `.month`
 - `.month-label`
 - `.next-lead`
+- `.note-derived`
 - `.note-tentative`
 - `.past`
 - `.reason`

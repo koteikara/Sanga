@@ -30,13 +30,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const { kindOfTitle } = require('./news-kinds.js');
 
 const repoRoot = path.resolve(__dirname, '..');
 const DEFAULT_INPUT_DIR = path.join(repoRoot, 'tmp', 'news-list');
 const DEFAULT_OUTPUT = path.join(repoRoot, 'docs', 'sheets', 'news.current.csv');
 const DEFAULT_MATCHES = path.join(repoRoot, 'public', 'data', 'matches.json');
 
-const HEADER = 'article_id,published_on,category,match_ids,source_url,retrieved_at_jst';
+const HEADER = 'article_id,published_on,category,kind,match_ids,source_url,retrieved_at_jst';
 
 /**
  * 記事1件ぶんの `<a>`。ピックアップ側（サムネイルあり）と一覧側の両方に当たる。
@@ -135,6 +136,9 @@ function parse(files, matches) {
         article_id: id,
         published_on: `${item[1]}-${pad(item[2])}-${pad(item[3])}`,
         category,
+        // 題そのものは残さない。こちらの語彙に振り分けた結果だけを持つ。
+        // 振り分けられなければ空にし、画面では公式のカテゴリをそのまま出す。
+        kind: kindOfTitle(title) || '',
         match_ids: matchIdsFromTitle(title, matches),
         source_url: url,
       });
@@ -155,7 +159,7 @@ function toCsv(rows, retrievedAt) {
     // カテゴリは公式の分類語で、カンマを含む例は実測で無い。含んだら取り込まない。
     if (row.category.includes(',')) return;
     lines.push([
-      row.article_id, row.published_on, row.category,
+      row.article_id, row.published_on, row.category, row.kind,
       row.match_ids.join(' '), row.source_url, retrievedAt,
     ].join(','));
   });
@@ -237,11 +241,13 @@ function main(argv) {
   fs.writeFileSync(outputPath, csv);
 
   const linked = parsed.rows.filter((row) => row.match_ids.length).length;
+  const classified = parsed.rows.filter((row) => row.kind).length;
   const byCategory = {};
   parsed.rows.forEach((row) => { byCategory[row.category] = (byCategory[row.category] || 0) + 1; });
 
   console.log(`${path.relative(repoRoot, outputPath)} を書きました（記事${parsed.rows.length}件 / ${files.length}ページ）`);
   console.log(`  試合に結び付いた記事: ${linked}件（${Math.round((linked / parsed.rows.length) * 100)}%）`);
+  console.log(`  種類を決められた記事: ${classified}件（${Math.round((classified / parsed.rows.length) * 100)}%）`);
   Object.entries(byCategory).sort((x, y) => y[1] - x[1]).forEach(([name, count]) => {
     console.log(`    ${name} ${count}件`);
   });

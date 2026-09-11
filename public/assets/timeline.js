@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=738e27a9";
+  var EVENTS_URL = "data/calendar-events.json?v=ff4c02a5";
   var MATCHES_URL = "data/matches.json?v=e096ee41";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -877,6 +877,19 @@
       t.className = "note-tentative";
       t.textContent = "未確定";
       meta.appendChild(t);
+    }
+
+    // **記事から読み取ったものだと分かるようにする。**
+    // チケットの販売日時は公式の販売スケジュール表という「表」から取っているが、
+    // これは記事の本文を機械が読んだもので、読み違えが起きうる。同じ確かさに見せない。
+    // 印は言葉で出す。色や記号だけだと読み上げで意味が伝わらない。
+    if (event.derived_from) {
+      var derived = document.createElement("span");
+      derived.className = "note-derived";
+      derived.textContent = event.derived_from === "news_article_edited"
+        ? "記事から（手で確認済み）"
+        : "記事から自動で読み取り";
+      meta.appendChild(derived);
     }
 
     if (event.source_url) {

@@ -20,7 +20,7 @@ const TYPES = new Set(['ticket', 'entry', 'event', 'goods', 'match', 'personal']
 const ACTION_TYPES = new Set(['action', 'information', 'personal']);
 const SOURCES = new Set(['official', 'personal']);
 const STATUSES = new Set(['confirmed', 'tentative']);
-const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled', 'away_sale']);
+const TICKET_KINDS = new Set(['sale', 'benefit_exchange', 'unscheduled', 'away_sale', 'same_day']);
 const GRADES = new Set(['platinum', 'gold', 'regular', 'kids']);
 // `before_sale` は「行に『発売前』と書いてある」ときだけ持つ。
 // 行そのものが無いことは、いまも「発売前」を意味しない
@@ -189,8 +189,10 @@ function checkTicketStages(events) {
   const byMatch = new Map();
   events.forEach((event) => {
     // 8件の規則はホーム戦の販売段階のもの。アウェイ席は段階が無く、0件か1件。
+    // 当日券は公式の販売スケジュール表に載らない別口で、記事から読む。段階には数えない。
     if (!event || event.type !== 'ticket') return;
     if (event.ticket_kind === 'unscheduled' || event.ticket_kind === 'away_sale') return;
+    if (event.ticket_kind === 'same_day') return;
     const matchId = (event.match_ids || [])[0];
     if (!matchId) return;
     if (!byMatch.has(matchId)) byMatch.set(matchId, []);
@@ -249,6 +251,38 @@ function checkAwayTickets(list, awayMatchIds, allMatchIds) {
     }
     if (!isNonEmptyString(item.source_url)) {
       addError(location, 'source_url がありません（状態にも出典が要る）');
+    }
+  });
+}
+
+/**
+ * 記事から読み取ったイベント。
+ *
+ * **出典と種類を欠かさない。** 公式の販売スケジュール表から取るチケットと違い、
+ * これは記事の本文を機械が読んだものなので、読み違えが起きうる。
+ * 画面で見分けが付くよう `derived_from` を必ず持たせ、`news_kind` は決めた語彙に限る。
+ */
+const NEWS_KINDS = new Set(['当日の流れ', '物販ブース', '当日券', '応募の締切']);
+const DERIVED = new Set(['news_article', 'news_article_edited']);
+
+function checkNewsTimes(events) {
+  events.forEach((event, index) => {
+    if (!event.derived_from) return;
+    const location = `events[${index}]`;
+    if (!DERIVED.has(event.derived_from)) {
+      addError(location, `derived_from が不正です: ${event.derived_from}`);
+    }
+    if (!NEWS_KINDS.has(event.news_kind)) {
+      addError(location, `news_kind が不正です: ${event.news_kind}`);
+    }
+    if (!isNonEmptyString(event.source_url)) {
+      addError(location, '出典がありません。記事から読んだ日時は出典なしに出しません');
+    }
+    if (event.date_precision !== 'datetime') {
+      addError(location, `記事から読んだ日時は datetime だけです: ${event.date_precision}`);
+    }
+    if ((event.match_ids || []).length !== 1) {
+      addError(location, '試合が1つに決まっていません');
     }
   });
 }
@@ -404,6 +438,7 @@ function main(argv) {
   checkAwaySales(data.events, awayMatchIds);
   checkAwayTickets(data.away_tickets, awayMatchIds, matchIds);
   checkNews(data.news, matchIds);
+  checkNewsTimes(data.events || []);
 
   if (Array.isArray(data.skipped)) {
     data.skipped.forEach((item, index) => {
@@ -433,6 +468,15 @@ function main(argv) {
   }
   if (data.news && Array.isArray(data.news.by_match)) {
     console.log(`  公式の案内${data.news.linked_count}件を${data.news.by_match.length}試合に結び付けた（一覧${data.news.article_count}件中）`);
+  }
+  const derived = (data.events || []).filter((event) => event.derived_from);
+  if (derived.length) {
+    const byKind = derived.reduce((counts, event) => {
+      counts[event.news_kind] = (counts[event.news_kind] || 0) + 1;
+      return counts;
+    }, {});
+    const detail = Object.entries(byKind).map(([kind, count]) => `${kind}${count}件`).join('・');
+    console.log(`  記事から読んだ日時${derived.length}件（${detail}）。出典と種類はすべて揃っている`);
   }
   return 0;
 }
