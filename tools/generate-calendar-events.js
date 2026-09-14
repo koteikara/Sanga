@@ -472,6 +472,8 @@ const NEWS_TIME_KINDS = {
   // 当日券は公式の販売スケジュール表（先行5段階＋引換3件）には載らない別口。
   // ticket_kind を分けて、8段階の数え上げから外す。
   '当日券': { type: 'ticket', action_type: 'action', ticket_kind: 'same_day' },
+  // ACLアウェイの前売。常設ページにも Jリーグチケットにも載らず、記事が唯一の情報源。
+  'アウェイ席の前売': { type: 'ticket', action_type: 'action', ticket_kind: 'away_sale' },
   '応募の締切': { type: 'entry', action_type: 'action' },
 };
 
