@@ -262,7 +262,7 @@ function checkAwayTickets(list, awayMatchIds, allMatchIds) {
  * これは記事の本文を機械が読んだものなので、読み違えが起きうる。
  * 画面で見分けが付くよう `derived_from` を必ず持たせ、`news_kind` は決めた語彙に限る。
  */
-const NEWS_KINDS = new Set(['当日の流れ', '物販ブース', '当日券', '応募の締切']);
+const NEWS_KINDS = new Set(['当日の流れ', '物販ブース', '当日券', '応募の締切', '場内の催し', 'アウェイ席の前売']);
 const DERIVED = new Set(['news_article', 'news_article_edited']);
 
 function checkNewsTimes(events) {

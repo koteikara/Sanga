@@ -34,6 +34,7 @@ const fs = require('fs');
 const path = require('path');
 const {
   EXTRACTABLE_KINDS, DEADLINE_KINDS, HAPPENING_KINDS, HAPPENING_LABELS,
+  ACL_AWAY_TICKET_KINDS, GATE_LABELS, KIND_SLUGS,
   labelOfTimetableItem, placeOfTicket,
 } = require('./news-kinds.js');
 
@@ -42,6 +43,7 @@ const DEFAULT_NEWS = path.join(repoRoot, 'docs', 'sheets', 'news.current.csv');
 const DEFAULT_ARTICLES = path.join(repoRoot, 'tmp', 'news-articles');
 const DEFAULT_MATCHES = path.join(repoRoot, 'public', 'data', 'matches.json');
 const DEFAULT_OUTPUT = path.join(repoRoot, 'docs', 'sheets', 'news-times.current.csv');
+const DEFAULT_AWAY_SALES_MANUAL = path.join(repoRoot, 'docs', 'sheets', 'away-sales.manual.csv');
 
 const HEADER = 'event_id,article_id,match_id,kind,label,starts_at,source_url,retrieved_at_jst';
 
@@ -60,6 +62,7 @@ function usage() {
   console.error('  --news <csv>             一覧のCSV（既定: docs/sheets/news.current.csv）');
   console.error('  --articles <dir>         記事本文（既定: tmp/news-articles）');
   console.error('  --matches <path>         試合データ（既定: public/data/matches.json）');
+  console.error('  --away-sales-manual <csv> 手入力のアウェイ席。重なる試合は記事から出さない');
   console.error('  --retrieved-at <ISO8601> 取得日時（既定: 実行時刻）');
   console.error(`出力を省略した場合: ${DEFAULT_OUTPUT}`);
 }
@@ -272,18 +275,97 @@ function readHappening(lines, match) {
   return found;
 }
 
+/** ACLアウェイかどうか。ここだけ記事が唯一の情報源になる。 */
+function isAclAway(match) {
+  return match.competition === 'ACL' && match.home_away === 'A';
+}
+
+/**
+ * ACLアウェイのチケット。
+ *
+ * **当日発売は試合当日**、**前売は行に書かれた日付**です。前売の日付は
+ * `試合5日前（9/10）13:00～` のように括弧で添えられます。相対表記は採らず、
+ * 括弧の中の月日を使います。年は記事の公開日から決めます。
+ */
+function readAclAwayTicket(lines, match, publishedOn) {
+  const found = [];
+  const [year] = publishedOn.split('-').map(Number);
+  lines.forEach((line) => {
+    if (DENY.test(line)) return;
+
+    // **キーワードから右だけを見る。** 「キックオフ2時間前」「試合5日前」のように
+    // 相対表記の数字が途中に入るため、キーワードと時刻のあいだを「数字以外」で
+    // つなぐ書き方だと当たらない。相対表記には `:` が無いので、右側で最初に見つかる
+    // `HH:MM` が求める時刻になる。
+    const sameDayAt = line.search(/当日(?:発売|券)/);
+    if (sameDayAt >= 0) {
+      const m = line.slice(sameDayAt).match(TIME);
+      const startsAt = m && atMatchDate(match.match_date, Number(m[1]), Number(m[2]));
+      if (startsAt) found.push({ kind: '当日券', label: 'アウェイ席 当日券の発売', starts_at: startsAt });
+    }
+
+    const advanceAt = line.search(/前売/);
+    if (advanceAt >= 0) {
+      const m = line.slice(advanceAt).match(/(\d{1,2})[\/月](\d{1,2})日?[^\d]{0,8}(\d{1,2})[:：](\d{2})/);
+      if (m) {
+        let y = year;
+        const monthDay = `${pad(m[1])}-${pad(m[2])}`;
+        if (monthDay < publishedOn.slice(5)) y += 1;
+        const hour = Number(m[3]);
+        if (hour <= 23 && Number(m[4]) <= 59) {
+          found.push({
+            kind: 'アウェイ席の前売',
+            label: 'アウェイ席 前売の発売',
+            starts_at: `${y}-${monthDay}T${pad(hour)}:${pad(m[4])}:00+09:00`,
+          });
+        }
+      }
+    }
+  });
+  return found;
+}
+
+/**
+ * 開門時刻。ラベルが直前の行に単独で置かれる形だけを読む。
+ *
+ * ホーム戦の記事はタイムスケジュールの表に入場開始を書くが、ACLアウェイの記事は
+ * `開門時間` というラベルで単独に書く。表が無くても読めるようにしておく。
+ */
+function readGateOpen(lines, match) {
+  const found = [];
+  lines.forEach((line, index) => {
+    if (!GATE_LABELS.test(line)) return;
+    const value = lines[index + 1];
+    if (!value || DENY.test(value)) return;
+    const m = value.match(/(\d{1,2})[:：](\d{2})/);
+    if (!m) return;
+    const startsAt = atMatchDate(match.match_date, Number(m[1]), Number(m[2]));
+    if (startsAt) found.push({ kind: '当日の流れ', label: '入場開始', starts_at: startsAt });
+  });
+  return found;
+}
+
 function extract(article, match, lines) {
-  let found = readTimetable(lines, match);
+  let found = readTimetable(lines, match).concat(readGateOpen(lines, match));
   if (article.kind === '当日券') found = found.concat(readSameDayTicket(lines, match));
   if (article.kind === 'グッズの発売') found = found.concat(readBooth(lines, match));
   if (DEADLINE_KINDS.has(article.kind)) found = found.concat(readEntryDeadline(lines, article.published_on));
   if (HAPPENING_KINDS.has(article.kind)) found = found.concat(readHappening(lines, match));
+  if (isAclAway(match) && ACL_AWAY_TICKET_KINDS.has(article.kind)) {
+    found = found.concat(readAclAwayTicket(lines, match, article.published_on));
+  }
   return found;
 }
+
+/** 手入力のアウェイ席と重なる種類。ここだけ手入力を優先する。 */
+const TICKET_LIKE_KINDS = new Set(['当日券', 'アウェイ席の前売']);
 
 function build(options) {
   const articles = readRows(options.newsPath);
   const matches = readMatches(options.matchesPath);
+  options.manualAwayMatchIds = new Set(
+    readRows(options.awaySalesManualPath).map((row) => row.match_id).filter(Boolean),
+  );
   const rows = [];
   const seen = new Set();
   let read = 0;
@@ -293,18 +375,33 @@ function build(options) {
     if (!fs.existsSync(file)) return;
     const ids = (article.match_ids || '').split(' ').filter(Boolean);
     if (!ids.length) return;
-    // タイムスケジュールは種類で絞らない。見出しという構造のほうが確かだから。
-    if (article.kind && !EXTRACTABLE_KINDS.has(article.kind) && !/タイムスケジュール/.test(fs.readFileSync(file, 'utf8'))) return;
+
+    const raw = fs.readFileSync(file, 'utf8');
+    const aclAway = ids.some((id) => { const m = matches.get(id); return m && isAclAway(m); });
+    // タイムスケジュールと開門は種類で絞らない。見出しとラベルという構造のほうが確かだから。
+    // ACLアウェイのチケットは、記事が唯一の情報源なので種類の枠を広げる。
+    const worthReading = (article.kind && EXTRACTABLE_KINDS.has(article.kind))
+      || /タイムスケジュール/.test(raw)
+      || raw.includes('開門')
+      || (aclAway && ACL_AWAY_TICKET_KINDS.has(article.kind));
+    if (!worthReading) return;
     read += 1;
 
-    const lines = bodyLines(fs.readFileSync(file, 'utf8'));
+    const lines = bodyLines(raw);
     ids.forEach((matchId) => {
       const match = matches.get(matchId);
       if (!match || !match.match_date) return;
+      // **手で入れたアウェイ席があれば、記事から読んだチケットは出さない。**
+      // 人がクラブ公式を見て決めたもののほうが確かで、同じ時刻が2件並ぶのも困る。
+      const covered = options.manualAwayMatchIds.has(matchId);
       extract(article, match, lines).forEach((item) => {
-        // 同じ記事の同じ時刻は1つにする。販売場所と受取場所で同じ時間が2度書かれる例がある。
+        if (covered && TICKET_LIKE_KINDS.has(item.kind)) return;
+        // 同じ記事・同じ試合・同じ種類・同じ時刻は1つにする。販売場所と受取場所で
+        // 同じ時間が2度書かれる例がある。**種類を入れないと別のイベント同士がぶつかる。**
         const stamp = item.starts_at.slice(11, 16).replace(':', '');
-        let id = `news-${article.article_id}-${matchId}-${stamp}`;
+        const slug = KIND_SLUGS[item.kind];
+        if (!slug) return;
+        const id = `news-${article.article_id}-${matchId}-${slug}-${stamp}`;
         if (seen.has(id)) return;
         seen.add(id);
         rows.push({
@@ -344,6 +441,7 @@ function comparableCsv(csv) {
 function main(argv) {
   const options = {
     newsPath: DEFAULT_NEWS, articlesDir: DEFAULT_ARTICLES, matchesPath: DEFAULT_MATCHES,
+    awaySalesManualPath: DEFAULT_AWAY_SALES_MANUAL,
     retrievedAt: null, check: false, keepUnchanged: false,
   };
   const positional = [];
@@ -356,6 +454,7 @@ function main(argv) {
     if (arg === '--news') { options.newsPath = path.resolve(argv[i += 1]); continue; }
     if (arg === '--articles') { options.articlesDir = path.resolve(argv[i += 1]); continue; }
     if (arg === '--matches') { options.matchesPath = path.resolve(argv[i += 1]); continue; }
+    if (arg === '--away-sales-manual') { options.awaySalesManualPath = path.resolve(argv[i += 1]); continue; }
     if (arg === '--retrieved-at') { options.retrievedAt = argv[i += 1]; continue; }
     if (arg.startsWith('--')) { console.error(`不明なオプション: ${arg}`); usage(); return 1; }
     positional.push(arg);
