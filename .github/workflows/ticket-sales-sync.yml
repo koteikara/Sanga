@@ -224,6 +224,12 @@ jobs:
       # 公式ページの構成が変わったまま気付かずCSVを差し替えるのを避けるため。
       # 公開ページが読むJSONはCSVから作る。同じPRに入れないと、CSVだけ新しく
       # 公開ページだけ古い状態ができる。
+      #
+      # **版数もここで揃う。** generate:timeline:public が fix:asset-versions まで
+      # 面倒を見る。public/assets/timeline.js は data/calendar-events.json?v=... と
+      # 参照しており、JSONの中身が変われば参照も変える必要があり、参照を変えると
+      # timeline.js 自身の内容も変わって timeline.html の版数まで連鎖する。
+      # 2026-09-11 と 09-12 の取り込みは、これを揃えずに検証へ進んで2日続けて落ちた。
       - name: 公開JSONを生成
         if: steps.judge.outputs.changed == 'true'
         run: npm run generate:timeline:public
@@ -244,7 +250,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 

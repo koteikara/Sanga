@@ -22,7 +22,7 @@
     "docs:dom-inventory": "node tools/generate-dom-inventory.mjs",
     "fix:asset-versions": "node tools/asset-versions.mjs",
     "generate:timeline": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.2026-08-28.csv experiments/supporter-timeline/calendar-events.sample.json --samples experiments/supporter-timeline/sample-events.json && npm run generate:timeline:public",
-    "generate:timeline:public": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv public/data/calendar-events.json --away docs/sheets/away-tickets.current.csv --away-sales docs/sheets/away-sales.manual.csv --away-sales-current docs/sheets/away-sales.current.csv --news docs/sheets/news.current.csv --news-times docs/sheets/news-times.current.csv --news-times-manual docs/sheets/news-times.manual.csv && npm run generate:ics-feed",
+    "generate:timeline:public": "node tools/generate-calendar-events.js docs/sheets/ticket-sales.current.csv public/data/calendar-events.json --away docs/sheets/away-tickets.current.csv --away-sales docs/sheets/away-sales.manual.csv --away-sales-current docs/sheets/away-sales.current.csv --news docs/sheets/news.current.csv --news-times docs/sheets/news-times.current.csv --news-times-manual docs/sheets/news-times.manual.csv && npm run generate:ics-feed && npm run fix:asset-versions",
     "generate:ics-feed": "node tools/build-ics-feed.js",
     "fetch:ticket-sales": "node tools/fetch-ticket-sales.js",
     "fetch:away-tickets": "node tools/fetch-away-tickets.js",
