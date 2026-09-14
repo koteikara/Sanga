@@ -825,79 +825,6 @@
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
-      "id": "news-21381-sec09-1200",
-      "starts_at": "2026-09-10T12:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "町田戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec09"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21381",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
-      "id": "news-21382-sec09-1200",
-      "starts_at": "2026-09-10T12:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "町田戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec09"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21382",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
-      "id": "news-21415-sec07-0500",
-      "starts_at": "2026-09-11T05:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "ticket",
-      "ticket_kind": "same_day",
-      "title": "柏戦 当日券の発売（オンライン・時刻は目安）",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "当日券",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec07"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21415",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
       "id": "ticket-sec10-away",
       "starts_at": "2026-09-11T12:00:00+09:00",
       "ends_at": "2026-09-11T12:15:00+09:00",
@@ -921,103 +848,6 @@
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
-      "id": "news-21403-sec07-1500",
-      "starts_at": "2026-09-11T15:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "goods",
-      "title": "柏戦 グッズ販売開始",
-      "source": "official",
-      "action_type": "information",
-      "derived_from": "news_article",
-      "news_kind": "物販ブース",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec07"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21403",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
-      "id": "news-21411-sec07-1530",
-      "starts_at": "2026-09-11T15:30:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "event",
-      "title": "柏戦 場外ブース開始",
-      "source": "official",
-      "action_type": "information",
-      "derived_from": "news_article",
-      "news_kind": "当日の流れ",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec07"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21411",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
-      "id": "news-21415-sec07-1600",
-      "starts_at": "2026-09-11T16:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "ticket",
-      "ticket_kind": "same_day",
-      "title": "柏戦 当日券の発売（窓口）",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "当日券",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec07"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21415",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
-      "id": "news-21411-sec07-1630",
-      "starts_at": "2026-09-11T16:30:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "event",
-      "title": "柏戦 入場開始",
-      "source": "official",
-      "action_type": "information",
-      "derived_from": "news_article",
-      "news_kind": "当日の流れ",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec07"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21411",
-      "source_checked_at": "2026-09-11",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
       "id": "match-sec07",
       "ends_at": "2026-09-11T21:00:00+09:00",
       "type": "match",
@@ -1037,6 +867,30 @@
       "date_candidates": [],
       "title": "柏戦 キックオフ（サンガスタジアム）",
       "calendar_sequence": 2,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "news-21368-acl-md1-flow-1700",
+      "starts_at": "2026-09-15T17:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "event",
+      "title": "大田ハナ・シチズン戦 入場開始",
+      "source": "official",
+      "action_type": "information",
+      "derived_from": "news_article",
+      "news_kind": "当日の流れ",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md1"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21368",
+      "source_checked_at": "2026-09-15",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
@@ -5505,7 +5359,7 @@
     "source": "https://www.sanga-fc.jp/news",
     "csv": "docs/sheets/news.current.csv",
     "checked_at": "2026-09-09",
-    "article_count": 51,
+    "article_count": 50,
     "linked_count": 21,
     "by_match": [
       {
@@ -5519,7 +5373,7 @@
         ],
         "articles": [
           {
-            "published_on": "2026-09-08",
+            "published_on": "2026-09-13",
             "category": "試合情報",
             "source_url": "https://www.sanga-fc.jp/news/detail/21368"
           },
@@ -5531,7 +5385,7 @@
         ]
       },
       {
-        "match_id": "sec04",
+        "match_id": "acl-md2",
         "count": 1,
         "categories": [
           {
@@ -5541,9 +5395,9 @@
         ],
         "articles": [
           {
-            "published_on": "2026-08-28",
+            "published_on": "2026-09-14",
             "category": "チケット",
-            "source_url": "https://www.sanga-fc.jp/news/detail/21356"
+            "source_url": "https://www.sanga-fc.jp/news/detail/21392"
           }
         ]
       },
@@ -5566,11 +5420,11 @@
       },
       {
         "match_id": "sec07",
-        "count": 13,
+        "count": 12,
         "categories": [
           {
             "name": "試合情報",
-            "count": 7
+            "count": 6
           },
           {
             "name": "グッズ",
@@ -5645,11 +5499,23 @@
             "published_on": "2026-09-02",
             "category": "ファンクラブ",
             "source_url": "https://www.sanga-fc.jp/news/detail/21358"
-          },
+          }
+        ]
+      },
+      {
+        "match_id": "sec08",
+        "count": 1,
+        "categories": [
           {
-            "published_on": "2026-08-25",
-            "category": "試合情報",
-            "source_url": "https://www.sanga-fc.jp/news/detail/21318"
+            "name": "グッズ",
+            "count": 1
+          }
+        ],
+        "articles": [
+          {
+            "published_on": "2026-09-14",
+            "category": "グッズ",
+            "source_url": "https://www.sanga-fc.jp/news/detail/21418"
           }
         ]
       },
