@@ -1424,6 +1424,16 @@ select {
 
 /* <button> と <a> の両方で使う。<a> は inline のままだと高さも中央ぞろえも効かず、
    下線が付いたまま潰れて見える。実際に「登録のしかたを見る」がそうなっていた。 */
+/* ボタンを2つ以上並べる枠。
+   .btn は inline-flex なので、そのまま並べると**折り返したときに上下がくっつく**。
+   横に並ぶときも縦に折り返すときも、同じ隙間を空ける。 */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
