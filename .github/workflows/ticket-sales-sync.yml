@@ -250,7 +250,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/timeline-events.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 
@@ -259,7 +259,7 @@ jobs:
             echo
             echo '- 公式のチケット販売スケジュールを取得し、`docs/sheets/ticket-sales.current.csv` を更新しました。'
             echo '- **公開JSONを変更するPRです。** 同じCSVから `public/data/calendar-events.json` を作り直しています。公開ページ（`public/timeline.html`）が読むデータです。'
-            echo '- **購読フィード（`public/timeline.ics`）も作り直しています。** マージすると購読している人のカレンダーに届きます。取り消しはまだできないため（墓標は未実装）、予定が消えていないかは特に確認してください。'
+            echo '- **購読フィード（`public/timeline.ics` と `public/timeline-events.ics`）も作り直しています。** マージすると購読している人のカレンダーに届きます。予定が消えていないかは特に確認してください。'
             echo '- 内容を確認してからマージしてください。自動ではマージしません。'
             echo '- アウェイ席の販売状態（`docs/sheets/away-tickets.current.csv`）も更新しています。発売中の試合に加え、**発売前の試合も載ります**。**ただし載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。'
             echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'

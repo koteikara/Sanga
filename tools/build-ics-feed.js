@@ -24,12 +24,42 @@ const { pathToFileURL } = require('url');
 const repoRoot = path.resolve(__dirname, '..');
 const DEFAULT_EVENTS = path.join(repoRoot, 'public', 'data', 'calendar-events.json');
 const DEFAULT_MATCHES = path.join(repoRoot, 'public', 'data', 'matches.json');
-const DEFAULT_OUTPUT = path.join(repoRoot, 'public', 'timeline.ics');
-
-// 名前だけで公式の配信と見分けが付くようにする。カレンダーの一覧には常時出る。
-const CALENDAR_NAME = 'SANGA SUPPORTER TIMELINE（非公式）';
-const CALENDAR_DESC = '京都サンガF.C. のチケット販売日程と試合日程（非公式）。出典は公式サイト。';
 const PROD_ID = '-//SANGA TOOLBOX//SUPPORTER TIMELINE//JA';
+
+/**
+ * フィードは2本ある。
+ *
+ * **`main` のURLと中身は変えない。** いま登録している人は「チケットの発売開始と試合」が
+ * 来ると思って登録しており、当日のブースや入場の時刻が黙って増えると、
+ * 登録した覚えのないものが届くことになる。分割より悪い。
+ *
+ * **`events` は足すほう。** 記事から読み取った当日の予定だけを配る。1試合で10件を
+ * 超えるので、チケットだけ見たい人と当日の動きまで入れたい人を分ける。
+ * 選ぶ負担は「チケットだけ」か「当日の動きも」かの1択で、組み合わせにならない。
+ *
+ * 3本目を作るときは、この判断をもう一度やり直す。本数が増える方向に既定値を置かない
+ * （docs/supporter-timeline-design.md の「2本目を足す」）。
+ */
+const FEEDS = {
+  main: {
+    output: path.join(repoRoot, 'public', 'timeline.ics'),
+    // 名前だけで公式の配信と見分けが付くようにする。カレンダーの一覧には常時出る。
+    name: 'SANGA SUPPORTER TIMELINE（非公式）',
+    description: '京都サンガF.C. のチケット販売日程と試合日程（非公式）。出典は公式サイト。',
+    // 特典チケットの引換は誰の予定か分からないため絞れない。記事から読んだ日時は2本目へ。
+    select: (event) => event.ticket_kind !== 'benefit_exchange' && !event.derived_from,
+    skipNote: (count) => `特典チケットの引換${count}件と、記事から読んだ日時は入れていません`,
+  },
+  events: {
+    output: path.join(repoRoot, 'public', 'timeline-events.ics'),
+    name: 'SANGA 試合当日の予定（非公式）',
+    description: '京都サンガF.C. の試合当日の予定（非公式）。公式サイトの記事から機械が読み取ったもので、最終確認は公式サイトで。',
+    select: (event) => !!event.derived_from,
+    skipNote: (count) => `記事から読み取っていない${count}件は入れていません（こちらは当日の予定だけ）`,
+  },
+};
+
+const DEFAULT_FEED = 'main';
 
 /**
  * 取りに来る間隔の目安。**強制はできない**（決めるのはカレンダーアプリ側）。
@@ -51,8 +81,12 @@ function usage() {
   console.error('使い方: node tools/build-ics-feed.js [output.ics] [options]');
   console.error('  --events <path>  イベント（既定: public/data/calendar-events.json）');
   console.error('  --matches <path> 試合データ（既定: public/data/matches.json）');
+  console.error(`  --feed <名前>    ${Object.keys(FEEDS).join(' / ')}（既定: ${DEFAULT_FEED}）`);
   console.error('  --check          出力先と突き合わせ、差分があれば終了コード1');
-  console.error(`出力先を省略した場合: ${path.relative(repoRoot, DEFAULT_OUTPUT)}`);
+  console.error('出力先を省略した場合: --feed で選んだフィードの既定の場所');
+  Object.entries(FEEDS).forEach(([name, feed]) => {
+    console.error(`  ${name}: ${path.relative(repoRoot, feed.output)}`);
+  });
 }
 
 /** 日時が確定しているものだけ。候補日のままのものと日程未定は出さない。 */
@@ -70,15 +104,7 @@ function isDated(event) {
  *
  * 引換を追いたい人は、画面から引き換え予定を決めてダウンロードする道が残っている。
  */
-function isFeedTarget(event) {
-  if (event.ticket_kind === 'benefit_exchange') return false;
-  // **記事から読み取った日時は、このフィードに混ぜない。**
-  // 1試合で10件を超える。いま timeline.ics を登録している人は「チケットの発売開始と
-  // 試合」が来ると思って登録しており、当日のブースや入場の時刻が黙って増えると、
-  // 登録した覚えのないものが届くことになる。先に配ったURLの意味は変えない。
-  // これらは2本目のフィードで配る（docs/supporter-timeline-design.md の「2本目を足す」）。
-  return !event.derived_from;
-}
+
 
 function matchIndexOf(matchesPath) {
   const raw = JSON.parse(fs.readFileSync(matchesPath, 'utf8'));
@@ -331,7 +357,7 @@ function tombstonesFor(previous, liveUids, matches, now) {
 }
 
 async function main(argv) {
-  const options = { eventsPath: DEFAULT_EVENTS, matchesPath: DEFAULT_MATCHES, check: false };
+  const options = { eventsPath: DEFAULT_EVENTS, matchesPath: DEFAULT_MATCHES, feed: DEFAULT_FEED, check: false };
   const positional = [];
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -340,12 +366,18 @@ async function main(argv) {
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '--events') { options.eventsPath = path.resolve(argv[i += 1]); continue; }
     if (arg === '--matches') { options.matchesPath = path.resolve(argv[i += 1]); continue; }
+    if (arg === '--feed') { options.feed = argv[i += 1]; continue; }
     if (arg.startsWith('--')) { console.error(`知らない引数です: ${arg}`); usage(); return 1; }
     positional.push(arg);
   }
 
   if (positional.length > 1) { usage(); return 1; }
-  const outputPath = positional[0] ? path.resolve(positional[0]) : DEFAULT_OUTPUT;
+  const feed = FEEDS[options.feed];
+  if (!feed) {
+    console.error(`知らないフィードです: ${options.feed}（${Object.keys(FEEDS).join(' / ')}）`);
+    return 1;
+  }
+  const outputPath = positional[0] ? path.resolve(positional[0]) : feed.output;
 
   let data;
   let matches;
@@ -362,7 +394,7 @@ async function main(argv) {
   const { buildCalendar, UID_DOMAIN, DISCLAIMER } = await import(pathToFileURL(icsPath).href);
 
   const all = data.events || [];
-  const target = all.filter(isDated).filter(isFeedTarget);
+  const target = all.filter(isDated).filter(feed.select);
   const live = target.map((event) => specOf(event, matches, DISCLAIMER)).filter(Boolean);
 
   const stamp = stampOf(target, data.meta);
@@ -376,9 +408,9 @@ async function main(argv) {
 
   const text = buildCalendar(specs, {
     now: stamp,
-    calendarName: CALENDAR_NAME,
+    calendarName: feed.name,
     prodId: PROD_ID,
-    calendarDescription: CALENDAR_DESC,
+    calendarDescription: feed.description,
     refreshInterval: REFRESH,
   });
 
@@ -407,7 +439,7 @@ async function main(argv) {
   if (graves.expired.length) {
     console.log(`  試合日から${TOMBSTONE_DAYS}日が過ぎたため落とした墓標: ${graves.expired.length}件`);
   }
-  if (skipped > 0) console.log(`  特典チケットの引換${skipped}件は入れていません（誰の予定か分からないため絞れない）`);
+  if (skipped > 0) console.log(`  ${feed.skipNote(skipped)}`);
   console.log(`  日時が確定していない${all.length - all.filter(isDated).length}件も入れていません`);
   console.log('  このURLは変えないでください。購読者は最初に登録したURLを持ち続けます。');
   return 0;

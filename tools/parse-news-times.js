@@ -15,7 +15,8 @@
  * | タイムスケジュール | 「タイムスケジュール」の見出しがある | 入場開始・場外ブース開始など |
  * | 当日券 | 種類が「当日券」 | 当日券の発売 |
  * | 物販ブース | 種類が「グッズの発売」 | ブースの営業開始 |
- * | 応募の締切 | 種類が「応募・抽選」 | 応募の締切 |
+ * | 応募の締切 | 種類が「応募・抽選」「交通・駐車」 | 応募・申込の締切 |
+ * | 催しの開始 | 種類が「場内の催し」 | 場内の催しの開始 |
  *
  * タイムスケジュールだけは種類で絞らない。**見出しという構造が手掛かり**なので、
  * 記事の分類より確かだから。実際、その記事は題からは「交通・駐車」に分類された。
@@ -31,7 +32,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const { EXTRACTABLE_KINDS, labelOfTimetableItem, placeOfTicket } = require('./news-kinds.js');
+const {
+  EXTRACTABLE_KINDS, DEADLINE_KINDS, HAPPENING_KINDS, HAPPENING_LABELS,
+  labelOfTimetableItem, placeOfTicket,
+} = require('./news-kinds.js');
 
 const repoRoot = path.resolve(__dirname, '..');
 const DEFAULT_NEWS = path.join(repoRoot, 'docs', 'sheets', 'news.current.csv');
@@ -233,11 +237,47 @@ function readEntryDeadline(lines, publishedOn) {
   return found;
 }
 
+/**
+ * 場内の催しの開催時刻。
+ *
+ * **ラベルが直前の行に単独で置かれる**（`開催時間` → `14:00～ / 15:00～ …`）。
+ * 記事は `<dt>`/`<dd>` で組まれており、本文にすると2行に分かれる。
+ * ラベルが無ければ何も出さない。時刻だけ拾うと、店舗の営業時間や受け取りの案内まで
+ * 催しの開始として並ぶ。
+ *
+ * 1行に枠が並ぶことがある（実測で5枠）。**採るのは最初の1つだけ**にして、
+ * 枠の数だけ添える。全部の枠を予定にすると、1つの催しで画面が埋まる。
+ */
+function readHappening(lines, match) {
+  const found = [];
+  lines.forEach((line, index) => {
+    if (!HAPPENING_LABELS.test(line)) return;
+    const value = lines[index + 1];
+    if (!value || DENY.test(value)) return;
+    const times = value.match(/\d{1,2}[:：]\d{2}/g);
+    if (!times) return;
+    const first = times[0].match(/(\d{1,2})[:：](\d{2})/);
+    const startsAt = atMatchDate(match.match_date, Number(first[1]), Number(first[2]));
+    if (!startsAt) return;
+    // 「14:00～ / 15:00～ …」のように開始が並ぶときだけ枠数を添える。
+    // 「16:00～19:00」は開始と終了なので枠ではない。**間に区切りが無い**ことで見分ける。
+    const isRange = /\d{1,2}[:：]\d{2}\s*[〜～]\s*\d{1,2}[:：]\d{2}/.test(value);
+    const slots = isRange ? 1 : times.length;
+    found.push({
+      kind: '場内の催し',
+      label: slots > 1 ? `催しの開始（全${slots}枠）` : '催しの開始',
+      starts_at: startsAt,
+    });
+  });
+  return found;
+}
+
 function extract(article, match, lines) {
   let found = readTimetable(lines, match);
   if (article.kind === '当日券') found = found.concat(readSameDayTicket(lines, match));
   if (article.kind === 'グッズの発売') found = found.concat(readBooth(lines, match));
-  if (article.kind === '応募・抽選') found = found.concat(readEntryDeadline(lines, article.published_on));
+  if (DEADLINE_KINDS.has(article.kind)) found = found.concat(readEntryDeadline(lines, article.published_on));
+  if (HAPPENING_KINDS.has(article.kind)) found = found.concat(readHappening(lines, match));
   return found;
 }
 

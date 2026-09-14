@@ -47,7 +47,28 @@ const KINDS = new Set(ARTICLE_KINDS.map(([, kind]) => kind));
  * ここに無い種類の記事からは、日時を1つも取らない。取れなくて困るより、
  * 間違った時刻が出るほうが困る。広げるときは実データで確かめてから。
  */
-const EXTRACTABLE_KINDS = new Set(['当日券', 'グッズの発売', '応募・抽選']);
+const EXTRACTABLE_KINDS = new Set(['当日券', 'グッズの発売', '応募・抽選', '交通・駐車', '場内の催し']);
+
+/**
+ * 申し込みの締切が出うる種類。
+ *
+ * **交通・駐車を入れているのは、応援バスの申込期間が同じ形で書かれるため**
+ * （2026-09-11 の実測で `申込期間` の下に `9月9日(水)12:00～9月17日(木)15:00まで`）。
+ * バスの集合・出発の時刻は採らない。申し込んだ人にしか関係がなく、
+ * 特典チケットの引換をフィードに出さないのと同じ理由で、全員の時系列には置かない。
+ */
+const DEADLINE_KINDS = new Set(['応募・抽選', '交通・駐車']);
+
+/** 催しの開催時刻が出うる種類。実測できたのは「場内の催し」だけ。 */
+const HAPPENING_KINDS = new Set(['場内の催し']);
+
+/**
+ * 催しの開催時刻に付くラベル。**直前の行に単独で置かれる**（`<dt>`/`<dd>` の形）。
+ *
+ * ラベルが無ければ何も出さない。時刻だけ拾うと、店舗の営業時間や
+ * 受け取りの案内まで催しの開始として並んでしまう。
+ */
+const HAPPENING_LABELS = /^(開催時間|実施時間|開催時刻|実施時刻|時間)$/;
 
 /**
  * 当日のタイムスケジュールに並ぶ説明を、こちらの言葉に直す。
@@ -117,6 +138,9 @@ function labelOfTimetableItem(text) {
 
 module.exports = {
   ARTICLE_KINDS,
+  DEADLINE_KINDS,
+  HAPPENING_KINDS,
+  HAPPENING_LABELS,
   TICKET_PLACES,
   placeOfTicket,
   KINDS,
