@@ -167,7 +167,7 @@
         <li>MY予定は入りません。自分で書いた予定は、この端末の中だけに置いています</li>
         <li>日程がまだ決まっていない予定は入りません。入れると決まったものとして届いてしまいます</li>
         <li>Androidのカレンダーアプリだけでは登録も解除もできません。ブラウザから操作します</li>
-        <li>欲しい予定だけを選ぶことはできません。1本にまとめてあります</li>
+        <li>欲しい予定だけを細かく選ぶことはできません。アドレスは「チケットと試合」と「試合当日の予定」の2本だけです</li>
       </ul>
     </div>
   </div>
@@ -178,7 +178,11 @@
   <p class="section-note">
     カレンダーアプリでは「登録」「照会」と呼ばれています。下の手順はその言葉に合わせています。</p>
 
-  <p class="doc-url-label" id="feed-url-label">受け取りに使うアドレス</p>
+  <h3>1. どちらのアドレスを受け取るか</h3>
+  <p class="section-note">
+    アドレスは2つあります。<strong>両方でも、片方だけでもかまいません。</strong>中身は重なりません。</p>
+
+  <p class="doc-url-label" id="feed-url-label">チケットと試合</p>
   <div class="doc-url">
     <input id="feed-url" class="doc-url-input" type="text" readonly
            aria-labelledby="feed-url-label"
@@ -186,6 +190,27 @@
     <button type="button" id="feed-copy" class="btn btn-quiet">コピー</button>
   </div>
   <p id="feed-copy-status" class="section-note" role="status"></p>
+  <p class="section-note">
+    先行販売やアウェイ席の発売開始と、試合のキックオフが届きます。出典は公式の販売スケジュール表です。</p>
+
+  <p class="doc-url-label" id="events-url-label">試合当日の予定</p>
+  <div class="doc-url">
+    <input id="events-url" class="doc-url-input" type="text" readonly
+           aria-labelledby="events-url-label"
+           value="https://koteikara.github.io/Sanga/timeline-events.ics">
+    <button type="button" id="events-copy" class="btn btn-quiet">コピー</button>
+  </div>
+  <p id="events-copy-status" class="section-note" role="status"></p>
+  <p class="section-note">
+    入場開始、場外ブース、グッズ販売、当日券など、当日の動きが届きます。1試合で10件ほどです。</p>
+  <p class="section-note">
+    <strong>こちらは公式サイトの記事から機械が読み取ったものです。</strong>
+    チケットの発売日程は公式の表から取っていますが、当日の予定は記事の本文を読んで拾っています。
+    読み違えが起きることがあるので、大事な予定は公式サイトでお確かめください。</p>
+
+  <h3>2. カレンダーアプリに登録する</h3>
+  <p class="section-note">
+    使っているアプリの手順をご覧ください。<strong>両方受け取るときは、同じ手順をアドレスごとに2回</strong>行います。</p>
 
   <details class="fold" open>
     <summary>Googleカレンダー（パソコン・Android）</summary>
@@ -193,7 +218,7 @@
       <li>パソコンかスマートフォンの<strong>ブラウザ</strong>でGoogleカレンダーを開く</li>
       <li>左側の「他のカレンダー」の <strong>＋</strong> を押す</li>
       <li>「<strong>URLで追加</strong>」を選ぶ</li>
-      <li>上のアドレスを貼り付けて「カレンダーを追加」</li>
+      <li>受け取りたいアドレスを貼り付けて「カレンダーを追加」</li>
     </ol>
     <p class="section-note">
       「カレンダーのURL」の欄に貼ります。ファイルを選ぶ「インポート」ではありません。インポートすると自動更新されず、自分の予定に混ざります。</p>
@@ -204,12 +229,14 @@
   <details class="fold">
     <summary>Appleのカレンダー（iPhone・iPad・Mac）</summary>
     <p>
-      <a class="btn" href="webcal://koteikara.github.io/Sanga/timeline.ics">カレンダーで開く</a></p>
+      <a class="btn" href="webcal://koteikara.github.io/Sanga/timeline.ics">チケットと試合を開く</a>
+      <a class="btn" href="webcal://koteikara.github.io/Sanga/timeline-events.ics">試合当日の予定を開く</a></p>
     <p class="section-note">
-      押すとカレンダーアプリが開き、「照会するカレンダーを追加」と聞かれます。「追加」で登録されます。</p>
+      押すとカレンダーアプリが開き、「照会するカレンダーを追加」と聞かれます。「追加」で登録されます。
+      両方受け取るときは、順に押してください。</p>
     <p class="section-note">
       うまく開かないときは、iPhoneなら「設定」→「アプリ」→「カレンダー」→「アカウント」→
-      「アカウントを追加」→「その他」→「照会するカレンダーを追加」に、上のアドレスを貼ります。</p>
+      「アカウントを追加」→「その他」→「照会するカレンダーを追加」に、受け取りたいアドレスを貼ります。</p>
   </details>
 
   <details class="fold">
@@ -217,7 +244,7 @@
     <ol>
       <li>「カレンダー」を開き、「カレンダーの追加」を選ぶ</li>
       <li>「<strong>インターネットから登録</strong>」を選ぶ</li>
-      <li>上のアドレスを貼り付ける</li>
+      <li>受け取りたいアドレスを貼り付ける</li>
     </ol>
   </details>
 </section>
@@ -226,6 +253,11 @@
   <h2>受け取りをやめる</h2>
   <p>
     やめ方は2つあります。たいていは1つめで足ります。</p>
+  <p class="section-note">
+    カレンダーの一覧には、登録したぶんだけ名前が出ます。
+    <strong>「SANGA SUPPORTER TIMELINE（非公式）」がチケットと試合、
+    「SANGA 試合当日の予定（非公式）」が試合当日の予定</strong>です。
+    下の手順は名前を読み替えれば同じで、<strong>片方だけやめることもできます。</strong></p>
 
   <div class="doc-step">
     <h3>1. 表示だけを消す（おすすめ）</h3>
@@ -359,18 +391,23 @@
 
 <script type="module">
   // 登録用アドレスをコピーする。押せない環境では手で選べるよう、入力欄はそのまま残す。
-  const input = document.getElementById("feed-url");
-  const button = document.getElementById("feed-copy");
-  const status = document.getElementById("feed-copy-status");
-  button.addEventListener("click", async () => {
-    try {
-      await navigator.clipboard.writeText(input.value);
-      status.textContent = "コピーしました。";
-    } catch (error) {
-      // 権限が無い・古い環境。選択だけしておけば、あとは手で写せる。
-      input.select();
-      status.textContent = "コピーできませんでした。選択してあるので、手でコピーしてください。";
-    }
+  // アドレスは2本ある（チケットと試合／試合当日の予定）ので、同じ作りを両方に付ける。
+  [["feed-url", "feed-copy", "feed-copy-status"],
+   ["events-url", "events-copy", "events-copy-status"]].forEach(([inputId, buttonId, statusId]) => {
+    const input = document.getElementById(inputId);
+    const button = document.getElementById(buttonId);
+    const status = document.getElementById(statusId);
+    if (!input || !button || !status) return;
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(input.value);
+        status.textContent = "コピーしました。";
+      } catch (error) {
+        // 権限が無い・古い環境。選択だけしておけば、あとは手で写せる。
+        input.select();
+        status.textContent = "コピーできませんでした。選択してあるので、手でコピーしてください。";
+      }
+    });
   });
 
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
