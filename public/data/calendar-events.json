@@ -870,30 +870,6 @@
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
-      "id": "news-21368-acl-md1-flow-1700",
-      "starts_at": "2026-09-15T17:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "event",
-      "title": "大田ハナ・シチズン戦 入場開始",
-      "source": "official",
-      "action_type": "information",
-      "derived_from": "news_article",
-      "news_kind": "当日の流れ",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "acl-md1"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21368",
-      "source_checked_at": "2026-09-15",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
       "id": "ticket-acl-md1-away",
       "starts_at": "2026-09-15T17:00:00+09:00",
       "ends_at": "2026-09-15T17:15:00+09:00",
@@ -5337,21 +5313,28 @@
       "match_id": "sec08",
       "state": "on_sale",
       "state_note": "空席あり",
-      "checked_at": "2026-09-10",
+      "checked_at": "2026-09-16",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2630702/001"
     },
     {
       "match_id": "sec12",
-      "state": "before_sale",
-      "state_note": "発売前",
-      "checked_at": "2026-09-10",
+      "state": "on_sale",
+      "state_note": "空席あり",
+      "checked_at": "2026-09-16",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2632955/001"
+    },
+    {
+      "match_id": "sec14",
+      "state": "on_sale",
+      "state_note": "空席あり",
+      "checked_at": "2026-09-16",
+      "source_url": "https://www.jleague-ticket.jp/sales/perform/2635549/001"
     },
     {
       "match_id": "sec45",
       "state": "on_sale",
       "state_note": "空席あり",
-      "checked_at": "2026-09-10",
+      "checked_at": "2026-09-16",
       "source_url": "https://www.jleague-ticket.jp/sales/perform/2634301/001"
     }
   ],
@@ -5395,7 +5378,7 @@
         ],
         "articles": [
           {
-            "published_on": "2026-09-14",
+            "published_on": "2026-09-15",
             "category": "チケット",
             "source_url": "https://www.sanga-fc.jp/news/detail/21392"
           }
