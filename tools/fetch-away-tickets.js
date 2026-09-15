@@ -26,6 +26,9 @@ const MIN_INTERVAL_HOURS = 24;
 const MAX_ATTEMPTS = 3;
 const TIMEOUT_MS = 30000;
 
+/** このページであることの目印（試合ページへのリンク）。無ければ取得できていても中身が違う。 */
+const PAGE_MARKER = '/sales/perform/';
+
 /** 素性を明かし、連絡先の代わりにリポジトリを示す。 */
 const USER_AGENT = 'SangaSupporterTimeline/1.0 (+https://github.com/koteikara/Sanga; unofficial fan tool)';
 
@@ -73,11 +76,49 @@ async function fetchOnce(url) {
   }
 }
 
+/** 何を受け取ったのかを一行にする。題があれば題を、無ければ本文の頭を見せる。 */
+function describeHtml(html) {
+  const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const head = title
+    ? title[1].replace(/\s+/g, ' ').trim()
+    : html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80);
+  return `${html.length}文字 / ${head || '(空)'}`;
+}
+
+/**
+ * 目印の無いHTMLを残す。次に同じことが起きたとき、何が返ってきたのかを
+ * 見るためだけに使う。**リポジトリには入れない**（出力先は tmp/ の隣）。
+ */
+function saveUnexpected(outputPath, html) {
+  const file = `${outputPath}.unexpected.html`;
+  try {
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, html);
+    return file;
+  } catch (error) {
+    console.error(`  受け取ったHTMLを保存できませんでした: ${error.message}`);
+    return null;
+  }
+}
+
+/**
+ * 取れないとき（HTTPエラー・時間切れ）に加え、**目印の無いHTMLも取り直す**。
+ *
+ * 2026-09-14の取り込み#19で、同じURLが手元では正しく取れるのにCIでだけ目印を
+ * 欠きました。一度きりなら取り直せば通ります。3回とも欠けるならページ構成の変更で、
+ * そのときは最後に受け取ったものを `error.unexpectedHtml` に付けて返します。
+ *
+ * 中身の検査を再試行の外に置くと、一過性の失敗でその日の取り込みが丸ごと止まります。
+ */
 async function fetchWithRetry(url) {
   let lastError;
+  let unexpectedHtml = null;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
     try {
-      return await fetchOnce(url);
+      const html = await fetchOnce(url);
+      if (html.includes(PAGE_MARKER)) return html;
+      unexpectedHtml = html;
+      throw new Error(`目印（${PAGE_MARKER}）がHTMLにありません（${describeHtml(html)}）`);
     } catch (error) {
       lastError = error;
       if (attempt < MAX_ATTEMPTS) {
@@ -87,6 +128,7 @@ async function fetchWithRetry(url) {
       }
     }
   }
+  lastError.unexpectedHtml = unexpectedHtml;
   throw lastError;
 }
 
@@ -120,12 +162,13 @@ async function main(argv) {
     html = await fetchWithRetry(options.url);
   } catch (error) {
     console.error(`取得できませんでした: ${error.message}`);
-    return 1;
-  }
-
-  // 試合が1件も無い日はあり得るが、リンクの形そのものが消えたらページ構成の変更を疑う。
-  if (!html.includes('/sales/perform/')) {
-    console.error('試合ページへのリンク（/sales/perform/）がHTMLにありません。取得先かページ構成を確認してください。');
+    if (error.unexpectedHtml) {
+      const saved = saveUnexpected(options.outputPath, error.unexpectedHtml);
+      if (saved) {
+        console.error(`  受け取ったHTMLを ${path.relative(repoRoot, saved)} に残しました。`);
+        console.error('  取得先かページ構成を確認してください。');
+      }
+    }
     return 1;
   }
 
