@@ -1,0 +1,4 @@
+article_id,kind,match_ids,reason,days,age
+91002,当日の流れ,smp02,match,6,
+91003,交通・駐車,smp06,deadline,27,1
+91008,応募・抽選,smp01 smp06,deadline,27,2
