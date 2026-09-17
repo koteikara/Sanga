@@ -1,0 +1,324 @@
+/*
+  サンガスタジアム 座席ビュー（プロトタイプ）
+  操作パネルとオーバーレイの見た目。3Dの中身は prototype.js が描く。
+*/
+
+:root {
+  --purple: #6e2bbd;
+  --panel: rgba(21, 15, 35, .94);
+  --line: rgba(255, 255, 255, .15);
+  --text: #f8f6ff;
+  --muted: #c6bdd6;
+  --accent: #bda0ff;
+  --focus: #ffd158;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+    "Yu Gothic", "Noto Sans JP", sans-serif;
+  background: #9eb5c8;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+}
+
+#app canvas { display: block; }
+
+/* 操作パネル */
+
+.panel {
+  position: fixed;
+  z-index: 2;
+  top: 16px;
+  left: 16px;
+  width: 335px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, .32);
+  backdrop-filter: blur(14px);
+}
+
+.panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* 広い画面ではパネルが3Dを邪魔しないので、畳むボタンは出さない */
+.panel-toggle {
+  display: none;
+  width: auto;
+  min-height: 44px;
+  min-width: 64px;
+  margin: 0;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .08);
+  font-size: 13px;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+}
+
+h1 {
+  margin: 7px 0 10px;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+.intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.field { margin-top: 13px; }
+
+label {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  color: #ddd4eb;
+  font-size: 12px;
+}
+
+label span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+select,
+input[type="range"] { width: 100%; }
+
+select {
+  min-height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: white;
+  background: #2a203e;
+  font-size: 14px;
+}
+
+/* つまみを押しやすくするため、入力そのものの高さを確保する */
+input[type="range"] {
+  height: 44px;
+  accent-color: #a567ff;
+  cursor: pointer;
+}
+
+button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 0;
+  border-radius: 9px;
+  color: white;
+  background: linear-gradient(135deg, #924cff, #5a1ec4);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(1.1); }
+
+button.secondary {
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, .08);
+}
+
+/* キーボード操作の現在地を消さない */
+:is(select, input, button):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.toggles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  margin-top: 13px;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: #ddd4eb;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: #a567ff;
+}
+
+.toggle:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.info {
+  margin-top: 15px;
+  padding: 11px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .065);
+  color: #ddd4eb;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.info strong { color: white; }
+
+.warning {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: #bfb4d0;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+/* 画面上のオーバーレイ */
+
+#status {
+  position: fixed;
+  z-index: 2;
+  top: 16px;
+  right: 16px;
+  max-width: min(420px, calc(100vw - 32px));
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: white;
+  background: rgba(21, 15, 35, .9);
+  font-size: 12px;
+}
+
+#help {
+  position: fixed;
+  z-index: 2;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - 28px);
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: 20px;
+  color: #eee9f7;
+  background: rgba(21, 15, 35, .88);
+  font-size: 12px;
+  text-align: center;
+  pointer-events: none;
+}
+
+#tooltip {
+  position: fixed;
+  z-index: 4;
+  display: none;
+  padding: 7px 10px;
+  border-radius: 7px;
+  color: white;
+  background: rgba(15, 10, 25, .94);
+  font-size: 12px;
+  pointer-events: none;
+}
+
+/* 起動前・読み込み失敗の受け皿 */
+
+.boot {
+  position: fixed;
+  z-index: 5;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #1a1428;
+}
+
+.boot p {
+  max-width: 30em;
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .panel {
+    top: auto;
+    bottom: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
+    max-height: 52vh;
+    padding: 14px;
+  }
+
+  /* 免責は狭い画面でも残す。消してよいのは案内文だけ */
+  .intro { display: none; }
+
+  .panel-toggle { display: inline-flex; align-items: center; justify-content: center; }
+
+  .panel.is-collapsed { max-height: none; }
+
+  .panel.is-collapsed .panel-body { display: none; }
+
+  /* 畳んだときは3Dの邪魔をしない高さまで題を縮める */
+  .panel.is-collapsed h1 {
+    margin: 4px 0 0;
+    font-size: 14px;
+  }
+
+  .panel.is-collapsed h1 br { display: none; }
+
+  h1 {
+    margin: 5px 0 8px;
+    font-size: 17px;
+  }
+
+  #status {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    text-align: center;
+  }
+
+  #help {
+    top: 62px;
+    bottom: auto;
+  }
+}
