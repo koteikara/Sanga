@@ -21,6 +21,31 @@ const DEFAULT_TIMEOUT_MS = 30000;
 
 class FtpError extends Error {}
 
+/**
+ * つなぎ直せば通るかもしれない回線側の失敗。
+ *
+ * **FTPコマンドが拒否された場合は入れません。** ログインの失敗を繰り返すと、
+ * 相手のサーバーで締め出される恐れがあります。ここに入れるのは、
+ * 相手まで届かなかったか、届いても返事が来なかった場合だけです。
+ */
+const RETRIABLE_SOCKET_CODES = new Set([
+  "ECONNRESET", "ECONNREFUSED", "ETIMEDOUT", "EPIPE",
+  "EHOSTUNREACH", "ENETUNREACH", "EAI_AGAIN", "ENOTFOUND",
+]);
+
+/** 時間切れは回線側の失敗として印を付ける。 */
+function timeoutError(message) {
+  const error = new FtpError(message);
+  error.retriable = true;
+  return error;
+}
+
+export function isRetriable(error) {
+  if (!error) return false;
+  if (error.retriable === true) return true;
+  return RETRIABLE_SOCKET_CODES.has(error.code);
+}
+
 // 制御チャネルの応答を組み立てる。
 // 複数行応答は "250-" で始まり、同じコードの "250 " 行で終わる。
 function createResponseReader() {
@@ -71,6 +96,7 @@ export class FtpClient {
     this.timeoutMs = timeoutMs;
     this.log = log;
     this.socket = null;
+    this.broken = false;
     this.pending = [];
     this.lines = [];
     this.readResponse = createResponseReader();
@@ -80,7 +106,7 @@ export class FtpClient {
     this.socket = socket;
     socket.setTimeout(this.timeoutMs);
     socket.on("data", (chunk) => this.#handleData(chunk.toString("utf8")));
-    socket.on("timeout", () => this.#fail(new FtpError("制御接続がタイムアウトしました。")));
+    socket.on("timeout", () => this.#fail(timeoutError("制御接続がタイムアウトしました。")));
     socket.on("error", (error) => this.#fail(error));
   }
 
@@ -99,6 +125,8 @@ export class FtpClient {
   }
 
   #fail(error) {
+    // 応答が返らなくなった接続にQUITを送っても、もう一度時間切れを待つだけ。
+    this.broken = true;
     const waiters = this.pending.splice(0);
     for (const waiter of waiters) waiter.reject(error);
   }
@@ -199,7 +227,7 @@ export class FtpClient {
       dataSocket.on("data", (chunk) => chunks.push(chunk));
       dataSocket.on("end", resolve);
       dataSocket.on("close", resolve);
-      dataSocket.on("timeout", () => reject(new FtpError("データ接続がタイムアウトしました。")));
+      dataSocket.on("timeout", () => reject(timeoutError("データ接続がタイムアウトしました。")));
       dataSocket.on("error", reject);
     });
 
@@ -245,10 +273,12 @@ export class FtpClient {
 
   async close() {
     if (!this.socket) return;
-    try {
-      await this.send("QUIT", { expect: [2] });
-    } catch {
-      // 切断済みでも問題にしない。
+    if (!this.broken) {
+      try {
+        await this.send("QUIT", { expect: [2] });
+      } catch {
+        // 切断済みでも問題にしない。
+      }
     }
     this.socket.destroy();
     this.socket = null;

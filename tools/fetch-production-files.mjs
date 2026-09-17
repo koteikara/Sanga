@@ -14,6 +14,7 @@
 //   node tools/fetch-production-files.mjs --mode download         取り込み候補を取得する
 //   node tools/fetch-production-files.mjs --mode download --apply 取得後に public/ へ配置する
 //   node tools/fetch-production-files.mjs --mode backup           サーバー上の全ファイルを取得する
+//   --retry-wait <秒>  つなぎ直しの待ち時間を変える（既定 10,20 / 0で待たない）
 //
 // backup はリポジトリとの差分に関係なくサーバー上の全ファイルを取得します。
 // 本番デプロイ前の退避用で、public/ へは配置しません。除外リストも適用せず、
@@ -27,9 +28,23 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { FtpClient } from "./ftp-client.mjs";
+import { FtpClient, isRetriable } from "./ftp-client.mjs";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+
+/**
+ * つなぎ直す回数と、間を空ける秒数。
+ *
+ * 本番サーバーへのFTPは、**接続そのものが立たないことがあります。**
+ * 2026-09-16までのデプロイ12回のうち4回が最初の1回で落ち、4回とも押し直せば通りました
+ * （退避で3回、アップロードで1回）。押し直しは人ではなく道具の仕事です。
+ */
+const MAX_ATTEMPTS = 3;
+const RETRY_WAIT_SECONDS = [10, 20];
+
+function sleep(seconds) {
+  return new Promise((resolve) => { setTimeout(resolve, seconds * 1000); });
+}
 
 // 取り込み対象にしないもの。
 // .ftp-deploy-sync-state.json はデプロイ側が管理する状態ファイルで、
@@ -51,6 +66,7 @@ function parseArgs(argv) {
     includeReview: false,
     maxBytes: DEFAULT_MAX_BYTES,
     verbose: false,
+    retryWaitSeconds: null,
   };
 
   for (let index = 0; index < argv.length; index += 1) {
@@ -61,6 +77,7 @@ function parseArgs(argv) {
     else if (arg === "--include-review") options.includeReview = true;
     else if (arg === "--max-bytes") options.maxBytes = Number(argv[++index]);
     else if (arg === "--verbose") options.verbose = true;
+    else if (arg === "--retry-wait") options.retryWaitSeconds = Number(argv[++index]);
     else throw new Error(`不明な引数です: ${arg}`);
   }
 
@@ -233,10 +250,8 @@ function writeFileEnsured(filePath, data) {
   fs.writeFileSync(filePath, data);
 }
 
-async function main() {
-  const options = parseArgs(process.argv.slice(2));
-  const credentials = readCredentials();
-
+/** 1回ぶんの接続。つなぎ直すときは、この単位でまるごとやり直す。 */
+async function collectOnce(credentials, options) {
   const client = new FtpClient({
     host: credentials.host,
     port: credentials.port,
@@ -248,8 +263,8 @@ async function main() {
 
   const collected = { managed: [], importable: [], review: [], oversized: [], excluded: [] };
 
-  await client.connect();
   try {
+    await client.connect();
     const remoteRoot = await resolveRemoteRoot(client, credentials.remoteDir);
     await walk(client, remoteRoot, "", collected, options);
 
@@ -277,6 +292,37 @@ async function main() {
   } finally {
     await client.close();
   }
+
+  return collected;
+}
+
+/**
+ * 回線側の失敗だけをつなぎ直す。コマンドの拒否（ログイン失敗など）はそのまま投げる。
+ *
+ * 途中まで歩いた木は再開できないので、**毎回まっさらからやり直します。**
+ * 退避は2分ほどで終わるため、作り直しの損は小さい。
+ */
+async function collectWithRetry(credentials, options) {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await collectOnce(credentials, options);
+    } catch (error) {
+      if (!isRetriable(error) || attempt >= MAX_ATTEMPTS) throw error;
+      const wait = options.retryWaitSeconds !== null
+        ? options.retryWaitSeconds
+        : RETRY_WAIT_SECONDS[attempt - 1] ?? RETRY_WAIT_SECONDS[RETRY_WAIT_SECONDS.length - 1];
+      console.error(`接続に失敗しました（${attempt}回目 / 最大${MAX_ATTEMPTS}回）: ${error.message}`);
+      console.error(`  ${wait}秒待ってつなぎ直します。`);
+      await sleep(wait);
+    }
+  }
+}
+
+async function main() {
+  const options = parseArgs(process.argv.slice(2));
+  const credentials = readCredentials();
+
+  const collected = await collectWithRetry(credentials, options);
 
   writeFileEnsured(path.join(options.outDir, "inventory.json"), `${JSON.stringify(collected, null, 2)}\n`);
   writeFileEnsured(path.join(options.outDir, "inventory.md"), renderReport(collected, credentials));
