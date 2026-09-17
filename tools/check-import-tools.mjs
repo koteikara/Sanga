@@ -60,8 +60,20 @@ function resolveRemote(currentDir, argument) {
   return `/${parts.join("/")}`;
 }
 
-function startFakeServer() {
+/**
+ * 作り物のFTPサーバー。
+ *
+ * `resetFirst` を渡すと、最初のその回数ぶんの接続を**いきなり切ります**（RST）。
+ * 本番で実際に起きている「接続そのものが立たない」を再現し、つなぎ直しを試すため。
+ */
+function startFakeServer({ resetFirst = 0 } = {}) {
+  let reset = 0;
   const server = net.createServer((socket) => {
+    if (reset < resetFirst) {
+      reset += 1;
+      socket.resetAndDestroy();
+      return;
+    }
     let currentDir = LOGIN_DIR;
     let dataServer = null;
     let dataSocket = null;
@@ -125,7 +137,7 @@ function startFakeServer() {
 
 // 検証用サーバーは同じプロセスで動くため、子プロセスは非同期で起動する。
 // spawnSyncで待つとイベントループが止まり、サーバーが応答できない。
-async function runImport({ port, remoteDir, outDir, extraArgs = [], mode = "download" }) {
+async function runImport({ port, remoteDir, outDir, extraArgs = [], mode = "download", expectStatus = 0 }) {
   const child = spawn(
     process.execPath,
     [path.join(rootDir, "tools", "fetch-production-files.mjs"), "--mode", mode, "--out", outDir, ...extraArgs],
@@ -152,13 +164,14 @@ async function runImport({ port, remoteDir, outDir, extraArgs = [], mode = "down
     child.on("close", resolve);
   });
 
-  assert.equal(status, 0, `取り込みが失敗しました (${remoteDir}):\n${output}`);
-  return JSON.parse(fs.readFileSync(path.join(outDir, "inventory.json"), "utf8"));
+  assert.equal(status, expectStatus, `取り込みの終了コードが想定と違います (${remoteDir}):\n${output}`);
+  if (expectStatus !== 0) return { output };
+  return { output, inventory: JSON.parse(fs.readFileSync(path.join(outDir, "inventory.json"), "utf8")) };
 }
 
 async function checkRemoteDir({ port, remoteDir, outRoot, label }) {
   const outDir = path.join(outRoot, label);
-  const inventory = await runImport({ port, remoteDir, outDir });
+  const { inventory } = await runImport({ port, remoteDir, outDir });
 
   const importable = inventory.importable.map((entry) => entry.path).sort();
   assert.deepEqual(
@@ -197,7 +210,7 @@ try {
   await checkRemoteDir({ port, remoteDir: "public_html/", outRoot, label: "relative" });
   await checkRemoteDir({ port, remoteDir: `${PUBLIC_DIR}/`, outRoot, label: "absolute" });
 
-  const withReview = await runImport({
+  const { inventory: withReview } = await runImport({
     port,
     remoteDir: "public_html/",
     outDir: path.join(outRoot, "review"),
@@ -240,6 +253,44 @@ try {
   console.log(`バックアップOK: ${backedUp.length}件をすべて取得し、public/ は変更なし`);
 } finally {
   server.close();
+}
+
+// 本番へのFTPは、接続そのものが立たないことがある（2026-09-16までに12回中4回）。
+// 押し直しを人の仕事にしないため、回線側の失敗はつなぎ直す。
+try {
+  // 1回目を切る。2回目で通り、取得結果はいつもと同じでなければならない。
+  const flaky = await startFakeServer({ resetFirst: 1 });
+  try {
+    const { output, inventory } = await runImport({
+      port: flaky.port,
+      remoteDir: "public_html/",
+      outDir: path.join(outRoot, "retry-once"),
+      extraArgs: ["--retry-wait", "0"],
+    });
+    assert.match(output, /接続に失敗しました（1回目/, `つなぎ直しの記録がありません:\n${output}`);
+    assert.equal(inventory.importable.length, 4, `つなぎ直したのに取得結果が違います:\n${output}`);
+    console.log("つなぎ直しOK: 1回切られても2回目で通り、結果は同じ");
+  } finally {
+    flaky.server.close();
+  }
+
+  // 3回とも切られたら、諦めて失敗する。黙って空の退避を返さない。
+  const dead = await startFakeServer({ resetFirst: 3 });
+  try {
+    const { output } = await runImport({
+      port: dead.port,
+      remoteDir: "public_html/",
+      outDir: path.join(outRoot, "retry-dead"),
+      extraArgs: ["--retry-wait", "0"],
+      expectStatus: 1,
+    });
+    assert.match(output, /接続に失敗しました（2回目/, `2回目のつなぎ直しがありません:\n${output}`);
+    assert.doesNotMatch(output, /接続に失敗しました（3回目/, `3回を超えてつなぎ直しています:\n${output}`);
+    console.log("つなぎ直しOK: 3回とも切られたら失敗する（最大3回）");
+  } finally {
+    dead.server.close();
+  }
+} finally {
   fs.rmSync(outRoot, { recursive: true, force: true });
 }
 

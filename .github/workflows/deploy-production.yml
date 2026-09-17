@@ -138,7 +138,17 @@ jobs:
       - name: 静的検証をまとめて実行
         run: npm run check:static
 
+      # 本番へのFTPは接続そのものが立たないことがある。2026-09-16までの
+      # デプロイ12回のうち4回が最初の1回で落ち、4回とも押し直せば通った。
+      # 退避側（tools/ftp-client.mjs）は道具の中でつなぎ直すが、ここは他社の
+      # Actionなので中へ手が入らない。**同じ手順をもう一度置く**のが一番素直で、
+      # 再試行用のActionを足すより依存が増えない。
+      #
+      # FTP-Deploy-Actionはサーバー上の同期状態ファイルを基準に差分を出すので、
+      # 途中で落ちても2回目は残りだけを送る。同じ手順を2度通して構わない。
       - name: public配下のみを本番サーバーへアップロード
+        id: upload
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.STAR_SERVER_HOST }}
@@ -153,6 +163,29 @@ jobs:
           # だけを正本にしている。除外ではなく public/ に無いことで公開対象から外す。
           # 除外に入れると同期の比較対象から外れ、サーバー上の既存ファイルが
           # 削除されないまま残るため。
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+
+      - name: 1回目が落ちたので待つ
+        if: steps.upload.outcome == 'failure'
+        run: |
+          echo "::warning::アップロードの1回目が失敗しました。10秒待ってつなぎ直します。"
+          sleep 10
+
+      # 2回目。ここが落ちたらジョブも落とす（continue-on-error を付けない）。
+      - name: public配下のみを本番サーバーへアップロード（つなぎ直し）
+        if: steps.upload.outcome == 'failure'
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.STAR_SERVER_HOST }}
+          username: ${{ secrets.STAR_SERVER_USER }}
+          password: ${{ secrets.STAR_SERVER_PASSWORD }}
+          protocol: ${{ secrets.STAR_SERVER_PROTOCOL || 'ftp' }}
+          port: ${{ secrets.STAR_SERVER_PORT || 21 }}
+          local-dir: ./public/
+          server-dir: ${{ secrets.STAR_SERVER_REMOTE_DIR }}
           exclude: |
             **/.git*
             **/.git*/**
