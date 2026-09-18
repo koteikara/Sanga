@@ -189,6 +189,22 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:ticket-sec08-away@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20260821T030000Z
+DTEND:20260821T031500Z
+SUMMARY:岡山戦 アウェイ席 一般発売 開始
+DESCRIPTION:第8節 岡山戦（試合日 9/19（土））\nhttps://www.jle
+ ague-ticket.jp/sales/perform/2630702/001\n※非公式のファンツー
+ ルによる予定です。日程が変わっている場合がありま
+ す。購入・応募の前に公式サイトで確認してください
+ 。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:match-sec03@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:2
