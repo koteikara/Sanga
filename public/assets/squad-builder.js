@@ -6,7 +6,7 @@
 import { FORMATIONS } from "./squad-formations.js?v=5eaceca8";
 import { SAMPLE_PLAYERS } from "./squad-sample-players.js?v=9ed29a06";
 // 背番号タイル画像の中身のずれ（tools/measure-tile-offsets.mjs で生成）
-import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=90753849";
+import { TILE_OFFSETS } from "./squad-tile-offsets.js?v=a465c098";
 // modern-screenshot@4.6.5（MIT License）。npm registryから取得し、CDNを使わず
 // public/assets/vendor/ に静的配置したものを読み込む。詳細は下記の
 // 「画像化（PNG出力）」セクションのコメントを参照。
@@ -63,8 +63,8 @@ let playersAreOfficial = false;
 
 async function loadPlayers() {
   const candidates = [
-    "/data/players.json?v=35a2300f",
-    "data/players.json?v=35a2300f",
+    "/data/players.json?v=0a255c4a",
+    "data/players.json?v=0a255c4a",
   ];
   for (const url of candidates) {
     try {

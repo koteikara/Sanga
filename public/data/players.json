@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-08",
+  "updatedAt": "2026-09-18",
   "source": "京都サンガF.C. 公式サイト",
   "players": [
     {
@@ -224,6 +224,19 @@
       "statusUntil": ""
     },
     {
+      "number": "24",
+      "nameEn": "MOROOKA",
+      "nameJa": "諸岡 裕人",
+      "nameKana": "もろおか ひろと",
+      "nameShort": "諸岡",
+      "position": "MF",
+      "nationality": "jp",
+      "image": "",
+      "isMascot": false,
+      "status": "active",
+      "statusUntil": ""
+    },
+    {
       "number": "25",
       "nameEn": "YOON",
       "nameJa": "尹 星俊",
@@ -322,19 +335,6 @@
       "nameShort": "マセイオ",
       "position": "FW",
       "nationality": "br",
-      "image": "",
-      "isMascot": false,
-      "status": "active",
-      "statusUntil": ""
-    },
-    {
-      "number": "39",
-      "nameEn": "TAIKI",
-      "nameJa": "平戸 太貴",
-      "nameKana": "",
-      "nameShort": "平戸",
-      "position": "MF",
-      "nationality": "jp",
       "image": "",
       "isMascot": false,
       "status": "active",
