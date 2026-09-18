@@ -129,7 +129,15 @@ async function main() {
          * 画像を読み、指定した帯から1文字ずつ字形を切り出す。
          * bandTop / bandBottom は画像の高さに対する割合で与える。
          */
-        const readGlyphs = async (name, bandTopRatio, bandBottomRatio, minWidth) => {
+        /**
+         * @param expected 文字数。分かっている場合に渡す。
+         *   列の途切れで分けるため、字の中に隙間がある文字（この書体のKは
+         *   縦棒と斜めが離れている）は2つに割れる。割れたままだと文字数が
+         *   合わず、そのタイルごと辞書から外れていた（KAKOI・KATO・KOU など
+         *   Kを含む全ての選手が該当し、Kが一度も辞書に入らなかった）。
+         *   多すぎるときは、隙間の狭い組から順に結合して文字数へ寄せる。
+         */
+        const readGlyphs = async (name, bandTopRatio, bandBottomRatio, minWidth, expected) => {
           const img = await load(name);
           const c = document.createElement("canvas");
           c.width = img.width;
@@ -163,6 +171,23 @@ async function main() {
               start = -1;
             }
           }
+          // 字の中の隙間で割れたぶんを、結合後の幅が最小の組から順に結合する。
+          //
+          // 隙間の狭さでは判別できない。この書体のKは「縦棒（幅3）＋斜め（幅6）」に
+          // 割れるが、その隙間は1〜2で、文字と文字の隙間2〜4と重なるため。
+          // 割れた断片は1つあたりが細いので、結合後の幅で見ると区別がつく。
+          //   KATO  3,6,11,10,10 -> (3+6)=9 が最小  -> 9,11,10,10
+          //   KAKOI 3,6,12,3,6,11,3 -> (3+6)=9 が2組 -> 9,12,9,11,3
+          while (expected && groups.length > expected && groups.length > 1) {
+            let at = 0;
+            let min = Infinity;
+            for (let i = 0; i + 1 < groups.length; i += 1) {
+              const merged = groups[i + 1][1] - groups[i][0];
+              if (merged < min) { min = merged; at = i; }
+            }
+            groups.splice(at, 2, [groups[at][0], groups[at + 1][1]]);
+          }
+
           // 各文字の上下も詰める
           return groups.map(([x0, x1]) => {
             let y0 = bandHeight;
@@ -196,7 +221,7 @@ async function main() {
         const letterAtlas = {};
         for (const src of labelSources || []) {
           const letters = src.label.replace(/ /g, "").split("");
-          const glyphs = await readGlyphs(src.number, 0.72, 1, 2);
+          const glyphs = await readGlyphs(src.number, 0.72, 1, 2, letters.length);
           if (glyphs.length !== letters.length) continue; // 文字数が合わないものは使わない
           letters.forEach((ch, i) => {
             if (!letterAtlas[ch]) letterAtlas[ch] = glyphs[i];
