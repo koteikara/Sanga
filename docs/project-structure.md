@@ -6,7 +6,7 @@
 
 | ページ | HTML | 実装 | データ |
 | --- | --- | --- | --- |
-| 年間スケジュール | `public/sanga202627season.html` | `public/assets/style.css`、`public/assets/topbar.css`、`public/assets/app.js` | `public/data/matches.json`（57件） |
+| 年間スケジュール | `public/sanga202627season.html` | `public/assets/style.css`、`public/assets/topbar.css`、`public/assets/app.js` | `public/data/matches.json`（53件） |
 | 予想スカッド | `public/squad.html` | `public/assets/squad.css`、`public/assets/topbar.css`、`public/assets/squad-builder.js`、`public/assets/squad-formations.js`、`public/assets/squad-tile-offsets.js` | `public/data/players.json`（39件）、`matches.json` |
 | 過密日程カレンダー | `public/calendar.html` | `public/assets/calendar.css`、`public/assets/topbar.css`、`public/assets/calendar.js`、`index-nebula.js`（背景） | `public/data/matches.json`（年間スケジュールと共有） |
 | SUPPORTER TIMELINE | `public/timeline.html` | `public/assets/timeline.css`、`public/assets/topbar.css`、`public/assets/timeline.js`、`index-nebula.js`（背景） | `public/data/calendar-events.json`（生成物）、`benefit-tickets.json`、`matches.json` |
@@ -53,7 +53,7 @@
 
 | 対象 | 正本・保存先 | 注意 |
 | --- | --- | --- |
-| 日程 | `public/data/matches.json` | 57件。IDはLocalStorage状態と関係する |
+| 日程 | `public/data/matches.json` | 53件。IDはLocalStorage状態と関係する |
 | 選手 | `public/data/players.json` | 39件 |
 | チケット販売スケジュール | `docs/sheets/ticket-sales.current.csv` | 124行。`ticket-sales-sync.yml` が1日1回更新 |
 | 初期CSV | `docs/sheets/schedule.initial.csv` | 2026-06-22時点の49件スナップショット |

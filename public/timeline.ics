@@ -1242,21 +1242,6 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:match-sec46@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260909T031317Z
-DTSTART;VALUE=DATE:20261110
-SUMMARY:ルヴァン杯 準々決勝 第1戦 キックオフ
-DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準々決勝 第1戦
- \nhttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツ
- ールによる予定です。日程が変わっている場合があり
- ます。購入・応募の前に公式サイトで確認してくださ
- い。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:ticket-sec19-season@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:2
@@ -1268,21 +1253,6 @@ DESCRIPTION:第19節 千葉戦（試合日 12/13（日））\nhttps://www.s
  anga-fc.jp/ticket/schedule\n※非公式のファンツールによる予
  定です。日程が変わっている場合があります。購入・
  応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:match-sec47@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260909T031317Z
-DTSTART;VALUE=DATE:20261114
-SUMMARY:ルヴァン杯 準々決勝 第2戦 キックオフ
-DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準々決勝 第2戦
- \nhttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツ
- ールによる予定です。日程が変わっている場合があり
- ます。購入・応募の前に公式サイトで確認してくださ
- い。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1932,36 +1902,6 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:match-sec48@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260909T031317Z
-DTSTART;VALUE=DATE:20270323
-SUMMARY:ルヴァン杯 準決勝 第1戦 キックオフ
-DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準決勝 第1戦\nh
- ttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツー
- ルによる予定です。日程が変わっている場合がありま
- す。購入・応募の前に公式サイトで確認してください
- 。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:match-sec49@sanga-timeline.invalid
-DTSTAMP:20260909T031317Z
-SEQUENCE:1
-LAST-MODIFIED:20260909T031317Z
-DTSTART;VALUE=DATE:20270327
-SUMMARY:ルヴァン杯 準決勝 第2戦 キックオフ
-DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準決勝 第2戦\nh
- ttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツー
- ルによる予定です。日程が変わっている場合がありま
- す。購入・応募の前に公式サイトで確認してください
- 。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:match-sec16@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:2
@@ -2139,6 +2079,66 @@ DESCRIPTION:第38節 神戸戦\nhttps://www.jleague.jp/news/article/34406/\
  っている場合があります。購入・応募の前に公式サイ
  トで確認してください。
 STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec46@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261110
+SUMMARY:ルヴァン杯 準々決勝 第1戦 キックオフ
+DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準々決勝 第1戦
+ \nhttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツ
+ ールによる予定です。日程が変わっている場合があり
+ ます。購入・応募の前に公式サイトで確認してくださ
+ い。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec47@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20261114
+SUMMARY:ルヴァン杯 準々決勝 第2戦 キックオフ
+DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準々決勝 第2戦
+ \nhttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツ
+ ールによる予定です。日程が変わっている場合があり
+ ます。購入・応募の前に公式サイトで確認してくださ
+ い。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec48@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20270323
+SUMMARY:ルヴァン杯 準決勝 第1戦 キックオフ
+DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準決勝 第1戦\nh
+ ttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツー
+ ルによる予定です。日程が変わっている場合がありま
+ す。購入・応募の前に公式サイトで確認してください
+ 。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:match-sec49@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20260909T031317Z
+DTSTART;VALUE=DATE:20270327
+SUMMARY:ルヴァン杯 準決勝 第2戦 キックオフ
+DESCRIPTION:2026/27 JリーグYBCルヴァンカップ 準決勝 第2戦\nh
+ ttps://www.sanga-fc.jp/news/detail/21171\n※非公式のファンツー
+ ルによる予定です。日程が変わっている場合がありま
+ す。購入・応募の前に公式サイトで確認してください
+ 。
+STATUS:CANCELLED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT

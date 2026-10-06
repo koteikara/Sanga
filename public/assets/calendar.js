@@ -18,7 +18,7 @@
 
   // 年間スケジュールと同じ正本を読む。
   // ?v= は tools/asset-versions.mjs が matches.json の内容ハッシュへ書き換える。
-  var DATA_URLS = ["data/matches.json?v=e096ee41"];
+  var DATA_URLS = ["data/matches.json?v=63bd7fcb"];
 
   var WEEKDAYS = ["日", "月", "火", "水", "木", "金", "土"];
 

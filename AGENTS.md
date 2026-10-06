@@ -71,7 +71,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 
 ## 現在の正本
 
-- 日程: `public/data/matches.json`（57件）
+- 日程: `public/data/matches.json`（53件）
 - 選手: `public/data/players.json`（39件）
 - チケット販売スケジュール: `docs/sheets/ticket-sales.current.csv`（GitHub Actionsが1日1回更新）
 - `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットであり、現在値ではない。

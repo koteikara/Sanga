@@ -206,7 +206,7 @@ ID,表示順,大会,大会表示,節,開催年,開催日,候補日,キックオ�
 | sec16 | 16 | J1 | 明治安田J1リーグ | 第16節 | 2026 |  | 2026-12-16\|2027-04-14 |  | 未確定 | 未定 | H | ホーム | 神戸 | vissel | サンガスタジアム |  |  | 未定 |  |  |  |  | ※1 | ※1: 26/12/16(水)もしくは27/4/14(水)のいずれかで開催予定です。 | 日程変更の可能性あり | 京都 vs 神戸 | 表示 | https://www.sanga-fc.jp/news/detail/21152 | 2026-06-18 | 候補日あり |
 
 > [!IMPORTANT]
-> `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットです。現在の公開データは57件のため、`public/data/matches.json` から再生成して差分を確認してください。
+> `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットです。現在の公開データは53件のため、`public/data/matches.json` から再生成して差分を確認してください。
 
 ## 8. 初期データ作成手順
 
@@ -260,10 +260,10 @@ node tools/generate-matches-from-csv.js docs/sheets/schedule.sample.csv tmp/matc
 node tools/validate-generated-matches.js tmp/matches.generated.json
 ```
 
-現在の公開用57件として確認する場合は、件数チェックも指定します。
+現在の公開用53件として確認する場合は、件数チェックも指定します。
 
 ```bash
-node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 57
+node tools/validate-generated-matches.js tmp/matches.generated.json --expected-count 53
 ```
 
 Googleスプレッドシートから出力したCSVは、公開JSONへ反映する前に必ず生成・検証します。検証観点と初期CSVの確認結果は `docs/sheets/spreadsheet-export-check.md` を参照してください。検証後に問題がなければ、次のPRで `public/data/matches.json` への反映を検討します。
