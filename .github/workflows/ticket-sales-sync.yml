@@ -254,7 +254,22 @@ jobs:
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 
+          # このPRは開いている取り込みPRをすべて含む（どれも main から作り、CSVは
+          # 毎回まるごと書き直す）。古いPRは作成後に閉じ、常に1本だけにする。
+          # 閉じると作成日時が新しいPRに入れ替わるので、最初の未マージ取り込みの日時を
+          # 本文の隠しコメントで引き継ぐ。tools/report-sync-stall.js がこれで滞りを数える。
+          gh pr list --state open --limit 100 --json number,headRefName,createdAt,body \
+            > tmp/open-import-prs.json
+          pending_since=$(node -e '
+            const prs = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"))
+              .filter((pr) => pr.headRefName.startsWith("automation/ticket-sales-"));
+            const { pendingSince } = require("./tools/report-sync-stall.js");
+            const dates = prs.map((pr) => pendingSince(pr)).concat([new Date()]);
+            console.log(new Date(Math.min(...dates)).toISOString());
+          ' tmp/open-import-prs.json)
+
           {
+            echo "<!-- pending-since: ${pending_since} -->"
             echo '## Summary'
             echo
             echo '- 公式のチケット販売スケジュールを取得し、`docs/sheets/ticket-sales.current.csv` を更新しました。'
@@ -292,10 +307,24 @@ jobs:
           # pull requests」が無効だと拒否される。その場合もブランチのpushは
           # 済んでいて取り込み自体は成功しているため、ジョブは失敗にせず、
           # 人がPRを作れるリンクを案内する。
-          if gh pr create --draft --base main --head "$branch" \
+          if new_url=$(gh pr create --draft --base main --head "$branch" \
             --title "data: チケット販売スケジュールを取り込む" \
-            --body-file pr-body.md; then
-            echo "取り込みPRを作成しました。"
+            --body-file pr-body.md); then
+            echo "取り込みPRを作成しました: ${new_url}"
+
+            # 新しいPRが立ったときだけ閉じる。作成に失敗した日に閉じると、何も残らない。
+            node -e '
+              const prs = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+              for (const pr of prs) {
+                if (pr.headRefName.startsWith("automation/ticket-sales-") && pr.headRefName !== process.argv[2]) {
+                  console.log(pr.number);
+                }
+              }
+            ' tmp/open-import-prs.json "$branch" | while read -r number; do
+              gh pr close "$number" --delete-branch \
+                --comment "新しい取り込みPR ${new_url} がこのPRの内容を含むため閉じます（自動）。"
+              echo "古い取り込みPR #${number} を閉じました。"
+            done
           else
             url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/new/${branch}"
             {
@@ -330,3 +359,91 @@ jobs:
           fi
           echo 'ホーム戦の取り込みは終わっています。'
           exit 1
+
+      # **失敗した日こそ走らせる。** 取得で落ちた日は後ろの手順がすべて飛ぶので、
+      # always() で拾う。2026-09-17〜10-07 に取り込みPRが16本溜まり、10/3 からは
+      # 取得も4日続けて落ちていたのに、誰も気付かなかった。
+      #
+      # Issueは1本だけ持ち、中身を書き換える（「手で確かめるアウェイ戦」と同じ）。
+      # 本文の書き換えでは通知が飛ばないので、**新しく当たった状態があるときだけ**
+      # メンション付きのコメントを足す。同じ滞りが続く日は静かなまま。
+      - name: 取り込みの滞りを知らせる
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          mkdir -p tmp
+
+          title='チケット情報の取り込みが滞っています'
+          label='sync-stall'
+
+          gh pr list --state open --limit 100 \
+            --json number,url,createdAt,headRefName,body > tmp/stall-prs.json
+          gh run list --workflow ticket-sales-sync.yml --limit 20 \
+            --json databaseId,status,conclusion,createdAt,url > tmp/stall-runs.json
+
+          args=(--prs tmp/stall-prs.json --runs tmp/stall-runs.json
+                --current-run-id "${GITHUB_RUN_ID}" --mention "${OWNER}")
+          if [ "${JOB_STATUS}" != "success" ]; then
+            args+=(--current-failed)
+          fi
+          node tools/report-sync-stall.js "${args[@]}" > tmp/stall.md
+
+          gh label create "$label" \
+            --description 'チケット情報の取り込みが滞っている' \
+            --color 'D93F0B' 2>/dev/null || true
+
+          number=$(gh issue list --state open --label "$label" \
+            --json number --jq '.[0].number // empty')
+
+          keys_of() {
+            sed -n 's/.*<!-- sync-stall-keys: \(.*\) -->.*/\1/p' | head -n 1
+          }
+
+          if [ -s tmp/stall.md ]; then
+            {
+              echo '## 取り込みの滞り'
+              echo
+              tail -n +2 tmp/stall.md
+            } >> "$GITHUB_STEP_SUMMARY"
+
+            if [ -z "$number" ]; then
+              # 作成時の本文のメンションで通知が飛ぶ。
+              gh issue create --title "$title" --label "$label" --body-file tmp/stall.md
+              echo "Issueを作成しました。"
+            else
+              old_keys=$(gh issue view "$number" --json body --jq .body | keys_of)
+              new_keys=$(keys_of < tmp/stall.md)
+              gh issue edit "$number" --body-file tmp/stall.md
+              added=''
+              for key in $new_keys; do
+                case " $old_keys " in
+                  *" $key "*) ;;
+                  *)
+                    case "$key" in
+                      pr-stale) added="${added}、取り込みPRの未マージ" ;;
+                      fetch-fail) added="${added}、取得の連続失敗" ;;
+                      *) added="${added}、${key}" ;;
+                    esac
+                    ;;
+                esac
+              done
+              if [ -n "$added" ]; then
+                added="${added#、}"
+                gh issue comment "$number" \
+                  --body "@${OWNER} 新しい滞りがあります（${added}）。本文を確かめてください。"
+                echo "Issue #${number} を更新し、知らせました（${added}）。"
+              else
+                echo "Issue #${number} を更新しました（状態は前回と同じ）。"
+              fi
+            fi
+          elif [ -n "$number" ]; then
+            gh issue close "$number" \
+              --comment '取り込みの滞りは無くなりました。また滞れば開きます。'
+            echo "Issue #${number} を閉じました。"
+          else
+            echo "取り込みの滞りはありません。"
+          fi

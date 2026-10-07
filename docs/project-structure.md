@@ -68,7 +68,7 @@
 | `static-checks.yml` | 日程、ホテル、選手、年間スケジュールJS等の静的検証 | PR、`main` push |
 | `pages.yml` | `public/` をGitHub Pagesへ配置 | `main` push、手動 |
 | `deploy-production.yml` | `public/` を本番へ配置 | `DEPLOY`確認付き手動 |
-| `ticket-sales-sync.yml` | 公式のチケット販売スケジュールを取得し、差分があればPRを作る | 毎日22:00 JST、手動 |
+| `ticket-sales-sync.yml` | 公式のチケット販売スケジュールを取得し、差分があればPRを作る。古い取り込みPRは閉じて1本にし、滞ればIssue（ラベル `sync-stall`）で知らせる | 毎日22:00 JST、手動 |
 
 Static Checksと本番デプロイは、再利用可能な `squad-checks.yml` を通して、スカッド用JavaScript構文、選手JSON、静的契約、Chromiumレイアウトを共通検証します。レイアウト検証は幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルを対象にします。
 

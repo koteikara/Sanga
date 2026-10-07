@@ -1,0 +1,16 @@
+[
+  {
+    "number": 901,
+    "url": "https://github.com/example/repo/pull/901",
+    "createdAt": "2030-07-05T13:05:00Z",
+    "headRefName": "automation/ticket-sales-20300705-130500",
+    "body": "<!-- pending-since: 2030-07-01T13:04:00Z -->\n## Summary"
+  },
+  {
+    "number": 902,
+    "url": "https://github.com/example/repo/pull/902",
+    "createdAt": "2030-07-02T00:00:00Z",
+    "headRefName": "feature/unrelated",
+    "body": ""
+  }
+]
