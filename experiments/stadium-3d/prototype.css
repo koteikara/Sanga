@@ -70,6 +70,8 @@ body {
   border-radius: 9px;
   background: rgba(255, 255, 255, .08);
   font-size: 13px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .kicker {
@@ -104,13 +106,14 @@ label {
   font-size: 12px;
 }
 
-label span {
-  color: var(--accent);
-  font-weight: 700;
-}
+select { width: 100%; }
 
-select,
-input[type="range"] { width: 100%; }
+/* 列と席番号は横に並べる */
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
 select {
   min-height: 44px;
@@ -120,13 +123,6 @@ select {
   color: white;
   background: #2a203e;
   font-size: 14px;
-}
-
-/* つまみを押しやすくするため、入力そのものの高さを確保する */
-input[type="range"] {
-  height: 44px;
-  accent-color: #a567ff;
-  cursor: pointer;
 }
 
 button {
@@ -200,6 +196,27 @@ button.secondary {
 }
 
 .info strong { color: white; }
+
+.info dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  margin: 8px 0 0;
+}
+
+.info dt { color: var(--muted); }
+
+.info dd {
+  margin: 0;
+  color: white;
+  text-align: right;
+}
+
+.info .note {
+  margin: 8px 0 0;
+  color: #ffdf8a;
+  font-size: 11px;
+}
 
 .warning {
   margin: 12px 0 0;

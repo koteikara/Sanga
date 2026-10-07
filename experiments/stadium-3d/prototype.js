@@ -1,10 +1,16 @@
 // サンガスタジアム 座席ビュー（プロトタイプ）
 //
-// ブロックを選ぶと、その付近の着席視点へカメラを置く。
-// 寸法・傾斜は公開資料の値、それ以外はモデル用の仮定値（DATA.assumed）。
+// layout.json（公式の座席図から extract/build_layout.py で作った全席の位置）を読み、
+// stadium-model.js で組み立てた3Dの中で、選んだ席の目の高さへカメラを置く。
 
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import {
+  EYE_HEIGHT,
+  buildStadium,
+  seatNumbers,
+  standName
+} from "./stadium-model.js";
 
 const $ = id => document.getElementById(id);
 
@@ -30,124 +36,33 @@ const isNarrow = () => window.matchMedia("(max-width: 700px)").matches;
 // 画面の案内は入力機器で変える。指で触る画面に「ホイール」「Esc」は無い。
 const HELP = {
   overview: isTouch
-    ? "ドラッグ：回転 ／ ピンチ：拡大 ／ ブロックをタップ：選択"
-    : "ドラッグ：回転 ／ ホイール：拡大 ／ ブロッククリック：選択",
+    ? "ドラッグ：回転 ／ ピンチ：拡大 ／ 座席をタップ：選択"
+    : "ドラッグ：回転 ／ ホイール：拡大 ／ 座席をクリック：選択",
 
   seat: isTouch
     ? "ドラッグ：見回す ／ 「全体表示へ戻る」で戻る"
-    : "ドラッグ：見回す ／ ホイール：画角変更 ／ Esc：全体表示"
+    : "ドラッグ・矢印キー：見回す ／ ホイール：画角 ／ Esc：全体表示"
 };
 
-// ============================================================
-// 資料に基づく基本値
-//
-// 出典：
-// 京都スタジアム（仮称）インフォメーションパッケージ p.15 / p.18
-//
-// ・フィールド：126m × 84m
-// ・天然芝：120m × 77m
-// ・最前列床面：フィールド面 + 1.2m
-// ・最前列まで：
-//    メイン 8.5m / バック 7.5m / サイド 10.5m
-// ・下層傾斜：21〜24° → モデルでは中間の22.5°
-// ・上層傾斜：32°
-// ・一般席幅：47cm
-// ・建物高さ：27.6m
-// ============================================================
+const TIER_NAME = { lower: "下層", upper: "上層" };
 
-const DATA = {
-  field: {
-    eastWest: 84,
-    northSouth: 126,
-    turfEastWest: 77,
-    turfNorthSouth: 120,
-    playingEastWest: 68,
-    playingNorthSouth: 105
-  },
-
-  firstRowFloorHeight: 1.2,
-
-  firstRowDistance: {
-    W: 8.5,
-    E: 7.5,
-    N: 10.5,
-    S: 10.5
-  },
-
-  slopes: {
-    lower: 22.5,
-    upper: 32
-  },
-
-  assumed: {
-    // 公開図面から未確定のため、モデル上の仮定値
-    lowerRowDepth: 0.78,
-    upperRowDepth: 0.84,
-    lowerRows: 26,
-    upperRows: 18,
-    upperSetback: 3.8,
-    upperBaseHeight: 10.0,
-    seatSpacing: 0.52,
-    eyeHeightAboveSeat: 1.15
-  },
-
-  colors: {
-    W: "#d47a25",
-    E: "#ab2548",
-    S: "#174b38",
-    N: "#14599b"
-  }
-};
+// 選択の色。座席の紫と見分けられる明るさにする（色だけに頼らず、情報欄にも文字で出す）
+const BLOCK_COLOR = new THREE.Color("#c7a6ff");
+const SEAT_COLOR = new THREE.Color("#ffd158");
 
 // ============================================================
-// ブロック定義
-//
-// 2025年館内図をベースにブロック名を登録。
-// Wは W1〜W17
-// Eは E1〜E17 および E21〜E39
-// Sは S1〜S13 および S21〜S34
-// Nは N1〜N13 および N21〜N34
-//
-// なお upper / lower は3Dモデル用の便宜的な区分。
-// 実際の各ブロックの座席層とは完全には一致しない。
-// ============================================================
-
-const BLOCKS = [];
-
-function addBlocks(stand, start, end, tier = "lower") {
-  for (let i = start; i <= end; i++) {
-    BLOCKS.push({
-      id: `${stand}${i}`,
-      stand,
-      number: i,
-      tier,
-      label: `${stand}${i}`
-    });
-  }
-}
-
-addBlocks("W", 1, 17, "lower");
-addBlocks("E", 1, 17, "lower");
-addBlocks("S", 1, 13, "lower");
-addBlocks("N", 1, 13, "lower");
-
-addBlocks("E", 21, 39, "upper");
-addBlocks("S", 21, 34, "upper");
-addBlocks("N", 21, 34, "upper");
-
-// ============================================================
-// Three.js 初期化
+// 画面の土台
 // ============================================================
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color("#a9c0d2");
-scene.fog = new THREE.Fog("#a9c0d2", 180, 390);
+scene.fog = new THREE.Fog("#a9c0d2", 200, 420);
 
 const camera = new THREE.PerspectiveCamera(
-  58,
+  55,
   window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+  0.08,
+  1200
 );
 
 let renderer;
@@ -177,875 +92,348 @@ $("app").appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = !prefersReducedMotion;
 controls.dampingFactor = 0.08;
-controls.minDistance = 10;
+controls.minDistance = 8;
 controls.maxPolarAngle = Math.PI / 2 - 0.02;
-controls.target.set(0, 7, 0);
+
+const hemi = new THREE.HemisphereLight("#eaf5ff", "#4a524c", 1.9);
+scene.add(hemi);
+
+// 太陽は南西寄りの午後の光。影のカメラはスタジアム全体（外形およそ150m）が入る大きさにする
+const sun = new THREE.DirectionalLight("#fff3de", 2.8);
+sun.position.set(-90, 150, 70);
+sun.castShadow = true;
+sun.shadow.mapSize.set(isTouch ? 2048 : 4096, isTouch ? 2048 : 4096);
+sun.shadow.camera.left = -110;
+sun.shadow.camera.right = 110;
+sun.shadow.camera.top = 110;
+sun.shadow.camera.bottom = -110;
+sun.shadow.camera.near = 10;
+sun.shadow.camera.far = 420;
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.04;
+scene.add(sun);
+
+// ============================================================
+// 状態
+// ============================================================
+
+let model = null;
+let blocksById = new Map();
+let mode = "overview";
+let selectedBlock = null;
+let selectedRow = null;
+let selectedSeatIndex = -1;
+let baseColors = null;
+
+// 着席視点の向き
+let yaw = 0;
+let pitch = 0;
 
 // 全体表示の見下ろす向き。距離は画面の縦横比から決めるので、ここは向きだけ持つ。
-const OVERVIEW_TARGET = new THREE.Vector3(0, 8, 0);
-const OVERVIEW_DIRECTION =
-  new THREE.Vector3(145, 117, 155).normalize();
+const OVERVIEW_TARGET = new THREE.Vector3(0, 6, 0);
+const OVERVIEW_DIRECTION = new THREE.Vector3(150, 125, 160).normalize();
+let overviewRadius = 110;
 
-// スタジアム外形（外壁の角）が収まる半径
-const OVERVIEW_RADIUS = 132;
+// 広い画面では操作パネルが左に常に出ている。3Dの中心をパネルの右の空きへずらし、
+// スタジアムがパネルの裏に隠れないようにする。狭い画面ではパネルは下にあり、畳めるのでずらさない。
+function panelInset() {
+  if (isNarrow()) return 0;
+  const rect = $("panel").getBoundingClientRect();
+  return Math.max(0, Math.min(rect.right + 8, window.innerWidth * 0.45));
+}
+
+function applyViewOffset() {
+  const inset = mode === "overview" ? panelInset() : 0;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  if (inset > 0) camera.setViewOffset(w, h, -inset / 2, 0, w, h);
+  else camera.clearViewOffset();
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
 
 // 縦長の画面では横の画角が狭くなり、既定の距離だとスタジアムが入りきらない。
-// 縦横のうち狭いほうの画角に合わせて距離を出す。
+// 縦横のうち狭いほうの画角に合わせて距離を出す。パネルで隠れる幅は除いて考える。
 function overviewDistance() {
   const vertical = THREE.MathUtils.degToRad(camera.fov);
-  const horizontal = 2 * Math.atan(Math.tan(vertical / 2) * camera.aspect);
+  const visibleAspect = (window.innerWidth - panelInset()) / window.innerHeight;
+  const horizontal = 2 * Math.atan(Math.tan(vertical / 2) * visibleAspect);
   const narrow = Math.max(0.2, Math.min(vertical, horizontal));
 
-  return OVERVIEW_RADIUS / Math.sin(narrow / 2);
+  return overviewRadius / Math.sin(narrow / 2);
 }
 
 // 霧は距離に合わせて動かす。固定のままだと、引いたときに全体が霧へ沈む。
 function applyOverviewRange(distance) {
-  scene.fog.near = distance * 0.55;
-  scene.fog.far = distance * 1.9;
-  controls.maxDistance = distance * 1.3;
+  scene.fog.near = distance * 0.7;
+  scene.fog.far = distance * 2.2;
+  controls.maxDistance = distance * 1.4;
 }
 
-const hemi = new THREE.HemisphereLight("#eaf5ff", "#48534c", 2.1);
-scene.add(hemi);
-
-const sun = new THREE.DirectionalLight("#fff3de", 3.0);
-sun.position.set(-75, 140, 80);
-sun.castShadow = true;
-
-// 影のカメラは既定だと10m四方しか映さず、スタジアムのほとんどが範囲外になる。
-// 建物が収まる大きさに広げてから影を焼く。
-sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.left = -180;
-sun.shadow.camera.right = 180;
-sun.shadow.camera.top = 180;
-sun.shadow.camera.bottom = -180;
-sun.shadow.camera.near = 1;
-sun.shadow.camera.far = 420;
-sun.shadow.bias = -0.0006;
-scene.add(sun);
-
 // ============================================================
-// マテリアル
+// 座席の検索
 // ============================================================
 
-const materials = {
-  concrete: new THREE.MeshStandardMaterial({
-    color: "#77727d",
-    roughness: 0.92
-  }),
-
-  darkConcrete: new THREE.MeshStandardMaterial({
-    color: "#403f48",
-    roughness: 0.94
-  }),
-
-  metal: new THREE.MeshStandardMaterial({
-    color: "#717886",
-    metalness: 0.55,
-    roughness: 0.45
-  }),
-
-  roof: new THREE.MeshStandardMaterial({
-    color: "#d7d9de",
-    metalness: 0.38,
-    roughness: 0.55,
-    side: THREE.DoubleSide
-  }),
-
-  glassRoof: new THREE.MeshStandardMaterial({
-    color: "#9fc4ce",
-    transparent: true,
-    opacity: 0.46,
-    metalness: 0.1,
-    roughness: 0.25,
-    side: THREE.DoubleSide
-  }),
-
-  pitchWhite: new THREE.LineBasicMaterial({
-    color: "#ffffff"
-  })
-};
-
-// ============================================================
-// ユーティリティ
-// ============================================================
-
-function makeBox(w, h, d, material, x = 0, y = 0, z = 0, parent = scene) {
-  const mesh = new THREE.Mesh(
-    new THREE.BoxGeometry(w, h, d),
-    material
-  );
-
-  mesh.position.set(x, y, z);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  parent.add(mesh);
-
-  return mesh;
-}
-
-function createTextSprite(text, color = "#ffffff") {
-  const canvas = document.createElement("canvas");
-  canvas.width = 256;
-  canvas.height = 96;
-
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "rgba(15, 12, 22, .76)";
-
-  // roundRect は古いSafariに無い。角丸が無くても読めればよいので四角で描く。
-  if (typeof ctx.roundRect === "function") {
-    ctx.beginPath();
-    ctx.roundRect(16, 15, 224, 66, 12);
-    ctx.fill();
-  } else {
-    ctx.fillRect(16, 15, 224, 66);
+function seatIndexOf(block, rowN, seatN) {
+  const seats = model.seatPositions;
+  for (let i = block.seatStart; i < block.seatStart + block.seatCount; i++) {
+    if (seats[i].row === rowN && seats[i].seat === seatN) return i;
   }
-
-  ctx.fillStyle = color;
-  ctx.font = "bold 36px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(text, 128, 49);
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-
-  const sprite = new THREE.Sprite(
-    new THREE.SpriteMaterial({
-      map: texture,
-      transparent: true,
-      depthTest: false
-    })
-  );
-
-  sprite.scale.set(8, 3, 1);
-  return sprite;
+  return -1;
 }
 
-function line(points) {
-  const geometry = new THREE.BufferGeometry().setFromPoints(
-    points.map(([x, y, z]) => new THREE.Vector3(x, y, z))
-  );
-
-  const object = new THREE.Line(geometry, materials.pitchWhite);
-  scene.add(object);
-  return object;
+function rowOf(block, rowN) {
+  return block.rows.find(r => r.n === rowN) || null;
 }
 
-function rectLine(x1, z1, x2, z2) {
-  line([
-    [x1, 0.05, z1],
-    [x2, 0.05, z1],
-    [x2, 0.05, z2],
-    [x1, 0.05, z2],
-    [x1, 0.05, z1]
-  ]);
-}
-
-// ============================================================
-// フィールド
-// ============================================================
-
-const groups = {
-  structure: new THREE.Group(),
-  roof: new THREE.Group(),
-  blocks: new THREE.Group(),
-  labels: new THREE.Group(),
-  seats: new THREE.Group(),
-  screens: new THREE.Group()
-};
-
-scene.add(
-  groups.structure,
-  groups.roof,
-  groups.blocks,
-  groups.labels,
-  groups.seats,
-  groups.screens
-);
-
-const turfMaterialA = new THREE.MeshStandardMaterial({
-  color: "#2c7c46",
-  roughness: 0.95
-});
-
-const turfMaterialB = new THREE.MeshStandardMaterial({
-  color: "#388d51",
-  roughness: 0.95
-});
-
-makeBox(
-  220, 0.35, 250,
-  new THREE.MeshStandardMaterial({ color: "#6e826c", roughness: 1 }),
-  0, -0.48, 0,
-  groups.structure
-);
-
-makeBox(
-  DATA.field.eastWest,
-  0.10,
-  DATA.field.northSouth,
-  new THREE.MeshStandardMaterial({ color: "#28703d", roughness: 1 }),
-  0, -0.12, 0
-);
-
-const stripeCount = 16;
-const stripeWidth = DATA.field.turfEastWest / stripeCount;
-
-for (let i = 0; i < stripeCount; i++) {
-  makeBox(
-    stripeWidth,
-    0.08,
-    DATA.field.turfNorthSouth,
-    i % 2 === 0 ? turfMaterialA : turfMaterialB,
-    -DATA.field.turfEastWest / 2 + stripeWidth * (i + .5),
-    -0.03,
-    0
-  );
-}
-
-// サッカーの競技エリア（105 × 68m）
-const px = DATA.field.playingEastWest / 2;
-const pz = DATA.field.playingNorthSouth / 2;
-
-rectLine(-px, -pz, px, pz);
-line([[0, 0.05, -pz], [0, 0.05, pz]]);
-
-function circleLine(cx, cz, radius, start = 0, end = Math.PI * 2) {
-  const points = [];
-  for (let i = 0; i <= 80; i++) {
-    const a = start + (end - start) * (i / 80);
-    points.push([
-      cx + Math.cos(a) * radius,
-      0.05,
-      cz + Math.sin(a) * radius
-    ]);
-  }
-  line(points);
-}
-
-circleLine(0, 0, 9.15);
-
-function dot(x, z) {
-  const mesh = new THREE.Mesh(
-    new THREE.CircleGeometry(0.13, 16),
-    new THREE.MeshBasicMaterial({ color: "#ffffff" })
-  );
-  mesh.rotation.x = -Math.PI / 2;
-  mesh.position.set(x, 0.055, z);
-  scene.add(mesh);
-}
-
-dot(0, 0);
-
-for (const side of [-1, 1]) {
-  const goalX = side * px;
-  const penaltyX = side * 19.16;
-  const sixX = side * 30.16;
-
-  rectLine(
-    Math.min(goalX, penaltyX),
-    -20.16,
-    Math.max(goalX, penaltyX),
-    20.16
-  );
-
-  rectLine(
-    Math.min(goalX, sixX),
-    -9.16,
-    Math.max(goalX, sixX),
-    9.16
-  );
-
-  dot(side * 30.5, 0);
-}
-
-// ============================================================
-// スタンド基礎
-// ============================================================
-
-const fieldHalfX = DATA.field.eastWest / 2;
-const fieldHalfZ = DATA.field.northSouth / 2;
-
-const standDefinitions = {
-  W: {
-    side: "west",
-    color: DATA.colors.W,
-    distance: DATA.firstRowDistance.W,
-    blocks: 17
-  },
-
-  E: {
-    side: "east",
-    color: DATA.colors.E,
-    distance: DATA.firstRowDistance.E,
-    blocks: 17
-  },
-
-  S: {
-    side: "south",
-    color: DATA.colors.S,
-    distance: DATA.firstRowDistance.S,
-    blocks: 13
-  },
-
-  N: {
-    side: "north",
-    color: DATA.colors.N,
-    distance: DATA.firstRowDistance.N,
-    blocks: 13
-  }
-};
-
-function getStandGeometry(stand, tier = "lower") {
-  const def = standDefinitions[stand];
-
-  const isWestEast = stand === "W" || stand === "E";
-  const sign = stand === "W" || stand === "S" ? -1 : 1;
-
-  const rowDepth =
-    tier === "lower"
-      ? DATA.assumed.lowerRowDepth
-      : DATA.assumed.upperRowDepth;
-
-  const rows =
-    tier === "lower"
-      ? DATA.assumed.lowerRows
-      : DATA.assumed.upperRows;
-
-  const slope =
-    tier === "lower"
-      ? DATA.slopes.lower
-      : DATA.slopes.upper;
-
-  const rise = rowDepth * Math.tan(
-    THREE.MathUtils.degToRad(slope)
-  );
-
-  const depth = rowDepth * rows;
-
-  const front =
-    def.distance +
-    (tier === "upper"
-      ? DATA.assumed.upperSetback + DATA.assumed.lowerRows * DATA.assumed.lowerRowDepth
-      : 0);
-
-  const baseHeight =
-    tier === "lower"
-      ? DATA.firstRowFloorHeight
-      : DATA.assumed.upperBaseHeight;
-
-  return {
-    isWestEast,
-    sign,
-    rowDepth,
-    rows,
-    slope,
-    rise,
-    depth,
-    front,
-    baseHeight
-  };
-}
-
-function standPosition(stand, tier, along, rowRatio) {
-  const g = getStandGeometry(stand, tier);
-  const rowIndex = rowRatio * (g.rows - 1);
-  const outward = g.front + rowIndex * g.rowDepth;
-  const floorHeight = g.baseHeight + rowIndex * g.rise;
-
-  if (stand === "W") {
-    return new THREE.Vector3(
-      -(fieldHalfX + outward),
-      floorHeight,
-      along
-    );
-  }
-
-  if (stand === "E") {
-    return new THREE.Vector3(
-      fieldHalfX + outward,
-      floorHeight,
-      along
-    );
-  }
-
-  if (stand === "S") {
-    return new THREE.Vector3(
-      along,
-      floorHeight,
-      -(fieldHalfZ + outward)
-    );
-  }
-
-  return new THREE.Vector3(
-    along,
-    floorHeight,
-    fieldHalfZ + outward
-  );
-}
-
-// ============================================================
-// 下層・上層スタンドの段床
-// ============================================================
-
-function createTerraces(stand, tier, span) {
-  const g = getStandGeometry(stand, tier);
-
-  for (let row = 0; row < g.rows; row++) {
-    const outer = g.front + row * g.rowDepth;
-    const h = g.baseHeight + row * g.rise;
-
-    if (g.isWestEast) {
-      const standX =
-        stand === "W"
-          ? -(fieldHalfX + outer)
-          : fieldHalfX + outer;
-
-      makeBox(
-        g.rowDepth,
-        h,
-        span,
-        materials.concrete,
-        standX,
-        h / 2,
-        0,
-        groups.structure
-      );
-    } else {
-      const standZ =
-        stand === "S"
-          ? -(fieldHalfZ + outer)
-          : fieldHalfZ + outer;
-
-      makeBox(
-        span,
-        h,
-        g.rowDepth,
-        materials.concrete,
-        0,
-        h / 2,
-        standZ,
-        groups.structure
-      );
-    }
-  }
-}
-
-createTerraces("W", "lower", 134);
-createTerraces("E", "lower", 134);
-createTerraces("S", "lower", 90);
-createTerraces("N", "lower", 90);
-
-createTerraces("E", "upper", 134);
-createTerraces("S", "upper", 90);
-createTerraces("N", "upper", 90);
-
-// ============================================================
-// ブロック形状
-// ============================================================
-
-const blockMeshes = [];
-const selectedMaterial = new THREE.MeshStandardMaterial({
-  color: "#ffd158",
-  emissive: "#8a5b00",
-  emissiveIntensity: 0.35,
-  roughness: 0.58
-});
-
-function getBlockLayout(block) {
-  const stand = block.stand;
-  const tier = block.tier;
-  const g = getStandGeometry(stand, tier);
-
-  let count = 1;
-  let index = 0;
-
-  if (stand === "W") {
-    count = 17;
-    index = block.number - 1;
-  }
-
-  if (stand === "E") {
-    count = tier === "upper" ? 19 : 17;
-    index = tier === "upper" ? block.number - 21 : block.number - 1;
-  }
-
-  if (stand === "S" || stand === "N") {
-    count = tier === "upper" ? 14 : 13;
-    index = tier === "upper" ? block.number - 21 : block.number - 1;
-  }
-
-  const span = (stand === "W" || stand === "E") ? 134 : 90;
-  const segment = span / count;
-
-  const along = -span / 2 + segment * (index + .5);
-
-  return {
-    span,
-    segment,
-    along,
-    rowDepth: g.rowDepth,
-    depth: g.depth,
-    baseHeight: g.baseHeight,
-    rise: g.rise,
-    slope: g.slope
-  };
-}
-
-function createBlock(block) {
-  const layout = getBlockLayout(block);
-  const stand = block.stand;
-  const g = getStandGeometry(stand, block.tier);
-
-  const color = new THREE.Color(DATA.colors[stand]);
-  color.multiplyScalar(block.tier === "upper" ? 0.82 : 1.0);
-
-  const material = new THREE.MeshStandardMaterial({
-    color,
-    roughness: 0.72,
-    transparent: true,
-    opacity: 0.92
-  });
-
-  const blockHeight = g.baseHeight + g.rise * (g.rows - 1);
-  const outer = g.front + g.depth / 2;
-
-  let mesh;
-
-  if (stand === "W" || stand === "E") {
-    const x =
-      stand === "W"
-        ? -(fieldHalfX + outer)
-        : fieldHalfX + outer;
-
-    mesh = makeBox(
-      g.depth,
-      blockHeight,
-      layout.segment - 0.18,
-      material,
-      x,
-      blockHeight / 2,
-      layout.along,
-      groups.blocks
-    );
-  } else {
-    const z =
-      stand === "S"
-        ? -(fieldHalfZ + outer)
-        : fieldHalfZ + outer;
-
-    mesh = makeBox(
-      layout.segment - 0.18,
-      blockHeight,
-      g.depth,
-      material,
-      layout.along,
-      blockHeight / 2,
-      z,
-      groups.blocks
-    );
-  }
-
-  mesh.userData.block = block;
-  mesh.userData.baseMaterial = material;
-  blockMeshes.push(mesh);
-
-  const labelPosition = standPosition(
-    stand,
-    block.tier,
-    layout.along,
-    .55
-  );
-
-  labelPosition.y += 6;
-
-  const label = createTextSprite(block.id, "#ffffff");
-  label.position.copy(labelPosition);
-  label.userData.block = block;
-
-  groups.labels.add(label);
-}
-
-BLOCKS.forEach(createBlock);
-
-// ============================================================
-// 屋根・外壁の概略モデル
-// ============================================================
-
-function makeRoofPanel(w, d, x, z, material) {
-  const roof = new THREE.Mesh(
-    new THREE.BoxGeometry(w, 0.7, d),
-    material
-  );
-
-  roof.position.set(x, 24.5, z);
-  roof.castShadow = true;
-  roof.receiveShadow = true;
-  groups.roof.add(roof);
-}
-
-// 西メイン屋根
-makeRoofPanel(36, 148, -61, 0, materials.roof);
-
-// 東バック屋根
-makeRoofPanel(34, 148, 61, 0, materials.roof);
-
-// 北スタンド屋根
-makeRoofPanel(104, 35, 0, 84, materials.roof);
-
-// 南スタンド屋根：資料にあるガラストップライトを概略表現
-makeRoofPanel(104, 35, 0, -84, materials.glassRoof);
-
-// 外壁概略
-makeBox(8, 18, 150, materials.darkConcrete, -77, 9, 0, groups.structure);
-makeBox(8, 18, 150, materials.darkConcrete, 77, 9, 0, groups.structure);
-makeBox(150, 18, 8, materials.darkConcrete, 0, 9, -100, groups.structure);
-makeBox(150, 18, 8, materials.darkConcrete, 0, 9, 100, groups.structure);
-
-// 大型映像装置の概略
-const screenMaterial = new THREE.MeshStandardMaterial({
-  color: "#171924",
-  emissive: "#13172b",
-  emissiveIntensity: 0.5
-});
-
-// 位置は未確認。いまの値だとメイン・バックの上層から見て正面に入るため、
-// 単独で消せるように外壁とは別のグループへ置く。
-makeBox(0.5, 8, 16, screenMaterial, -58, 14, 0, groups.screens);
-makeBox(0.5, 8, 16, screenMaterial, 58, 14, 0, groups.screens);
-
-// ============================================================
-// 簡易座席表現
-// 実際の全席を厳密に作るのではなく、
-// 各スタンドに視認用の座席グリッドを生成する。
-// ============================================================
-
-function createSeatGrid(stand, tier, span, colorHex) {
-  const g = getStandGeometry(stand, tier);
-  const countAcross = Math.floor(span / 1.2);
-  const countRows = Math.min(g.rows, 16);
-
-  const seatGeometry = new THREE.BoxGeometry(.34, .28, .36);
-  const material = new THREE.MeshStandardMaterial({
-    color: colorHex,
-    roughness: .75
-  });
-
-  const mesh = new THREE.InstancedMesh(
-    seatGeometry,
-    material,
-    countAcross * countRows
-  );
-
-  const dummy = new THREE.Object3D();
-  let index = 0;
-
-  for (let row = 0; row < countRows; row++) {
-    const rowRatio = row / Math.max(1, countRows - 1);
-
-    for (let col = 0; col < countAcross; col++) {
-      const along = -span / 2 + span * ((col + .5) / countAcross);
-      const pos = standPosition(stand, tier, along, rowRatio);
-
-      pos.y += .25;
-
-      dummy.position.copy(pos);
-
-      if (stand === "W") dummy.rotation.y = Math.PI / 2;
-      if (stand === "E") dummy.rotation.y = -Math.PI / 2;
-      if (stand === "S") dummy.rotation.y = 0;
-      if (stand === "N") dummy.rotation.y = Math.PI;
-
-      dummy.updateMatrix();
-      mesh.setMatrixAt(index++, dummy.matrix);
+// 画面の点から、いちばん手前でレイの近くにある座席を探す
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+const tmp = new THREE.Vector3();
+
+function pickSeat(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+
+  const hits = raycaster.intersectObjects(model.groups.hits.children, false);
+  if (!hits.length) return -1;
+
+  const ray = raycaster.ray;
+  const seats = model.seatPositions;
+  const seen = new Set();
+  let best = -1;
+  let bestT = Infinity;
+  let fallback = -1;
+  let fallbackD = Infinity;
+
+  for (const hit of hits) {
+    const block = hit.object.userData.block;
+    if (seen.has(block)) continue;
+    seen.add(block);
+
+    for (let i = block.seatStart; i < block.seatStart + block.seatCount; i++) {
+      const s = seats[i];
+      tmp.set(s.x, s.y + 0.5, s.z);
+      const d = ray.distanceToPoint(tmp);
+      const t = tmp.sub(ray.origin).dot(ray.direction);
+      if (d < 0.6 && t < bestT) {
+        best = i;
+        bestT = t;
+      }
+      if (d < fallbackD) {
+        fallback = i;
+        fallbackD = d;
+      }
     }
   }
 
-  groups.seats.add(mesh);
+  if (best >= 0) return best;
+  return fallbackD < 3 ? fallback : -1;
 }
-
-createSeatGrid("W", "lower", 134, "#dc7a30");
-createSeatGrid("E", "lower", 134, "#b72a54");
-createSeatGrid("S", "lower", 90, "#245f4a");
-createSeatGrid("N", "lower", 90, "#2267ad");
-
-createSeatGrid("E", "upper", 134, "#7f1f3d");
-createSeatGrid("S", "upper", 90, "#174533");
-createSeatGrid("N", "upper", 90, "#164b82");
 
 // ============================================================
-// UI
+// 選択の表示
 // ============================================================
 
-let selectedBlock = null;
-let selectedMesh = null;
-let mode = "overview";
-let yaw = 0;
-let pitch = 0;
+function paintSelection() {
+  const mesh = model.seatMesh;
+  const colors = mesh.instanceColor.array;
+  colors.set(baseColors);
 
-function standName(stand) {
-  return {
-    W: "メインスタンド（西）",
-    E: "バックスタンド（東）",
-    S: "南サイドスタンド",
-    N: "北サイドスタンド"
-  }[stand];
-}
-
-function blocksOf(stand, tier) {
-  return BLOCKS.filter(block =>
-    block.stand === stand &&
-    block.tier === tier
-  );
-}
-
-// Wには上層ブロックを登録していない。選べる層だけを選べるようにする。
-function syncTierOptions() {
-  const stand = $("stand").value;
-  const tierSelect = $("tier");
-
-  let available = null;
-
-  for (const option of tierSelect.options) {
-    const usable = blocksOf(stand, option.value).length > 0;
-    option.disabled = !usable;
-    if (usable && !available) available = option.value;
+  // ブロックの塗り分けは全体表示で場所を探すためのもの。座ったら本来の色に戻す
+  if (selectedBlock && mode === "overview") {
+    for (let i = selectedBlock.seatStart; i < selectedBlock.seatStart + selectedBlock.seatCount; i++) {
+      BLOCK_COLOR.toArray(colors, i * 3);
+    }
   }
+  if (selectedSeatIndex >= 0 && mode === "overview") SEAT_COLOR.toArray(colors, selectedSeatIndex * 3);
 
-  if (tierSelect.selectedOptions[0]?.disabled && available) {
-    tierSelect.value = available;
-  }
+  mesh.instanceColor.needsUpdate = true;
+  updateMarker();
 }
 
-function updateBlockOptions() {
-  const stand = $("stand").value;
-  const tier = $("tier").value;
+// 全体表示で選んだ席の場所が分かるように、席の上に目印を立てる
+const marker = new THREE.Mesh(
+  new THREE.ConeGeometry(0.9, 2.4, 16),
+  new THREE.MeshBasicMaterial({ color: SEAT_COLOR, depthTest: false, transparent: true, opacity: 0.95 })
+);
+marker.rotation.x = Math.PI;
+marker.renderOrder = 20;
+marker.visible = false;
+scene.add(marker);
+
+function updateMarker() {
+  if (selectedSeatIndex < 0) {
+    marker.visible = false;
+    return;
+  }
+  const s = model.seatPositions[selectedSeatIndex];
+  marker.position.set(s.x, s.y + 3.2, s.z);
+  marker.visible = mode === "overview";
+}
+
+// ============================================================
+// 操作パネル
+// ============================================================
+
+function sortBlocks(a, b) {
+  return Number(a.id.slice(1)) - Number(b.id.slice(1));
+}
+
+function fillBlockOptions() {
   const select = $("block");
+  select.textContent = "";
 
-  const filtered = blocksOf(stand, tier);
+  const order = [
+    ["W", "lower"], ["E", "lower"], ["E", "upper"],
+    ["N", "lower"], ["N", "upper"], ["S", "lower"], ["S", "upper"]
+  ];
 
-  select.innerHTML = "";
+  for (const [stand, tier] of order) {
+    const list = model.blocks
+      .filter(b => b.stand === stand && b.tier === tier)
+      .sort(sortBlocks);
+    if (!list.length) continue;
 
-  if (!filtered.length) {
+    const group = document.createElement("optgroup");
+    group.label = `${standName(stand)} ${TIER_NAME[tier]}`;
+    for (const b of list) {
+      const option = document.createElement("option");
+      option.value = b.id;
+      option.textContent = `${b.id}（${TIER_NAME[tier]}）`;
+      group.appendChild(option);
+    }
+    select.appendChild(group);
+  }
+}
+
+function fillRowOptions(block) {
+  const select = $("row");
+  select.textContent = "";
+  const rows = [...block.rows].sort((a, b) => a.n - b.n);
+  for (const r of rows) {
     const option = document.createElement("option");
-    option.textContent = "この層には登録ブロックがありません";
-    option.disabled = true;
-    option.selected = true;
+    option.value = String(r.n);
+    option.textContent = `${r.n}列`;
     select.appendChild(option);
+  }
+}
+
+function fillSeatOptions(row) {
+  const select = $("seat");
+  select.textContent = "";
+  for (const n of seatNumbers(row)) {
+    const option = document.createElement("option");
+    option.value = String(n);
+    option.textContent = `${n}番`;
+    select.appendChild(option);
+  }
+}
+
+// 列・席を指定しないときは、ブロックの中ほど（中央の列の中央の席）にする
+function middleSeat(block) {
+  const rows = [...block.rows].sort((a, b) => a.n - b.n);
+  const row = rows[Math.floor((rows.length - 1) / 2)];
+  const nums = seatNumbers(row);
+  return { row, seat: nums[Math.floor((nums.length - 1) / 2)] };
+}
+
+function select(block, rowN, seatN) {
+  selectedBlock = block;
+
+  if (rowN === undefined) {
+    const mid = middleSeat(block);
+    rowN = mid.row.n;
+    seatN = mid.seat;
+  }
+
+  selectedRow = rowOf(block, rowN) || middleSeat(block).row;
+  const nums = seatNumbers(selectedRow);
+  if (!nums.includes(seatN)) seatN = nums[Math.floor((nums.length - 1) / 2)];
+
+  $("block").value = block.id;
+  fillRowOptions(block);
+  $("row").value = String(selectedRow.n);
+  fillSeatOptions(selectedRow);
+  $("seat").value = String(seatN);
+
+  selectedSeatIndex = seatIndexOf(block, selectedRow.n, seatN);
+  paintSelection();
+  updateInfo();
+}
+
+// 着席視点のまま選び直したときは、その席へ座り直す
+function reseatIfSeated() {
+  // 選択欄を操作している最中なので、狭い画面でもパネルは畳まない（フォーカスが消える）
+  if (mode === "seat") viewFromSelectedSeat({ collapsePanel: false });
+}
+
+function currentSeat() {
+  return selectedSeatIndex >= 0 ? model.seatPositions[selectedSeatIndex] : null;
+}
+
+// 座席からピッチ（タッチライン・ゴールラインの内側）までの水平距離
+function distanceToPitch(x, z) {
+  const dx = Math.max(0, Math.abs(x) - 34);
+  const dz = Math.max(0, Math.abs(z) - 52.5);
+  return Math.hypot(dx, dz);
+}
+
+function seatLabel(s) {
+  return `${s.block.id} ${s.row}列 ${s.seat}番`;
+}
+
+function updateInfo() {
+  const s = currentSeat();
+  const info = $("info");
+
+  if (!s) {
+    info.innerHTML = "<strong>ブロックを選択してください</strong>";
     return;
   }
 
-  filtered.forEach(block => {
-    const option = document.createElement("option");
-    option.value = block.id;
-    option.textContent = block.id;
-    select.appendChild(option);
-  });
-}
+  const b = s.block;
+  const eye = s.y + EYE_HEIGHT;
+  const center = Math.hypot(s.x, s.z);
+  const pitchDist = distanceToPitch(s.x, s.z);
+  // ピッチ中央を見下ろす角度（目の高さから）
+  const down = THREE.MathUtils.radToDeg(Math.atan2(eye, center));
 
-function findBlock(id) {
-  return BLOCKS.find(block => block.id === id);
-}
+  const notes = [];
+  if (b.labelInferred) notes.push("ブロック名は座席図の並びから補っています。");
+  if (b.mirroredFrom) notes.push(`座席図に半分しか描かれていないため、${b.mirroredFrom} を左右反転して作っています。`);
+  if (b.tier === "upper" && b.segment.length === 2) notes.push("上層の角のブロックは、列番号がずれている可能性があります。");
 
-function updateSliderLabels() {
-  const row = Number($("row").value);
-  const seat = Number($("seat").value);
-
-  $("rowValue").textContent =
-    row < 25 ? "前方" :
-    row > 75 ? "後方" :
-    "中央";
-
-  $("seatValue").textContent =
-    seat < 25 ? "左寄り" :
-    seat > 75 ? "右寄り" :
-    "中央";
-}
-
-function updateInfo(block, position) {
-  if (!position) return;
-
-  const tierName =
-    block.tier === "lower"
-      ? "下層スタンド"
-      : "上層スタンド";
-
-  const g = getStandGeometry(block.stand, block.tier);
-
-  const center = new THREE.Vector3(0, 0, 0);
-  const distance = position.distanceTo(center).toFixed(1);
-
-  $("info").innerHTML = `
-    <strong>${standName(block.stand)} / ${block.id}</strong><br>
-    層：${tierName}<br>
-    ピッチ中央まで：約${distance}m<br>
-    視点床面高：約${position.y.toFixed(1)}m<br>
-    スタンド傾斜：約${g.slope}°<br>
-    <small>※列・席番号ではなくブロック内の概算位置です。</small>
+  info.innerHTML = `
+    <strong>${standName(b.stand)} ${TIER_NAME[b.tier]} / ${seatLabel(s)}</strong>
+    <dl>
+      <dt>ピッチ中央まで</dt><dd>約${center.toFixed(0)}m（水平）</dd>
+      <dt>いちばん近いラインまで</dt><dd>約${pitchDist.toFixed(0)}m</dd>
+      <dt>床の高さ</dt><dd>フィールド面から約${s.y.toFixed(1)}m</dd>
+      <dt>目の高さ</dt><dd>約${eye.toFixed(1)}m（着席）</dd>
+      <dt>ピッチ中央を見下ろす角度</dt><dd>約${down.toFixed(0)}°</dd>
+      <dt>このブロック</dt><dd>${b.rows.length}列・${b.seatCount}席</dd>
+    </dl>
+    ${notes.length ? `<p class="note">${notes.join("<br>")}</p>` : ""}
   `;
 }
 
-function selectBlock(block) {
-  if (selectedMesh) {
-    selectedMesh.material = selectedMesh.userData.baseMaterial;
+// ============================================================
+// 視点
+// ============================================================
+
+// ブロック名は遠くのスタンドを見分けるためのもの。着席視点で近くの札が出ると
+// 目の前をふさぐので、近い札だけ隠す
+const LABEL_HIDE_NEAR = 32;
+
+function updateLabelVisibility() {
+  for (const b of model.blocks) {
+    b.label.visible =
+      mode !== "seat" ||
+      b.label.position.distanceTo(camera.position) > LABEL_HIDE_NEAR;
   }
-
-  selectedBlock = block;
-
-  selectedMesh = blockMeshes.find(mesh =>
-    mesh.userData.block.id === block.id
-  );
-
-  if (selectedMesh) {
-    selectedMesh.material = selectedMaterial;
-  }
-
-  $("stand").value = block.stand;
-  syncTierOptions();
-  $("tier").value = block.tier;
-  updateBlockOptions();
-  $("block").value = block.id;
-}
-
-function getSelectedPosition() {
-  const block = selectedBlock || findBlock($("block").value);
-
-  if (!block) return null;
-
-  const layout = getBlockLayout(block);
-  const rowRatio = Number($("row").value) / 100;
-  const seatRatio = Number($("seat").value) / 100;
-
-  const along =
-    layout.along +
-    layout.segment * (seatRatio - .5) * .78;
-
-  const position = standPosition(
-    block.stand,
-    block.tier,
-    along,
-    rowRatio
-  );
-
-  position.y += DATA.assumed.eyeHeightAboveSeat;
-
-  return position;
-}
-
-function lookAtPitchCenter() {
-  if (mode !== "seat") return;
-
-  const target = new THREE.Vector3(0, 0.4, 0);
-  const direction = target.clone().sub(camera.position).normalize();
-
-  yaw = Math.atan2(direction.x, -direction.z);
-  pitch = Math.asin(direction.y);
-
-  updateSeatCameraDirection();
 }
 
 function updateSeatCameraDirection() {
@@ -1058,50 +446,58 @@ function updateSeatCameraDirection() {
   camera.lookAt(camera.position.clone().add(direction));
 }
 
-function viewFromSelectedSeat() {
-  const block = selectedBlock || findBlock($("block").value);
-  const position = getSelectedPosition();
+function lookAtPitchCenter() {
+  if (mode !== "seat") return;
 
-  if (!block || !position) {
-    $("status").textContent = "この層には登録ブロックがありません";
+  const target = new THREE.Vector3(0, 0, 0);
+  const direction = target.sub(camera.position).normalize();
+
+  yaw = Math.atan2(direction.x, -direction.z);
+  pitch = Math.asin(direction.y);
+
+  updateSeatCameraDirection();
+}
+
+function viewFromSelectedSeat({ collapsePanel = true } = {}) {
+  const s = currentSeat();
+  if (!s) {
+    $("status").textContent = "席を選んでください";
     return;
   }
 
-  selectBlock(block);
-
   controls.enabled = false;
   controls.enableDamping = false;
-  controls.update();
-
   mode = "seat";
+  marker.visible = false;
 
-  // ブロックの色板はスタンド全体を覆う1枚の箱で、選ぶための目印。
-  // 着席視点では段床と座席をふさいでしまうので、座ったら消す。
-  groups.blocks.visible = false;
-
-  camera.position.copy(position);
-  camera.fov = 66;
-  camera.updateProjectionMatrix();
+  // 目は座面の少し前、床から EYE_HEIGHT の高さ
+  camera.position.set(
+    s.x + s.front[0] * 0.08,
+    s.y + EYE_HEIGHT,
+    s.z + s.front[1] * 0.08
+  );
+  camera.fov = 62;
+  applyViewOffset();
+  scene.fog.near = 260;
+  scene.fog.far = 900;
 
   lookAtPitchCenter();
-  updateInfo(block, position);
+  updateLabelVisibility();
+  paintSelection();
 
-  $("status").textContent =
-    `${standName(block.stand)} / ${block.id}｜着席視点（概算）`;
-
+  $("status").textContent = `${standName(s.block.stand)} / ${seatLabel(s)}｜着席視点`;
   $("help").textContent = HELP.seat;
 
-  if (isNarrow()) setPanelCollapsed(true);
+  if (collapsePanel && isNarrow()) setPanelCollapsed(true);
 }
 
 function overview() {
   mode = "overview";
-  groups.blocks.visible = true;
   controls.enabled = true;
   controls.enableDamping = false;
 
-  camera.fov = 58;
-  camera.updateProjectionMatrix();
+  camera.fov = 55;
+  applyViewOffset();
 
   const distance = overviewDistance();
   applyOverviewRange(distance);
@@ -1115,32 +511,20 @@ function overview() {
   controls.update();
   controls.enableDamping = !prefersReducedMotion;
 
-  $("status").textContent =
-    selectedBlock
-      ? `全体表示｜選択中：${selectedBlock.id}`
-      : "全体表示｜ブロックを選択してください";
+  updateLabelVisibility();
+  paintSelection();
+
+  const s = currentSeat();
+  $("status").textContent = s
+    ? `全体表示｜選択中：${seatLabel(s)}`
+    : "全体表示｜ブロックを選択してください";
 
   $("help").textContent = HELP.overview;
 }
 
-$("stand").addEventListener("change", () => {
-  syncTierOptions();
-  updateBlockOptions();
-  selectedBlock = null;
-});
-
-$("tier").addEventListener("change", () => {
-  updateBlockOptions();
-  selectedBlock = null;
-});
-
-$("block").addEventListener("change", () => {
-  const block = findBlock($("block").value);
-  if (block) selectBlock(block);
-});
-
-$("row").addEventListener("input", updateSliderLabels);
-$("seat").addEventListener("input", updateSliderLabels);
+// ============================================================
+// 入力
+// ============================================================
 
 const panel = $("panel");
 const panelToggle = $("panelToggle");
@@ -1155,179 +539,148 @@ panelToggle.addEventListener("click", () => {
   setPanelCollapsed(!panel.classList.contains("is-collapsed"));
 });
 
-$("viewButton").addEventListener("click", viewFromSelectedSeat);
+$("block").addEventListener("change", () => {
+  const block = blocksById.get($("block").value);
+  if (!block) return;
+  select(block);
+  reseatIfSeated();
+});
+
+$("row").addEventListener("change", () => {
+  const row = rowOf(selectedBlock, Number($("row").value));
+  if (!row) return;
+  // 同じ席番号が新しい列にもあれば保つ。無ければ列の中央へ
+  select(selectedBlock, row.n, Number($("seat").value));
+  reseatIfSeated();
+});
+
+$("seat").addEventListener("change", () => {
+  select(selectedBlock, selectedRow.n, Number($("seat").value));
+  reseatIfSeated();
+});
+
+$("viewButton").addEventListener("click", () => viewFromSelectedSeat());
 $("overviewButton").addEventListener("click", overview);
 $("centerButton").addEventListener("click", lookAtPitchCenter);
 
-$("roofToggle").addEventListener("change", event => {
-  groups.roof.visible = event.target.checked;
-});
-
-$("seatToggle").addEventListener("change", event => {
-  groups.seats.visible = event.target.checked;
-});
-
-$("labelToggle").addEventListener("change", event => {
-  groups.labels.visible = event.target.checked;
-});
-
-$("structureToggle").addEventListener("change", event => {
-  groups.structure.visible = event.target.checked;
-});
-
-$("screenToggle").addEventListener("change", event => {
-  groups.screens.visible = event.target.checked;
-});
-
-// ============================================================
-// ブロック選択・マウス操作
-// ============================================================
-
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-const tooltip = $("tooltip");
-
-function getBlockHit(event) {
-  const rect = renderer.domElement.getBoundingClientRect();
-
-  pointer.x =
-    ((event.clientX - rect.left) / rect.width) * 2 - 1;
-
-  pointer.y =
-    -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-  raycaster.setFromCamera(pointer, camera);
-
-  return raycaster.intersectObjects(blockMeshes, false)[0];
+function bindToggle(id, apply) {
+  const input = $(id);
+  input.addEventListener("change", () => apply(input.checked));
+  apply(input.checked);
 }
 
+function bindToggles() {
+  const g = model.groups;
+  bindToggle("roofToggle", on => { g.roof.visible = on; });
+  bindToggle("seatToggle", on => { g.seats.visible = on; });
+  bindToggle("labelToggle", on => { g.labels.visible = on; });
+  bindToggle("buildingToggle", on => { g.building.visible = on; });
+  bindToggle("screenToggle", on => { g.screens.visible = on; });
+  bindToggle("playerToggle", on => { g.players.visible = on; });
+}
+
+const tooltip = $("tooltip");
 let drag = null;
 
-renderer.domElement.addEventListener("pointerdown", event => {
-  if (event.button !== 0) return;
+function bindPointer() {
+  const el = renderer.domElement;
 
-  drag = {
-    id: event.pointerId,
-    startX: event.clientX,
-    startY: event.clientY,
-    lastX: event.clientX,
-    lastY: event.clientY,
-    moved: false
-  };
+  el.addEventListener("pointerdown", event => {
+    if (event.button !== 0) return;
+    drag = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      moved: false
+    };
+    el.setPointerCapture(event.pointerId);
+  });
 
-  renderer.domElement.setPointerCapture(event.pointerId);
-});
-
-renderer.domElement.addEventListener("pointermove", event => {
-  if (drag && drag.id === event.pointerId) {
-    const dx = event.clientX - drag.lastX;
-    const dy = event.clientY - drag.lastY;
-
-    if (
-      Math.hypot(
-        event.clientX - drag.startX,
-        event.clientY - drag.startY
-      ) > 5
-    ) {
-      drag.moved = true;
+  el.addEventListener("pointermove", event => {
+    if (drag && drag.id === event.pointerId) {
+      const dx = event.clientX - drag.lastX;
+      const dy = event.clientY - drag.lastY;
+      if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) > 5) {
+        drag.moved = true;
+      }
+      if (mode === "seat") {
+        yaw -= dx * 0.004;
+        pitch = THREE.MathUtils.clamp(pitch + dy * 0.004, -Math.PI * 0.46, Math.PI * 0.46);
+        updateSeatCameraDirection();
+      }
+      drag.lastX = event.clientX;
+      drag.lastY = event.clientY;
+      tooltip.style.display = "none";
+      return;
     }
 
-    if (mode === "seat") {
-      yaw -= dx * 0.004;
-      pitch = THREE.MathUtils.clamp(
-        pitch + dy * 0.004,
-        -Math.PI * .46,
-        Math.PI * .46
-      );
+    if (mode !== "overview" || isTouch) return;
 
-      updateSeatCameraDirection();
+    const index = pickSeat(event);
+    if (index >= 0) {
+      el.style.cursor = "pointer";
+      tooltip.style.display = "block";
+      tooltip.textContent = `${seatLabel(model.seatPositions[index])}（${standName(model.seatPositions[index].block.stand)}）`;
+      tooltip.style.left = Math.min(event.clientX + 12, window.innerWidth - 240) + "px";
+      tooltip.style.top = event.clientY + 12 + "px";
+    } else {
+      el.style.cursor = "default";
+      tooltip.style.display = "none";
     }
+  });
 
-    drag.lastX = event.clientX;
-    drag.lastY = event.clientY;
+  el.addEventListener("pointerup", event => {
+    if (!drag || drag.id !== event.pointerId) return;
+    const shouldSelect = !drag.moved && mode === "overview";
+    drag = null;
+    if (!shouldSelect) return;
+
+    const index = pickSeat(event);
+    if (index < 0) return;
+    const s = model.seatPositions[index];
+    select(s.block, s.row, s.seat);
+    $("status").textContent = `${seatLabel(s)} を選択（「この席から見る」で着席視点へ）`;
+  });
+
+  el.addEventListener("pointerleave", () => {
     tooltip.style.display = "none";
+  });
+
+  el.addEventListener("wheel", event => {
+    if (mode !== "seat") return;
+    event.preventDefault();
+    camera.fov = THREE.MathUtils.clamp(camera.fov + event.deltaY * 0.035, 30, 90);
+    camera.updateProjectionMatrix();
+  }, { passive: false });
+}
+
+window.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    overview();
     return;
   }
 
-  if (mode !== "overview") return;
-
-  const hit = getBlockHit(event);
-
-  if (hit) {
-    const block = hit.object.userData.block;
-    renderer.domElement.style.cursor = "pointer";
-
-    tooltip.style.display = "block";
-    tooltip.textContent =
-      `${block.id} / ${standName(block.stand)}`;
-
-    tooltip.style.left =
-      Math.min(event.clientX + 12, window.innerWidth - 220) + "px";
-
-    tooltip.style.top = event.clientY + 12 + "px";
-  } else {
-    renderer.domElement.style.cursor = "default";
-    tooltip.style.display = "none";
-  }
-});
-
-renderer.domElement.addEventListener("pointerup", event => {
-  if (!drag || drag.id !== event.pointerId) return;
-
-  const shouldSelect =
-    !drag.moved &&
-    mode === "overview";
-
-  drag = null;
-
-  if (!shouldSelect) return;
-
-  const hit = getBlockHit(event);
-
-  if (hit) {
-    const block = hit.object.userData.block;
-    selectBlock(block);
-
-    const pos = getSelectedPosition();
-    updateInfo(block, pos);
-
-    $("status").textContent =
-      `${standName(block.stand)} / ${block.id} を選択`;
-  }
-});
-
-renderer.domElement.addEventListener("pointerleave", () => {
-  tooltip.style.display = "none";
-});
-
-renderer.domElement.addEventListener("wheel", event => {
+  // 着席視点では矢印キーで見回せるようにする（選択欄を操作中は選択欄に任せる）
   if (mode !== "seat") return;
+  const tag = document.activeElement && document.activeElement.tagName;
+  if (tag === "SELECT" || tag === "INPUT") return;
+
+  const step = 0.06;
+  if (event.key === "ArrowLeft") yaw -= step;
+  else if (event.key === "ArrowRight") yaw += step;
+  else if (event.key === "ArrowUp") pitch = Math.min(pitch + step, Math.PI * 0.46);
+  else if (event.key === "ArrowDown") pitch = Math.max(pitch - step, -Math.PI * 0.46);
+  else return;
 
   event.preventDefault();
-
-  camera.fov = THREE.MathUtils.clamp(
-    camera.fov + event.deltaY * .035,
-    35,
-    90
-  );
-
-  camera.updateProjectionMatrix();
-}, { passive: false });
-
-window.addEventListener("keydown", event => {
-  if (event.key === "Escape") overview();
+  updateSeatCameraDirection();
 });
 
 window.addEventListener("resize", () => {
-  camera.aspect =
-    window.innerWidth / window.innerHeight;
-
-  camera.updateProjectionMatrix();
-
-  renderer.setSize(
-    window.innerWidth,
-    window.innerHeight
-  );
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  applyViewOffset();
 
   if (mode !== "overview") return;
 
@@ -1347,17 +700,70 @@ window.addEventListener("resize", () => {
 // 起動
 // ============================================================
 
-syncTierOptions();
-updateBlockOptions();
-updateSliderLabels();
-setPanelCollapsed(isNarrow());
-overview();
-clearBoot();
+// URLの #E30-12-5 で、その席を選んだ状態から始める（共有・確認用）
+function seatFromHash() {
+  const m = /^#([WENS]\d{1,2})(?:-(\d{1,2})(?:-(\d{1,3}))?)?$/.exec(location.hash);
+  if (!m) return null;
+  const block = blocksById.get(m[1]);
+  if (!block) return null;
+  return {
+    block,
+    row: m[2] === undefined ? undefined : Number(m[2]),
+    seat: m[3] === undefined ? undefined : Number(m[3])
+  };
+}
 
-renderer.setAnimationLoop(() => {
-  if (mode === "overview") {
-    controls.update();
+async function start() {
+  let layout;
+  try {
+    const response = await fetch("layout.json");
+    if (!response.ok) throw new Error(String(response.status));
+    layout = await response.json();
+  } catch (error) {
+    showBootError(
+      "座席データ（layout.json）を読み込めませんでした。" +
+      "ファイルを直接開いた場合は、HTTPサーバー経由で開いてください。"
+    );
+    throw error;
   }
 
-  renderer.render(scene, camera);
-});
+  model = buildStadium(scene, layout);
+  blocksById = new Map(model.blocks.map(b => [b.id, b]));
+  baseColors = model.seatMesh.instanceColor.array.slice();
+
+  // 全体表示で入れる半径（外周の壁の角まで）
+  overviewRadius = Math.max(
+    ...layout.outline.outerUpper.map(p => Math.hypot(p[0], p[1]))
+  ) + 6;
+
+  fillBlockOptions();
+  bindToggles();
+  bindPointer();
+
+  const fromHash = seatFromHash();
+  if (fromHash) {
+    select(fromHash.block, fromHash.row, fromHash.seat);
+  } else {
+    select(blocksById.get("E30") || model.blocks[0]);
+  }
+
+  setPanelCollapsed(isNarrow());
+  overview();
+  if (fromHash && fromHash.seat !== undefined) viewFromSelectedSeat();
+  clearBoot();
+
+  window.addEventListener("hashchange", () => {
+    const next = seatFromHash();
+    if (!next) return;
+    select(next.block, next.row, next.seat);
+    if (next.seat !== undefined) viewFromSelectedSeat();
+    else overview();
+  });
+
+  renderer.setAnimationLoop(() => {
+    if (mode === "overview") controls.update();
+    renderer.render(scene, camera);
+  });
+}
+
+start();

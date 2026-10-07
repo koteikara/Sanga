@@ -1,2 +1,5 @@
 tmp/
 node_modules/
+
+# Python のバイトコード（experiments/stadium-3d/extract などの実行で生まれる）
+__pycache__/
