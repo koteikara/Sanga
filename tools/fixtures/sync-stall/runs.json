@@ -1,0 +1,8 @@
+[
+  { "databaseId": 5000, "status": "in_progress", "conclusion": null, "createdAt": "2030-07-06T13:00:00Z", "url": "https://github.com/example/repo/actions/runs/5000" },
+  { "databaseId": 4999, "status": "completed", "conclusion": "failure", "createdAt": "2030-07-05T13:00:00Z", "url": "https://github.com/example/repo/actions/runs/4999" },
+  { "databaseId": 4998, "status": "completed", "conclusion": "cancelled", "createdAt": "2030-07-04T13:30:00Z", "url": "https://github.com/example/repo/actions/runs/4998" },
+  { "databaseId": 4997, "status": "completed", "conclusion": "failure", "createdAt": "2030-07-04T13:00:00Z", "url": "https://github.com/example/repo/actions/runs/4997" },
+  { "databaseId": 4996, "status": "completed", "conclusion": "success", "createdAt": "2030-07-03T13:00:00Z", "url": "https://github.com/example/repo/actions/runs/4996" },
+  { "databaseId": 4995, "status": "completed", "conclusion": "failure", "createdAt": "2030-07-02T13:00:00Z", "url": "https://github.com/example/repo/actions/runs/4995" }
+]
