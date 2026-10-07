@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=1847ff55";
+  var EVENTS_URL = "data/calendar-events.json?v=b314468a";
   var MATCHES_URL = "data/matches.json?v=63bd7fcb";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
