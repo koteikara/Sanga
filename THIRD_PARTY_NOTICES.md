@@ -1,6 +1,6 @@
 # Third-party notices
 
-確認基準日: 2026-08-21
+確認基準日: 2026-08-21（three.js は2026-09-10、PyMuPDF は2026-10-07に追記）
 
 この文書は、リポジトリで利用する第三者製ソフトウェアと、そのライセンス表示の所在を記録します。公式サイト由来の画像・データ等は `docs/source-and-license.md` を参照してください。
 
@@ -50,6 +50,47 @@
 - `public/experiments/image-generation/prototype.js`: 同じ検証用コードを配置する。
 
 パッケージ本体はリポジトリへ同梱していません。バージョンを変更するときは、上流のライセンスと配布内容を再確認します。
+
+## three.js
+
+| 項目 | 内容 |
+| --- | --- |
+| パッケージ | `three` |
+| バージョン | 0.170.0 |
+| 著作権表示 | Copyright © 2010-2024 three.js authors |
+| ライセンス | MIT License |
+| 上流 | https://github.com/mrdoob/three.js |
+| npm | https://www.npmjs.com/package/three/v/0.170.0 |
+| 確認日 | 2026-09-10（npmパッケージ同梱の `LICENSE` で確認） |
+
+利用箇所:
+
+- `experiments/stadium-3d/prototype.html`: importmapで `https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js` と `https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/` を固定バージョンで読み込む。
+- `experiments/stadium-3d/prototype.js`: `three` と `three/addons/controls/OrbitControls.js` を読み込む。
+- `experiments/stadium-3d/stadium-model.js`: `three` と `three/addons/utils/BufferGeometryUtils.js` を読み込む。
+
+パッケージ本体はリポジトリへ同梱していません。検証用プロトタイプでのみ使い、公開物（`public/`）からは読み込みません。バージョンを変更するときは、上流のライセンスと配布内容を再確認します。
+
+## PyMuPDF（同梱しない開発用ツール）
+
+| 項目 | 内容 |
+| --- | --- |
+| パッケージ | `pymupdf`（PyPI） |
+| 確認したバージョン | 1.28.2 |
+| ライセンス | GNU AGPL v3.0、またはArtifexの商用ライセンス |
+| 上流 | https://github.com/pymupdf/PyMuPDF |
+| 確認日 | 2026-10-07 |
+
+利用箇所:
+
+- `experiments/stadium-3d/extract/build_layout.py`、`experiments/stadium-3d/extract/seatpages.py`: 座席図のPDFから
+  図形を読むために `import pymupdf` する。座席データ `experiments/stadium-3d/layout.json` を作り直すときだけ、
+  作業者が手元の仮想環境に入れて実行する。
+
+リポジトリには同梱せず、`package.json` の依存にもしていません。画面（`prototype.html`）や検証コマンドからは
+使いません。生成物の `layout.json` はPyMuPDFのコードを含みません。AGPLの条件が関わるのは、PyMuPDFを組み込んだ
+ものを配布・提供する場合です。このスクリプトをPyMuPDFと一緒に配布したり、サーバーで提供したりする場合は、
+その時点で条件を確認します。
 
 ## フォント
 

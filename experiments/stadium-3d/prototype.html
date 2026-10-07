@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>サンガスタジアム 座席ビュー（プロトタイプ）</title>
+<link rel="stylesheet" href="prototype.css">
+
+<!--
+  three.jsはCDNから固定バージョンで読む。プロトタイプ段階のため同梱しない。
+  ライセンスと利用箇所は THIRD_PARTY_NOTICES.md を正とする。
+  座席データ layout.json を fetch するため、ファイルを直接開くのではなくHTTP経由で開く。
+-->
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+
+<body>
+<main id="app"></main>
+
+<aside class="panel" id="panel">
+  <div class="panel-head">
+    <div>
+      <p class="kicker">SANGA STADIUM BY KYOCERA · 3D SEAT VIEW</p>
+      <h1>サンガスタジアム<br>座席からの見え方</h1>
+    </div>
+
+    <!-- 狭い画面ではパネルが3Dを覆う。畳んで見られるようにする -->
+    <button type="button" id="panelToggle" class="panel-toggle"
+            aria-expanded="true" aria-controls="panelBody">閉じる</button>
+  </div>
+
+  <div class="panel-body" id="panelBody">
+  <p class="intro">
+    ブロック・列・席番号を選ぶと、その席に座ったときの目の高さから見られます。
+    全体表示で座席を直接クリック（タップ）して選ぶこともできます。
+  </p>
+
+  <div class="field">
+    <label for="block">ブロック</label>
+    <select id="block"></select>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="row">列</label>
+      <select id="row"></select>
+    </div>
+
+    <div class="field">
+      <label for="seat">席番号</label>
+      <select id="seat"></select>
+    </div>
+  </div>
+
+  <button type="button" id="viewButton">この席から見る</button>
+  <button type="button" id="overviewButton" class="secondary">全体表示へ戻る</button>
+  <button type="button" id="centerButton" class="secondary">ピッチ中央へ向き直す</button>
+
+  <div class="toggles">
+    <label class="toggle"><input id="roofToggle" type="checkbox" checked> 屋根</label>
+    <label class="toggle"><input id="seatToggle" type="checkbox" checked> 座席</label>
+    <label class="toggle"><input id="labelToggle" type="checkbox" checked> ブロック名</label>
+    <label class="toggle"><input id="buildingToggle" type="checkbox" checked> 建物・外壁</label>
+    <label class="toggle"><input id="screenToggle" type="checkbox" checked> 大型映像（推定）</label>
+    <label class="toggle"><input id="playerToggle" type="checkbox" checked> 選手（大きさの目安）</label>
+  </div>
+
+  <div class="info" id="info">
+    <strong>ブロックを選択してください</strong>
+  </div>
+
+  <p class="warning">
+    座席の並び・列・席番号は公式の座席図から、段の傾斜・ピッチまでの距離は京都府の公開資料から
+    起こしています。段の高さ、屋根の高さ、大型映像装置の位置は推定です。
+    手すりや前の観客による遮り、照明・天候の影響は再現していません。
+  </p>
+  </div>
+</aside>
+
+<p id="status" role="status">全体表示｜ブロックを選択してください</p>
+<p id="help">ドラッグ：回転 ／ ホイール：拡大 ／ 座席をクリック：選択</p>
+<div id="tooltip" aria-hidden="true"></div>
+
+<div id="boot" class="boot">
+  <p id="bootMessage">3Dを読み込んでいます…</p>
+</div>
+
+<!--
+  読み込み失敗の受け皿。prototype.js はモジュールなので、CDNへ到達できない環境や
+  WebGLが無い環境では実行そのものが始まらず、画面が無言で空になる。
+  ここだけは通常スクリプトで置き、一定時間たっても起動しなければ理由を出す。
+-->
+<script>
+  window.__stadiumBootTimer = setTimeout(function () {
+    var message = document.getElementById("bootMessage");
+    if (!message) return;
+    message.textContent =
+      "3Dを読み込めませんでした。CDN（cdn.jsdelivr.net）へ到達できない環境か、" +
+      "WebGLを使えない環境の可能性があります。";
+  }, 8000);
+</script>
+
+<script type="module" src="prototype.js"></script>
+</body>
+</html>
