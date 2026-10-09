@@ -8,9 +8,12 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
   EYE_HEIGHT,
   buildStadium,
+  buildSurroundings,
   seatNumbers,
   standName
 } from "./stadium-model.js";
+import { C_LEVELS, buildSpectators, cLevel, computeSightlines } from "./sightlines.js";
+import { bearingName, createLighting, jstDate, sunDirection, sunPosition } from "./sun.js";
 
 const $ = id => document.getElementById(id);
 
@@ -55,14 +58,14 @@ const SEAT_COLOR = new THREE.Color("#ffd158");
 // ============================================================
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color("#a9c0d2");
-scene.fog = new THREE.Fog("#a9c0d2", 200, 420);
+scene.background = new THREE.Color("#c9d8e4");
+scene.fog = new THREE.Fog("#c9d8e4", 600, 6500);
 
 const camera = new THREE.PerspectiveCamera(
   55,
   window.innerWidth / window.innerHeight,
-  0.08,
-  1200
+  0.2,
+  6000
 );
 
 let renderer;
@@ -124,6 +127,13 @@ let selectedBlock = null;
 let selectedRow = null;
 let selectedSeatIndex = -1;
 let baseColors = null;
+let cColors = null;        // 見やすさ（C値）で塗るときの色
+let colorByC = false;
+let crowd = null;
+let crowdOn = true;
+let lighting = null;
+let homeMatches = [];      // サンガスタジアムでの試合（日程データから）
+let sunState = null;       // いま表示している日時の太陽 { date, label, azimuth, elevation, dir }
 
 // 着席視点の向き
 let yaw = 0;
@@ -165,8 +175,9 @@ function overviewDistance() {
 
 // 霧は距離に合わせて動かす。固定のままだと、引いたときに全体が霧へ沈む。
 function applyOverviewRange(distance) {
-  scene.fog.near = distance * 0.7;
-  scene.fog.far = distance * 2.2;
+  // 霧は周りの山をかすませる程度。スタジアム自体はかすませない
+  scene.fog.near = Math.max(600, distance * 2);
+  scene.fog.far = 6500;
   controls.maxDistance = distance * 1.4;
 }
 
@@ -240,7 +251,7 @@ function pickSeat(event) {
 function paintSelection() {
   const mesh = model.seatMesh;
   const colors = mesh.instanceColor.array;
-  colors.set(baseColors);
+  colors.set(colorByC ? cColors : baseColors);
 
   // ブロックの塗り分けは全体表示で場所を探すためのもの。座ったら本来の色に戻す
   if (selectedBlock && mode === "overview") {
@@ -385,6 +396,136 @@ function seatLabel(s) {
   return `${s.block.id} ${s.row}列 ${s.seat}番`;
 }
 
+// ============================================================
+// 日差し（試合の日時の太陽）
+// ============================================================
+
+const PHASES = [
+  { key: "kickoff", label: "キックオフ", minutes: 0 },
+  { key: "half", label: "前半終了ごろ", minutes: 47 },
+  { key: "end", label: "試合終了ごろ", minutes: 110 }
+];
+
+const sunRay = new THREE.Raycaster();
+
+// 席の目の高さから太陽へ向けた線が、屋根・建物・スタンドに当たるか（ガラス屋根は光を通す）
+function inSun(seat, dir) {
+  const origin = new THREE.Vector3(seat.x, seat.y + EYE_HEIGHT, seat.z);
+  sunRay.set(origin, dir);
+  sunRay.far = 400;
+  const g = model.groups;
+  // 焼き付け版（?baked）で隠した元の部品も、形は同じなので判定には使う
+  const blockers = [g.roof, g.building, g.terraces, g.screens]
+    .flatMap(group => group.children)
+    .filter(o => o.isMesh && !o.userData.glass && (o.visible !== false || o.userData.replacedByBake));
+  return sunRay.intersectObjects(blockers, true).length === 0;
+}
+
+function sunAt(date) {
+  const pos = sunPosition(date);
+  return { ...pos, dir: sunDirection(pos) };
+}
+
+function sunWord(seat, sun) {
+  if (sun.elevation <= 0) return "日没後";
+  return inSun(seat, sun.dir) ? "日なた" : "日陰";
+}
+
+function sunRows(seat) {
+  if (!sunState) return "";
+  const m = sunState.match;
+  const parts = PHASES.map(p => {
+    const sun = sunAt(jstDate(m.match_date, m.kickoff_time, p.minutes));
+    return `${p.label} ${sunWord(seat, sun)}`;
+  });
+  const now = sunState.elevation > 0
+    ? `太陽は${bearingName(sunState.azimuth)}・高度${Math.round(sunState.elevation)}°`
+    : "日没後（照明）";
+  return `<dt>日差し（${m.match_date.slice(5).replace("-", "/")} ${m.kickoff_time}）</dt>
+      <dd>${parts.join(" ／ ")}<br><small>${sunState.label}：${now}</small></dd>`;
+}
+
+function matchLabel(m) {
+  const [y, mo, d] = m.match_date.split("-").map(Number);
+  const week = "日月火水木金土"[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
+  return `${m.match_date.slice(5).replace("-", "/")}（${week}）${m.kickoff_time} ${m.competition_label || ""} ${m.round || ""} vs ${m.opponent}`;
+}
+
+async function loadMatches() {
+  // GitHub Pages では public/ がサイトの根元、手元のサーバーではリポジトリの根元から配る。
+  // 先に当たりそうな方から読み、見つからない側への読み込み（404）を出さない
+  const pages = "../../data/matches.json";
+  const local = "../../public/data/matches.json";
+  const order = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ? [local, pages] : [pages, local];
+  for (const url of order) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      return (data.matches || []).filter(m =>
+        m.is_visible !== false &&
+        /サンガスタジアム|京都府立京都スタジアム/.test(m.venue || "") &&
+        /^\d{4}-\d{2}-\d{2}$/.test(m.match_date || "") &&
+        /^\d{1,2}:\d{2}$/.test(m.kickoff_time || "")
+      ).sort((a, b) => (a.match_date + a.kickoff_time).localeCompare(b.match_date + b.kickoff_time));
+    } catch {
+      // 次の場所を試す
+    }
+  }
+  return [];
+}
+
+function fillMatchOptions() {
+  const select = $("matchSelect");
+  select.textContent = "";
+  const none = document.createElement("option");
+  none.value = "";
+  none.textContent = homeMatches.length ? "標準の光（日時を選ばない）" : "日程データを読み込めませんでした";
+  select.appendChild(none);
+  homeMatches.forEach((m, i) => {
+    const o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = matchLabel(m);
+    select.appendChild(o);
+  });
+  for (const p of PHASES) {
+    const o = document.createElement("option");
+    o.value = p.key;
+    o.textContent = `${p.label}（${p.minutes ? `${p.minutes}分後` : "開始時"}）`;
+    $("phaseSelect").appendChild(o);
+  }
+  $("phaseSelect").disabled = true;
+}
+
+function applySun() {
+  const idx = $("matchSelect").value;
+  if (idx === "") {
+    sunState = null;
+    lighting.reset();
+    $("phaseSelect").disabled = true;
+  } else {
+    const m = homeMatches[Number(idx)];
+    const phase = PHASES.find(p => p.key === $("phaseSelect").value) || PHASES[0];
+    const sun = sunAt(jstDate(m.match_date, m.kickoff_time, phase.minutes));
+    sunState = { match: m, label: phase.label, ...sun };
+    lighting.apply(sun);
+    $("phaseSelect").disabled = false;
+  }
+  if (mode === "seat") {
+    scene.fog.near = 600;
+    scene.fog.far = 6500;
+  }
+  updateInfo();
+}
+
+// C値の表示。最前列は前の人の代わりに前の壁を越えて見る
+function cText(s) {
+  const level = cLevel(s.c);
+  const mm = Math.round(s.c * 1000);
+  const ref = s.cRef === "wall" ? "（最前列。前の壁の上を通る）" : "";
+  return `約${mm}mm・${level.label}${ref}`;
+}
+
 function updateInfo() {
   const s = currentSeat();
   const info = $("info");
@@ -404,7 +545,8 @@ function updateInfo() {
   const notes = [];
   if (b.labelInferred) notes.push("ブロック名は座席図の並びから補っています。");
   if (b.mirroredFrom) notes.push(`座席図に半分しか描かれていないため、${b.mirroredFrom} を左右反転して作っています。`);
-  if (b.tier === "upper" && b.segment.length === 2) notes.push("上層の角のブロックは、列番号がずれている可能性があります。");
+  if (b.rowNumbers === "count") notes.push("このブロックは座席図に列番号が読める形で印刷されていないため、列番号は前から数えたものです。");
+  if (b.seatNumbers === "count") notes.push("このブロックの席番号は、座席図の印刷ではなく端から数えたものです。");
 
   info.innerHTML = `
     <strong>${standName(b.stand)} ${TIER_NAME[b.tier]} / ${seatLabel(s)}</strong>
@@ -414,6 +556,8 @@ function updateInfo() {
       <dt>床の高さ</dt><dd>フィールド面から約${s.y.toFixed(1)}m</dd>
       <dt>目の高さ</dt><dd>約${eye.toFixed(1)}m（着席）</dd>
       <dt>ピッチ中央を見下ろす角度</dt><dd>約${down.toFixed(0)}°</dd>
+      <dt>見やすさ（C値）</dt><dd>${cText(s)}</dd>
+      ${sunRows(s)}
       <dt>このブロック</dt><dd>${b.rows.length}列・${b.seatCount}席</dd>
     </dl>
     ${notes.length ? `<p class="note">${notes.join("<br>")}</p>` : ""}
@@ -478,12 +622,13 @@ function viewFromSelectedSeat({ collapsePanel = true } = {}) {
   );
   camera.fov = 62;
   applyViewOffset();
-  scene.fog.near = 260;
-  scene.fog.far = 900;
+  scene.fog.near = 600;
+  scene.fog.far = 6500;
 
   lookAtPitchCenter();
   updateLabelVisibility();
   paintSelection();
+  if (crowdOn) crowd.update(camera, selectedSeatIndex);
 
   $("status").textContent = `${standName(s.block.stand)} / ${seatLabel(s)}｜着席視点`;
   $("help").textContent = HELP.seat;
@@ -513,6 +658,7 @@ function overview() {
 
   updateLabelVisibility();
   paintSelection();
+  crowd.clear();
 
   const s = currentSeat();
   $("status").textContent = s
@@ -577,6 +723,16 @@ function bindToggles() {
   bindToggle("buildingToggle", on => { g.building.visible = on; });
   bindToggle("screenToggle", on => { g.screens.visible = on; });
   bindToggle("playerToggle", on => { g.players.visible = on; });
+  bindToggle("cToggle", on => {
+    colorByC = on;
+    $("legend").hidden = !on;
+    paintSelection();
+  });
+  bindToggle("crowdToggle", on => {
+    crowdOn = on;
+    if (on && mode === "seat") crowd.update(camera, selectedSeatIndex);
+    else crowd.clear();
+  });
 }
 
 const tooltip = $("tooltip");
@@ -700,6 +856,70 @@ window.addEventListener("resize", () => {
 // 起動
 // ============================================================
 
+// ============================================================
+// 焼き付け版（?baked）
+// ============================================================
+
+// Blender で陰影を焼き付けた部品（bake/bake_ao.py で作る baked/stadium-baked.glb）に差し替える。
+// GLB の部品名と、差し替えるブラウザ版の部品（グループと並び順）の対応
+const BAKED_PARTS = {
+  "stands-lower": ["terraces", 0], "stands-upper": ["terraces", 1], "terraces-2": ["terraces", 2],
+  "roof-0": ["roof", 0], "building-0": ["building", 0],
+  "field-1": ["field", 1], "field-2": ["field", 2], "field-3": ["field", 3]
+};
+
+async function loadBaked() {
+  const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js");
+  // 形は meshopt で圧縮してある（bake/README の手順）。解くのは three.js 同梱のデコーダー
+  const { MeshoptDecoder } = await import("three/addons/libs/meshopt_decoder.module.js");
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+  const gltf = await loader.loadAsync("baked/stadium-baked.glb");
+  const g = model.groups;
+  // 差し替える元の部品（並び順で決まる）を先に控えておく
+  const originals = Object.fromEntries(
+    Object.entries(BAKED_PARTS).map(([name, [group, index]]) => [name, g[group].children[index]])
+  );
+  let replaced = 0;
+  gltf.scene.updateMatrixWorld(true);
+  gltf.scene.traverse(obj => {
+    if (!obj.isMesh || !BAKED_PARTS[obj.name]) return;
+    const original = originals[obj.name];
+    const [group] = BAKED_PARTS[obj.name];
+    obj.castShadow = true;
+    obj.receiveShadow = true;
+    if (original) {
+      original.visible = false;
+      original.userData.replacedByBake = true;
+    }
+    replaced++;
+  });
+  // グループに入れて、表示の切り替え（屋根・建物）にそのまま従わせる
+  for (const name of Object.keys(BAKED_PARTS)) {
+    const obj = gltf.scene.getObjectByName(name);
+    if (!obj) continue;
+    obj.removeFromParent();
+    obj.matrixAutoUpdate = true;
+    g[BAKED_PARTS[name][0]].add(obj);
+  }
+  return replaced;
+}
+
+// 見やすさの凡例。色と一緒に言葉と数値の範囲を出す
+function fillLegend() {
+  const list = $("legendList");
+  list.textContent = "";
+  const counts = new Map(C_LEVELS.map(l => [l.key, 0]));
+  for (const seat of model.seatPositions) counts.set(cLevel(seat.c).key, counts.get(cLevel(seat.c).key) + 1);
+  for (const l of C_LEVELS) {
+    const li = document.createElement("li");
+    const sw = document.createElement("span");
+    sw.className = "swatch";
+    sw.style.background = l.color;
+    li.append(sw, `${l.label}（${l.range}）${counts.get(l.key).toLocaleString()}席`);
+    list.appendChild(li);
+  }
+}
+
 // URLの #E30-12-5 で、その席を選んだ状態から始める（共有・確認用）
 function seatFromHash() {
   const m = /^#([WENS]\d{1,2})(?:-(\d{1,2})(?:-(\d{1,3}))?)?$/.exec(location.hash);
@@ -728,13 +948,45 @@ async function start() {
   }
 
   model = buildStadium(scene, layout);
+  const surroundings = buildSurroundings(scene);
+  if (new URLSearchParams(location.search).has("baked")) {
+    try {
+      const n = await loadBaked();
+      console.info(`焼き付け版の部品 ${n} 個に差し替えた`);
+    } catch (error) {
+      console.warn("焼き付け版を読み込めなかったので、通常のモデルで表示する", error);
+    }
+  }
   blocksById = new Map(model.blocks.map(b => [b.id, b]));
   baseColors = model.seatMesh.instanceColor.array.slice();
+
+  // 見やすさ（C値）と、その色
+  computeSightlines(layout, model);
+  cColors = new Float32Array(baseColors.length);
+  const levelColor = new Map(C_LEVELS.map(l => [l.key, new THREE.Color(l.color)]));
+  model.seatPositions.forEach((seat, i) => levelColor.get(cLevel(seat.c).key).toArray(cColors, i * 3));
+  fillLegend();
+
+  const crowdGroup = new THREE.Group();
+  scene.add(crowdGroup);
+  crowd = buildSpectators(crowdGroup, model.seatPositions);
+
+  // 試合の日時の日差し
+  lighting = createLighting(scene, hemi, sun, model.roof.lamps, surroundings.sky);
+  homeMatches = await loadMatches();
+  fillMatchOptions();
+  $("matchSelect").addEventListener("change", applySun);
+  $("phaseSelect").addEventListener("change", applySun);
 
   // 全体表示で入れる半径（外周の壁の角まで）
   overviewRadius = Math.max(
     ...layout.outline.outerUpper.map(p => Math.hypot(p[0], p[1]))
   ) + 6;
+
+  // 確認用: URL に ?debug を付けたときだけ、ブラウザの開発者ツールから中身を触れるようにする
+  if (new URLSearchParams(location.search).has("debug")) {
+    window.__stadium = { THREE, scene, camera, renderer, model, sun, hemi };
+  }
 
   fillBlockOptions();
   bindToggles();

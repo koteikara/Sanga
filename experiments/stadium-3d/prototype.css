@@ -185,6 +185,39 @@ button.secondary {
   outline-offset: 2px;
 }
 
+.legend {
+  margin-top: 12px;
+  padding: 10px 11px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .065);
+  color: #ddd4eb;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.legend p { margin: 0 0 6px; }
+
+.legend ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 3px;
+}
+
+.legend .swatch {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: 3px;
+}
+
 .info {
   margin-top: 15px;
   padding: 11px;

@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-10-07
+updated: 2026-10-09
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -20,6 +20,7 @@ knowledge_mocs:
 | 言語 | HTML / CSS / JavaScript（ES Modules、ビルドなし） | 公開ページと検証スクリプト | `public/*.html`、`public/assets/*.js`、`tools/*.js`、`tools/*.mjs` |
 | 言語 | Python 3 | ホテル候補データ生成の初期スキャフォールド（未稼働） | `tools/hotels/*.py`、`tools/hotels/requirements.txt` |
 | 言語 | Python 3 + PyMuPDF（AGPL-3.0、同梱せず手元の仮想環境に入れる） | スタジアム座席図PDFから座席配置 `layout.json` を作る開発用ツール。画面とCIからは使わない | `experiments/stadium-3d/extract/`、`THIRD_PARTY_NOTICES.md` |
+| 開発ツール | Blender 4.2（`bpy`、GPL-3.0）+ glTF Transform（MIT）、同梱せず | 座席ビューの構造物に陰影を焼き付けた GLB を作る。画面は URL に `?baked` を付けたときだけ読む | `experiments/stadium-3d/bake/`、`experiments/stadium-3d/baked/`、`THIRD_PARTY_NOTICES.md` |
 | ランタイム | Node.js 20 | 検証・生成スクリプトの実行。npm依存なし | `package.json`（`dependencies` なし、lockファイルなし）、`.github/workflows/*.yml` の `node-version: '20'` |
 | フレームワーク | なし（素のDOM操作） | 公開ページはフレームワーク・バンドラを使わない | `public/assets/app.js`、`public/assets/squad-builder.js` |
 | UI | 自作CSS、共通トップバー、同梱フォント DM Serif Display | 公開ページの見た目 | `public/assets/style.css`、`public/assets/topbar.css`、`public/assets/dm-serif-display-latin.woff2` |
