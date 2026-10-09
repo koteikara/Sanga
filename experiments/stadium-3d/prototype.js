@@ -12,6 +12,7 @@ import {
   standName
 } from "./stadium-model.js";
 import { C_LEVELS, buildSpectators, cLevel, computeSightlines } from "./sightlines.js";
+import { bearingName, createLighting, jstDate, sunDirection, sunPosition } from "./sun.js";
 
 const $ = id => document.getElementById(id);
 
@@ -129,6 +130,9 @@ let cColors = null;        // 見やすさ（C値）で塗るときの色
 let colorByC = false;
 let crowd = null;
 let crowdOn = true;
+let lighting = null;
+let homeMatches = [];      // サンガスタジアムでの試合（日程データから）
+let sunState = null;       // いま表示している日時の太陽 { date, label, azimuth, elevation, dir }
 
 // 着席視点の向き
 let yaw = 0;
@@ -390,6 +394,123 @@ function seatLabel(s) {
   return `${s.block.id} ${s.row}列 ${s.seat}番`;
 }
 
+// ============================================================
+// 日差し（試合の日時の太陽）
+// ============================================================
+
+const PHASES = [
+  { key: "kickoff", label: "キックオフ", minutes: 0 },
+  { key: "half", label: "前半終了ごろ", minutes: 47 },
+  { key: "end", label: "試合終了ごろ", minutes: 110 }
+];
+
+const sunRay = new THREE.Raycaster();
+
+// 席の目の高さから太陽へ向けた線が、屋根・建物・スタンドに当たるか（ガラス屋根は光を通す）
+function inSun(seat, dir) {
+  const origin = new THREE.Vector3(seat.x, seat.y + EYE_HEIGHT, seat.z);
+  sunRay.set(origin, dir);
+  sunRay.far = 400;
+  const g = model.groups;
+  const blockers = [g.roof, g.building, g.terraces, g.screens]
+    .flatMap(group => group.children)
+    .filter(o => o.isMesh && !o.userData.glass && o.visible !== false);
+  return sunRay.intersectObjects(blockers, true).length === 0;
+}
+
+function sunAt(date) {
+  const pos = sunPosition(date);
+  return { ...pos, dir: sunDirection(pos) };
+}
+
+function sunWord(seat, sun) {
+  if (sun.elevation <= 0) return "日没後";
+  return inSun(seat, sun.dir) ? "日なた" : "日陰";
+}
+
+function sunRows(seat) {
+  if (!sunState) return "";
+  const m = sunState.match;
+  const parts = PHASES.map(p => {
+    const sun = sunAt(jstDate(m.match_date, m.kickoff_time, p.minutes));
+    return `${p.label} ${sunWord(seat, sun)}`;
+  });
+  const now = sunState.elevation > 0
+    ? `太陽は${bearingName(sunState.azimuth)}・高度${Math.round(sunState.elevation)}°`
+    : "日没後（照明）";
+  return `<dt>日差し（${m.match_date.slice(5).replace("-", "/")} ${m.kickoff_time}）</dt>
+      <dd>${parts.join(" ／ ")}<br><small>${sunState.label}：${now}</small></dd>`;
+}
+
+function matchLabel(m) {
+  const [y, mo, d] = m.match_date.split("-").map(Number);
+  const week = "日月火水木金土"[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
+  return `${m.match_date.slice(5).replace("-", "/")}（${week}）${m.kickoff_time} ${m.competition_label || ""} ${m.round || ""} vs ${m.opponent}`;
+}
+
+async function loadMatches() {
+  // GitHub Pages では public/ がサイトの根元、手元のサーバーではリポジトリの根元から配る
+  for (const url of ["../../data/matches.json", "../../public/data/matches.json"]) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      return (data.matches || []).filter(m =>
+        m.is_visible !== false &&
+        /サンガスタジアム|京都府立京都スタジアム/.test(m.venue || "") &&
+        /^\d{4}-\d{2}-\d{2}$/.test(m.match_date || "") &&
+        /^\d{1,2}:\d{2}$/.test(m.kickoff_time || "")
+      ).sort((a, b) => (a.match_date + a.kickoff_time).localeCompare(b.match_date + b.kickoff_time));
+    } catch {
+      // 次の場所を試す
+    }
+  }
+  return [];
+}
+
+function fillMatchOptions() {
+  const select = $("matchSelect");
+  select.textContent = "";
+  const none = document.createElement("option");
+  none.value = "";
+  none.textContent = homeMatches.length ? "標準の光（日時を選ばない）" : "日程データを読み込めませんでした";
+  select.appendChild(none);
+  homeMatches.forEach((m, i) => {
+    const o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = matchLabel(m);
+    select.appendChild(o);
+  });
+  for (const p of PHASES) {
+    const o = document.createElement("option");
+    o.value = p.key;
+    o.textContent = `${p.label}（${p.minutes ? `${p.minutes}分後` : "開始時"}）`;
+    $("phaseSelect").appendChild(o);
+  }
+  $("phaseSelect").disabled = true;
+}
+
+function applySun() {
+  const idx = $("matchSelect").value;
+  if (idx === "") {
+    sunState = null;
+    lighting.reset();
+    $("phaseSelect").disabled = true;
+  } else {
+    const m = homeMatches[Number(idx)];
+    const phase = PHASES.find(p => p.key === $("phaseSelect").value) || PHASES[0];
+    const sun = sunAt(jstDate(m.match_date, m.kickoff_time, phase.minutes));
+    sunState = { match: m, label: phase.label, ...sun };
+    lighting.apply(sun);
+    $("phaseSelect").disabled = false;
+  }
+  if (mode === "seat") {
+    scene.fog.near = 260;
+    scene.fog.far = 900;
+  }
+  updateInfo();
+}
+
 // C値の表示。最前列は前の人の代わりに前の壁を越えて見る
 function cText(s) {
   const level = cLevel(s.c);
@@ -429,6 +550,7 @@ function updateInfo() {
       <dt>目の高さ</dt><dd>約${eye.toFixed(1)}m（着席）</dd>
       <dt>ピッチ中央を見下ろす角度</dt><dd>約${down.toFixed(0)}°</dd>
       <dt>見やすさ（C値）</dt><dd>${cText(s)}</dd>
+      ${sunRows(s)}
       <dt>このブロック</dt><dd>${b.rows.length}列・${b.seatCount}席</dd>
     </dl>
     ${notes.length ? `<p class="note">${notes.join("<br>")}</p>` : ""}
@@ -784,6 +906,13 @@ async function start() {
   const crowdGroup = new THREE.Group();
   scene.add(crowdGroup);
   crowd = buildSpectators(crowdGroup, model.seatPositions);
+
+  // 試合の日時の日差し
+  lighting = createLighting(scene, hemi, sun, model.roof.lamps);
+  homeMatches = await loadMatches();
+  fillMatchOptions();
+  $("matchSelect").addEventListener("change", applySun);
+  $("phaseSelect").addEventListener("change", applySun);
 
   // 全体表示で入れる半径（外周の壁の角まで）
   overviewRadius = Math.max(

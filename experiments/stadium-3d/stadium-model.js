@@ -646,6 +646,7 @@ function buildRoof(layout, groups, maxUpperH) {
   sheet.receiveShadow = true;
   groups.roof.add(sheet);
   const glass = new THREE.Mesh(sheetGeom(glassTop), glassMat);
+  glass.userData.glass = true;   // 日なた・日陰の判定では光を通すものとして扱う
   glass.castShadow = true;
   groups.roof.add(glass);
   // ガラス屋根は光を通すが、骨組みの影は落ちる。影は骨組みだけで出す
@@ -679,7 +680,7 @@ function buildRoof(layout, groups, maxUpperH) {
   });
   groups.roof.add(lampMesh);
 
-  return { innerUnder, outerUnder, inner };
+  return { innerUnder, outerUnder, inner, lamps: lampMesh };
 }
 
 // 屋根のトラス: 上弦・下弦と、約4mごとの束と斜材
