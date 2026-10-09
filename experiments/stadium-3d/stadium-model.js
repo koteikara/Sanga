@@ -349,7 +349,8 @@ function buildStands(layout, groups) {
     const info = {
       id: b.id, stand: b.stand, tier: b.tier, segment: b.segment, front,
       rows: b.rows, seatStart: seatPositions.length, seatCount: 0,
-      rowDepth: depth, labelInferred: !!b.labelInferred, mirroredFrom: b.mirroredFrom
+      rowDepth: depth, labelInferred: !!b.labelInferred, mirroredFrom: b.mirroredFrom,
+      rowNumbers: b.rowNumbers, seatNumbers: b.seatNumbers
     };
     let prevH = null;
     const rowsSorted = [...b.rows].sort((a, c) => a.n - c.n);

@@ -25,6 +25,7 @@ import pymupdf
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from seatpages import extract_page, find_front_arrow, front_wall_offset
+from glyphs import read_numbers, read_row_images
 
 # ---------------------------------------------------------------------------
 # 公開資料の値（京都府「京都スタジアム（仮称）インフォメーションパッケージ」平成30年1月 p.15/p.18）
@@ -360,6 +361,119 @@ def _lattice(blocks, front_sign):
     return vs  # 前から順
 
 
+def _assign_row_numbers(page, items):
+    """通路に印刷された列番号を、どのブロックのどの列のものか決める。
+
+    items: [(group, rows)]。rows は [(k, v, seats)]。
+    番号ごとに、各列の延長線からのずれ（列の間隔で割った値）が最も小さい列を選ぶ。
+    角のブロックの列番号は傾けずに書かれていることがあり、向きでは持ち主を決められない。
+    一直線に並ぶ両隣のブロックの列は同じ番号を共有するので、ほぼ同じずれの列にはすべて付ける。
+    返り値: items と同じ並びで、列ごとの印刷番号（なければ None）。
+    """
+    numbers = [n for n in read_row_images(page, 0)[0] if n["text"].isdigit()]
+    out = [[None] * len(rows) for _, rows in items]
+    for n in numbers:
+        cands = []
+        for ii, (g, rows) in enumerate(items):
+            nu, nv = _rot2((n["u"], n["v"]), -g["axis"])
+            for ri, (_, v, seats) in enumerate(rows):
+                dv = abs(nv - v)
+                if dv > g["row_gap"] * 0.35:
+                    continue
+                us = [u for u, _ in seats]
+                if nu < min(us):
+                    du = min(us) - nu
+                elif nu > max(us):
+                    du = nu - max(us)
+                else:
+                    continue
+                if du > g["pitch"] * 3.5:
+                    continue
+                cands.append((dv / g["row_gap"] + 0.03 * du / g["pitch"], ii, ri))
+        if not cands:
+            continue
+        best = min(c[0] for c in cands)
+        for score, ii, ri in cands:
+            if score <= best + 0.08:
+                out[ii][ri] = int(n["text"])
+    return out
+
+
+def _consistent(pairs):
+    """(格子の段 k, 印刷の列番号 p) から、前から後ろへ p が増え、飛び（p − k）が
+    減らない組を最も多く残す（隣のブロックの番号を拾った組を捨てる）。"""
+    pairs = sorted(pairs)
+    best = [[pr] for pr in pairs]
+    for i in range(len(pairs)):
+        for j in range(i):
+            ki, pi = pairs[i]
+            kj, pj = pairs[j]
+            if kj < ki and pj < pi and pj - kj <= pi - ki and len(best[j]) + 1 > len(best[i]):
+                best[i] = best[j] + [pairs[i]]
+    return max(best, key=len) if best else []
+
+
+def _renumber_rows(rows, printed):
+    """格子から数えた列番号を、印刷された列番号に合わせる。
+
+    印刷された番号がある列はその番号。ない列は、いちばん近い印刷のある列との
+    格子のずれ（印刷 − 格子）をそのまま使う。並びの合わない印刷は使わない。
+    """
+    keep = set(_consistent([(k, p) for (k, _, _), p in zip(rows, printed) if p is not None]))
+    printed = [p if p is not None and (k, p) in keep else None for (k, _, _), p in zip(rows, printed)]
+    known = [(k, p) for (k, _, _), p in zip(rows, printed) if p is not None]
+    if not known:
+        return [k for k, _, _ in rows], 0
+    out, changed = [], 0
+    for (k, _, _), p in zip(rows, printed):
+        if p is None:
+            kk, pp = min(known, key=lambda t: abs(t[0] - k))
+            p = k + (pp - kk)
+        out.append(p)
+        changed += p != k
+    return out, changed
+
+
+def _seat_anchors(seats, seat_nums, short, long_):
+    """座席の四角の中に印刷された席番号（u, 番号）を返す。"""
+    anchors = []
+    for u, v in seats:
+        for n in seat_nums:
+            if abs(n["u"] - u) < short * 0.5 and abs(n["v"] - v) < long_ * 0.5:
+                anchors.append((u, int(n["text"])))
+                break
+    return anchors
+
+
+def _number_seats(seats, anchors, sign, pitch):
+    """印刷された席番号を手がかりに、列の全席に番号を振る。
+
+    sign: u が増えると席番号が増えるなら +1、減るなら -1。
+    席の間隔は、印刷された番号どうしの間隔から求める（角のブロックは一般席より広い）。
+    番号は各手がかりからの予測の中央値をとる（読み違いが混じっても崩れない）。
+    """
+    if not anchors:
+        return None, 0
+    steps = []
+    for i in range(len(anchors)):
+        for j in range(i + 1, len(anchors)):
+            dn = anchors[j][1] - anchors[i][1]
+            du = anchors[j][0] - anchors[i][0]
+            if dn and du * sign * dn > 0:
+                st = abs(du / dn)
+                if 0.8 * pitch < st < 1.5 * pitch:
+                    steps.append(st)
+    step = sorted(steps)[len(steps) // 2] if steps else pitch
+    nums = []
+    for u, _ in seats:
+        preds = sorted(n + sign * (u - ua) / step for ua, n in anchors)
+        nums.append(int(round(preds[len(preds) // 2])))
+    # 印刷と合わない手がかり（読み違い、または並びが一様でない）
+    bad = sum(1 for (ua, n) in anchors
+              if n != nums[min(range(len(seats)), key=lambda i: abs(seats[i][0] - ua))])
+    return nums, bad
+
+
 def analyse_page(page, tag):
     groups, _ = extract_page(page)
     arrow = find_front_arrow(page)
@@ -369,7 +483,8 @@ def analyse_page(page, tag):
     main_idx = max(range(len(groups)), key=lambda i: sum(len(s) for _, s in groups[i]["rows"]))
     named = _infer_labels(groups, main_idx)
 
-    out = []
+    # 1段目: グループごとに、格子で列を数える
+    work = []
     for g, blocks in zip(groups, named):
         if not blocks:
             continue
@@ -384,34 +499,64 @@ def analyse_page(page, tag):
 
         lattice = _lattice(blocks, fs)
         spacing = sorted(abs(b - a2) for a2, b in zip(lattice, lattice[1:]))
-        row_gap = spacing[len(spacing) // 2] if spacing else g["long"] * 1.5
+        g["row_gap"] = spacing[len(spacing) // 2] if spacing else g["long"] * 1.5
         wall = front_wall_offset(page, g, fs)
+        # 席番号（座席の四角の中に印刷された数字）
+        seat_pts = [p for _, seats in g["rows"] for p in seats]
+        seat_nums = [n for n in read_numbers(page, g["axis"], g["long"], seat_pts, g["short"])[0]
+                     if n["h"] < g["long"] * 0.5]
 
         for name, b in blocks.items():
             rows = []
             dropped = 0
             for v, seats in b["rows"]:
                 k = min(range(len(lattice)), key=lambda i: abs(lattice[i] - v))
-                if abs(lattice[k] - v) > row_gap * 0.3:
+                if abs(lattice[k] - v) > g["row_gap"] * 0.3:
                     dropped += len(seats)
                     continue
                 rows.append((k + 1, v, seats))
-            if not rows:
-                continue
-            us = [u for _, _, seats in rows for u, _ in seats]
-            u_left = max(us) if lsign > 0 else min(us)
-            out_rows = []
-            for n, v, seats in rows:
-                nums = []
-                for u, _ in seats:
-                    nums.append(int(round(abs(u_left - u) / g["pitch"])) + 1)
-                out_rows.append({"n": n, "v": v, "seats": [(u, num) for (u, _), num in zip(seats, nums)]})
-            out.append({
-                "id": name, "axis": g["axis"], "pitch": g["pitch"], "u_axis": u_axis, "v_axis": v_axis,
-                "front": f_dir, "fs": fs, "rows": out_rows, "dropped": dropped,
-                "row_gap": row_gap, "wall": wall, "inferred": b.get("inferred", False),
-                "main": g is groups[main_idx], "tag": tag,
-            })
+            if rows:
+                work.append({
+                    "g": g, "name": name, "b": b, "rows": rows, "dropped": dropped, "u_axis": u_axis,
+                    "v_axis": v_axis, "f_dir": f_dir, "fs": fs, "lsign": lsign, "wall": wall,
+                    "seat_nums": seat_nums,
+                })
+
+    # 2段目: 列番号（通路の印刷）をページ全体で対応づけ、列番号と席番号を決める
+    printed_all = _assign_row_numbers(page, [(w["g"], w["rows"]) for w in work])
+    out = []
+    for w, printed_rows in zip(work, printed_all):
+        g, rows, lsign = w["g"], w["rows"], w["lsign"]
+        us = [u for _, _, seats in rows for u, _ in seats]
+        u_left = max(us) if lsign > 0 else min(us)
+        row_ns, rows_changed = _renumber_rows(rows, printed_rows)
+        fallback = min(row_ns) < 1
+        if fallback:
+            # 印刷の番号と列がうまく対応しない（0 以下になる）ブロックは、前から数えた番号に戻す
+            row_ns, rows_changed = [k for k, _, _ in rows], 0
+        check = {"rows": len(rows), "rowsPrinted": sum(p is not None for p in printed_rows),
+                 "rowsChanged": rows_changed, "seats": 0, "seatsPrinted": 0, "seatsChanged": 0,
+                 "anchorsBad": 0, "rowsWithoutPrint": 0, "rowFallback": int(fallback)}
+        out_rows = []
+        for n, (k, v, seats) in zip(row_ns, rows):
+            old = [int(round(abs(u_left - u) / g["pitch"])) + 1 for u, _ in seats]
+            anchors = _seat_anchors(seats, w["seat_nums"], g["short"], g["long"])
+            nums, bad = _number_seats(seats, anchors, -lsign, g["pitch"])
+            if nums is None:
+                nums = old
+                check["rowsWithoutPrint"] += 1
+            check["seats"] += len(seats)
+            check["seatsPrinted"] += len(anchors)
+            check["seatsChanged"] += sum(a != b2 for a, b2 in zip(old, nums))
+            check["anchorsBad"] += bad
+            # k: 格子で数えた前からの段（位置合わせと高さの基準）。n: 印刷された列番号
+            out_rows.append({"n": n, "k": k, "v": v, "seats": [(u, num) for (u, _), num in zip(seats, nums)]})
+        out.append({
+            "id": w["name"], "axis": g["axis"], "pitch": g["pitch"], "u_axis": w["u_axis"], "v_axis": w["v_axis"],
+            "front": w["f_dir"], "fs": w["fs"], "rows": out_rows, "dropped": w["dropped"],
+            "row_gap": g["row_gap"], "wall": w["wall"], "inferred": w["b"].get("inferred", False),
+            "main": g is groups[main_idx], "tag": tag, "check": check,
+        })
     return out, fpage, groups[main_idx]["pitch"]
 
 
@@ -470,7 +615,7 @@ def register(pages, maps):
                 continue
             if tier == "upper" and seg == "W":
                 continue
-            row1 = [r for r in b["rows"] if r["n"] == 1]
+            row1 = [r for r in b["rows"] if r["k"] == 1]
             if not row1:
                 continue
             wall = b["wall"] if b["wall"] is not None else DEFAULT_FRONT_OFFSET / pg["k"]
@@ -638,6 +783,7 @@ def main(src, dst):
     # 上層の各辺で、1列目の前端の奥行き（上層の高さの基準）
     blocks_out = []
     report = defaultdict(int)
+    report_pos = []
     for bid in sorted(chosen, key=lambda s: (s[0], int(s[1:]))):
         n_seats, pg, b = chosen[bid]
         seg = segment_of(bid)
@@ -659,13 +805,16 @@ def main(src, dst):
                 step = (ua[0] * SEAT_PITCH, ua[1] * SEAT_PITCH)
             ox = sum(p[0][0] - (p[1] - 1) * step[0] for p in pts) / len(pts)
             oz = sum(p[0][1] - (p[1] - 1) * step[1] for p in pts) / len(pts)
+            # 席番号から計算した位置と、座席図の位置のずれ（番号の振り方の確認）
+            worst = max(math.dist(p[0], (ox + (p[1] - 1) * step[0], oz + (p[1] - 1) * step[1])) for p in pts)
+            report_pos.append((round(worst, 2), bid, r["n"]))
             # 床の高さ（列の前端で評価）
             mx = sum(p[0][0] for p in pts) / len(pts)
             mz = sum(p[0][1] for p in pts) / len(pts)
             d_center = c - (nrm[0] * mx + nrm[1] * mz)
             d_front = d_center - row_depth / 2
             rows_out.append({
-                "n": r["n"], "d": d_front, "o": (ox, oz), "step": step,
+                "n": r["n"], "k": r["k"], "d": d_front, "o": (ox, oz), "step": step,
                 "seats": sorted(nums),
             })
         # 高さ
@@ -673,7 +822,7 @@ def main(src, dst):
             for r in rows_out:
                 r["h"] = lower_height(r["d"])
         else:
-            d1 = min(r["d"] for r in rows_out if r["n"] == min(x["n"] for x in rows_out))
+            d1 = min(r["d"] for r in rows_out if r["k"] == min(x["k"] for x in rows_out))
             for r in rows_out:
                 r["h"] = upper_height(r["d"] - d1)
         report[(bid[0], tier)] += n_seats
@@ -689,6 +838,9 @@ def main(src, dst):
             } for r in rows_out],
             "seatCount": n_seats,
             "source": pg["tag"],
+            # 番号の出どころ。print: 座席図に印刷された番号を読んだ、count: 前（左）から数えた
+            "rowNumbers": "print" if b["check"]["rowsPrinted"] and not b["check"]["rowFallback"] else "count",
+            "seatNumbers": "print" if not b["check"]["rowsWithoutPrint"] else "count",
             **({"labelInferred": True} if b["inferred"] else {}),
         })
 
@@ -734,6 +886,33 @@ def main(src, dst):
     print("  ページの位置合わせ残差（最大）:", worst_pages[:5])
     dropped = [(b["id"], b["dropped"]) for pg in pages for b in pg["blocks"] if b["dropped"]]
     print("  列の位置が合わず除いた席（ブロック, 席数）:", dropped)
+
+    report_pos.sort(reverse=True)
+    print("== 席番号から計算した位置と座席図の位置のずれ（大きい順、m）:", report_pos[:6])
+    print("== 印刷された番号との突き合わせ（採用したブロック）")
+    tot = defaultdict(int)
+    for bid in sorted(chosen, key=lambda s: (s[0], int(s[1:]))):
+        ck = chosen[bid][2]["check"]
+        for k, v in ck.items():
+            tot[k] += v
+        notes = []
+        if ck["rowsPrinted"] < ck["rows"]:
+            notes.append(f"列番号の印刷なし {ck['rows'] - ck['rowsPrinted']}列")
+        if ck["rowsChanged"]:
+            notes.append(f"列番号を直した {ck['rowsChanged']}列")
+        if ck["seatsChanged"]:
+            notes.append(f"席番号を直した {ck['seatsChanged']}席")
+        if ck["anchorsBad"]:
+            notes.append(f"印刷と合わない番号 {ck['anchorsBad']}")
+        if ck["rowsWithoutPrint"]:
+            notes.append(f"席番号の印刷がない列 {ck['rowsWithoutPrint']}")
+        if ck["rowFallback"]:
+            notes.append("列番号の印刷と対応が取れず、前から数えた")
+        if notes:
+            print(f"  {bid}: " + "、".join(notes))
+    print(f"  合計: 列 {tot['rows']}（印刷を読めた列 {tot['rowsPrinted']}、直した列 {tot['rowsChanged']}）、"
+          f"席 {tot['seats']}（印刷を読めた席 {tot['seatsPrinted']}、直した席 {tot['seatsChanged']}、"
+          f"印刷と合わない番号 {tot['anchorsBad']}）")
 
     out = {
         "meta": {

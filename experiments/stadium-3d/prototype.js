@@ -404,7 +404,8 @@ function updateInfo() {
   const notes = [];
   if (b.labelInferred) notes.push("ブロック名は座席図の並びから補っています。");
   if (b.mirroredFrom) notes.push(`座席図に半分しか描かれていないため、${b.mirroredFrom} を左右反転して作っています。`);
-  if (b.tier === "upper" && b.segment.length === 2) notes.push("上層の角のブロックは、列番号がずれている可能性があります。");
+  if (b.rowNumbers === "count") notes.push("このブロックは座席図に列番号が読める形で印刷されていないため、列番号は前から数えたものです。");
+  if (b.seatNumbers === "count") notes.push("このブロックの席番号は、座席図の印刷ではなく端から数えたものです。");
 
   info.innerHTML = `
     <strong>${standName(b.stand)} ${TIER_NAME[b.tier]} / ${seatLabel(s)}</strong>
