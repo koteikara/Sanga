@@ -70,6 +70,15 @@
     <label class="toggle"><input id="buildingToggle" type="checkbox" checked> 建物・外壁</label>
     <label class="toggle"><input id="screenToggle" type="checkbox" checked> 大型映像（推定）</label>
     <label class="toggle"><input id="playerToggle" type="checkbox" checked> 選手（大きさの目安）</label>
+    <label class="toggle"><input id="cToggle" type="checkbox"> 見やすさで色分け</label>
+    <label class="toggle"><input id="crowdToggle" type="checkbox" checked> 前の観客（着席視点）</label>
+  </div>
+
+  <div class="legend" id="legend" hidden>
+    <p>見やすさ（C値）：前の列の人の目より、自分の視線がどれだけ上を通るか。
+      頭は目より10cmほど上にあるので、90mm以上あれば頭越しに見えます。
+      視線の先はいちばん近いライン（タッチライン・ゴールライン）。床の高さが推定なので、値も目安です。</p>
+    <ul id="legendList"></ul>
   </div>
 
   <div class="info" id="info">

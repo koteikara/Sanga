@@ -818,7 +818,7 @@ export function buildStadium(scene, layout) {
   buildField(layout, groups.field);
   buildPlayers(groups.players);
   const stands = buildStands(layout, groups);
-  buildFronts(layout, groups, stands.maxUpperH);
+  const upperFrontFloor = buildFronts(layout, groups, stands.maxUpperH);
   const roof = buildRoof(layout, groups, stands.maxUpperH);
   buildBuilding(layout, groups, roof);
   buildScreens(layout, groups);
@@ -844,5 +844,6 @@ export function buildStadium(scene, layout) {
     groups.hits.add(box);
   }
 
-  return { groups, ...stands, roof };
+  // 上層の前面の壁の上端（buildFronts と同じ高さ）。見やすさの計算に使う
+  return { groups, ...stands, roof, upperParapetTop: upperFrontFloor + 1.0 };
 }

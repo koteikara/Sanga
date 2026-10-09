@@ -11,6 +11,7 @@ import {
   seatNumbers,
   standName
 } from "./stadium-model.js";
+import { C_LEVELS, buildSpectators, cLevel, computeSightlines } from "./sightlines.js";
 
 const $ = id => document.getElementById(id);
 
@@ -124,6 +125,10 @@ let selectedBlock = null;
 let selectedRow = null;
 let selectedSeatIndex = -1;
 let baseColors = null;
+let cColors = null;        // 見やすさ（C値）で塗るときの色
+let colorByC = false;
+let crowd = null;
+let crowdOn = true;
 
 // 着席視点の向き
 let yaw = 0;
@@ -240,7 +245,7 @@ function pickSeat(event) {
 function paintSelection() {
   const mesh = model.seatMesh;
   const colors = mesh.instanceColor.array;
-  colors.set(baseColors);
+  colors.set(colorByC ? cColors : baseColors);
 
   // ブロックの塗り分けは全体表示で場所を探すためのもの。座ったら本来の色に戻す
   if (selectedBlock && mode === "overview") {
@@ -385,6 +390,14 @@ function seatLabel(s) {
   return `${s.block.id} ${s.row}列 ${s.seat}番`;
 }
 
+// C値の表示。最前列は前の人の代わりに前の壁を越えて見る
+function cText(s) {
+  const level = cLevel(s.c);
+  const mm = Math.round(s.c * 1000);
+  const ref = s.cRef === "wall" ? "（最前列。前の壁の上を通る）" : "";
+  return `約${mm}mm・${level.label}${ref}`;
+}
+
 function updateInfo() {
   const s = currentSeat();
   const info = $("info");
@@ -415,6 +428,7 @@ function updateInfo() {
       <dt>床の高さ</dt><dd>フィールド面から約${s.y.toFixed(1)}m</dd>
       <dt>目の高さ</dt><dd>約${eye.toFixed(1)}m（着席）</dd>
       <dt>ピッチ中央を見下ろす角度</dt><dd>約${down.toFixed(0)}°</dd>
+      <dt>見やすさ（C値）</dt><dd>${cText(s)}</dd>
       <dt>このブロック</dt><dd>${b.rows.length}列・${b.seatCount}席</dd>
     </dl>
     ${notes.length ? `<p class="note">${notes.join("<br>")}</p>` : ""}
@@ -485,6 +499,7 @@ function viewFromSelectedSeat({ collapsePanel = true } = {}) {
   lookAtPitchCenter();
   updateLabelVisibility();
   paintSelection();
+  if (crowdOn) crowd.update(camera, selectedSeatIndex);
 
   $("status").textContent = `${standName(s.block.stand)} / ${seatLabel(s)}｜着席視点`;
   $("help").textContent = HELP.seat;
@@ -514,6 +529,7 @@ function overview() {
 
   updateLabelVisibility();
   paintSelection();
+  crowd.clear();
 
   const s = currentSeat();
   $("status").textContent = s
@@ -578,6 +594,16 @@ function bindToggles() {
   bindToggle("buildingToggle", on => { g.building.visible = on; });
   bindToggle("screenToggle", on => { g.screens.visible = on; });
   bindToggle("playerToggle", on => { g.players.visible = on; });
+  bindToggle("cToggle", on => {
+    colorByC = on;
+    $("legend").hidden = !on;
+    paintSelection();
+  });
+  bindToggle("crowdToggle", on => {
+    crowdOn = on;
+    if (on && mode === "seat") crowd.update(camera, selectedSeatIndex);
+    else crowd.clear();
+  });
 }
 
 const tooltip = $("tooltip");
@@ -701,6 +727,22 @@ window.addEventListener("resize", () => {
 // 起動
 // ============================================================
 
+// 見やすさの凡例。色と一緒に言葉と数値の範囲を出す
+function fillLegend() {
+  const list = $("legendList");
+  list.textContent = "";
+  const counts = new Map(C_LEVELS.map(l => [l.key, 0]));
+  for (const seat of model.seatPositions) counts.set(cLevel(seat.c).key, counts.get(cLevel(seat.c).key) + 1);
+  for (const l of C_LEVELS) {
+    const li = document.createElement("li");
+    const sw = document.createElement("span");
+    sw.className = "swatch";
+    sw.style.background = l.color;
+    li.append(sw, `${l.label}（${l.range}）${counts.get(l.key).toLocaleString()}席`);
+    list.appendChild(li);
+  }
+}
+
 // URLの #E30-12-5 で、その席を選んだ状態から始める（共有・確認用）
 function seatFromHash() {
   const m = /^#([WENS]\d{1,2})(?:-(\d{1,2})(?:-(\d{1,3}))?)?$/.exec(location.hash);
@@ -731,6 +773,17 @@ async function start() {
   model = buildStadium(scene, layout);
   blocksById = new Map(model.blocks.map(b => [b.id, b]));
   baseColors = model.seatMesh.instanceColor.array.slice();
+
+  // 見やすさ（C値）と、その色
+  computeSightlines(layout, model);
+  cColors = new Float32Array(baseColors.length);
+  const levelColor = new Map(C_LEVELS.map(l => [l.key, new THREE.Color(l.color)]));
+  model.seatPositions.forEach((seat, i) => levelColor.get(cLevel(seat.c).key).toArray(cColors, i * 3));
+  fillLegend();
+
+  const crowdGroup = new THREE.Group();
+  scene.add(crowdGroup);
+  crowd = buildSpectators(crowdGroup, model.seatPositions);
 
   // 全体表示で入れる半径（外周の壁の角まで）
   overviewRadius = Math.max(
