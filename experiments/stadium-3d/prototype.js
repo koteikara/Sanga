@@ -8,6 +8,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
   EYE_HEIGHT,
   buildStadium,
+  buildSurroundings,
   seatNumbers,
   standName
 } from "./stadium-model.js";
@@ -57,14 +58,14 @@ const SEAT_COLOR = new THREE.Color("#ffd158");
 // ============================================================
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color("#a9c0d2");
-scene.fog = new THREE.Fog("#a9c0d2", 200, 420);
+scene.background = new THREE.Color("#c9d8e4");
+scene.fog = new THREE.Fog("#c9d8e4", 600, 6500);
 
 const camera = new THREE.PerspectiveCamera(
   55,
   window.innerWidth / window.innerHeight,
-  0.08,
-  1200
+  0.2,
+  6000
 );
 
 let renderer;
@@ -174,8 +175,9 @@ function overviewDistance() {
 
 // 霧は距離に合わせて動かす。固定のままだと、引いたときに全体が霧へ沈む。
 function applyOverviewRange(distance) {
-  scene.fog.near = distance * 0.7;
-  scene.fog.far = distance * 2.2;
+  // 霧は周りの山をかすませる程度。スタジアム自体はかすませない
+  scene.fog.near = Math.max(600, distance * 2);
+  scene.fog.far = 6500;
   controls.maxDistance = distance * 1.4;
 }
 
@@ -449,8 +451,12 @@ function matchLabel(m) {
 }
 
 async function loadMatches() {
-  // GitHub Pages では public/ がサイトの根元、手元のサーバーではリポジトリの根元から配る
-  for (const url of ["../../data/matches.json", "../../public/data/matches.json"]) {
+  // GitHub Pages では public/ がサイトの根元、手元のサーバーではリポジトリの根元から配る。
+  // 先に当たりそうな方から読み、見つからない側への読み込み（404）を出さない
+  const pages = "../../data/matches.json";
+  const local = "../../public/data/matches.json";
+  const order = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ? [local, pages] : [pages, local];
+  for (const url of order) {
     try {
       const res = await fetch(url);
       if (!res.ok) continue;
@@ -505,8 +511,8 @@ function applySun() {
     $("phaseSelect").disabled = false;
   }
   if (mode === "seat") {
-    scene.fog.near = 260;
-    scene.fog.far = 900;
+    scene.fog.near = 600;
+    scene.fog.far = 6500;
   }
   updateInfo();
 }
@@ -615,8 +621,8 @@ function viewFromSelectedSeat({ collapsePanel = true } = {}) {
   );
   camera.fov = 62;
   applyViewOffset();
-  scene.fog.near = 260;
-  scene.fog.far = 900;
+  scene.fog.near = 600;
+  scene.fog.far = 6500;
 
   lookAtPitchCenter();
   updateLabelVisibility();
@@ -893,6 +899,7 @@ async function start() {
   }
 
   model = buildStadium(scene, layout);
+  const surroundings = buildSurroundings(scene);
   blocksById = new Map(model.blocks.map(b => [b.id, b]));
   baseColors = model.seatMesh.instanceColor.array.slice();
 
@@ -908,7 +915,7 @@ async function start() {
   crowd = buildSpectators(crowdGroup, model.seatPositions);
 
   // 試合の日時の日差し
-  lighting = createLighting(scene, hemi, sun, model.roof.lamps);
+  lighting = createLighting(scene, hemi, sun, model.roof.lamps, surroundings.sky);
   homeMatches = await loadMatches();
   fillMatchOptions();
   $("matchSelect").addEventListener("change", applySun);
@@ -918,6 +925,11 @@ async function start() {
   overviewRadius = Math.max(
     ...layout.outline.outerUpper.map(p => Math.hypot(p[0], p[1]))
   ) + 6;
+
+  // 確認用: URL に ?debug を付けたときだけ、ブラウザの開発者ツールから中身を触れるようにする
+  if (new URLSearchParams(location.search).has("debug")) {
+    window.__stadium = { THREE, scene, camera, renderer, model, sun, hemi };
+  }
 
   fillBlockOptions();
   bindToggles();

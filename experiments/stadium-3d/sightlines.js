@@ -90,37 +90,57 @@ export function computeSightlines(layout, model) {
 // 観客（着席視点で、近くの席に座らせる）
 // ---------------------------------------------------------------------------
 
-const CROWD_RADIUS = 45;
+const CROWD_RADIUS = 35;
 
 // サポーターの服の色。紫が多め
 const SHIRTS = ["#4d2a7d", "#5b2c86", "#3f2166", "#6a3a9a", "#2b2b33", "#e9e6ef", "#7a2f43", "#35506e"];
 
-// 座った人: 胴（肩まで）と頭。頭の中心は床から約 1.2m（目の高さ 1.15m の少し上）
+// 座った人: 胴（肩まで）、頭（肌）、髪。頭の中心は床から約 1.2m（目の高さ 1.15m の少し上）
 function torsoGeometry() {
-  const torso = new THREE.BoxGeometry(0.4, 0.55, 0.26);
+  const torso = new THREE.CylinderGeometry(0.17, 0.2, 0.56, 7, 1, true);
+  torso.scale(1.15, 1, 0.72);
   torso.translate(0, 0.78, -0.04);
-  const arms = new THREE.BoxGeometry(0.52, 0.12, 0.3);
-  arms.translate(0, 0.62, 0.06);
-  return mergeGeometries([torso, arms]);
+  const shoulders = new THREE.SphereGeometry(0.2, 7, 3, 0, Math.PI * 2, 0, Math.PI / 2);
+  shoulders.scale(1.15, 0.35, 0.72);
+  shoulders.translate(0, 1.05, -0.04);
+  const neck = new THREE.CylinderGeometry(0.05, 0.055, 0.1, 6, 1, true);
+  neck.translate(0, 1.1, -0.01);
+  return mergeGeometries([torso.toNonIndexed(), shoulders.toNonIndexed(), neck.toNonIndexed()]);
 }
 
 function headGeometry() {
-  const head = new THREE.SphereGeometry(0.105, 10, 8);
-  head.translate(0, 1.2, 0.0);
+  const head = new THREE.SphereGeometry(0.095, 9, 7);
+  head.scale(0.92, 1.08, 1);
+  head.translate(0, 1.21, 0.0);
   return head;
 }
+
+function hairGeometry() {
+  // 頭の後ろと上を覆う（後ろの席から見えるのは主に髪）
+  const hair = new THREE.SphereGeometry(0.102, 9, 5, 0, Math.PI * 2, 0, Math.PI * 0.62);
+  hair.scale(0.94, 1.08, 1.02);
+  hair.rotateX(-0.35);
+  hair.translate(0, 1.225, -0.012);
+  return hair;
+}
+
+const SKIN = ["#e0b48f", "#d1a27c", "#c18e69", "#e8c3a0"];
+const HAIR = ["#1f1a17", "#2b211b", "#3d2c22", "#4a3a2c", "#6b5a4a", "#8b8378"];
 
 export function buildSpectators(group, seats) {
   const torso = new THREE.InstancedMesh(
     torsoGeometry(), new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.85 }), seats.length
   );
   const heads = new THREE.InstancedMesh(
-    headGeometry(), new THREE.MeshStandardMaterial({ color: "#3a2c24", roughness: 0.9 }), seats.length
+    headGeometry(), new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.75 }), seats.length
   );
-  for (const m of [torso, heads]) {
+  const hair = new THREE.InstancedMesh(
+    hairGeometry(), new THREE.MeshStandardMaterial({ color: "#ffffff", roughness: 0.95 }), seats.length
+  );
+  for (const m of [torso, heads, hair]) {
     m.count = 0;
     m.frustumCulled = false;
-    m.castShadow = true;
+    m.castShadow = false;
     m.receiveShadow = true;
     group.add(m);
   }
@@ -128,7 +148,7 @@ export function buildSpectators(group, seats) {
   const dummy = new THREE.Object3D();
   const color = new THREE.Color();
 
-  // 着席視点の近く（半径 45m）の席に人を置く。自分の席は空ける
+  // 着席視点の近く（半径 35m）の席に人を置く。自分の席は空ける。重くなるので影は落とさない
   function update(camera, ownIndex) {
     let n = 0;
     const p = camera.position;
@@ -142,20 +162,23 @@ export function buildSpectators(group, seats) {
       dummy.updateMatrix();
       torso.setMatrixAt(n, dummy.matrix);
       heads.setMatrixAt(n, dummy.matrix);
-      color.set(SHIRTS[(i * 7 + 3) % SHIRTS.length]);
-      torso.setColorAt(n, color);
+      hair.setMatrixAt(n, dummy.matrix);
+      torso.setColorAt(n, color.set(SHIRTS[(i * 7 + 3) % SHIRTS.length]));
+      heads.setColorAt(n, color.set(SKIN[(i * 5 + 1) % SKIN.length]));
+      hair.setColorAt(n, color.set(HAIR[(i * 11 + 2) % HAIR.length]));
       n++;
     }
-    torso.count = n;
-    heads.count = n;
-    torso.instanceMatrix.needsUpdate = true;
-    heads.instanceMatrix.needsUpdate = true;
-    if (torso.instanceColor) torso.instanceColor.needsUpdate = true;
+    for (const m of [torso, heads, hair]) {
+      m.count = n;
+      m.instanceMatrix.needsUpdate = true;
+      if (m.instanceColor) m.instanceColor.needsUpdate = true;
+    }
   }
 
   function clear() {
     torso.count = 0;
     heads.count = 0;
+    hair.count = 0;
   }
 
   return { update, clear };

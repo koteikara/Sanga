@@ -55,7 +55,7 @@ export function bearingName(deg) {
 // 光の切り替え
 // ---------------------------------------------------------------------------
 
-const SKY_DAY = new THREE.Color("#a9c0d2");
+const SKY_DAY = new THREE.Color("#c9d8e4");
 const SKY_DUSK = new THREE.Color("#c99a7a");
 const SKY_NIGHT = new THREE.Color("#0d1424");
 
@@ -63,7 +63,19 @@ const SKY_NIGHT = new THREE.Color("#0d1424");
 // 夜は光源を増やさず（スマホで重くなる）、太陽の光を屋根の照明の代わりに使う
 const FLOOD_DIR = new THREE.Vector3(-0.35, 1, 0.25).normalize();   // 屋根の西の縁から斜めに
 
-export function createLighting(scene, hemi, sun, roofLamps) {
+const TOP_DAY = new THREE.Color("#6f9ccc");
+const TOP_NIGHT = new THREE.Color("#050914");
+
+export function createLighting(scene, hemi, sun, roofLamps, skyDome = null) {
+  const setSky = (horizon, top) => {
+    scene.background = horizon.clone();
+    if (scene.fog) scene.fog.color.copy(horizon);
+    if (skyDome) {
+      skyDome.material.uniforms.horizon.value.copy(horizon);
+      skyDome.material.uniforms.top.value.copy(top);
+    }
+  };
+
   const defaults = {
     sunPos: sun.position.clone(),
     sunColor: sun.color.clone(),
@@ -79,8 +91,7 @@ export function createLighting(scene, hemi, sun, roofLamps) {
     // 夕焼けの色は、太陽が地平線の少し上〜少し下のあいだだけ
     const warm = THREE.MathUtils.clamp(1 - Math.abs(elevation - 3) / 6, 0, 1);
     const sky = SKY_NIGHT.clone().lerp(SKY_DAY, t).lerp(SKY_DUSK, warm * 0.6);
-    scene.background = sky;
-    if (scene.fog) scene.fog.color.copy(sky);
+    setSky(sky, TOP_NIGHT.clone().lerp(TOP_DAY, t));
 
     if (elevation > 0) {
       sun.position.copy(dir).multiplyScalar(220);
@@ -111,8 +122,7 @@ export function createLighting(scene, hemi, sun, roofLamps) {
     hemi.intensity = defaults.hemiIntensity;
     hemi.color.copy(defaults.hemiSky);
     hemi.groundColor.copy(defaults.hemiGround);
-    scene.background = SKY_DAY.clone();
-    if (scene.fog) scene.fog.color.copy(SKY_DAY);
+    setSky(SKY_DAY, TOP_DAY);
     if (roofLamps) roofLamps.material.color.set("#fffbe8");
   }
 
