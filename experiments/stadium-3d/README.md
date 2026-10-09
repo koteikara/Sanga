@@ -97,6 +97,8 @@ URLに `?debug` を付けると、ブラウザの開発者ツールから `windo
 | `extract/build_layout.py` | 座席図から `layout.json` を作る。位置合わせ・高さ・番号・検証 |
 | `extract/seatpages.py` | ブロック別座席図のページから、座席・列・ブロックを拾う |
 | `extract/glyphs.py` | 座席図に印刷された数字（席番号は線の文字、列番号は小さな画像）を読む |
+| `bake/` | 焼き付け版を作るスクリプト（下の「焼き付け版」） |
+| `baked/stadium-baked.glb` | 陰影を焼き付けた構造物（生成物。`?baked` のときだけ読む） |
 
 ## 座席データの作り方
 
@@ -290,6 +292,37 @@ N1〜N6 のページは、PDF に埋め込まれた列番号の画像がもと�
 このほか、広い画面では全体表示の中心を操作パネルの右側へずらし、スタジアムがパネルの裏に隠れないようにしました。
 ブロック名の札は最前列の上に置き、屋根や手前のスタンドに隠れるようにしました（前の版は常に手前に描いていた）。
 着席視点では、32m以内の札を隠します。
+
+## 焼き付け版（B、2026-10-09 試作）
+
+URL に `?baked` を付けると、構造物（段床・前面の壁・屋根・建物・地面とピッチ）を、Blender で陰影
+（アンビエントオクルージョン：物の陰になる所ほど暗くなる陰影）を焼き付けた部品に差し替えます。
+座席・観客・看板・トラスなどはそのままです。上層の床の裏、下層の後方、段の隅、屋根の裏が、
+物の陰で暗くなります。太陽の光と影はこれまでどおり時刻に合わせて動きます（焼き付けたのは空からの光の陰影だけ）。
+
+```text
+https://koteikara.github.io/Sanga/experiments/stadium-3d/prototype.html?baked#E9-20-15
+```
+
+### 作り方
+
+| 段階 | ファイル | 内容 |
+| --- | --- | --- |
+| 1 | `bake/export-scene.mjs` | ブラウザ版のモデルを組み立て、構造物を GLB に書き出す（Playwright） |
+| 2 | `bake/build_stands.py` | 段床を `layout.json` から「見える面だけ」で作り直す。ブラウザ版の段床は箱の重なりで隠れた面が多く、焼くと画像の大半が無駄になるため |
+| 3 | `bake/bake_ao.py` | Blender で、部品ごとに陰影用の UV（2つ目の UV）を詰め、Cycles で陰影を焼き、glTF の遮蔽テクスチャとして付けて書き出す |
+| 4 | glTF Transform | 形を meshopt で圧縮する。画面では three.js 同梱のデコーダーで解く |
+
+```bash
+# リポジトリの根元で
+python3 -m http.server 8123 --bind 127.0.0.1 &
+node experiments/stadium-3d/bake/export-scene.mjs /tmp/scene.glb
+python bake_ao.py /tmp/scene.glb experiments/stadium-3d/layout.json /tmp/baked.glb   # Blender 4.2 の Python（pip の bpy でも可）
+npx @gltf-transform/cli meshopt /tmp/baked.glb experiments/stadium-3d/baked/stadium-baked.glb
+```
+
+Blender・glTF Transform・Playwright はこのリポジトリの依存ではありません（`THIRD_PARTY_NOTICES.md`）。
+`layout.json` やブラウザ版の構造物の形を変えたときは、焼き直しが要ります（焼き付け版は形を写し取ったもの）。
 
 ## 確認済み（2026-10-07、2026-10-09 に追加分を再確認。Chromium／ソフトウェアGL）
 

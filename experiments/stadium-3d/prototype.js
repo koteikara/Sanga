@@ -414,9 +414,10 @@ function inSun(seat, dir) {
   sunRay.set(origin, dir);
   sunRay.far = 400;
   const g = model.groups;
+  // 焼き付け版（?baked）で隠した元の部品も、形は同じなので判定には使う
   const blockers = [g.roof, g.building, g.terraces, g.screens]
     .flatMap(group => group.children)
-    .filter(o => o.isMesh && !o.userData.glass && o.visible !== false);
+    .filter(o => o.isMesh && !o.userData.glass && (o.visible !== false || o.userData.replacedByBake));
   return sunRay.intersectObjects(blockers, true).length === 0;
 }
 
@@ -855,6 +856,54 @@ window.addEventListener("resize", () => {
 // 起動
 // ============================================================
 
+// ============================================================
+// 焼き付け版（?baked）
+// ============================================================
+
+// Blender で陰影を焼き付けた部品（bake/bake_ao.py で作る baked/stadium-baked.glb）に差し替える。
+// GLB の部品名と、差し替えるブラウザ版の部品（グループと並び順）の対応
+const BAKED_PARTS = {
+  "stands-lower": ["terraces", 0], "stands-upper": ["terraces", 1], "terraces-2": ["terraces", 2],
+  "roof-0": ["roof", 0], "building-0": ["building", 0],
+  "field-1": ["field", 1], "field-2": ["field", 2], "field-3": ["field", 3]
+};
+
+async function loadBaked() {
+  const { GLTFLoader } = await import("three/addons/loaders/GLTFLoader.js");
+  // 形は meshopt で圧縮してある（bake/README の手順）。解くのは three.js 同梱のデコーダー
+  const { MeshoptDecoder } = await import("three/addons/libs/meshopt_decoder.module.js");
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+  const gltf = await loader.loadAsync("baked/stadium-baked.glb");
+  const g = model.groups;
+  // 差し替える元の部品（並び順で決まる）を先に控えておく
+  const originals = Object.fromEntries(
+    Object.entries(BAKED_PARTS).map(([name, [group, index]]) => [name, g[group].children[index]])
+  );
+  let replaced = 0;
+  gltf.scene.updateMatrixWorld(true);
+  gltf.scene.traverse(obj => {
+    if (!obj.isMesh || !BAKED_PARTS[obj.name]) return;
+    const original = originals[obj.name];
+    const [group] = BAKED_PARTS[obj.name];
+    obj.castShadow = true;
+    obj.receiveShadow = true;
+    if (original) {
+      original.visible = false;
+      original.userData.replacedByBake = true;
+    }
+    replaced++;
+  });
+  // グループに入れて、表示の切り替え（屋根・建物）にそのまま従わせる
+  for (const name of Object.keys(BAKED_PARTS)) {
+    const obj = gltf.scene.getObjectByName(name);
+    if (!obj) continue;
+    obj.removeFromParent();
+    obj.matrixAutoUpdate = true;
+    g[BAKED_PARTS[name][0]].add(obj);
+  }
+  return replaced;
+}
+
 // 見やすさの凡例。色と一緒に言葉と数値の範囲を出す
 function fillLegend() {
   const list = $("legendList");
@@ -900,6 +949,14 @@ async function start() {
 
   model = buildStadium(scene, layout);
   const surroundings = buildSurroundings(scene);
+  if (new URLSearchParams(location.search).has("baked")) {
+    try {
+      const n = await loadBaked();
+      console.info(`焼き付け版の部品 ${n} 個に差し替えた`);
+    } catch (error) {
+      console.warn("焼き付け版を読み込めなかったので、通常のモデルで表示する", error);
+    }
+  }
   blocksById = new Map(model.blocks.map(b => [b.id, b]));
   baseColors = model.seatMesh.instanceColor.array.slice();
 
