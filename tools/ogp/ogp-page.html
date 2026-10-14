@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
+<!--
+  ページ別OGP画像の型。共通画像（experiments/site-index/ogp-source.html）の背景と
+  2体のキャラクターをそのまま使い、ページ名と説明を差し込む。
+  tools/ogp/make-ogp.mjs が ?title=&lead=&accent= を付けて開き、1200×630で書き出す。
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=block">
+<style>
+* { box-sizing: border-box; margin: 0; }
+body {
+  width: 1200px; height: 630px; overflow: hidden; position: relative;
+  background: radial-gradient(120% 110% at 50% 0%, #4a1150 0%, #2a0a2b 62%);
+  font-family: "Noto Sans JP", system-ui, sans-serif;
+  color: #fff;
+}
+.blob { position: absolute; border-radius: 50%; }
+.b1 { width: 900px; height: 900px; top: -320px; left: -240px;
+  background: radial-gradient(circle, rgba(168,36,140,0.55) 0%, rgba(168,36,140,0) 68%); }
+.b2 { width: 760px; height: 760px; bottom: -300px; right: -180px;
+  background: radial-gradient(circle, rgba(255,143,208,0.30) 0%, rgba(255,143,208,0) 68%); }
+/* ページごとの色。カード（tools.json の accent）と同じ色をうっすら差す */
+.b3 { width: 620px; height: 620px; top: 22%; left: 52%;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); }
+
+.layout { position: absolute; inset: 0; display: flex; align-items: center;
+  padding: 0 84px 0 76px; gap: 64px; }
+
+/* キャラクター。共通画像より大きくし、2体を少し重ねて寄り添わせる */
+.mates { position: relative; flex: none; width: 330px; height: 300px; }
+.pent { position: absolute; left: 0; bottom: 34px; width: 210px;
+  transform: rotate(-6deg);
+  filter: drop-shadow(0 16px 26px rgba(0,0,0,0.38)); }
+.squircle { position: absolute; right: 0; bottom: 0; width: 160px; height: 160px;
+  border-radius: 32%; transform: rotate(5deg);
+  background: linear-gradient(155deg, #8fe3f5 0%, #3fa8d8 100%);
+  box-shadow: 0 16px 26px rgba(0,0,0,0.38);
+  display: flex; align-items: center; justify-content: center; gap: 18%; }
+.eye { width: 18px; height: 44px; border-radius: 999px; background: #241a2e; }
+
+.text { min-width: 0; flex: 1; }
+h1, .lead { white-space: nowrap; }
+.brand { font-size: 26px; font-weight: 700; letter-spacing: 0.22em;
+  color: rgba(255,255,255,0.72); }
+.brand::after { content: ""; display: block; width: 72px; height: 5px; margin-top: 22px;
+  border-radius: 999px; background: var(--accent-line); }
+h1 { margin-top: 26px; font-size: 76px; font-weight: 900;
+  line-height: 1.18; letter-spacing: 0.02em; }
+.lead { margin-top: 24px; font-size: 30px; line-height: 1.5;
+  color: rgba(255,255,255,0.88); }
+.note { position: absolute; left: 0; right: 0; bottom: 34px; text-align: center;
+  font-size: 20px; letter-spacing: 0.08em; color: rgba(255,255,255,0.55); }
+</style></head><body>
+<span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span>
+<div class="layout">
+  <div class="mates" aria-hidden="true">
+    <svg class="pent" viewBox="0 0 100 100">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="0.6" y2="1">
+        <stop offset="0" stop-color="#f2e4ff"/><stop offset="1" stop-color="#c99ae0"/>
+      </linearGradient></defs>
+      <path fill="url(#g)" d="M50 6c4 0 7 2 10 4l28 20c5 4 7 9 5 15l-11 33c-2 6-6 9-12 9H30c-6 0-10-3-12-9L7 45c-2-6 0-11 5-15l28-20c3-2 6-4 10-4z"/>
+      <rect x="35" y="46" width="8" height="17" rx="4" fill="#241a2e"/>
+      <rect x="57" y="46" width="8" height="17" rx="4" fill="#241a2e"/>
+    </svg>
+    <div class="squircle"><span class="eye"></span><span class="eye"></span></div>
+  </div>
+  <div class="text">
+    <p class="brand">SANGA TOOLBOX</p>
+    <h1 id="title"></h1>
+    <p class="lead" id="lead"></p>
+  </div>
+</div>
+<p class="note">京都サンガF.C.の公式サイトではありません</p>
+<script>
+  const q = new URLSearchParams(location.search);
+  const accent = q.get("accent") || "#a8248c";
+  const rgb = [1, 3, 5].map((i) => parseInt(accent.slice(i, i + 2), 16)).join(",");
+  document.body.style.setProperty("--accent-glow", `rgba(${rgb},0.55)`);
+  document.body.style.setProperty("--accent-line", `rgb(${rgb})`);
+  // 改行は「|」で指定する
+  const title = document.getElementById("title");
+  for (const [i, line] of (q.get("title") || "").split("|").entries()) {
+    if (i) title.append(document.createElement("br"));
+    title.append(line);
+  }
+  document.getElementById("lead").textContent = q.get("lead") || "";
+  // 枠に収まらないときは文字を小さくする（折り返すと読みにくいため）
+  document.fonts.ready.then(() => {
+    const box = document.querySelector(".text");
+    for (const el of [title, document.getElementById("lead")]) {
+      let size = parseFloat(getComputedStyle(el).fontSize);
+      while (el.scrollWidth > box.clientWidth && size > 20) el.style.fontSize = (size -= 2) + "px";
+    }
+    document.body.dataset.ready = "1";
+  });
+</script>
+</body></html>

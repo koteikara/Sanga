@@ -3,7 +3,7 @@
 // 1. public/sitemap.xml と public/robots.txt
 // 2. public/index.html のツールカード（<!-- tools:begin --> と <!-- tools:end --> の間）
 //    JavaScriptが動かない検索エンジンにもリンクが見えるよう、tools.json から先に書いておく。
-// 3. 各ページの og:image と canonical（PAGES の表どおりにそろえる）
+// 3. 各ページの og:image / og:image:alt / og:url / canonical（PAGES の表どおりにそろえる）
 //
 // 使い方:
 //   node tools/build-seo.mjs          生成して書き込む
@@ -17,17 +17,19 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pub = path.join(root, "public");
 const check = process.argv.includes("--check");
 
-// file: public/ からの位置 / ogp: assets/ からの画像 / url: canonical
+// file: public/ からの位置 / ogp: assets/ からの画像 / alt: 画像の代替テキスト / url: canonical
+// ページ別の画像は tools/ogp/make-ogp.mjs が作る。alt は画像に描いた文字と合わせる。
+const COMMON_ALT = "SANGA TOOLBOX — 観戦をちょっと楽しくする道具を、サンガを応援する人みんなに。";
 const PAGES = [
-  { file: "index.html", url: "/", ogp: "ogp.jpg", priority: "1.0" },
-  { file: "timeline.html", ogp: "ogp/timeline.jpg", priority: "0.9" },
-  { file: "timeline-calendar.html", ogp: "ogp/timeline-calendar.jpg", priority: "0.6" },
-  { file: "sanga202627season.html", ogp: "ogp/season.jpg", priority: "0.9" },
-  { file: "squad.html", ogp: "ogp/squad.jpg", priority: "0.8" },
-  { file: "calendar.html", ogp: "ogp/calendar.jpg", priority: "0.8" },
-  { file: "TradePost/index-v1.html", ogp: "ogp/trade.jpg", priority: "0.7" },
-  { file: "sanga2025season.html", ogp: "ogp.jpg", priority: "0.3" },
-  { file: "sanga_slides.html", ogp: "ogp.jpg", priority: "0.3" },
+  { file: "index.html", url: "/", ogp: "ogp.jpg", alt: COMMON_ALT, priority: "1.0" },
+  { file: "timeline.html", ogp: "ogp/timeline.jpg", alt: "SANGA TOOLBOX サポータータイムライン — チケット販売とキックオフを、ひとつの時系列に。", priority: "0.9" },
+  { file: "timeline-calendar.html", ogp: "ogp/timeline-calendar.jpg", alt: "SANGA TOOLBOX カレンダーで受け取る — 販売開始と試合日程を、自分のカレンダーへ。", priority: "0.6" },
+  { file: "sanga202627season.html", ogp: "ogp/season.jpg", alt: "SANGA TOOLBOX 2026/27 年間スケジュール — 全試合の日程を見て、参戦予定を保存。", priority: "0.9" },
+  { file: "squad.html", ogp: "ogp/squad.jpg", alt: "SANGA TOOLBOX 予想スカッド作成 — スタメンを並べて、画像で共有。", priority: "0.8" },
+  { file: "calendar.html", ogp: "ogp/calendar.jpg", alt: "SANGA TOOLBOX 過密日程カレンダー — 2026/27シーズンの試合間隔を色で見る。", priority: "0.8" },
+  { file: "TradePost/index-v1.html", ogp: "ogp/trade.jpg", alt: "SANGA TOOLBOX 求・譲 投稿フォーマット — チケットやグッズの交換を、Xに投稿しやすく。", priority: "0.7" },
+  { file: "sanga2025season.html", ogp: "ogp.jpg", alt: COMMON_ALT, priority: "0.3" },
+  { file: "sanga_slides.html", ogp: "ogp.jpg", alt: COMMON_ALT, priority: "0.3" },
 ];
 
 const problems = [];
@@ -92,6 +94,7 @@ for (const p of PAGES) {
   const img = `${ORIGIN}/assets/${p.ogp}`;
   if (!/property="og:image" content="/.test(html)) problems.push(`${p.file} に og:image がありません`);
   html = html.replace(/(property="og:image" content=")[^"]*(")/, `$1${img}$2`);
+  html = html.replace(/(property="og:image:alt" content=")[^"]*(")/, `$1${esc(p.alt)}$2`);
   html = html.replace(/(property="og:url" content=")[^"]*(")/, `$1${urlOf(p)}$2`);
   const canon = `<link rel="canonical" href="${urlOf(p)}">`;
   if (/<link rel="canonical"[^>]*>/.test(html)) html = html.replace(/<link rel="canonical"[^>]*>/, canon);
