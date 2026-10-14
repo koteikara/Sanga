@@ -403,9 +403,6 @@ body {
 .archive .work-link:focus-visible .work-thumb { opacity: 1; }
 .archive .work-name { font-weight: 600; }
 
-.fallback-list { padding-left: 1.2em; }
-.fallback-list a { color: var(--ink); }
-
 /* ---------------- ABOUT と脚注 ---------------- */
 
 .about {

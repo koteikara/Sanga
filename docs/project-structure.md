@@ -30,7 +30,7 @@
 - 日程生成・検証: `generate-matches-from-csv.js`、`validate-matches.js`、`validate-generated-matches.js`、`validate-app-contract.js`
 - 選手生成・検証: `generate-players-from-csv.js`、`validate-players.js`
 - スカッド: `check-squad-layout.mjs`、背番号画像加工ツール
-- 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照、入口ページのnoscriptと `tools.json` の突き合わせ、版数の突き合わせ）、`asset-versions.mjs`（CSS/JS/JSON/画像の `?v=` を内容ハッシュで生成・検証。`--check` で検出、引数なしで書き換え）
+- 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照、入口ページの事前出力カードと `tools.json` の突き合わせ、版数の突き合わせ）、`asset-versions.mjs`（CSS/JS/JSON/画像の `?v=` を内容ハッシュで生成・検証。`--check` で検出、引数なしで書き換え）、`build-seo.mjs`（入口ページのカード、`sitemap.xml` / `robots.txt`、各ページの OGP・canonical を生成。`--check` で検出）、`ogp/make-ogp.mjs`（ページ別OGP画像の生成。Playwright必須）
 - タイムライン: `generate-calendar-events.js`（チケット販売CSVと `matches.json` から `calendar-events` を生成）、`validate-calendar-events.js`
 - チケット販売スケジュール: `fetch-ticket-sales.js`（公式ページを取得。取得間隔は既定で24時間以上）、`parse-ticket-sales.js`（HTML→CSV。列構成は `docs/sheets/ticket-sales.2026-08-28.csv` と同じ）。回帰確認用の作り物の入力は `tools/fixtures/`
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）

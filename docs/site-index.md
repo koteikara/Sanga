@@ -1,10 +1,12 @@
 # 公開サイト入口ページの設計
 
-確認基準日: 2026-09-08
+確認基準日: 2026-10-14
 
 状態: 実装済み。`public/index.html` が入口ページとして動いています（`assets/index.css`、`index-page.js`、
 `index-nebula.js`、`index-motion.js`、`public/data/tools.json` 6件）。
 2026-09-08に、入口ページ以外の公開ページへ共通トップバーを足しました（「公開ページ共通のトップバー」）。
+2026-10-14に、ツールカードの事前出力、ページ別OGP画像、canonical、`sitemap.xml` / `robots.txt`、
+アクセス解析の入れ物を足しました（「描画方式とJavaScript無効時の扱い」「ページ共通のメタ情報」「検索エンジン向けのファイル」「アクセス解析」）。
 以降の見た目変更は、これまでどおりプロトタイプで確認してから入れます（`docs/ui-prototype-workflow.md`）。
 
 ## 索引
@@ -17,6 +19,8 @@
 | データの形 | `tools.json` のスキーマ |
 | どう描画するか | 描画方式とJavaScript無効時の扱い |
 | メタ情報の方針 | ページ共通のメタ情報 |
+| sitemap / robots | 検索エンジン向けのファイル |
+| 訪問数の把握 | アクセス解析 |
 | 背景の動きをどう作るか | 背景表現の実装方式 |
 | 何を自動検証するか | 検証 |
 | 進め方 | 実装の段取り |
@@ -199,17 +203,22 @@
 
 ## 描画方式とJavaScript無効時の扱い
 
-`tools.json` を読み、カードを組み立てて表示します。データ変更だけでツールを追加できる形にするためです。
+ツールの正本は `tools.json` のままです。データ変更だけでツールを追加できる形は変えていません。
 
-一方で入口ページは、訪問者が最初に開くページです。JavaScriptが動かない環境で真っ白になるのは避けます。次の形にします。
+カードのHTMLは `tools/build-seo.mjs` が `tools.json` から組み立て、`index.html` の
+`<!-- tools:begin -->` と `<!-- tools:end -->` の間に書きます（2026-10-14から）。
+JavaScriptを動かさない検索エンジンにも、JavaScriptが無効な人にも同じ一覧が見えるようにするためです。
 
-* `index.html` に `<noscript>` を置き、主要ツールへのリンクを素のHTMLで書く。
-* JavaScriptが動く場合は `tools.json` から全区分を描画する。
-* `tools.json` の読み込みに失敗した場合も、`<noscript>` と同じ内容を表示に残す。読み込み失敗で導線が消えないようにする。
+* `index-page.js` は事前出力されたカードがあればそれを使い、スクロールに合わせた出現演出だけを付ける。
+* 出現演出でカードを隠すのは、JavaScriptが `reveal-ready` を付けたときだけ。JavaScriptが無効でもカードは見えたまま。
+* `tools.json` を変えたら `npm run generate:seo`（`npm run fix:asset-versions` からも呼ばれる）でカードを書き直す。
+  書き忘れは `npm run check:seo` が検出する。
 
-`<noscript>` に書くリンクは現役のツールのみとし、`tools.json` との二重管理を最小にします。この重複は検証で突き合わせます（後述）。
+以前は `<noscript>` に現役ツールの素のリンク一覧を書き、JavaScriptで `tools.json` から描画していました。
+事前出力で同じ役目を果たせるうえ、JavaScript無効時に一覧が2回出てしまうため、`<noscript>` は外しました。
+`index-page.js` には、事前出力が無いHTMLのときだけ `tools.json` から組み立てる従来の処理を残しています。
 
-読み込みパスは既存ページと同じく、絶対パスと相対パスの順で試します。本番サーバーとGitHub Pagesでルートが異なるためです（`public/assets/squad-builder.js` と同じ方式）。バージョンクエリも既存ページに合わせて付けます。
+`tools.json` を読むときの読み込みパスは既存ページと同じく、絶対パスと相対パスの順で試します。本番サーバーとGitHub Pagesでルートが異なるためです（`public/assets/squad-builder.js` と同じ方式）。バージョンクエリも既存ページに合わせて付けます。
 
 ## ページ共通のメタ情報
 
@@ -222,21 +231,58 @@
 | `og:title` / `og:description` | 各ページの `<title>` と `description` に合わせる |
 | `og:type` | `website` |
 | `og:url` | 本番の公開URL |
-| `og:image` | サイト共通の1枚を全ページで使う。`assets/ogp.jpg`（1200×630、53KB）。`twitter:card` は `summary_large_image` |
+| `og:image` | 主要6ページはページ別の画像（`assets/ogp/*.jpg`）、入口ページとアーカイブ2ページは共通の `assets/ogp.jpg`。いずれも1200×630。`twitter:card` は `summary_large_image` |
+| `og:image:alt` | 画像に描いた文字と合わせる |
+| canonical | `og:url` と同じ本番URL |
+
+`og:image`、`og:image:alt`、`og:url`、canonical は `tools/build-seo.mjs` の `PAGES` の表が正本です。
+ページのHTMLを手で直しても、次の生成で表の値に戻ります。
 
 ### OGP画像
 
 `experiments/site-index/ogp-source.html` を1200×630で描画し、JPEG品質88で書き出しています。PNGだと452KBになりますが、見た目の差が分からないままJPEGで53KBに収まります。
 
-いまはサイト共通の1枚です。ページごとに変えるなら、そのページの内容が伝わる絵を用意する価値はありますが、まずは1枚で揃えています。クラブの紋章やマークは使わず、このサイトのキャラクターと文字だけで作っています。
+入口ページとアーカイブ2ページはこの共通画像です。
 
-作り直すときは、元のHTMLを編集してヘッドレスブラウザで撮り直してください。手順は `docs/ui-prototype-workflow.md` のサムネイル撮り直しと同じ考え方です。
+主要6ページ（タイムライン、カレンダーで受け取る、年間スケジュール、予想スカッド、過密日程カレンダー、求・譲）は
+ページ別の画像にしました（2026-10-14）。共通画像の背景と2体のキャラクターを土台にし、
+左にキャラクター、右にページ名と1行の説明を置いています。ページごとの違いは、`tools.json` のカード色に寄せた
+アクセントの線と背景の差し色です。クラブの紋章やマークは使わず、このサイトのキャラクターと文字だけで作っています。
+
+| 画像 | 型 | 生成 |
+| --- | --- | --- |
+| `assets/ogp.jpg` | `experiments/site-index/ogp-source.html` | ヘッドレスブラウザで撮影（手作業） |
+| `assets/ogp/*.jpg` | `tools/ogp/ogp-page.html` | `node tools/ogp/make-ogp.mjs` |
+
+ページ別画像の文言と色は `tools/ogp/make-ogp.mjs` の `PAGES` にあります。文言を変えたら再実行して画像をコミットし、
+`tools/build-seo.mjs` の `alt` も合わせます。文字は Google Fonts の Noto Sans JP を読むため、ネットにつながる環境で実行します。
+Playwright はプロジェクトの依存ではないので、見つからないときは `PLAYWRIGHT_MODULE` で場所を指します。
+画像のURLに版数は付けていません。差し替えてもSNS側のキャッシュがしばらく古い画像を出すことがあります。
+
+共通画像を作り直すときは、元のHTMLを編集してヘッドレスブラウザで撮り直してください。手順は `docs/ui-prototype-workflow.md` のサムネイル撮り直しと同じ考え方です。
 
 適用したのは `tools.json` に載っている5ページと入口ページです。`sanga2025.html` は `sanga2025season.html` への3秒リダイレクトだけのページなので対象外にしました。滞在する先ではなく、共有される想定もありません。
 
 `description` は原則 `tools.json` の文言と同じにします。入口のカードとページのメタで別々の文を持つと、片方だけ古くなるためです。
 
 ただし `TradePost/index-v1.html` は例外で、元からあった文をそのまま残しています。カードの文より情報量があり、検索から来る人に向いているためです。**カードは一覧で読ませる短い文、ページのメタは検索・共有向けの文と、役割が違う場合があります。** 同じにできない理由があるときは、この文書に書き足してください。
+
+## 検索エンジン向けのファイル
+
+`public/sitemap.xml` と `public/robots.txt` は `tools/build-seo.mjs` が `PAGES` の表から生成します。
+手で編集しません。載せるのは入口ページ、主要6ページ、アーカイブ2ページの計9ページで、`priority` も表で決めます。
+`robots.txt` はすべて許可し、`sitemap.xml` の場所だけを示します。
+
+ページを足す・外すときは `PAGES` の表を直し、`npm run generate:seo` を実行します。
+
+## アクセス解析
+
+`public/assets/analytics.js` を全公開ページ（`PAGES` の9ページ）の `<head>` から `defer` で読みます。
+Cloudflare Web Analytics を使い、Cookie を使わず個人を特定しない集計だけを行います。
+
+* `TOKEN` が空のあいだは何も送らない。2026-10-14時点では空。
+* 本番のホスト（`sangasanga.stars.ne.jp`）以外では送らない。GitHub Pages の確認環境や手元の数字は混ざらない。
+* 有効にする手順はファイル冒頭のコメントにある。トークンを入れたら `npm run fix:asset-versions` を実行し、本番反映する。
 
 ## 背景表現の実装方式
 
@@ -290,7 +336,10 @@
 `tools/check-static-assets.mjs` に次を追加します。
 
 * `index.html` が `tools.json` と入口用JavaScriptを参照していること。
-* `<noscript>` 内のリンク先が、`tools.json` の `live` の `href` と一致すること。二重管理のずれを検出します。
+* `<!-- tools:begin -->` と `<!-- tools:end -->` の間のリンク先が、`tools.json` の全件の `href` と一致すること。
+
+`npm run check:seo`（`check:static` から呼ぶ）は、`node tools/build-seo.mjs --check` で
+カード、`sitemap.xml`、`robots.txt`、各ページの `og:image` / `og:image:alt` / `og:url` / canonical が生成結果と一致するかを見ます。
 
 ## 実装の段取り
 
@@ -302,6 +351,7 @@
 4. ~~**本番実装**~~ 済み。`public/index.html` と `assets/index.css` / `index-page.js` / `index-nebula.js` / `index-motion.js`。
 5. ~~**メタ情報の統一**~~ 済み。入口ページを含む公開6ページに `description` / favicon / OGP を入れた。
 6. 本番反映は `docs/deploy-policy.md` の手順に従う。
+7. ~~**検索とSNS向けの土台**~~ 済み（2026-10-14）。カードの事前出力、ページ別OGP、canonical、`sitemap.xml` / `robots.txt`、アクセス解析の入れ物。
 
 ## 本番のファイル構成
 
@@ -309,15 +359,20 @@
 | --- | --- |
 | `public/index.html` | 骨組み。上部バー、見出し、グリッドの器、ABOUT |
 | `public/assets/index.css` | 配色、背景、キャラクター、グリッド |
-| `public/assets/index-page.js` | `tools.json` からカードを組み立てる |
+| `public/assets/index-page.js` | 事前出力されたカードに出現演出を付ける。事前出力が無いときだけ `tools.json` から組み立てる |
 | `public/assets/index-nebula.js` | 生WebGLの背景。進行的強化として足す |
 | `public/assets/index-motion.js` | 動きを止めるかどうかの設定 |
 | `public/assets/thumbs/` | 各ツールのスクリーンショット |
 | `public/assets/avatar.webp` | 作り手のアイコン |
+| `public/assets/analytics.js` | アクセス解析。全公開ページから読む |
+| `public/assets/ogp/` | ページ別のOGP画像 |
+| `public/sitemap.xml` / `public/robots.txt` | 検索エンジン向け。`tools/build-seo.mjs` が生成 |
+| `tools/build-seo.mjs` | カード、sitemap、robots、各ページのOGP・canonical をそろえる |
+| `tools/ogp/` | ページ別OGP画像の型と生成スクリプト |
 
 `index-` を頭に付けているのは、`assets/` に日程・スカッドのファイルが同居しているためです。どのページのものかがファイル名で分かるようにしています。
 
 ## この設計で決めていないこと
 
-* OGP画像をページごとに変えるかどうか。いまはサイト共通の1枚。
+* アクセス解析を実際に有効にする時期（`analytics.js` の `TOKEN` 設定と本番反映）。有効にする前に、ABOUT に解析を使っている旨を書くかどうか。
 * `TradePost/` に `index.html` が無く `/TradePost/` で到達できない問題（`docs/production-inventory-audit.md` の未解決課題）。入口から `index-v1.html` へ直接リンクすれば導線は成立しますが、URLの見た目としては整えたいところです。
