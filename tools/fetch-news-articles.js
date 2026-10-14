@@ -16,6 +16,10 @@
  * 保存先は tmp/ で、リポジトリには入れない（.gitignore）。
  *
  * 解析は tools/parse-news-times.js が行う。ここは取得だけを受け持つ。
+ *
+ * www.sanga-fc.jp は葉の証明書だけを送る。ワークフローでは
+ * NODE_EXTRA_CA_CERTS に tools/certs/cybertrust-japan-sureserver-ca-g4.pem を指定する。
+ * 検証そのものは切らない。記事URLがトップページへ転送された場合は、そのHTMLを保存しない。
  */
 
 const fs = require('fs');
@@ -126,6 +130,10 @@ async function fetchOnce(url) {
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    const pathname = new URL(response.url).pathname.replace(/\/+$/, '') || '/';
+    if (pathname === '/') {
+      throw new Error(`トップページへ転送されました（${response.url}）`);
+    }
     return await response.text();
   } finally {
     clearTimeout(timer);

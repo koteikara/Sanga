@@ -273,6 +273,15 @@ function parseScheduleNote(ddHtml) {
 // --- 組み立て --------------------------------------------------------------
 
 function parseSchedule(html, options) {
+  // 2026-10-15 時点の公式案内は、表ではなく画像（league-ticket-schedule.png）だけを置く。
+  // 表が無いHTMLを空のCSVにすると、掲載済みの行が黙って消える。ここで止める。
+  if (html.includes('league-ticket-schedule.png') && !html.includes('schedule__list')) {
+    throw new Error(
+      '販売スケジュールが画像だけで、表（dl.schedule__list）がありません。'
+      + ' CSVは書き換えません。表形式のページが戻るまで、現在値のCSVを維持してください。',
+    );
+  }
+
   const seasonMatch = /<h2>\s*(\d{4}\/\d{2})シーズン/.exec(html);
   if (!seasonMatch) throw new Error('シーズン表記（<h2>）が見つかりません。ページ構成が変わった可能性があります');
   const season = seasonMatch[1];

@@ -885,6 +885,22 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:ticket-acl-md4-away@sanga-timeline.invalid
+DTSTAMP:20260909T031317Z
+SEQUENCE:0
+LAST-MODIFIED:20260909T031317Z
+DTSTART:20261015T030000Z
+DTEND:20261015T031500Z
+SUMMARY:コンアン・ハノイ戦 アウェイ席 一般発売 開始
+DESCRIPTION:MD4 コンアン・ハノイ戦（試合日 11/3（火））\nh
+ ttps://www.sanga-fc.jp/news/detail/21479\n※非公式のファンツー
+ ルによる予定です。日程が変わっている場合がありま
+ す。購入・応募の前に公式サイトで確認してください
+ 。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:match-sec10@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
 SEQUENCE:1
