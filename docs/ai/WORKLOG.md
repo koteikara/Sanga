@@ -63,7 +63,7 @@ Issue #317。`acl-md4`（11/3 ハノイ戦）の一般発売を `away-sales.manu
 
 ### 未確認項目
 
-GitHub Actions 上の `workflow_dispatch` は、ブランチを push したあとで実行できるかを見る。手元では同じ `NODE_EXTRA_CA_CERTS` で取得ステップと同じコマンドが終了コード 0 だった。
+`gh workflow run` は HTTP 403（Resource not accessible by integration）で、この環境から `workflow_dispatch` を起動できなかった。手元では同じ `NODE_EXTRA_CA_CERTS` で `node tools/fetch-ticket-sales.js` が終了コード 0 だった。
 
 ### 残課題
 
