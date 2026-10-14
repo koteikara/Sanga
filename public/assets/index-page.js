@@ -128,7 +128,13 @@ function render(tools) {
   observeWorks(main);
 }
 
-loadTools()
+// tools/build-seo.mjs が index.html にカードを先に書いている。あればそれを使い、
+// 作り直さない（検索エンジンとJavaScriptなしの人にも同じ一覧が見える）。
+// 無いとき（古いHTMLやカード生成前）だけ tools.json から組み立てる。
+const prerendered = document.querySelector("#works .work-grid");
+if (prerendered) {
+  observeWorks(document.querySelector("#works"));
+} else loadTools()
   .then(render)
   .catch((error) => {
     console.error("[site-index] ツール一覧を読み込めませんでした:", error);
