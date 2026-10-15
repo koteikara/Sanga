@@ -8,6 +8,7 @@
   "matches": [
     {
       "match_id": "sec01",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第1節",
       "opponent": "長崎",
@@ -27,6 +28,7 @@
     },
     {
       "match_id": "sec02",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第2節",
       "opponent": "川崎F",
@@ -46,6 +48,7 @@
     },
     {
       "match_id": "sec05",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第5節",
       "opponent": "横浜FM",
@@ -65,6 +68,7 @@
     },
     {
       "match_id": "sec06",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第6節",
       "opponent": "FC東京",
@@ -84,6 +88,7 @@
     },
     {
       "match_id": "sec08",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第8節",
       "opponent": "岡山",
@@ -103,6 +108,7 @@
     },
     {
       "match_id": "sec45",
+      "competition": "LEV",
       "competition_label": "2026/27 JリーグYBCルヴァンカップ",
       "round": "4回戦",
       "opponent": "FC町田ゼルビア",
@@ -122,6 +128,7 @@
     },
     {
       "match_id": "sec10",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第10節",
       "opponent": "広島",
@@ -141,6 +148,7 @@
     },
     {
       "match_id": "sec12",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第12節",
       "opponent": "G大阪",
@@ -160,6 +168,7 @@
     },
     {
       "match_id": "sec14",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第14節",
       "opponent": "名古屋",
@@ -179,6 +188,7 @@
     },
     {
       "match_id": "sec18",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第18節",
       "opponent": "東京V",
@@ -198,6 +208,7 @@
     },
     {
       "match_id": "sec22",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第22節",
       "opponent": "清水",
@@ -220,6 +231,7 @@
     },
     {
       "match_id": "sec25",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第25節",
       "opponent": "柏",
@@ -241,6 +253,7 @@
     },
     {
       "match_id": "sec27",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第27節",
       "opponent": "C大阪",
@@ -263,6 +276,7 @@
     },
     {
       "match_id": "sec29",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第29節",
       "opponent": "千葉",
@@ -285,6 +299,7 @@
     },
     {
       "match_id": "sec30",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第30節",
       "opponent": "水戸",
@@ -307,6 +322,7 @@
     },
     {
       "match_id": "sec31",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第31節",
       "opponent": "鹿島",
@@ -329,6 +345,7 @@
     },
     {
       "match_id": "sec33",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第33節",
       "opponent": "町田",
@@ -351,6 +368,7 @@
     },
     {
       "match_id": "sec34",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第34節",
       "opponent": "福岡",
@@ -372,6 +390,7 @@
     },
     {
       "match_id": "sec36",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第36節",
       "opponent": "浦和",
@@ -394,6 +413,7 @@
     },
     {
       "match_id": "sec38",
+      "competition": "J1",
       "competition_label": "明治安田J1リーグ",
       "round": "第38節",
       "opponent": "神戸",

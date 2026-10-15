@@ -175,6 +175,11 @@ public/
 | `stadium_proximity` | boolean or null | 任意 | 近さ重視の補助判定 |
 | `sightseeing_friendly` | boolean or null | 任意 | 観光向き補助判定 |
 | `gourmet_area_note` | string or null | 任意 | 補助メモ |
+| `hotel_image_url` | string or null | 任意 | 外観写真（楽天 `hotelImageUrl`）。`https://img.travel.rakuten.co.jp/` のみ。`http://` は `https://` にそろえ、ほかのホストは null（2026-10-15追加） |
+| `hotel_thumbnail_url` | string or null | 任意 | 小さい写真（楽天 `hotelThumbnailUrl`）。条件は `hotel_image_url` と同じ。外観写真が無いときの代わり |
+| `review_average` | number or null | 任意 | 楽天の評価平均（0より大きく5以下）。件数0なら null |
+| `review_count` | number or null | 任意 | 楽天の評価件数（正の整数）。0なら null |
+| `nearest_station` | string or null | 任意 | 楽天の最寄り駅（`nearestStation`） |
 
 ## 5. 公開用に最小限必要な項目
 

@@ -91,6 +91,29 @@ def price_tier(charge: int | None) -> str:
     return PriceTier.PREMIUM if charge >= 16000 else PriceTier.STANDARD
 
 
+RAKUTEN_IMAGE_HOST = "img.travel.rakuten.co.jp"
+
+
+def rakuten_image(url: str | None) -> str | None:
+    """楽天トラベルの画像URLだけを https にそろえて通す。ほかのホストは捨てる。"""
+    url = (url or "").strip()
+    for scheme in ("https://", "http://"):
+        if url.startswith(scheme + RAKUTEN_IMAGE_HOST + "/"):
+            return "https://" + url[len(scheme):]
+    return None
+
+
+def review(info: dict) -> tuple[float | None, int | None]:
+    try:
+        count = int(info.get("reviewCount") or 0)
+        average = float(info.get("reviewAverage") or 0)
+    except (TypeError, ValueError):
+        return None, None
+    if count <= 0 or not 0 < average <= 5:
+        return None, None
+    return round(average, 2), count
+
+
 def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCandidate]:
     """VacantHotelSearch の応答を内部モデルへ。hotelBasicInfo だけを使う。"""
     out: list[HotelCandidate] = []
@@ -104,6 +127,7 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
             distance = round(haversine_km(float(lat), float(lon), stadium["latitude"], stadium["longitude"]), 1)
         charge = info.get("hotelMinCharge")  # 宿の基本の最安料金（目安）。空室プランの料金ではない
         parking = (info.get("parkingInformation") or "").strip()
+        review_average, review_count = review(info)
         out.append(HotelCandidate(
             hotel_no=int(info["hotelNo"]),
             hotel_name=info.get("hotelName", ""),
@@ -117,6 +141,11 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
             hotel_class_code_raw=info.get("hotelClassCode"),
             affiliate_url=info["hotelInformationUrl"],
             stadium_proximity=(distance is not None and distance <= 1.5),
+            hotel_image_url=rakuten_image(info.get("hotelImageUrl")),
+            hotel_thumbnail_url=rakuten_image(info.get("hotelThumbnailUrl")),
+            review_average=review_average,
+            review_count=review_count,
+            nearest_station=(info.get("nearestStation") or "").strip() or None,
         ))
     out.sort(key=lambda h: (h.min_charge is None, h.min_charge or 0))
     return out[:MAX_HOTELS]
