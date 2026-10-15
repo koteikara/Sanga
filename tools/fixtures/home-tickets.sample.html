@@ -1,0 +1,60 @@
+<!doctype html>
+<!--
+  tools/parse-away-tickets.js --section home の回帰確認用の入力です。
+  取得したページをそのまま置くと文章の複製になるため、解析に必要な構造
+  （クラス名と並び）だけを自分で書いた作り物です。実在の試合ではありません。
+  リーグ戦（相手欄あり）、ACL（相手欄なし・試合名に「対」）、付随チケット（その他）、
+  アウェイ節（読まない）を混ぜてあります。
+-->
+<html lang="ja">
+<body>
+<div class="game-list">
+  <ul>
+    <!--ホームここから-->
+    <li>
+      <a href="/sales/perform/2000001/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-j1"></span>サンプルリーグ</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">11/21</span> <span class="vs-box-info-time">14:00</span></div></div>
+          <div class="vs-box-place"><p class="team-name">ホーム対戦相手</p><span>サンプルスタジアム</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-vacant">発売前</div></div>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/sales/perform/2000002/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-ac"></span>ACL</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">11/24</span> <span class="vs-box-info-time">19:00</span></div></div>
+          <div class="vs-box-vs-place"><p>サンプル大陸大会 リーグステージ 京都サンプル対海外サンプルＦＣ</p><span>サンプル府立スタジアム</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-vacant">空席あり</div></div>
+        </div>
+      </a>
+    </li>
+    <li>
+      <a href="/sales/perform/2000003/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-other"></span>その他</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">11/21</span> <span class="vs-box-info-time">14:00</span></div></div>
+          <div class="vs-box-vs-place"><p>【駐車場チケット】京都サンプル対ホーム対戦相手</p><span>サンプルスタジアム</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-vacant">空席あり</div></div>
+        </div>
+      </a>
+    </li>
+    <!--ホームここまで-->
+    <!--アウェイここから-->
+    <li>
+      <a href="/sales/perform/2000009/001">
+        <div class="comp"><div class="comp-ttk"><span class="bg-j1"></span>サンプルリーグ</div></div>
+        <div class="vs-box">
+          <div class="vs-box-info"><div><span class="vs-box-info-day">11/28</span> <span class="vs-box-info-time">14:00</span></div></div>
+          <div class="vs-box-place"><p class="team-name">アウェイ対戦相手</p><span>アウェイスタジアム</span></div>
+          <div class="vs-box-status"><div class="comp-status bg-vacant">空席あり</div></div>
+        </div>
+      </a>
+    </li>
+    <!--アウェイここまで-->
+  </ul>
+</div>
+</body>
+</html>

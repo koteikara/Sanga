@@ -1,0 +1,3 @@
+match_date,kickoff,competition,opponent_raw,venue,state_raw,perform_url,retrieved_at_jst
+2030-11-21,14:00,サンプルリーグ,ホーム対戦相手,サンプルスタジアム,発売前,https://www.jleague-ticket.jp/sales/perform/2000001/001,2030-07-01T10:00:00+09:00
+2030-11-24,19:00,ACL,海外サンプルＦＣ,サンプル府立スタジアム,空席あり,https://www.jleague-ticket.jp/sales/perform/2000002/001,2030-07-01T10:00:00+09:00

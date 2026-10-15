@@ -33,6 +33,7 @@
 - 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照、入口ページの事前出力カードと `tools.json` の突き合わせ、版数の突き合わせ）、`asset-versions.mjs`（CSS/JS/JSON/画像の `?v=` を内容ハッシュで生成・検証。`--check` で検出、引数なしで書き換え）、`build-seo.mjs`（入口ページのカード、`sitemap.xml` / `robots.txt`、各ページの OGP・canonical を生成。`--check` で検出）、`ogp/make-ogp.mjs`（ページ別OGP画像の生成。Playwright必須）
 - タイムライン: `generate-calendar-events.js`（チケット販売CSVと `matches.json` から `calendar-events` を生成）、`validate-calendar-events.js`
 - チケット販売スケジュール: `fetch-ticket-sales.js`（公式ページを取得。取得間隔は既定で24時間以上。2026-10-15時点の取得先は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。`www.sanga-fc.jp` が中間証明書を送らないため、ワークフローは `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` を `NODE_EXTRA_CA_CERTS` で読む）、`parse-ticket-sales.js`（HTMLの表→CSV。列構成は `docs/sheets/ticket-sales.2026-08-28.csv` と同じ。画像だけの案内はCSVにしない）。回帰確認用の作り物の入力は `tools/fixtures/`
+- ホーム戦の販売日時（Jリーグチケット、2026-10-15から）: `parse-away-tickets.js --section home`（ホーム節→`docs/sheets/home-tickets.current.csv`）、`fetch-away-sales.js --input docs/sheets/home-tickets.current.csv --out tmp/home-perform`、`parse-home-sales.js`（→`docs/sheets/home-sales.current.csv`）、`check-home-sales-merge.js`（`generate-calendar-events.js --home-sales` の上書きの決まりを確かめる）
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
 - ホテル: `tools/hotels/`、`validate-hotels.js`
 - 本番からの取り込み: `fetch-production-files.mjs`、`ftp-client.mjs`（読み取り専用。手順は `docs/production-import.md`）、`check-import-tools.mjs`（検証用FTPサーバーを立てて動作確認）

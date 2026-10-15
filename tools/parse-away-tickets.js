@@ -16,6 +16,9 @@
  * ホストとして現れない＝Jリーグチケットを使っていない）。
  * 行に書いてある語は事実、行が無いことは何も意味しない。
  *
+ * `--section home` でホーム節を読む（2026-10-15から）。公式の販売スケジュールが更新できなく
+ * なった代わりに、ホーム戦の試合ページを tools/parse-home-sales.js で読むための一覧を作る。
+ *
  * HTMLの取得は tools/fetch-away-tickets.js が行う。ここは取得しない。
  */
 
@@ -23,12 +26,18 @@ const fs = require('fs');
 const path = require('path');
 
 const repoRoot = path.resolve(__dirname, '..');
-const DEFAULT_OUTPUT = path.join(repoRoot, 'docs', 'sheets', 'away-tickets.current.csv');
+const SHEETS_DIR = path.join(repoRoot, 'docs', 'sheets');
 const BASE_URL = 'https://www.jleague-ticket.jp';
 
-/** ページのアウェイ節を囲むコメント。ホーム戦を巻き込まないための目印。 */
-const SECTION_START = 'アウェイここから';
-const SECTION_END = 'アウェイここまで';
+/**
+ * ページの節を囲むコメント。ホームとアウェイを取り違えないための目印。
+ * クラブページは `?tab=home` でも `?tab=away` でも同じHTMLで、両方の節が入っている。
+ * ホーム節は、公式の販売スケジュールが更新されなくなった代わりに使う（2026-10-15から）。
+ */
+const SECTIONS = {
+  away: { start: 'アウェイここから', end: 'アウェイここまで', label: 'アウェイ', output: 'away-tickets.current.csv' },
+  home: { start: 'ホームここから', end: 'ホームここまで', label: 'ホーム', output: 'home-tickets.current.csv' },
+};
 
 const COLUMNS = [
   'match_date',
@@ -42,11 +51,12 @@ const COLUMNS = [
 ];
 
 function usage() {
-  console.error('使い方: node tools/parse-away-tickets.js <away.html> [output.csv] [options]');
+  console.error('使い方: node tools/parse-away-tickets.js <club.html> [output.csv] [options]');
+  console.error('  --section <away|home>    読む節（既定: away）');
   console.error('  --retrieved-at <ISO8601> 取得日時。省略時は実行時刻');
   console.error('  --check                  出力先と比べ、違えば終了コード1（書き換えない）');
   console.error('  --keep-unchanged         違いが取得日時だけなら書き換えない');
-  console.error(`出力先を省略した場合: ${path.relative(repoRoot, DEFAULT_OUTPUT)}`);
+  console.error('出力先を省略した場合: docs/sheets/away-tickets.current.csv（--section home なら home-tickets.current.csv）');
 }
 
 /**
@@ -100,25 +110,44 @@ function pad(value) {
   return String(value).padStart(2, '0');
 }
 
-function parseRows(html, retrievedAt) {
-  const start = html.indexOf(SECTION_START);
-  const end = html.indexOf(SECTION_END);
+/**
+ * ホーム節のACLは対戦相手の欄（team-name）を持たず、`京都サンガＦ．Ｃ．対○○` という
+ * 試合名と会場だけが `vs-box-vs-place` に入る。そこから相手と会場を読む。
+ */
+function placeOf(row) {
+  const found = row.match(/class="vs-box-vs-place"[^>]*>\s*<p[^>]*>([\s\S]*?)<\/p>\s*<span[^>]*>([\s\S]*?)<\/span>/);
+  if (!found) return null;
+  const title = stripTags(found[1]);
+  const vs = title.lastIndexOf('対');
+  if (vs < 0) return null;
+  return { opponent: title.slice(vs + 1).trim(), venue: stripTags(found[2]) };
+}
+
+function parseRows(html, retrievedAt, sectionName = 'away') {
+  const section = SECTIONS[sectionName];
+  const start = html.indexOf(section.start);
+  const end = html.indexOf(section.end);
   if (start < 0 || end < 0 || end < start) {
-    throw new Error(`アウェイ節の目印（${SECTION_START} / ${SECTION_END}）が見つかりません。ページ構成を確認してください。`);
+    throw new Error(`${section.label}節の目印（${section.start} / ${section.end}）が見つかりません。ページ構成を確認してください。`);
   }
 
-  const section = html.slice(start, end);
+  const body = html.slice(start, end);
   const rows = [];
   const skipped = [];
   const supplementary = [];
 
   // 1試合が1つの <li>。アンカー単位で切ると入れ子で取りこぼすため、行で切る。
-  const chunks = section.split(/<li[\s>]/).filter((chunk) => chunk.includes('/sales/perform/'));
+  const chunks = body.split(/<li[\s>]/).filter((chunk) => chunk.includes('/sales/perform/'));
   chunks.forEach((chunk) => {
     const row = chunk.split('</li>')[0];
     const href = (row.match(/href="(\/sales\/perform\/[^"]+)"/) || [])[1];
     const day = pick(row, 'vs-box-info-day');
-    const opponent = pick(row, 'team-name');
+    const competition = competitionOf(row);
+    // ホーム節だけ、team-name が無い行（ACL）を試合名から読む。「その他」は付随チケット。
+    const place = sectionName === 'home' && competition !== 'その他' && !pick(row, 'team-name')
+      ? placeOf(row)
+      : null;
+    const opponent = pick(row, 'team-name') || (place ? place.opponent : '');
     const stateRaw = pick(row, 'comp-status');
 
     const dayParts = day.match(/^(\d{1,2})\/(\d{1,2})$/);
@@ -142,10 +171,12 @@ function parseRows(html, retrievedAt) {
     rows.push({
       match_date: `${year}-${pad(month)}-${pad(date)}`,
       kickoff: pick(row, 'vs-box-info-time'),
-      competition: competitionOf(row),
+      competition,
       opponent_raw: opponent,
       // 会場は team-name の次のspan。クラス名が無いため、団体名を取り除いて拾う。
-      venue: stripTags((row.match(/class="team-name"[^>]*>[\s\S]*?<\/p>([\s\S]*?)<\/div>/) || [])[1] || ''),
+      venue: place
+        ? place.venue
+        : stripTags((row.match(/class="team-name"[^>]*>[\s\S]*?<\/p>([\s\S]*?)<\/div>/) || [])[1] || ''),
       state_raw: stateRaw,
       perform_url: `${BASE_URL}${href}`,
       retrieved_at_jst: retrievedAt,
@@ -172,7 +203,7 @@ function jstStamp(date) {
 }
 
 function main(argv) {
-  const options = { retrievedAt: null, check: false, keepUnchanged: false };
+  const options = { retrievedAt: null, check: false, keepUnchanged: false, section: 'away' };
   const positional = [];
 
   for (let i = 0; i < argv.length; i += 1) {
@@ -181,14 +212,18 @@ function main(argv) {
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '--keep-unchanged') { options.keepUnchanged = true; continue; }
     if (arg === '--retrieved-at') { options.retrievedAt = argv[i += 1]; continue; }
+    if (arg === '--section') { options.section = argv[i += 1]; continue; }
     if (arg.startsWith('--')) { console.error(`不明なオプション: ${arg}`); usage(); return 1; }
     positional.push(arg);
   }
 
   if (positional.length < 1 || positional.length > 2) { usage(); return 1; }
+  if (!SECTIONS[options.section]) { console.error(`不明な節: ${options.section}`); usage(); return 1; }
 
   const htmlPath = path.resolve(positional[0]);
-  const outputPath = positional[1] ? path.resolve(positional[1]) : DEFAULT_OUTPUT;
+  const outputPath = positional[1]
+    ? path.resolve(positional[1])
+    : path.join(SHEETS_DIR, SECTIONS[options.section].output);
   const retrievedAt = options.retrievedAt || jstStamp(new Date());
 
   let html;
@@ -201,7 +236,7 @@ function main(argv) {
 
   let parsed;
   try {
-    parsed = parseRows(html, retrievedAt);
+    parsed = parseRows(html, retrievedAt, options.section);
   } catch (error) {
     console.error(error.message);
     return 1;
@@ -220,7 +255,7 @@ function main(argv) {
     // 取得日時は毎回動くため、中身の比較からは外す。
     if (comparableCsv(current) !== comparableCsv(csv)) {
       console.error(`${path.relative(repoRoot, outputPath)} がHTMLの内容と一致しません。`);
-      console.error('  node tools/parse-away-tickets.js を実行して作り直してください。');
+      console.error(`  node tools/parse-away-tickets.js --section ${options.section} を実行して作り直してください。`);
       return 1;
     }
     console.log(`生成物OK: ${path.relative(repoRoot, outputPath)} はHTMLと一致しています（${parsed.rows.length}件）`);

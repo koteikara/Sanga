@@ -102,6 +102,25 @@ jobs:
           node tools/fetch-away-sales.js --force
           node tools/parse-away-sales.js --keep-unchanged
 
+      # ホーム戦の販売日時をJリーグチケットの試合ページから読む（2026-10-15から）。
+      # 公式の販売スケジュールは表が画像になり、更新できなくなった。同じ販売の日時を
+      # Jリーグチケットから補い、generate-calendar-events.js の --home-sales で公式の
+      # 同じ段階を上書きする（docs/supporter-timeline-design.md
+      # 「ホーム戦の販売日時をJリーグチケットで補う」）。
+      #
+      # クラブページは上の手順で取得済み（ホーム節も同じHTMLに入っている）。
+      # ここで増えるのは、ホーム節に載った試合ページの取得だけ。
+      - name: ホーム戦の販売日時をJリーグチケットから取得
+        id: home_jlt
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          test -s tmp/away-tickets.html
+          node tools/parse-away-tickets.js tmp/away-tickets.html --section home --keep-unchanged
+          sleep 10
+          node tools/fetch-away-sales.js --input docs/sheets/home-tickets.current.csv --out tmp/home-perform --force
+          node tools/parse-home-sales.js --keep-unchanged
+
       # ニュース一覧から、試合ごとの公式の案内を拾う。
       #
       # **一覧だけを取る。記事は開かない。** 一覧のHTMLはCMSが出しており、日付・カテゴリ・
@@ -153,6 +172,19 @@ jobs:
           echo "::warning::公式の案内の取り込みに失敗しました。案内の件数は更新されていません。"
 
       # アウェイが失敗した日も、静かな日（PRが立たない日）にこそ気付けるようにする。
+      - name: ホーム戦（Jリーグチケット）の失敗を記録
+        if: steps.home_jlt.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          {
+            echo '## ホーム戦の販売日時（Jリーグチケット）の取り込みに失敗しました'
+            echo
+            echo 'ほかの取り込みは続けています。`docs/sheets/home-sales.current.csv` は前回の値のままです。'
+            echo
+            echo "実行ログ: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::ホーム戦の販売日時（Jリーグチケット）の取り込みに失敗しました。"
+
       - name: アウェイの失敗を記録
         if: steps.away.outcome == 'failure'
         run: |
@@ -172,7 +204,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv)" ]; then
+          if [ -z "$(git status --porcelain docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/home-tickets.current.csv docs/sheets/home-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv)" ]; then
             echo "販売スケジュール・アウェイの販売状態・公式の案内に変化はありませんでした。" | tee -a "$GITHUB_STEP_SUMMARY"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -269,6 +301,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           AWAY_OUTCOME: ${{ steps.away.outcome }}
+          HOME_JLT_OUTCOME: ${{ steps.home_jlt.outcome }}
         run: |
           set -euo pipefail
 
@@ -276,7 +309,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/timeline-events.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/home-tickets.current.csv docs/sheets/home-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/timeline-events.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
           git commit -m "data: チケット販売スケジュールを取り込む"
           git push -u origin "$branch"
 
@@ -304,6 +337,10 @@ jobs:
             echo '- 内容を確認してからマージしてください。自動ではマージしません。'
             echo '- アウェイ席の販売状態（`docs/sheets/away-tickets.current.csv`）も更新しています。発売中の試合に加え、**発売前の試合も載ります**。**ただし載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。'
             echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'
+            echo '- ホーム戦の販売日時は、公式の販売スケジュールが更新できないため、Jリーグチケットの試合ページから補っています（`docs/sheets/home-sales.current.csv`）。公式と日時が違う段階は、こちらで上書きします。'
+            if [ "${HOME_JLT_OUTCOME}" = "failure" ]; then
+              echo '- **ホーム戦（Jリーグチケット）の取り込みは失敗しました。** `home-sales.current.csv` は前回の値のままです。'
+            fi
             if [ "${AWAY_OUTCOME}" = "failure" ]; then
               echo '- **アウェイの取り込みは失敗しました。** このPRのアウェイ関連ファイルは前回の値のままです。実行ログを確認してください。'
             fi
@@ -375,8 +412,11 @@ jobs:
       # **緑のままにしない。** continue-on-error で飲み込んだ失敗を、ここでジョブの失敗に
       # 変える。赤くなるものは直り、緑のままのものは放置される。
       - name: アウェイと案内の取り込み結果を確かめる
-        if: always() && (steps.ticket_csv.outcome == 'failure' || steps.away.outcome == 'failure' || steps.news.outcome == 'failure')
+        if: always() && (steps.ticket_csv.outcome == 'failure' || steps.away.outcome == 'failure' || steps.home_jlt.outcome == 'failure' || steps.news.outcome == 'failure')
         run: |
+          if [ "${{ steps.home_jlt.outcome }}" = "failure" ]; then
+            echo 'ホーム戦（Jリーグチケット）の取り込みに失敗しています。「ホーム戦の販売日時をJリーグチケットから取得」のログを見てください。'
+          fi
           if [ "${{ steps.ticket_csv.outcome }}" = "failure" ]; then
             echo '販売スケジュールの解析に失敗しています。「CSVを更新」のログを見てください。'
           fi
