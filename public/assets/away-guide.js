@@ -51,7 +51,8 @@
     if (m.date_candidates && m.date_candidates.length) return m.date_candidates.map(function (d) { return d.slice(5).replace("-", "/"); }).join(" or ") + "（日程未定）";
     return "日程未定";
   }
-  function yen(n) { return n == null ? "料金は楽天トラベルで確認" : "最安 " + Number(n).toLocaleString("ja-JP") + "円〜"; }
+  // hotelMinCharge は宿の基本の最安料金（目安）で、その日・その人数の空室プランの料金ではない
+  function yen(n) { return n == null ? "料金は楽天トラベルで確認" : "目安の最安料金 " + Number(n).toLocaleString("ja-JP") + "円〜"; }
 
   function renderHotels(box, doc) {
     var m = doc.meta || {};
@@ -65,7 +66,7 @@
       var li = el("li", "away-hotel");
       var a = safeLink(h.affiliate_url, h.hotel_name, "nofollow sponsored noopener noreferrer");
       li.append(a || el("span", null, h.hotel_name));
-      li.append(el("span", "away-hotel-info", " " + yen(h.min_charge) + " ／ 会場から約" + (h.distance_km_from_stadium != null ? h.distance_km_from_stadium : "?") + "km"));
+      li.append(el("span", "away-hotel-info", " " + yen(h.min_charge) + (h.distance_km_from_stadium != null ? " ／ 会場から約" + h.distance_km_from_stadium + "km" : "")));
       ul.append(li);
     });
     box.append(ul);

@@ -102,7 +102,7 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
         distance = None
         if lat and lon:
             distance = round(haversine_km(float(lat), float(lon), stadium["latitude"], stadium["longitude"]), 1)
-        charge = info.get("hotelMinCharge")
+        charge = info.get("hotelMinCharge")  # 宿の基本の最安料金（目安）。空室プランの料金ではない
         parking = (info.get("parkingInformation") or "").strip()
         out.append(HotelCandidate(
             hotel_no=int(info["hotelNo"]),
@@ -110,7 +110,7 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
             stadium_id=stadium_id,
             latitude=float(lat) if lat else None,
             longitude=float(lon) if lon else None,
-            distance_km_from_stadium=distance if distance is not None else 0,
+            distance_km_from_stadium=distance,
             min_charge=int(charge) if charge else None,
             price_tier=price_tier(int(charge) if charge else None),
             parking_raw_text=parking or None,

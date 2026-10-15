@@ -25,7 +25,7 @@ const PAGES = [
   { file: "timeline.html", ogp: "ogp/timeline.jpg", alt: "SANGA TOOLBOX サポータータイムライン — チケット販売とキックオフを、ひとつの時系列に。", priority: "0.9" },
   { file: "timeline-calendar.html", ogp: "ogp/timeline-calendar.jpg", alt: "SANGA TOOLBOX カレンダーで受け取る — 販売開始と試合日程を、自分のカレンダーへ。", priority: "0.6" },
   { file: "sanga202627season.html", ogp: "ogp/season.jpg", alt: "SANGA TOOLBOX 2026/27 年間スケジュール — 全試合の日程を見て、参戦予定を保存。", priority: "0.9" },
-  { file: "away.html", ogp: "ogp/away.jpg", priority: "0.8" },
+  { file: "away.html", ogp: "ogp/away.jpg", alt: "SANGA TOOLBOX アウェイ遠征ガイド — 会場・最寄り駅・前泊ホテル候補を、試合ごとに。", priority: "0.8" },
   { file: "squad.html", ogp: "ogp/squad.jpg", alt: "SANGA TOOLBOX 予想スカッド作成 — スタメンを並べて、画像で共有。", priority: "0.8" },
   { file: "calendar.html", ogp: "ogp/calendar.jpg", alt: "SANGA TOOLBOX 過密日程カレンダー — 2026/27シーズンの試合間隔を色で見る。", priority: "0.8" },
   { file: "TradePost/index-v1.html", ogp: "ogp/trade.jpg", alt: "SANGA TOOLBOX 求・譲 投稿フォーマット — チケットやグッズの交換を、Xに投稿しやすく。", priority: "0.7" },

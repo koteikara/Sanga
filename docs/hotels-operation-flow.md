@@ -59,6 +59,7 @@ node --check public/assets/app.js
 | `docs/sheets/away-transport.csv`（最寄り駅・アクセス・任意の交通リンク） | `public/data/away-guide.json`（`tools/generate-away-guide.js`） |
 
 - 対象は国内のアウェイ戦（ACL は除く）。宿泊は前泊（試合前日チェックイン・翌日チェックアウト、2名、半径3km）。日程未定の試合は候補日の早いほう。
+- 料金は `hotelBasicInfo.hotelMinCharge`（宿の基本の最安料金）で、その日・2名の空室プランの料金ではない。ページでは「目安の最安料金」と書き、並び順もこの目安による。プランごとの料金（`roomInfo` の `dailyCharge`）に切り替えるときは、実際の応答で人数分か1室分かを確かめてから文言を変える。
 - 取得条件・日時（`meta.updated_at`、JST）をページに表示する。広告表記（PR）はページ冒頭と各ホテル欄に出す。
 - ホテルのリンクは、楽天がアフィリエイトIDつきで返した `hotelInformationUrl` だけを使う。IDをリポジトリに書かない。
 
@@ -68,7 +69,7 @@ node --check public/assets/app.js
 
 ### 更新
 
-- 自動: `hotels-sync.yml`（毎週月曜 10:00 JST。`.github/workflows/`）。差分があれば下書きPR。デプロイはしない。
+- 自動: `hotels-sync.yml`（毎週月曜 10:00 JST。`.github/workflows/`）。差分があれば下書きPR（`away-guide.json` が変わると `away-guide.js` / `away.html` の版数も変わるため、コミットは `public/` 全体）。デプロイはしない。`github.token` で作ったPRではCIが自動で動かないので、PR画面から閉じて開き直すか、手元で `npm run check` を確かめてからmergeする。
 - 手動: `python tools/hotels/build_match_hotels.py --all-away` → `node tools/generate-away-guide.js` → `npm run fix:asset-versions` → `npm run check:static`
 - API を呼ばない検証: `--response-file tools/fixtures/hotels/vacant-hotel-search.sample.json`（出力は公開データに含めない）
 
