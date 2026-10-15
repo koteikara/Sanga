@@ -54,14 +54,15 @@ node --check public/assets/app.js
 
 | 入力 | 出力 |
 | --- | --- |
-| `public/data/stadiums.json`（会場の座標。matches.json の `venue` 略称で引く） | ホテル検索の中心点 |
+| `public/data/stadiums.json`（スタジアムと最寄り駅の座標。matches.json の `venue` 略称で引く） | ホテル検索の中心点 |
 | 楽天トラベル VacantHotelSearch | `public/data/hotels/{match_id}.json` と `hotel-index.json` |
 | `docs/sheets/away-transport.csv`（最寄り駅・アクセス・任意の交通リンク） | `public/data/away-guide.json`（`tools/generate-away-guide.js`） |
 
-- 対象は国内のアウェイ戦（ACL は除く）。宿泊は前泊（試合前日チェックイン・翌日チェックアウト、2名、半径3km）。日程未定の試合は候補日の早いほう。
+- 対象は国内のアウェイ戦（ACL は除く）。宿泊は前泊（試合前日チェックイン）と当日泊（試合の日チェックイン）の2通りで、どちらも2名・1泊。1泊ごとにスタジアムから半径3kmと最寄り駅から半径1kmの2回検索し、それぞれ安い順に6件まで、重なりを除いて最大12件を安い順に並べる（1試合4回のAPI呼び出し、1秒1回）。日程未定の試合は候補日の早いほう。
+- 最寄り駅は `stadiums.json` の `station_name` / `station_latitude` / `station_longitude`。座標は「国土数値情報（鉄道データ）」（国土交通省、CC-BY-4.0）を OpenPOI API（https://openpoiapi.com/）で駅名とスタジアム周辺15kmで検索し、いちばん近い同名の駅を採った（2026-10-16確認。出典は `stadiums.json` の `meta.station_source`）。`tools/validate-stadiums.js` が名前の形と、スタジアムから15km以内であることを確かめる。
 - 料金は、VacantHotelSearch が返す空室プラン（`roomInfo` の `roomBasicInfo` と直後の `dailyCharge`）のうち、`dailyCharge.total`（その日1泊の合計料金）が最安のもの（`stay_charge_total`）。並び順もこの料金。ページでは「2名1泊 ¥○〜」と、2で割った「1人 約¥○」、食事の有無を出す。プランが取れなかった宿だけ `hotelMinCharge`（楽天の説明では「1部屋1泊あたり、税・サービス料込みの最安値の目安」）を「目安」として出す。楽天の説明には `total` が指定人数分かどうかが書かれていないため、実際の応答で `rakutenCharge`・`chargeFlag`（0=1人あたり、1=1室あたり）と突き合わせて確かめる。
 - 取得条件・日時（`meta.updated_at`、JST）をページに表示する。広告表記（PR）はページ冒頭と各ホテル欄に出す。
-- 見た目は過密日程カレンダーと同じ紫の地・ぼかし（ネビュラ）と紙のカード（`public/assets/away.css`）。試合ごとに大会色の帯（J1 / ルヴァン）、ホテルは写真つきカードを横に流す（2026-10-15）。
+- 見た目は過密日程カレンダーと同じ紫の地・ぼかし（ネビュラ）と紙のカード（`public/assets/away.css`）。試合ごとに大会色の帯（J1 / ルヴァン）、ホテルは写真つきカードを前泊・当日泊の2列で横に流す（2026-10-15、2列化は10-16）。列ごとに件数と「スワイプで他の宿 →」を出し、マウス操作の画面では左右の送りボタンも出す。ホテル名は全角英数字を半角にそろえ（NFKC）、3行まで出す。
 - ホテルの写真は楽天が返す `hotelImageUrl`（無ければ `hotelThumbnailUrl`）を `img.travel.rakuten.co.jp` から直接読む。画像を複製して置かない。読めないときは写真なしの絵に替える。評価（★と件数）も楽天の値をそのまま出す。楽天ウェブサービスのクレジット（Supported by Rakuten Developers）をページ下に置く。
 - A8.net の計測ピクセルは、同じ提携リンクにつきページで1回だけ置く（試合の数だけ表示回数が増えないように）。
 - ホテルのリンクは、楽天がアフィリエイトIDつきで返した `hotelInformationUrl` だけを使う。IDをリポジトリに書かない。
@@ -78,7 +79,7 @@ node --check public/assets/app.js
 
 ### 会場・交通の追加
 
-会場が増えたら `stadiums.json` に追加し、`away-transport.csv` に1行足す。交通のアフィリエイトリンクは `transport_label` と `transport_url`（https のみ）に手で入れる。
+スタジアムが増えたら `stadiums.json` に最寄り駅の名前・座標とともに追加し、`away-transport.csv` に1行足す。交通のアフィリエイトリンクは `transport_label` と `transport_url`（https のみ）に手で入れる。
 
 ### A8.net の提携リンク（バス・宿の汎用リンク）
 

@@ -24,7 +24,7 @@ if str(CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(CURRENT_DIR))
 
 from models import HotelCandidate, PriceTier  # noqa: E402
-from public_schema import build_hotel_index_entry, build_match_hotels_document  # noqa: E402
+from public_schema import build_hotel_index_entry, build_match_hotels_document, to_public_hotel_dict  # noqa: E402
 
 ROOT_DIR = CURRENT_DIR.parent.parent
 PUBLIC_DATA_DIR = ROOT_DIR / "public" / "data"
@@ -33,9 +33,11 @@ HOTEL_INDEX_PATH = PUBLIC_DATA_DIR / "hotel-index.json"
 MATCHES_PATH = PUBLIC_DATA_DIR / "matches.json"
 STADIUMS_PATH = PUBLIC_DATA_DIR / "stadiums.json"
 
-SEARCH_RADIUS_KM = 3
+SEARCH_RADIUS_KM = 3          # スタジアムを中心に
+STATION_RADIUS_KM = 1         # 最寄り駅を中心に
+PER_AREA = 6                  # 1泊あたり、スタジアム周辺・駅周辺それぞれの上限
 ADULT_NUM = 2
-MAX_HOTELS = 10
+MAX_HOTELS = PER_AREA * 2
 JST = timezone(timedelta(hours=9))
 
 
@@ -156,7 +158,7 @@ def cheapest_plan(parts: list) -> dict | None:
     return best
 
 
-def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCandidate]:
+def parse_hotels(payload: dict, stadium: dict, stadium_id: str, area: str = "stadium") -> list[HotelCandidate]:
     """VacantHotelSearch の応答を内部モデルへ。hotelBasicInfo だけを使う。"""
     out: list[HotelCandidate] = []
     plans: list[dict | None] = []
@@ -165,9 +167,11 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
         if not info or not info.get("hotelInformationUrl"):
             continue
         lat, lon = info.get("latitude"), info.get("longitude")
-        distance = None
+        distance = station_distance = None
         if lat and lon:
             distance = round(haversine_km(float(lat), float(lon), stadium["latitude"], stadium["longitude"]), 1)
+            if stadium.get("station_latitude") is not None:
+                station_distance = round(haversine_km(float(lat), float(lon), stadium["station_latitude"], stadium["station_longitude"]), 1)
         charge = info.get("hotelMinCharge")  # 1部屋1泊の最安値の目安（楽天の説明）。日付・人数に関係しない
         parking = (info.get("parkingInformation") or "").strip()
         review_average, review_count = review(info)
@@ -194,38 +198,70 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
             stay_charge_total=plan["total"] if plan else None,
             stay_plan_name=plan["plan"] if plan else None,
             stay_meal=plan["meal"] if plan else None,
+            area=area,
+            distance_km_from_station=station_distance,
         ))
     # その日の料金が取れた宿を先に、安い順。取れなかった宿は目安の最安料金で後ろへ
     # total が人数分の合計かを確かめるための記録（Actions のログに出る。認証情報は含まない）
     sample = next((p for p in plans if p), None)
     if sample:
         print(f"  料金の確認: total={sample['total']} rakutenCharge={sample['rakuten']} chargeFlag={sample['flag']} 大人{ADULT_NUM}名")
-    out.sort(key=lambda h: (h.stay_charge_total is None, h.stay_charge_total or 0, h.min_charge is None, h.min_charge or 0))
-    return out[:MAX_HOTELS]
+    return out
 
 
-def fetch_hotels(match: dict, stadium: dict, stadium_id: str, response_file: str | None) -> tuple[list[HotelCandidate], str, str]:
-    checkout = date.fromisoformat(match_day(match))
-    checkin = checkout - timedelta(days=1)  # 前泊（試合前日に泊まって当日に会場へ）
+def price_key(h: HotelCandidate) -> tuple:
+    """その日の料金が取れた宿を先に安い順。取れなかった宿は目安の最安料金で後ろへ。"""
+    return (h.stay_charge_total is None, h.stay_charge_total or 0, h.min_charge is None, h.min_charge or 0)
+
+
+def merge_areas(stadium_hotels: list[HotelCandidate], station_hotels: list[HotelCandidate]) -> list[HotelCandidate]:
+    """スタジアム周辺と駅周辺から、それぞれ安い順に PER_AREA 件まで選んで1列にする。
+    両方の検索に出た宿は1件にまとめ、area を "both" にする。"""
+    station_nos = {h.hotel_no for h in station_hotels}
+    stadium_nos = {h.hotel_no for h in stadium_hotels}
+    chosen: dict[int, HotelCandidate] = {}
+    for group in (sorted(stadium_hotels, key=price_key), sorted(station_hotels, key=price_key)):
+        taken = 0
+        for h in group:
+            if taken >= PER_AREA:
+                break
+            if h.hotel_no in chosen:
+                continue
+            if h.hotel_no in station_nos and h.hotel_no in stadium_nos:
+                h.area = "both"
+            chosen[h.hotel_no] = h
+            taken += 1
+    return sorted(chosen.values(), key=price_key)[:MAX_HOTELS]
+
+
+def search(lat: float, lon: float, radius: float, checkin: date, response_file: str | None) -> dict:
     if response_file:
-        payload = read_json(Path(response_file))
-    else:
-        from rakuten_client import search_vacant_hotels  # 認証情報が要るのでここで読む
-        import requests
+        return read_json(Path(response_file))
+    from rakuten_client import search_vacant_hotels  # 認証情報が要るのでここで読む
+    import requests
 
-        try:
-            payload = search_vacant_hotels(
-                stadium["latitude"], stadium["longitude"], checkin.isoformat(), checkout.isoformat(),
-                adult_num=ADULT_NUM, search_radius=SEARCH_RADIUS_KM, hits=30,
-            )
-        except requests.HTTPError as error:
-            # 404 は「条件に合う空室なし」。0件として扱う。URLにキーが入るので本文は出さない。
-            if error.response is not None and error.response.status_code == 404:
-                payload = {"hotels": []}
-            else:
-                code = error.response.status_code if error.response is not None else "?"
-                raise RuntimeError(f"Rakuten API error HTTP {code}") from None
-    return parse_hotels(payload, stadium, stadium_id), checkin.isoformat(), checkout.isoformat()
+    try:
+        return search_vacant_hotels(
+            lat, lon, checkin.isoformat(), (checkin + timedelta(days=1)).isoformat(),
+            adult_num=ADULT_NUM, search_radius=radius, hits=30,
+        )
+    except requests.HTTPError as error:
+        # 404 は「条件に合う空室なし」。0件として扱う。URLにキーが入るので本文は出さない。
+        if error.response is not None and error.response.status_code == 404:
+            return {"hotels": []}
+        code = error.response.status_code if error.response is not None else "?"
+        raise RuntimeError(f"Rakuten API error HTTP {code}") from None
+    finally:
+        time.sleep(1.1)  # 楽天APIは1秒1リクエストまで
+
+
+def fetch_night(stadium: dict, stadium_id: str, checkin: date, response_file: str | None) -> list[HotelCandidate]:
+    """1泊ぶん。スタジアム周辺（半径3km）と最寄り駅周辺（半径1km）を検索してまとめる。"""
+    around_stadium = parse_hotels(search(stadium["latitude"], stadium["longitude"], SEARCH_RADIUS_KM, checkin, response_file), stadium, stadium_id, "stadium")
+    around_station: list[HotelCandidate] = []
+    if stadium.get("station_latitude") is not None:
+        around_station = parse_hotels(search(stadium["station_latitude"], stadium["station_longitude"], STATION_RADIUS_KM, checkin, response_file), stadium, stadium_id, "station")
+    return merge_areas(around_stadium, around_station)
 
 
 def save_json(data: dict, path: Path) -> None:
@@ -242,23 +278,31 @@ def build_one(match: dict, stadiums: dict[str, dict], index: dict, response_file
     if not stadium:
         raise KeyError(f"stadiums.json に venue がありません: {match.get('venue')}")
     stadium_id = stadium["id"]
-    hotels, checkin, checkout = fetch_hotels(match, stadium, stadium_id, response_file)
-    document = build_match_hotels_document(match["id"], hotels)
+    day = date.fromisoformat(match_day(match))
+    before = day - timedelta(days=1)  # 前泊（試合前日に泊まって当日にスタジアムへ）
+    pre = fetch_night(stadium, stadium_id, before, response_file)
+    same_day = fetch_night(stadium, stadium_id, day, response_file)  # 当日泊（試合のあとに泊まる）
+    document = build_match_hotels_document(match["id"], pre)
+    document["same_day_hotel_count"] = len(same_day)
+    document["same_day_hotels"] = [to_public_hotel_dict(h) for h in same_day]
     document["meta"] = {
         "match_id": match["id"],
         "stadium_id": stadium_id,
         "match_date": match.get("match_date", ""),
-        "checkin_date": checkin,
-        "checkout_date": checkout,
+        "checkin_date": before.isoformat(),
+        "checkout_date": day.isoformat(),
+        "same_day_checkin_date": day.isoformat(),
+        "same_day_checkout_date": (day + timedelta(days=1)).isoformat(),
+        "station_name": stadium.get("station_name") or None,
         "updated_at": now_jst(),
         "source": "Rakuten Travel API",
-        "search_conditions": {"adult_num": ADULT_NUM, "up_class_num": 0, "low_class_num": 0, "search_radius": SEARCH_RADIUS_KM},
+        "search_conditions": {"adult_num": ADULT_NUM, "up_class_num": 0, "low_class_num": 0, "search_radius": SEARCH_RADIUS_KM, "station_search_radius": STATION_RADIUS_KM},
     }
     save_json(document, HOTELS_DIR / f"{match['id']}.json")
-    entry = build_hotel_index_entry(match["id"], len(hotels))
-    entry.update(stadium_id=stadium_id, checkin_date=checkin, checkout_date=checkout, data_path=f"data/hotels/{match['id']}.json")
+    entry = build_hotel_index_entry(match["id"], len(pre))
+    entry.update(stadium_id=stadium_id, checkin_date=before.isoformat(), checkout_date=day.isoformat(), data_path=f"data/hotels/{match['id']}.json")
     index["matches"] = [m for m in index.get("matches", []) if m.get("match_id") != match["id"]] + [entry]
-    print(f"{match['id']}: {len(hotels)}件 ({checkin} → {checkout})")
+    print(f"{match['id']}: 前泊{len(pre)}件 ({before}) / 当日泊{len(same_day)}件 ({day})")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -285,7 +329,6 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as error:  # 1試合の失敗で全体を止めない。キーは例外文に入れていない
             failures += 1
             print(f"{match['id']}: 失敗 {error}", file=sys.stderr)
-        time.sleep(1.1)  # 楽天APIは1秒1リクエストまで
     index["meta"].update(updated_at=now_jst(), source="Rakuten Travel API", season="2026-27")
     index["matches"].sort(key=lambda m: m["match_id"])
     save_json(index, HOTEL_INDEX_PATH)

@@ -12,6 +12,7 @@ const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const allowedPriceTiers = new Set(['budget', 'standard', 'premium']);
 const allowedParkingTags = new Set(['available_free', 'available_paid', 'none', 'unknown']);
 const allowedAccommodationTypeTags = new Set(['hotel', 'ryokan', 'unknown']);
+const allowedAreas = new Set(['stadium', 'station', 'both']);
 const optionalHotelStringFields = [
   'parking_raw_text',
   'hotel_class_code_raw',
@@ -289,6 +290,15 @@ function validateHotelDocumentMeta(meta, location, matchId, matchIds) {
     addError(location, 'meta.source は空でない文字列である必要があります');
   }
 
+  // 当日泊（試合の日にチェックイン）。古いデータには無い
+  if (meta.same_day_checkin_date !== undefined || meta.same_day_checkout_date !== undefined) {
+    validateDateString(location, 'meta.same_day_checkin_date', meta.same_day_checkin_date);
+    validateDateString(location, 'meta.same_day_checkout_date', meta.same_day_checkout_date);
+  }
+  if (meta.station_name != null && !isNonEmptyString(meta.station_name)) {
+    addError(location, 'meta.station_name は空でない文字列か null である必要があります');
+  }
+
   validateSearchConditions(location, meta.search_conditions);
 }
 
@@ -345,6 +355,10 @@ function validateHotel(hotel, index, location) {
   if (hotel.review_average != null && !(typeof hotel.review_average === 'number' && hotel.review_average > 0 && hotel.review_average <= 5)) {
     addError(hotelLocation, 'review_average は 0より大きく5以下の数値か null である必要があります');
   }
+  if (hotel.area !== undefined && !allowedAreas.has(hotel.area)) {
+    addError(hotelLocation, 'area は stadium / station / both のいずれかである必要があります');
+  }
+  if (hotel.distance_km_from_station !== undefined) validateNonNegativeNumberOrNull(hotelLocation, 'distance_km_from_station', hotel.distance_km_from_station);
   if (hotel.stay_charge_total != null && !(Number.isInteger(hotel.stay_charge_total) && hotel.stay_charge_total > 0)) {
     addError(hotelLocation, 'stay_charge_total は正の整数か null である必要があります');
   }
@@ -379,6 +393,17 @@ function validateHotelDocument(filePath, matchId, matchIds, indexedDetail) {
     }
 
     data.hotels.forEach((hotel, index) => validateHotel(hotel, index, relativePath));
+  }
+
+  if (data.same_day_hotels !== undefined) {
+    if (!Array.isArray(data.same_day_hotels)) {
+      addError(relativePath, 'same_day_hotels は配列である必要があります');
+    } else {
+      if (data.same_day_hotel_count !== data.same_day_hotels.length) {
+        addError(relativePath, 'same_day_hotel_count は same_day_hotels の件数と一致する必要があります');
+      }
+      data.same_day_hotels.forEach((hotel, index) => validateHotel(hotel, index, `${relativePath} same_day_hotels`));
+    }
   }
 
   validateHotelDocumentMeta(data.meta, relativePath, matchId, matchIds);

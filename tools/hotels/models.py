@@ -57,5 +57,7 @@ class HotelCandidate:
     stay_charge_total: int | None = None
     stay_plan_name: str | None = None
     stay_meal: str | None = None
+    area: str = "stadium"                      # stadium / station / both（どちらの検索で見つかったか）
+    distance_km_from_station: float | None = None
     distance_km: float | None = None
     tags: list[str] = field(default_factory=list)
