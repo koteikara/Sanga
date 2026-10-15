@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-10-14
+updated: 2026-10-15
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -71,6 +71,7 @@ flowchart LR
 - **Playwrightはリポジトリに入れず、CIで都度インストール**: `squad-checks.yml` が `npm install --no-save --package-lock=false` で固定版を入れます。手元での実ブラウザ検証は任意です。
 - **modern-screenshot をCDNではなく静的同梱**: iOS Safariでの画像生成の安定と、公開物の自己完結のためと読めます。`THIRD_PARTY_NOTICES.md` にライセンス表示を集約しています（同梱に切り替えた理由の記録は未確認）。
 - **公式サイトへの負荷を抑える**: `robots.txt` の `Crawl-delay: 10` に従い、1日1回・1リクエスト、ステップ間に `sleep 10` を置きます（`ticket-sales-sync.yml` のコメント、`docs/supporter-timeline-design.md`「公式サイトの利用条件」）。
+- **公式サイトのTLS検証は切らない**: `www.sanga-fc.jp` は葉だけを送る（2026-10-04から取得が `UNABLE_TO_VERIFY_LEAF_SIGNATURE`）。中間証明書 Cybertrust Japan SureServer CA G4 を `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` に置き、`ticket-sales-sync.yml` が `NODE_EXTRA_CA_CERTS` で読む。フィンガープリントは `tools/check-sanga-ca.js` が公開値と突き合わせる。
 - **失敗を沈黙させない**: アウェイ・ニュース取り込みは `continue-on-error` で本流を止めない一方、最後のステップでジョブを失敗させます。2026-08-31から10日間の失敗に気付けなかった経緯が根拠です。
 - **本番デプロイは手動のみ**: 自動デプロイは行わず、`main` かつ `DEPLOY` 入力を要求します。デプロイ前に暗号化バックアップを必須にします（公開リポジトリのアーティファクトは誰でも取得できるため）。
 - **LocalStorageの互換性を守る**: 既存キー・保存形式を移行方針なしに変えません。スカッドは新 `squad` 形式を保存しつつ旧 `bench` 形式を読みます（`docs/project-structure.md`）。

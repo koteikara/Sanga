@@ -2277,6 +2277,29 @@
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
+      "id": "ticket-acl-md4-away",
+      "starts_at": "2026-10-15T12:00:00+09:00",
+      "ends_at": "2026-10-15T12:15:00+09:00",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "away_sale",
+      "title": "コンアン・ハノイ戦 アウェイ席 一般発売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md4"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/21479",
+      "source_checked_at": "2026-10-15",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
       "id": "match-sec10",
       "ends_at": "2026-10-17T16:00:00+09:00",
       "type": "match",

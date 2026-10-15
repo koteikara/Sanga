@@ -39,6 +39,40 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-10-15 公式サイトの中間証明書と、ハノイ戦のアウェイ発売
+
+### 変更ファイル
+
+- `tools/certs/cybertrust-japan-sureserver-ca-g4.pem`、`tools/check-sanga-ca.js`
+- `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js`、`tools/parse-ticket-sales.js`
+- `.github/workflows/ticket-sales-sync.yml`
+- `docs/sheets/away-sales.manual.csv` と、そこから作り直した公開のタイムラインデータ
+- `docs/supporter-timeline-design.md`、`docs/project-structure.md`、`docs/source-and-license.md`、`PROJECT_CONTEXT.md`
+
+### 変更内容
+
+Issue #322。`www.sanga-fc.jp` は葉だけを送る。中間証明書（Cybertrust Japan SureServer CA G4、SHA-256 はサイバートラストの公開値と一致）を同梱し、`NODE_EXTRA_CA_CERTS` で読む。TLS検証は切っていない。
+
+同じ日に `/ticket/schedule` はトップへ302していた。取得先は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。中身は販売スケジュールの画像だけで、表（`schedule__list`）は無い。解析はそのHTMLではCSVを書き換えず失敗する。ワークフローはそこが失敗してもアウェイと案内へ進み、ジョブの最後で失敗にする。`/news` もトップへ302する。記事URLは開く。一覧の取得はトップへ落ちた応答を保存しない。
+
+Issue #317。`acl-md4`（11/3 ハノイ戦）の一般発売を `away-sales.manual.csv` に1行足した。出典は `https://www.sanga-fc.jp/news/detail/21479`（2026-10-15に本文を確認。記事の更新日は2026-10-12）。
+
+### 確認結果
+
+中間証明書なしの `fetch` は `UNABLE_TO_VERIFY_LEAF_SIGNATURE`。PEM を `NODE_EXTRA_CA_CERTS` に渡すと販売スケジュールの案内記事が取れる。`openssl verify -untrusted` は `OK`。
+
+### 未確認項目
+
+`gh workflow run` は HTTP 403（Resource not accessible by integration）で、この環境から `workflow_dispatch` を起動できなかった。手元では同じ `NODE_EXTRA_CA_CERTS` で `node tools/fetch-ticket-sales.js` が終了コード 0 だった。
+
+### 残課題
+
+販売スケジュールの表が画像のあいだ、`ticket-sales.current.csv` は自動更新できない。ニュース一覧 `/news` が戻るまで、一覧の差分も取れない。
+
+### 人間が確認すべき点
+
+ハノイ戦の行が、公式記事の前売（10/15 12:00〜10/19 23:59、席種B8-T1、1500円+手数料220円、当日券なし）と一致しているか。
+
 ## 2026-09-08 ミニマップを広い画面で広げ、月の目盛りを足す
 
 ### 変更ファイル

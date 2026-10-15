@@ -17,6 +17,10 @@
  * robots.txt の `Crawl-delay: 10` に合わせ、ページ間は10秒以上空ける。
  *
  * 解析は tools/parse-news-list.js が行う。ここは取得だけを受け持つ。
+ *
+ * www.sanga-fc.jp は葉の証明書だけを送る。ワークフローでは
+ * NODE_EXTRA_CA_CERTS に tools/certs/cybertrust-japan-sureserver-ca-g4.pem を指定する。
+ * 検証そのものは切らない。
  */
 
 const fs = require('fs');
@@ -83,17 +87,28 @@ async function fetchOnce(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    // 一覧は `/news/` が `/news` へ301を返す。追従しないと235バイトの空応答を掴む。
+    // 末尾スラッシュの有無で 301 することがある。追従しないと空応答を掴む。
+    // 2026-10-15 時点では /news 自体がトップへ 302 する。その応答は redirectedHome で落とす。
     const response = await fetch(url, {
       headers: { 'User-Agent': USER_AGENT, Accept: 'text/html' },
       redirect: 'follow',
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
-    return await response.text();
+    return { html: await response.text(), url: response.url };
   } finally {
     clearTimeout(timer);
   }
+}
+
+/**
+ * 2026-10-15 時点で /news はトップページへ 302 する。
+ * トップには /news/detail/ へのリンクがあるため、目印だけでは一覧と区別できない。
+ * トップのHTMLを解析に渡すと「記事を1件も読めませんでした」で落ちる。
+ */
+function redirectedHome(finalUrl) {
+  const pathname = new URL(finalUrl).pathname.replace(/\/+$/, '') || '/';
+  return pathname === '/';
 }
 
 /** 何を受け取ったのかを一行にする。題があれば題を、無ければ本文の頭を見せる。 */
@@ -135,10 +150,14 @@ async function fetchWithRetry(url) {
   let unexpectedHtml = null;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
     try {
-      const html = await fetchOnce(url);
-      if (html.includes(PAGE_MARKER)) return html;
-      unexpectedHtml = html;
-      throw new Error(`目印（${PAGE_MARKER}）がHTMLにありません（${describeHtml(html)}）`);
+      const result = await fetchOnce(url);
+      if (redirectedHome(result.url)) {
+        unexpectedHtml = result.html;
+        throw new Error(`トップページへ転送されました（${result.url} / ${describeHtml(result.html)}）`);
+      }
+      if (result.html.includes(PAGE_MARKER)) return result.html;
+      unexpectedHtml = result.html;
+      throw new Error(`目印（${PAGE_MARKER}）がHTMLにありません（${describeHtml(result.html)}）`);
     } catch (error) {
       lastError = error;
       if (attempt < MAX_ATTEMPTS) {

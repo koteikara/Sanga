@@ -35,6 +35,13 @@ jobs:
   sync:
     name: 販売スケジュールを取り込む
     runs-on: ubuntu-latest
+    env:
+      # www.sanga-fc.jp は葉（CN=www.sanga-fc.jp）だけを送り、中間証明書
+      # Cybertrust Japan SureServer CA G4 を付けない。Node は AIA を取りに行かないため
+      # UNABLE_TO_VERIFY_LEAF_SIGNATURE で落ちる（2026-10-04 から）。
+      # 検証は切らない。公開の中間証明書を追加の信頼アンカーとして読む。
+      # フィンガープリントは tools/check-sanga-ca.js が固定値と突き合わせる。
+      NODE_EXTRA_CA_CERTS: ${{ github.workspace }}/tools/certs/cybertrust-japan-sureserver-ca-g4.pem
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v7
@@ -54,7 +61,12 @@ jobs:
 
       # 既存CSVとの違いが取得日時と画面表示（受付中・販売中）だけなら書き換えない。
       # 販売の開始・終了で毎日変わるため、そのままでは中身の変わらないPRが毎日立つ。
+      # 取得は通っても、2026-10-15 時点の案内は画像だけで表が無い。
+      # そのときは CSV を書き換えずに、あとのアウェイと案内へ進む。
+      # ジョブ自体は最後の確認で失敗させ、取り込みの滞りを消したことにしない。
       - name: CSVを更新
+        id: ticket_csv
+        continue-on-error: true
         env:
           FORCE_PR: ${{ inputs.force_pr }}
         run: |
@@ -111,6 +123,20 @@ jobs:
           # 取った本文は tmp/ に置き、リポジトリには入れない。
           node tools/fetch-news-articles.js --force
           node tools/parse-news-times.js --keep-unchanged
+
+      - name: 販売スケジュール解析の失敗を記録
+        if: steps.ticket_csv.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          {
+            echo '## 販売スケジュールの解析に失敗しました'
+            echo
+            echo '公式ページの取得は終わっています。表（`schedule__list`）が無い場合、'
+            echo '`docs/sheets/ticket-sales.current.csv` は前回の値のままです。'
+            echo
+            echo "実行ログ: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::販売スケジュールの解析に失敗しました。CSVは更新されていません。"
 
       - name: 公式の案内の失敗を記録
         if: steps.news.outcome == 'failure'
@@ -349,15 +375,18 @@ jobs:
       # **緑のままにしない。** continue-on-error で飲み込んだ失敗を、ここでジョブの失敗に
       # 変える。赤くなるものは直り、緑のままのものは放置される。
       - name: アウェイと案内の取り込み結果を確かめる
-        if: always() && (steps.away.outcome == 'failure' || steps.news.outcome == 'failure')
+        if: always() && (steps.ticket_csv.outcome == 'failure' || steps.away.outcome == 'failure' || steps.news.outcome == 'failure')
         run: |
+          if [ "${{ steps.ticket_csv.outcome }}" = "failure" ]; then
+            echo '販売スケジュールの解析に失敗しています。「CSVを更新」のログを見てください。'
+          fi
           if [ "${{ steps.away.outcome }}" = "failure" ]; then
             echo 'アウェイの取り込みに失敗しています。「アウェイの販売状態を取得」のログを見てください。'
           fi
           if [ "${{ steps.news.outcome }}" = "failure" ]; then
             echo '公式の案内の取り込みに失敗しています。「公式の案内を取り込む」のログを見てください。'
           fi
-          echo 'ホーム戦の取り込みは終わっています。'
+          echo '取得できた分の取り込みは終わっています。'
           exit 1
 
       # **失敗した日こそ走らせる。** 取得で落ちた日は後ろの手順がすべて飛ぶので、
