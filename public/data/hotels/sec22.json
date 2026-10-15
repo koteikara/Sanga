@@ -1,0 +1,59 @@
+{
+  "match_id": "sec22",
+  "hotel_count": 2,
+  "hotels": [
+    {
+      "hotel_no": 181773,
+      "hotel_name": "将軍の湯　久能山本陣＜ＬＩＢＥＲＴＹ　ＲＥＳＯＲＴ＞",
+      "stadium_id": "nihondaira",
+      "latitude": 34.9587208,
+      "longitude": 138.4551084,
+      "distance_km_from_stadium": 3.7,
+      "min_charge": 7000,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "有り　350台　無料　予約不要",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D181773",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null
+    },
+    {
+      "hotel_no": 191602,
+      "hotel_name": "徳川の奥座敷　久能宿＜ＬＩＢＥＲＴＹ　ＲＥＳＯＲＴ＞",
+      "stadium_id": "nihondaira",
+      "latitude": 34.9595084,
+      "longitude": 138.4556654,
+      "distance_km_from_stadium": 3.6,
+      "min_charge": 17000,
+      "max_charge": null,
+      "price_tier": "premium",
+      "parking_tag": "unknown",
+      "parking_raw_text": "有り　５００台　無料　予約不要",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D191602",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null
+    }
+  ],
+  "meta": {
+    "match_id": "sec22",
+    "stadium_id": "nihondaira",
+    "match_date": "",
+    "checkin_date": "2027-02-19",
+    "checkout_date": "2027-02-20",
+    "updated_at": "2026-10-16 00:11",
+    "source": "Rakuten Travel API",
+    "search_conditions": {
+      "adult_num": 2,
+      "up_class_num": 0,
+      "low_class_num": 0,
+      "search_radius": 3
+    }
+  }
+}

@@ -2,7 +2,7 @@
   "meta": {
     "season": "2026-27",
     "source": "matches.json / stadiums.json / away-transport.csv / hotel-index.json",
-    "hotels_updated_at": "2026-10-15 23:46",
+    "hotels_updated_at": "2026-10-16 00:11",
     "note": "ACL（海外）は対象外"
   },
   "matches": [
@@ -137,7 +137,7 @@
       "access_note": "平和大通り周辺から徒歩圏",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec10.json"
     },
     {
       "match_id": "sec12",
@@ -156,7 +156,7 @@
       "access_note": "万博記念公園駅から徒歩約15分（JR岸辺駅からは徒歩約20分）",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec12.json"
     },
     {
       "match_id": "sec14",
@@ -194,7 +194,7 @@
       "access_note": "飛田給駅から徒歩約5分",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec18.json"
     },
     {
       "match_id": "sec22",
@@ -216,7 +216,7 @@
       "access_note": "静岡駅または清水駅からバス",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec22.json"
     },
     {
       "match_id": "sec25",
@@ -237,7 +237,7 @@
       "access_note": "柏駅東口から徒歩約20分またはバス約10〜15分",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec25.json"
     },
     {
       "match_id": "sec27",
@@ -259,7 +259,7 @@
       "access_note": "長居駅から徒歩約10分",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec27.json"
     },
     {
       "match_id": "sec29",
@@ -281,7 +281,7 @@
       "access_note": "蘇我駅から徒歩約7分",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec29.json"
     },
     {
       "match_id": "sec30",
@@ -303,7 +303,7 @@
       "access_note": "東海駅西口から無料シャトルバス約10分（水戸駅から常磐線で東海駅まで約20分）",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec30.json"
     },
     {
       "match_id": "sec31",
@@ -325,7 +325,7 @@
       "access_note": "鹿島神宮駅から試合日はシャトルバス約15分（徒歩は約40分）",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec31.json"
     },
     {
       "match_id": "sec33",
@@ -347,7 +347,7 @@
       "access_note": "町田駅からバス",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec33.json"
     },
     {
       "match_id": "sec34",
@@ -368,7 +368,7 @@
       "access_note": "博多駅方面からバス",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec34.json"
     },
     {
       "match_id": "sec36",
@@ -390,7 +390,7 @@
       "access_note": "浦和美園駅から徒歩約15分",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec36.json"
     },
     {
       "match_id": "sec38",
@@ -409,7 +409,7 @@
       "access_note": "御崎公園駅から徒歩すぐ",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec38.json"
     }
   ]
 }

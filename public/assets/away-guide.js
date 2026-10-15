@@ -118,7 +118,7 @@
 
   getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }).then(function (a) {
     affiliates = a;
-    return getJson("data/away-guide.json?v=086dbac7");
+    return getJson("data/away-guide.json?v=856cae9b");
   }).then(function (doc) {
     // 終わった試合は出さない（日付は日本時間。未定は候補日の最後で判断）
     var today = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
