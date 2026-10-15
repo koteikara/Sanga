@@ -19,7 +19,15 @@
       "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D167657",
       "sightseeing_friendly": null,
       "stadium_proximity": true,
-      "gourmet_area_note": null
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/167657/167657.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/167657.jpg",
+      "review_average": 4.3,
+      "review_count": 444,
+      "nearest_station": null,
+      "stay_charge_total": 12390,
+      "stay_plan_name": "★【無料の元気朝食付】いつでも安心価格♪ビジネス・レジャーに！ 禁煙エコノミーツイン",
+      "stay_meal": "朝食付き"
     }
   ],
   "meta": {
@@ -28,7 +36,7 @@
     "match_date": "",
     "checkin_date": "2027-05-21",
     "checkout_date": "2027-05-22",
-    "updated_at": "2026-10-16 00:11",
+    "updated_at": "2026-10-16 00:53",
     "source": "Rakuten Travel API",
     "search_conditions": {
       "adult_num": 2,
