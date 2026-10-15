@@ -1,8 +1,17 @@
 {
   "meta": {
-    "updated_at": "",
+    "updated_at": "2026-10-15 23:46",
     "source": "Rakuten Travel API",
-    "season": ""
+    "season": "2026-27"
   },
-  "matches": []
+  "matches": [
+    {
+      "match_id": "sec14",
+      "hotel_count": 9,
+      "stadium_id": "toyota",
+      "checkin_date": "2026-11-06",
+      "checkout_date": "2026-11-07",
+      "data_path": "data/hotels/sec14.json"
+    }
+  ]
 }

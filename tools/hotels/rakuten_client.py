@@ -69,9 +69,15 @@ def search_vacant_hotels(
     if squeeze_condition is not None:
         params["squeezeCondition"] = squeeze_condition
 
+    # openapi.rakuten.co.jp は Origin ヘッダーで「許可されたサイト」を判定する
+    # （Referer だけだと REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING で403）。
+    # 既定は本番サイト。別のドメインを登録している場合は RAKUTEN_ORIGIN で変える。
+    origin = os.getenv("RAKUTEN_ORIGIN") or "https://sangasanga.stars.ne.jp"
+    headers = {"Origin": origin}
     if referer is None:
         referer = os.getenv("RAKUTEN_REFERER")
-    headers = {"Referer": referer} if referer else {}
+    if referer:
+        headers["Referer"] = referer
 
     response = requests.get(VACANT_HOTEL_SEARCH_URL, params=params, headers=headers, timeout=10)
     response.raise_for_status()

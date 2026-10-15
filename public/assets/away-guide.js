@@ -82,7 +82,7 @@
     return li;
   }
 
-  getJson("data/away-guide.json?v=df1acf52").then(function (doc) {
+  getJson("data/away-guide.json?v=54151935").then(function (doc) {
     // 終わった試合は出さない（日付は日本時間。未定は候補日の最後で判断）
     var today = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
     var upcoming = doc.matches.filter(function (m) {

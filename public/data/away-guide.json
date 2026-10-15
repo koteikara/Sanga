@@ -2,7 +2,7 @@
   "meta": {
     "season": "2026-27",
     "source": "matches.json / stadiums.json / away-transport.csv / hotel-index.json",
-    "hotels_updated_at": "",
+    "hotels_updated_at": "2026-10-15 23:46",
     "note": "ACL（海外）は対象外"
   },
   "matches": [
@@ -175,7 +175,7 @@
       "access_note": "豊田市駅から徒歩約15分",
       "transport_label": "",
       "transport_url": "",
-      "hotels_path": ""
+      "hotels_path": "data/hotels/sec14.json"
     },
     {
       "match_id": "sec18",

@@ -64,7 +64,7 @@ node --check public/assets/app.js
 
 ### 認証情報
 
-環境変数（または GitHub Secrets）`RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。`openapi.rakuten.co.jp` のAPIは accessKey が必須。`tools/validate-stadiums.js` は公開JSONに認証情報らしい文字列が混ざっていないかも見る。
+環境変数（または GitHub Secrets）`RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。`openapi.rakuten.co.jp` のAPIは accessKey が必須で、許可サイトの判定に **Origin ヘッダー**が要る（Referer だけだと403 `REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING`）。既定は `https://sangasanga.stars.ne.jp`、別ドメインなら環境変数 `RAKUTEN_ORIGIN` で変える。リンクにはアフィリエイトIDが含まれる（楽天が返すURLそのまま。アフィリエイトの性質上、公開されるのは避けられない）。`tools/validate-stadiums.js` は公開JSONに認証情報らしい文字列が混ざっていないかも見る。
 
 ### 更新
 
