@@ -30,7 +30,7 @@ knowledge_mocs:
 | データ保存 | ブラウザLocalStorage | 参戦予定、表示設定、スカッド保存など個人状態 | `public/assets/app.js`、`public/assets/squad-builder.js`、`docs/personalization.md` |
 | 外部サービス | 京都サンガF.C.公式サイト（読み取りのみ） | チケット販売スケジュール、ニュース一覧・記事の取得 | `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js` |
 | 外部サービス | Jリーグチケット（読み取りのみ） | アウェイ席の販売状態と発売日時の取得 | `tools/fetch-away-tickets.js`、`tools/fetch-away-sales.js` |
-| 外部サービス | Cloudflare Web Analytics（未稼働） | Cookieなしのアクセス解析。トークン未設定のあいだと本番以外のホストでは送らない | `public/assets/analytics.js` |
+| 外部サービス | Cloudflare Web Analytics | Cookieなしのアクセス解析。2026-10-15にトークンを設定。本番以外のホストでは送らない | `public/assets/analytics.js` |
 | 外部サービス | 楽天トラベルAPI（未稼働） | ホテル候補データ。現状は固定サンプル出力 | `tools/hotels/rakuten_client.py`、`tools/hotels/README.md` |
 | 配信 | iCalendar フィード | タイムラインのカレンダー購読 | `public/timeline.ics`、`public/timeline-events.ics`、`tools/build-ics-feed.js` |
 | インフラ・配信 | スターレンタルサーバー（FTP） | 本番公開先。手動ワークフローで `public/` だけを同期 | `.github/workflows/deploy-production.yml`（SamKirkland/FTP-Deploy-Action v4.4.0）、`docs/deploy-policy.md` |

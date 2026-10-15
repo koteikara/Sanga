@@ -8,7 +8,7 @@
 //   3. npm run fix:asset-versions → 本番デプロイ
 // GitHub Pages の確認環境や手元では送らない（本番ホストのときだけ動く）。
 (function () {
-  var TOKEN = "";
+  var TOKEN = "e9951ebab47e411ca5317934a9455c73";
   var HOST = "sangasanga.stars.ne.jp";
   if (!TOKEN || location.hostname !== HOST) return;
   var s = document.createElement("script");
