@@ -68,7 +68,7 @@ node --check public/assets/app.js
 
 ### 更新
 
-- 自動: `hotels-sync.yml`（毎週月曜 10:00 JST。現在は `docs/workflows/` に置いてあり、`.github/workflows/` へ移すと有効になる）。差分があれば下書きPR。デプロイはしない。
+- 自動: `hotels-sync.yml`（毎週月曜 10:00 JST。`.github/workflows/`）。差分があれば下書きPR。デプロイはしない。
 - 手動: `python tools/hotels/build_match_hotels.py --all-away` → `node tools/generate-away-guide.js` → `npm run fix:asset-versions` → `npm run check:static`
 - API を呼ばない検証: `--response-file tools/fixtures/hotels/vacant-hotel-search.sample.json`（出力は公開データに含めない）
 
