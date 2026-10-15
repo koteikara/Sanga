@@ -1,0 +1,59 @@
+{
+  "match_id": "sec30",
+  "hotel_count": 2,
+  "hotels": [
+    {
+      "hotel_no": 183328,
+      "hotel_name": "ＨＯＴＥＬ　Ｒ９　Ｔｈｅ　Ｙａｒｄ　ひたちなか",
+      "stadium_id": "mito",
+      "latitude": 36.4311863,
+      "longitude": 140.5238085,
+      "distance_km_from_stadium": 3.2,
+      "min_charge": 4300,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "無料 有り 30台※大型車（2トントラック以上）をご利用の際は、事前にお電話でお問い合わせください。",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D183328",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null
+    },
+    {
+      "hotel_no": 165668,
+      "hotel_name": "ホテルエリアワン東海（ホテルエリアワングループ）",
+      "stadium_id": "mito",
+      "latitude": 36.4731904,
+      "longitude": 140.55936559999998,
+      "distance_km_from_stadium": 2.6,
+      "min_charge": 4700,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "有　50台　普通車無料　※普通車枠に収まらないお車をご利用の場合は1泊1台につき1000円",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D165668",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null
+    }
+  ],
+  "meta": {
+    "match_id": "sec30",
+    "stadium_id": "mito",
+    "match_date": "",
+    "checkin_date": "2027-04-16",
+    "checkout_date": "2027-04-17",
+    "updated_at": "2026-10-16 00:11",
+    "source": "Rakuten Travel API",
+    "search_conditions": {
+      "adult_num": 2,
+      "up_class_num": 0,
+      "low_class_num": 0,
+      "search_radius": 3
+    }
+  }
+}

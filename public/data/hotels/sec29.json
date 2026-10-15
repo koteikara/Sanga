@@ -1,0 +1,78 @@
+{
+  "match_id": "sec29",
+  "hotel_count": 3,
+  "hotels": [
+    {
+      "hotel_no": 177583,
+      "hotel_name": "ホテルリブマックス千葉蘇我駅前",
+      "stadium_id": "fukuari",
+      "latitude": 35.580741,
+      "longitude": 140.1325296,
+      "distance_km_from_stadium": 1.0,
+      "min_charge": 2975,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "専用・提携駐車場なし※近隣コインパーキング多数あり！詳細はホテルまでお問合せ下さい。",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D177583",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null
+    },
+    {
+      "hotel_no": 713,
+      "hotel_name": "天然温泉　そが浜の湯　ドーミーイン千葉Ｃｉｔｙ　Ｓｏｇａ（ドーミーイン・御宿野乃　ホテルズグループ）",
+      "stadium_id": "fukuari",
+      "latitude": 35.58117709,
+      "longitude": 140.1328251,
+      "distance_km_from_stadium": 1.0,
+      "min_charge": 4305,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "駐車場ご利用の際はお電話でご予約ください（※お電話での先着順となります）",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D713",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null
+    },
+    {
+      "hotel_no": 19211,
+      "hotel_name": "オークラ千葉ホテル",
+      "stadium_id": "fukuari",
+      "latitude": 35.60380709,
+      "longitude": 140.1035934,
+      "distance_km_from_stadium": 3.4,
+      "min_charge": 9180,
+      "max_charge": null,
+      "price_tier": "standard",
+      "parking_tag": "unknown",
+      "parking_raw_text": "先着順1泊1,000円（税込）自走式(車高2.1M以下)平置 ※トラック、大型車両駐車不可",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D19211",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null
+    }
+  ],
+  "meta": {
+    "match_id": "sec29",
+    "stadium_id": "fukuari",
+    "match_date": "",
+    "checkin_date": "2027-04-09",
+    "checkout_date": "2027-04-10",
+    "updated_at": "2026-10-16 00:11",
+    "source": "Rakuten Travel API",
+    "search_conditions": {
+      "adult_num": 2,
+      "up_class_num": 0,
+      "low_class_num": 0,
+      "search_radius": 3
+    }
+  }
+}

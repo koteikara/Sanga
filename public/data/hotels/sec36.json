@@ -1,0 +1,40 @@
+{
+  "match_id": "sec36",
+  "hotel_count": 1,
+  "hotels": [
+    {
+      "hotel_no": 167657,
+      "hotel_name": "東横ＩＮＮ浦和美園駅東口",
+      "stadium_id": "saitama",
+      "latitude": 35.89477727454733,
+      "longitude": 139.7289446098564,
+      "distance_km_from_stadium": 1.4,
+      "min_charge": 5933,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "48台収容\t￥500/泊 　先着順　満車の際は近隣のコインパーキングをご利用ください。",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D167657",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null
+    }
+  ],
+  "meta": {
+    "match_id": "sec36",
+    "stadium_id": "saitama",
+    "match_date": "",
+    "checkin_date": "2027-05-21",
+    "checkout_date": "2027-05-22",
+    "updated_at": "2026-10-16 00:11",
+    "source": "Rakuten Travel API",
+    "search_conditions": {
+      "adult_num": 2,
+      "up_class_num": 0,
+      "low_class_num": 0,
+      "search_radius": 3
+    }
+  }
+}

@@ -1,10 +1,26 @@
 {
   "meta": {
-    "updated_at": "2026-10-15 23:46",
+    "updated_at": "2026-10-16 00:11",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
   "matches": [
+    {
+      "match_id": "sec10",
+      "hotel_count": 10,
+      "stadium_id": "edion-peace-wing",
+      "checkin_date": "2026-10-16",
+      "checkout_date": "2026-10-17",
+      "data_path": "data/hotels/sec10.json"
+    },
+    {
+      "match_id": "sec12",
+      "hotel_count": 6,
+      "stadium_id": "panasonic-suita",
+      "checkin_date": "2026-10-23",
+      "checkout_date": "2026-10-24",
+      "data_path": "data/hotels/sec12.json"
+    },
     {
       "match_id": "sec14",
       "hotel_count": 9,
@@ -12,6 +28,94 @@
       "checkin_date": "2026-11-06",
       "checkout_date": "2026-11-07",
       "data_path": "data/hotels/sec14.json"
+    },
+    {
+      "match_id": "sec18",
+      "hotel_count": 10,
+      "stadium_id": "ajinomoto",
+      "checkin_date": "2026-12-04",
+      "checkout_date": "2026-12-05",
+      "data_path": "data/hotels/sec18.json"
+    },
+    {
+      "match_id": "sec22",
+      "hotel_count": 2,
+      "stadium_id": "nihondaira",
+      "checkin_date": "2027-02-19",
+      "checkout_date": "2027-02-20",
+      "data_path": "data/hotels/sec22.json"
+    },
+    {
+      "match_id": "sec25",
+      "hotel_count": 10,
+      "stadium_id": "kashiwa",
+      "checkin_date": "2027-03-09",
+      "checkout_date": "2027-03-10",
+      "data_path": "data/hotels/sec25.json"
+    },
+    {
+      "match_id": "sec27",
+      "hotel_count": 10,
+      "stadium_id": "nagai",
+      "checkin_date": "2027-03-19",
+      "checkout_date": "2027-03-20",
+      "data_path": "data/hotels/sec27.json"
+    },
+    {
+      "match_id": "sec29",
+      "hotel_count": 3,
+      "stadium_id": "fukuari",
+      "checkin_date": "2027-04-09",
+      "checkout_date": "2027-04-10",
+      "data_path": "data/hotels/sec29.json"
+    },
+    {
+      "match_id": "sec30",
+      "hotel_count": 2,
+      "stadium_id": "mito",
+      "checkin_date": "2027-04-16",
+      "checkout_date": "2027-04-17",
+      "data_path": "data/hotels/sec30.json"
+    },
+    {
+      "match_id": "sec31",
+      "hotel_count": 1,
+      "stadium_id": "mercari",
+      "checkin_date": "2027-04-23",
+      "checkout_date": "2027-04-24",
+      "data_path": "data/hotels/sec31.json"
+    },
+    {
+      "match_id": "sec33",
+      "hotel_count": 0,
+      "stadium_id": "gion-machida",
+      "checkin_date": "2027-05-02",
+      "checkout_date": "2027-05-03",
+      "data_path": "data/hotels/sec33.json"
+    },
+    {
+      "match_id": "sec34",
+      "hotel_count": 8,
+      "stadium_id": "best-denki",
+      "checkin_date": "2027-05-08",
+      "checkout_date": "2027-05-09",
+      "data_path": "data/hotels/sec34.json"
+    },
+    {
+      "match_id": "sec36",
+      "hotel_count": 1,
+      "stadium_id": "saitama",
+      "checkin_date": "2027-05-21",
+      "checkout_date": "2027-05-22",
+      "data_path": "data/hotels/sec36.json"
+    },
+    {
+      "match_id": "sec38",
+      "hotel_count": 10,
+      "stadium_id": "noevir-kobe",
+      "checkin_date": "2027-06-05",
+      "checkout_date": "2027-06-06",
+      "data_path": "data/hotels/sec38.json"
     }
   ]
 }
