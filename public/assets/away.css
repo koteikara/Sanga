@@ -275,6 +275,7 @@ button:focus-visible,
 }
 .hotel-price{margin:auto 0 0;font-size:11px;color:var(--muted)}
 .hotel-price b{font-size:15px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums}
+.hotel-plan{margin:0;font-size:10.5px;color:var(--muted)}
 .hotel-sub{
   display:flex;flex-wrap:wrap;gap:0 8px;margin:0;
   font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums;

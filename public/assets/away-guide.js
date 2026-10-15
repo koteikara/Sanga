@@ -128,14 +128,23 @@
     var text = el("div", "hotel-text");
     text.append(el("p", "hotel-name", h.hotel_name));
     var price = el("p", "hotel-price");
-    if (h.min_charge != null) {
+    if (h.stay_charge_total != null) {
+      // その日・2名で空いているプランの最安（取得時点）。1人あたりは2で割った目安
+      price.append(document.createTextNode("2名1泊 "));
+      price.append(el("b", null, "¥" + Number(h.stay_charge_total).toLocaleString("ja-JP")));
+      price.append(document.createTextNode("〜"));
+      text.append(price);
+      var per = "1人 約¥" + Math.round(h.stay_charge_total / 2).toLocaleString("ja-JP");
+      text.append(el("p", "hotel-plan", h.stay_meal ? per + "・" + h.stay_meal : per));
+      price = null;
+    } else if (h.min_charge != null) {
       price.append(document.createTextNode("目安 "));
       price.append(el("b", null, "¥" + Number(h.min_charge).toLocaleString("ja-JP")));
       price.append(document.createTextNode("〜"));
     } else {
       price.textContent = "料金は楽天トラベルで確認";
     }
-    text.append(price);
+    if (price) text.append(price);
     var sub = el("p", "hotel-sub");
     if (h.distance_km_from_stadium != null) sub.append(el("span", null, "会場まで" + h.distance_km_from_stadium + "km"));
     if (h.review_average != null && h.review_count) {
@@ -162,7 +171,7 @@
     ul.setAttribute("aria-label", "前泊ホテルの候補 " + doc.hotels.length + "件（横にスクロールできます）");
     doc.hotels.forEach(function (h) { ul.append(hotelCard(h)); });
     box.append(ul);
-    box.append(el("p", "h-foot", "取得 " + (m.updated_at || "") + " JST ／ 提供：楽天トラベル ／ 写真・料金・評価は楽天トラベルの掲載内容"));
+    box.append(el("p", "h-foot", "料金は取得時点で空室のあったプランの最安（税・サービス料込み）。取得 " + (m.updated_at || "") + " JST ／ 提供：楽天トラベル"));
   }
 
   function renderMatch(m) {

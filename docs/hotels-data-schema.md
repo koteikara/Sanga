@@ -180,6 +180,9 @@ public/
 | `review_average` | number or null | 任意 | 楽天の評価平均（0より大きく5以下）。件数0なら null |
 | `review_count` | number or null | 任意 | 楽天の評価件数（正の整数）。0なら null |
 | `nearest_station` | string or null | 任意 | 楽天の最寄り駅（`nearestStation`） |
+| `stay_charge_total` | number or null | 任意 | 検索した日・人数（前泊・2名）で空いているプランのうち、`dailyCharge.total`（その日1泊の合計料金）が最安のもの。取得時点の値（2026-10-15追加） |
+| `stay_plan_name` | string or null | 任意 | そのプランの名前（`planName`、無ければ `roomName`） |
+| `stay_meal` | string or null | 任意 | そのプランの食事（`withBreakfastFlag` / `withDinnerFlag` から「朝食付き」「食事なし」など） |
 
 ## 5. 公開用に最小限必要な項目
 
