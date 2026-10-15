@@ -598,7 +598,11 @@ function buildNews(csvPath, matches, checkedAt) {
 }
 
 function buildAwayTickets(csvPath, matches) {
-  const records = readCsvRecords(csvPath).filter((record) => record.match_date);
+  // 0件もありうる。Jリーグチケットに京都のアウェイ戦が1件も載っていない時期がある
+  // （シーズンの切れ目、次の試合の販売前など）。見出しだけのCSVで生成を止めない。
+  // ページ構成が変わって読めないときは parse-away-tickets.js が目印の欠落で止まる。
+  const records = readCsvRecords(csvPath, { allowEmpty: true })
+    .filter((record) => record.match_date);
   const byDate = new Map();
   matches.forEach((match) => {
     if (match.home_away !== 'A' || !match.match_date) return;
