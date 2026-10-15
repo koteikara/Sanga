@@ -27,7 +27,9 @@
       "nearest_station": "蘇我",
       "stay_charge_total": 11050,
       "stay_plan_name": "『リブ得』楽天最安値のスペシャルプラン【素泊まり】",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.2
     },
     {
       "hotel_no": 713,
@@ -54,7 +56,9 @@
       "nearest_station": "蘇我",
       "stay_charge_total": 18758,
       "stay_plan_name": "【早得28】◇28日以上前のご予約が断然お得！プラン《素泊り》",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.2
     },
     {
       "hotel_no": 19211,
@@ -81,7 +85,99 @@
       "nearest_station": "千葉みなと",
       "stay_charge_total": 50520,
       "stay_plan_name": "【早期でお得】60日前までのご予約がお得！（素泊まり）",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "stadium",
+      "distance_km_from_station": 3.4
+    }
+  ],
+  "same_day_hotel_count": 3,
+  "same_day_hotels": [
+    {
+      "hotel_no": 181400,
+      "hotel_name": "ザキューブホテル千葉",
+      "stadium_id": "fukuari",
+      "latitude": 35.6021812,
+      "longitude": 140.1108313,
+      "distance_km_from_stadium": 2.9,
+      "min_charge": 5692,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "有り　500台　有料　予約不要　高さ制限2.1Mまで",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D181400",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/181400/181400.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/181400.jpg",
+      "review_average": 4.12,
+      "review_count": 543,
+      "nearest_station": "千葉みなと",
+      "stay_charge_total": 15290,
+      "stay_plan_name": "【スタンダードプラン】サウナ♪露天風呂｜素泊",
+      "stay_meal": "食事なし",
+      "area": "stadium",
+      "distance_km_from_station": 2.9
+    },
+    {
+      "hotel_no": 177583,
+      "hotel_name": "ホテルリブマックス千葉蘇我駅前",
+      "stadium_id": "fukuari",
+      "latitude": 35.580741,
+      "longitude": 140.1325296,
+      "distance_km_from_stadium": 1.0,
+      "min_charge": 2975,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "専用・提携駐車場なし※近隣コインパーキング多数あり！詳細はホテルまでお問合せ下さい。",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D177583",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/177583/177583.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/177583.jpg",
+      "review_average": 3.83,
+      "review_count": 195,
+      "nearest_station": "蘇我",
+      "stay_charge_total": 22100,
+      "stay_plan_name": "『リブ得』楽天最安値のスペシャルプラン【素泊まり】",
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.2
+    },
+    {
+      "hotel_no": 713,
+      "hotel_name": "天然温泉　そが浜の湯　ドーミーイン千葉Ｃｉｔｙ　Ｓｏｇａ（ドーミーイン・御宿野乃　ホテルズグループ）",
+      "stadium_id": "fukuari",
+      "latitude": 35.58117709,
+      "longitude": 140.1328251,
+      "distance_km_from_stadium": 1.0,
+      "min_charge": 4305,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "駐車場ご利用の際はお電話でご予約ください（※お電話での先着順となります）",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D713",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/713/713.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/713.jpg",
+      "review_average": 4.08,
+      "review_count": 3769,
+      "nearest_station": "蘇我",
+      "stay_charge_total": 27798,
+      "stay_plan_name": "【早得28】◇28日以上前のご予約が断然お得！プラン《素泊り》",
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.2
     }
   ],
   "meta": {
@@ -90,13 +186,17 @@
     "match_date": "",
     "checkin_date": "2027-04-09",
     "checkout_date": "2027-04-10",
-    "updated_at": "2026-10-16 00:53",
+    "same_day_checkin_date": "2027-04-10",
+    "same_day_checkout_date": "2027-04-11",
+    "station_name": "蘇我駅",
+    "updated_at": "2026-10-16 01:28",
     "source": "Rakuten Travel API",
     "search_conditions": {
       "adult_num": 2,
       "up_class_num": 0,
       "low_class_num": 0,
-      "search_radius": 3
+      "search_radius": 3,
+      "station_search_radius": 1
     }
   }
 }

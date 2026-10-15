@@ -1,13 +1,13 @@
 {
   "meta": {
-    "updated_at": "2026-10-16 00:53",
+    "updated_at": "2026-10-16 01:28",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
   "matches": [
     {
       "match_id": "sec10",
-      "hotel_count": 10,
+      "hotel_count": 12,
       "stadium_id": "edion-peace-wing",
       "checkin_date": "2026-10-16",
       "checkout_date": "2026-10-17",
@@ -23,7 +23,7 @@
     },
     {
       "match_id": "sec14",
-      "hotel_count": 9,
+      "hotel_count": 8,
       "stadium_id": "toyota",
       "checkin_date": "2026-11-06",
       "checkout_date": "2026-11-07",
@@ -31,7 +31,7 @@
     },
     {
       "match_id": "sec18",
-      "hotel_count": 10,
+      "hotel_count": 7,
       "stadium_id": "ajinomoto",
       "checkin_date": "2026-12-04",
       "checkout_date": "2026-12-05",
@@ -39,7 +39,7 @@
     },
     {
       "match_id": "sec22",
-      "hotel_count": 2,
+      "hotel_count": 8,
       "stadium_id": "nihondaira",
       "checkin_date": "2027-02-19",
       "checkout_date": "2027-02-20",
@@ -47,7 +47,7 @@
     },
     {
       "match_id": "sec25",
-      "hotel_count": 10,
+      "hotel_count": 9,
       "stadium_id": "kashiwa",
       "checkin_date": "2027-03-09",
       "checkout_date": "2027-03-10",
@@ -55,7 +55,7 @@
     },
     {
       "match_id": "sec27",
-      "hotel_count": 10,
+      "hotel_count": 8,
       "stadium_id": "nagai",
       "checkin_date": "2027-03-19",
       "checkout_date": "2027-03-20",
@@ -87,7 +87,7 @@
     },
     {
       "match_id": "sec33",
-      "hotel_count": 0,
+      "hotel_count": 4,
       "stadium_id": "gion-machida",
       "checkin_date": "2027-05-02",
       "checkout_date": "2027-05-03",
@@ -95,7 +95,7 @@
     },
     {
       "match_id": "sec34",
-      "hotel_count": 8,
+      "hotel_count": 12,
       "stadium_id": "best-denki",
       "checkin_date": "2027-05-08",
       "checkout_date": "2027-05-09",
@@ -111,7 +111,7 @@
     },
     {
       "match_id": "sec38",
-      "hotel_count": 10,
+      "hotel_count": 6,
       "stadium_id": "noevir-kobe",
       "checkin_date": "2027-06-05",
       "checkout_date": "2027-06-06",

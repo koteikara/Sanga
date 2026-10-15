@@ -1,6 +1,6 @@
 {
   "match_id": "sec14",
-  "hotel_count": 9,
+  "hotel_count": 8,
   "hotels": [
     {
       "hotel_no": 53440,
@@ -27,7 +27,9 @@
       "nearest_station": "新上挙母",
       "stay_charge_total": 8800,
       "stay_plan_name": "【スタンダード】豊田スタジアムまで約2km！スポーツ観戦や豊田市内の観光の拠点に＜素泊まり＞",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "stadium",
+      "distance_km_from_station": 1.7
     },
     {
       "hotel_no": 172484,
@@ -54,7 +56,9 @@
       "nearest_station": "豊田市",
       "stay_charge_total": 8926,
       "stay_plan_name": "【リブ得】通常プランより最大15％OFFの特別プラン【素泊り】",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.5
     },
     {
       "hotel_no": 16114,
@@ -81,7 +85,9 @@
       "nearest_station": "上挙母",
       "stay_charge_total": 9800,
       "stay_plan_name": "【事前チェックインでお得】スマートチェックインでスムーズなご宿泊♪",
-      "stay_meal": "朝食付き"
+      "stay_meal": "朝食付き",
+      "area": "stadium",
+      "distance_km_from_station": 2.6
     },
     {
       "hotel_no": 72882,
@@ -108,7 +114,9 @@
       "nearest_station": "土橋（愛知）",
       "stay_charge_total": 12600,
       "stay_plan_name": "【タイムセール】＜素泊まり＞駐車場無料★四季を楽しむ庭園露天風呂でリフレッシュ！",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "stadium",
+      "distance_km_from_station": 3.2
     },
     {
       "hotel_no": 180318,
@@ -135,7 +143,9 @@
       "nearest_station": "豊田市",
       "stay_charge_total": 13630,
       "stay_plan_name": "【コンパクトダブル/素泊】デスクなしのお部屋のため、お安く提供",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.1
     },
     {
       "hotel_no": 67976,
@@ -162,7 +172,9 @@
       "nearest_station": "豊田市",
       "stay_charge_total": 13816,
       "stay_plan_name": "【豊田・秋のSALEプラン】豊田市駅から1分！お得にのんびりステイ　素泊まり（禁煙）",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.1
     },
     {
       "hotel_no": 13675,
@@ -189,34 +201,9 @@
       "nearest_station": "豊田市",
       "stay_charge_total": 15000,
       "stay_plan_name": "【2名以上利用】平日がお得｜無料駐車場あり・（素泊り）",
-      "stay_meal": "食事なし"
-    },
-    {
-      "hotel_no": 147538,
-      "hotel_name": "ホテルルートイン豊田元町",
-      "stadium_id": "toyota",
-      "latitude": 35.0771696,
-      "longitude": 137.14305349999995,
-      "distance_km_from_stadium": 2.7,
-      "min_charge": 5850,
-      "max_charge": null,
-      "price_tier": "budget",
-      "parking_tag": "unknown",
-      "parking_raw_text": "有り　１３７台　無料　予約不要",
-      "accommodation_type_tag": "unknown",
-      "hotel_class_code_raw": null,
-      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D147538",
-      "sightseeing_friendly": null,
-      "stadium_proximity": false,
-      "gourmet_area_note": null,
-      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/147538/147538.jpg",
-      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/147538.jpg",
-      "review_average": 4.18,
-      "review_count": 579,
-      "nearest_station": "新上挙母",
-      "stay_charge_total": 16600,
-      "stay_plan_name": "【早割20】早期予約で8％OFF！朝食・駐車場無料！大浴場・Ｗi-Fi完備！",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.4
     },
     {
       "hotel_no": 1649,
@@ -243,7 +230,157 @@
       "nearest_station": "豊田市",
       "stay_charge_total": 17000,
       "stay_plan_name": "【素泊りプラン】11時まで滞在可能！豊田へのイベントや出張・スポーツ・観光に★",
-      "stay_meal": "食事なし"
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.4
+    }
+  ],
+  "same_day_hotel_count": 5,
+  "same_day_hotels": [
+    {
+      "hotel_no": 53440,
+      "hotel_name": "パレスイン豊田",
+      "stadium_id": "toyota",
+      "latitude": 35.07208792,
+      "longitude": 137.1518883,
+      "distance_km_from_stadium": 2.2,
+      "min_charge": 3740,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "有り・２０台　チェックイン〜アウトまで無料（先着順。予約時備考欄にてお知らせくださいませ。）",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D53440",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/53440/53440.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/53440.jpg",
+      "review_average": 3.64,
+      "review_count": 534,
+      "nearest_station": "新上挙母",
+      "stay_charge_total": 9300,
+      "stay_plan_name": "【スタンダード】豊田スタジアムまで約2km！スポーツ観戦や豊田市内の観光の拠点に＜素泊まり＞",
+      "stay_meal": "食事なし",
+      "area": "stadium",
+      "distance_km_from_station": 1.7
+    },
+    {
+      "hotel_no": 67976,
+      "hotel_name": "名鉄トヨタホテル",
+      "stadium_id": "toyota",
+      "latitude": 35.08827233,
+      "longitude": 137.1570289,
+      "distance_km_from_stadium": 1.3,
+      "min_charge": 4637,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "有り　５００台　無料(市営提携駐車場『フリーパーキング』）",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D67976",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/67976/67976.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/67976.jpg",
+      "review_average": 4.28,
+      "review_count": 775,
+      "nearest_station": "豊田市",
+      "stay_charge_total": 15136,
+      "stay_plan_name": "【豊田・秋のSALEプラン】豊田市駅から1分！お得にのんびりステイ　素泊まり（禁煙）",
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.1
+    },
+    {
+      "hotel_no": 1649,
+      "hotel_name": "豊田プレステージホテル",
+      "stadium_id": "toyota",
+      "latitude": 35.0866837,
+      "longitude": 137.1603676,
+      "distance_km_from_stadium": 1.0,
+      "min_charge": 5500,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "先着順　車種によっては有料　詳細はプランをご覧ください",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D1649",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/1649/1649.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/1649.jpg",
+      "review_average": 3.78,
+      "review_count": 975,
+      "nearest_station": "豊田市",
+      "stay_charge_total": 17000,
+      "stay_plan_name": "【素泊りプラン】11時まで滞在可能！豊田へのイベントや出張・スポーツ・観光に★",
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.4
+    },
+    {
+      "hotel_no": 16114,
+      "hotel_name": "三交イン豊田〜四季乃湯〜",
+      "stadium_id": "toyota",
+      "latitude": 35.06390848,
+      "longitude": 137.1593935,
+      "distance_km_from_stadium": 2.5,
+      "min_charge": 3750,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "【無料】ホテル敷地内が満車の際はホテル敷地外駐車場をご案内します。 大型車不可",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D16114",
+      "sightseeing_friendly": null,
+      "stadium_proximity": false,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/16114/16114.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/16114.jpg",
+      "review_average": 4.05,
+      "review_count": 1373,
+      "nearest_station": "上挙母",
+      "stay_charge_total": 19600,
+      "stay_plan_name": "【事前チェックインでお得】スマートチェックインでスムーズなご宿泊♪",
+      "stay_meal": "朝食付き",
+      "area": "stadium",
+      "distance_km_from_station": 2.6
+    },
+    {
+      "hotel_no": 172484,
+      "hotel_name": "ホテルリブマックス愛知豊田駅前",
+      "stadium_id": "toyota",
+      "latitude": 35.08270034848223,
+      "longitude": 137.15550890061172,
+      "distance_km_from_stadium": 1.4,
+      "min_charge": 2550,
+      "max_charge": null,
+      "price_tier": "budget",
+      "parking_tag": "unknown",
+      "parking_raw_text": "近隣に有料パーキングあり　※提携はしておりません　満車の場合はご容赦下さい。",
+      "accommodation_type_tag": "unknown",
+      "hotel_class_code_raw": null,
+      "affiliate_url": "https://hb.afl.rakuten.co.jp/hgc/5568ffe2.e85ba38b.5568ffe3.d3924861/?pc=https%3A%2F%2Fimg.travel.rakuten.co.jp%2Fimage%2Ftr%2Fapi%2Fre%2FpvonD%2F%3Ff_no%3D172484",
+      "sightseeing_friendly": null,
+      "stadium_proximity": true,
+      "gourmet_area_note": null,
+      "hotel_image_url": "https://img.travel.rakuten.co.jp/share/HOTEL/172484/172484.jpg",
+      "hotel_thumbnail_url": "https://img.travel.rakuten.co.jp/HIMG/90/172484.jpg",
+      "review_average": 3.83,
+      "review_count": 340,
+      "nearest_station": "豊田市",
+      "stay_charge_total": 21420,
+      "stay_plan_name": "【リブ得】通常プランより最大15％OFFの特別プラン【素泊り】",
+      "stay_meal": "食事なし",
+      "area": "both",
+      "distance_km_from_station": 0.5
     }
   ],
   "meta": {
@@ -252,13 +389,17 @@
     "match_date": "2026-11-07",
     "checkin_date": "2026-11-06",
     "checkout_date": "2026-11-07",
-    "updated_at": "2026-10-16 00:53",
+    "same_day_checkin_date": "2026-11-07",
+    "same_day_checkout_date": "2026-11-08",
+    "station_name": "豊田市駅",
+    "updated_at": "2026-10-16 01:27",
     "source": "Rakuten Travel API",
     "search_conditions": {
       "adult_num": 2,
       "up_class_num": 0,
       "low_class_num": 0,
-      "search_radius": 3
+      "search_radius": 3,
+      "station_search_radius": 1
     }
   }
 }
