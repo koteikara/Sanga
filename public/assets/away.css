@@ -1,0 +1,20 @@
+:root { color-scheme: light; }
+body { margin: 0; font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; background: #f6f1fa; color: #24182f; line-height: 1.7; }
+.away { max-width: 760px; margin: 0 auto; padding: 88px 16px 48px; }
+.away-title { font-size: 1.6rem; margin: 0 0 8px; color: #5b2d7e; }
+.away-season { margin-left: .5em; font-size: .9rem; color: #7b0064; }
+.away-pr { display: inline-block; margin: 0 0 12px; padding: 2px 10px; border: 1px solid #7b0064; border-radius: 4px; font-size: .85rem; color: #7b0064; }
+.away-meta, .away-fetched { font-size: .8rem; color: #5a4a66; }
+.away-list { list-style: none; margin: 16px 0; padding: 0; display: grid; gap: 16px; }
+.away-match { background: #fff; border-radius: 10px; padding: 14px 16px; box-shadow: 0 1px 4px rgba(60, 20, 90, .12); }
+.away-match p { margin: 2px 0; }
+.away-match-title { margin: 0; font-size: 1.15rem; }
+.away-match-round { font-size: .8rem; font-weight: normal; color: #5a4a66; }
+.away-match-date { font-weight: 600; }
+.away-hotel-title { margin: 12px 0 4px; font-size: .95rem; color: #5b2d7e; }
+.away-hotels { margin: 0; padding-left: 1.2em; }
+.away-hotel-info { font-size: .85rem; color: #4a3a56; }
+.away-empty { font-size: .85rem; color: #5a4a66; }
+.away a { color: #5b2d7e; }
+.away-notes { font-size: .85rem; color: #4a3a56; }
+.away-notes h2 { font-size: 1rem; }

@@ -23,11 +23,11 @@ def load_rakuten_credentials() -> dict[str, str]:
         "affiliateId": os.getenv("RAKUTEN_AFFILIATE_ID", ""),
         "accessKey": os.getenv("RAKUTEN_ACCESS_KEY", ""),
     }
-    missing = [key for key, value in credentials.items() if not value and key != "affiliateId"]
+    # openapi.rakuten.co.jp では accessKey が必須。値は表示しない。
+    names = {"applicationId": "RAKUTEN_APP_ID", "affiliateId": "RAKUTEN_AFFILIATE_ID", "accessKey": "RAKUTEN_ACCESS_KEY"}
+    missing = [names[key] for key, value in credentials.items() if not value]
     if missing:
-        raise RakutenCredentialsMissingError(
-            "RAKUTEN_APP_ID, RAKUTEN_AFFILIATE_ID and RAKUTEN_ACCESS_KEY must be set"
-        )
+        raise RakutenCredentialsMissingError("Missing env: " + ", ".join(missing))
     return credentials
 
 
@@ -64,6 +64,7 @@ def search_vacant_hotels(
         "upClassNum": up_class_num,
         "lowClassNum": low_class_num,
         "hits": hits,
+        "datumType": 1,
     }
     if squeeze_condition is not None:
         params["squeezeCondition"] = squeeze_condition

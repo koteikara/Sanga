@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-09",
+  "updatedAt": "2026-10-15",
   "tools": [
     {
       "id": "supporter-timeline",
@@ -44,6 +44,15 @@
       "href": "TradePost/index-v1.html",
       "thumb": "assets/thumbs/trade-post.webp?v=6ddbe0a3",
       "accent": "#5b1f7e",
+      "section": "live"
+    },
+    {
+      "id": "away-guide",
+      "name": "アウェイ遠征ガイド",
+      "description": "アウェイ戦ごとの会場・最寄り駅・前泊ホテル候補をまとめます（PRを含みます）。",
+      "href": "away.html",
+      "thumb": "assets/thumbs/away-guide.webp?v=5a4aa481",
+      "accent": "#7b0064",
       "section": "live"
     },
     {

@@ -4,6 +4,10 @@ Rakuten Travel API を使ったホテル候補データの生成基盤です。
 
 このディレクトリは `Sanga` 本体に同居する生成ツール置き場です。検証用の実験や API 仕様確認は `jleague_hotel_` リポジトリに残し、ここでは `public/data/` に載せるための整形と運用に寄せていきます。
 
+## 現在の状態
+
+`build_match_hotels.py` は楽天トラベルの実APIから試合ごとのJSONを作る（`--match-id` / `--all-away`）。必要な環境変数は `RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。詳細は `docs/hotels-operation-flow.md` の「アウェイ遠征ガイド」。以下の「PR #122 時点」は経緯として残す。
+
 ## PR #122 時点の注意
 
 このディレクトリは初期スキャフォールドです。`build_match_hotels.py` は楽天 API の実レスポンスではなく、固定のサンプルホテルを出力します。実データ公開前に、楽天取得結果の変換、宿泊日ルール、スタジアム座標、公開 JSON の必須項目を確定してください。

@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "updated_at": "2026-10-15",
+    "note": "座標は地図サービスの検索結果にもとづく概算（ホテル検索の中心点に使うだけ）。最寄り駅・アクセスは docs/sheets/away-transport.csv で手入力。"
+  },
+  "stadiums": [
+    {"id": "peace-stadium-nagasaki", "venue": "ピースタ", "name": "ピーススタジアム（長崎スタジアムシティ）", "city": "長崎県長崎市", "latitude": 32.7294, "longitude": 129.8644},
+    {"id": "todoroki", "venue": "U等々力", "name": "Uvanceとどろきスタジアム by Fujitsu", "city": "神奈川県川崎市", "latitude": 35.5858, "longitude": 139.6527},
+    {"id": "nissan", "venue": "日産ス", "name": "日産スタジアム", "city": "神奈川県横浜市", "latitude": 35.5100, "longitude": 139.6064},
+    {"id": "ajinomoto", "venue": "味スタ", "name": "味の素スタジアム", "city": "東京都調布市", "latitude": 35.6642, "longitude": 139.5271},
+    {"id": "jfe-harenokuni", "venue": "JFEス", "name": "JFE晴れの国スタジアム", "city": "岡山県岡山市", "latitude": 34.6807, "longitude": 133.9195},
+    {"id": "gion-machida", "venue": "Gスタ", "name": "町田GIONスタジアム", "city": "東京都町田市", "latitude": 35.5925, "longitude": 139.4389},
+    {"id": "edion-peace-wing", "venue": "Eピース", "name": "エディオンピースウイング広島", "city": "広島県広島市", "latitude": 34.4015, "longitude": 132.4546},
+    {"id": "panasonic-suita", "venue": "パナスタ", "name": "パナソニックスタジアム吹田", "city": "大阪府吹田市", "latitude": 34.8026, "longitude": 135.5336},
+    {"id": "toyota", "venue": "豊田ス", "name": "豊田スタジアム", "city": "愛知県豊田市", "latitude": 35.0846, "longitude": 137.1709},
+    {"id": "nihondaira", "venue": "アイスタ", "name": "IAIスタジアム日本平", "city": "静岡県静岡市", "latitude": 34.9847, "longitude": 138.4813},
+    {"id": "kashiwa", "venue": "三協F柏", "name": "三協フロンテア柏スタジアム", "city": "千葉県柏市", "latitude": 35.8479, "longitude": 139.9758},
+    {"id": "nagai", "venue": "ハナサカ", "name": "ヤンマースタジアム長居（ハナサカスタジアム）", "city": "大阪府大阪市", "latitude": 34.6141, "longitude": 135.5185},
+    {"id": "fukuari", "venue": "フクアリ", "name": "フクダ電子アリーナ", "city": "千葉県千葉市", "latitude": 35.5775, "longitude": 140.1222},
+    {"id": "mito", "venue": "水戸信ス", "name": "水戸のスタジアム（水戸信用金庫スタジアム）", "city": "茨城県水戸市", "latitude": 36.3454, "longitude": 140.4122},
+    {"id": "mercari", "venue": "メルスタ", "name": "メルカリスタジアム", "city": "茨城県鹿嶋市", "latitude": 35.9920, "longitude": 140.6404},
+    {"id": "best-denki", "venue": "ベススタ", "name": "ベスト電器スタジアム", "city": "福岡県福岡市", "latitude": 33.5859, "longitude": 130.4608},
+    {"id": "saitama", "venue": "埼玉", "name": "埼玉スタジアム2002", "city": "埼玉県さいたま市", "latitude": 35.9031, "longitude": 139.7176},
+    {"id": "noevir-kobe", "venue": "ノエスタ", "name": "ノエビアスタジアム神戸", "city": "兵庫県神戸市", "latitude": 34.6567, "longitude": 135.1698}
+  ]
+}
