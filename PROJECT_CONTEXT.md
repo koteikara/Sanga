@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-10-09
+updated: 2026-10-15
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -31,6 +31,7 @@ knowledge_mocs:
 | データ保存 | ブラウザLocalStorage | 参戦予定、表示設定、スカッド保存など個人状態 | `public/assets/app.js`、`public/assets/squad-builder.js`、`docs/personalization.md` |
 | 外部サービス | 京都サンガF.C.公式サイト（読み取りのみ） | チケット販売スケジュール、ニュース一覧・記事の取得 | `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js` |
 | 外部サービス | Jリーグチケット（読み取りのみ） | アウェイ席の販売状態と発売日時の取得 | `tools/fetch-away-tickets.js`、`tools/fetch-away-sales.js` |
+| 外部サービス | Cloudflare Web Analytics（未稼働） | Cookieなしのアクセス解析。トークン未設定のあいだと本番以外のホストでは送らない | `public/assets/analytics.js` |
 | 外部サービス | 楽天トラベルAPI（未稼働） | ホテル候補データ。現状は固定サンプル出力 | `tools/hotels/rakuten_client.py`、`tools/hotels/README.md` |
 | 配信 | iCalendar フィード | タイムラインのカレンダー購読 | `public/timeline.ics`、`public/timeline-events.ics`、`tools/build-ics-feed.js` |
 | インフラ・配信 | スターレンタルサーバー（FTP） | 本番公開先。手動ワークフローで `public/` だけを同期 | `.github/workflows/deploy-production.yml`（SamKirkland/FTP-Deploy-Action v4.4.0）、`docs/deploy-policy.md` |
@@ -71,10 +72,13 @@ flowchart LR
 - **Playwrightはリポジトリに入れず、CIで都度インストール**: `squad-checks.yml` が `npm install --no-save --package-lock=false` で固定版を入れます。手元での実ブラウザ検証は任意です。
 - **modern-screenshot をCDNではなく静的同梱**: iOS Safariでの画像生成の安定と、公開物の自己完結のためと読めます。`THIRD_PARTY_NOTICES.md` にライセンス表示を集約しています（同梱に切り替えた理由の記録は未確認）。
 - **公式サイトへの負荷を抑える**: `robots.txt` の `Crawl-delay: 10` に従い、1日1回・1リクエスト、ステップ間に `sleep 10` を置きます（`ticket-sales-sync.yml` のコメント、`docs/supporter-timeline-design.md`「公式サイトの利用条件」）。
+- **公式サイトのTLS検証は切らない**: `www.sanga-fc.jp` は葉だけを送る（2026-10-04から取得が `UNABLE_TO_VERIFY_LEAF_SIGNATURE`）。中間証明書 Cybertrust Japan SureServer CA G4 を `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` に置き、`ticket-sales-sync.yml` が `NODE_EXTRA_CA_CERTS` で読む。フィンガープリントは `tools/check-sanga-ca.js` が公開値と突き合わせる。
 - **失敗を沈黙させない**: アウェイ・ニュース取り込みは `continue-on-error` で本流を止めない一方、最後のステップでジョブを失敗させます。2026-08-31から10日間の失敗に気付けなかった経緯が根拠です。
 - **本番デプロイは手動のみ**: 自動デプロイは行わず、`main` かつ `DEPLOY` 入力を要求します。デプロイ前に暗号化バックアップを必須にします（公開リポジトリのアーティファクトは誰でも取得できるため）。
 - **LocalStorageの互換性を守る**: 既存キー・保存形式を移行方針なしに変えません。スカッドは新 `squad` 形式を保存しつつ旧 `bench` 形式を読みます（`docs/project-structure.md`）。
 - **UIを伴う変更は `experiments/` で先に試す**: 公開物の正本は `public/` で、`experiments/` はGitHub Pagesでだけ参照できます（`docs/ui-prototype-workflow.md`）。
+- **入口ページのカードとSEO用ファイルは生成して置く**: 検索エンジンとJavaScript無効の人にも一覧が見えるよう、`tools/build-seo.mjs` が `tools.json` からカードを `index.html` に書き、`sitemap.xml` / `robots.txt` と各ページの `og:image` / canonical をそろえます。`fix:asset-versions` から呼び、`check:seo` でずれを検出します（`docs/site-index.md`）。
+- **アクセス解析はCookieなしで、本番ホストだけ**: Cloudflare Web Analytics を選び、トークン未設定のあいだは送信しない形で入れ物だけ先に置いています（`docs/site-index.md`「アクセス解析」）。
 - **CSS/JS/JSONのキャッシュ版数は内容ハッシュ**: 生成物と参照の版数ずれで2日続けてCIが落ちた経緯から、`generate:timeline:public` が `fix:asset-versions` まで実行します。
 - **公開ページの日本語は humanizer-ja で推敲**: 書く人や道具が変わっても同じ基準で読めるよう、スキルをリポジトリ内に置いています（`.claude/skills/humanizer-ja/README.md`）。
 - **フレームワークを使わない理由**: 理由未確認。実装上はビルド不要で `public/` をそのまま配置できる利点があります。
@@ -92,7 +96,7 @@ npm run check:timeline   # チケット販売・アウェイ・ニュース解�
 BASE_URL=http://127.0.0.1:8123/squad.html npm run check:squad:browser   # Playwright必須
 ```
 
-- **生成**: `npm run generate:timeline:public`（`calendar-events.json`、ICS、版数を更新）、`npm run docs:dom-inventory`、`npm run fix:asset-versions`。
+- **生成**: `npm run generate:timeline:public`（`calendar-events.json`、ICS、版数を更新）、`npm run docs:dom-inventory`、`npm run fix:asset-versions`（版数のあと `generate:seo` も実行）、`npm run generate:seo`（入口のカード、sitemap、robots、OGP・canonical）、`node tools/ogp/make-ogp.mjs`（ページ別OGP画像。Playwright必須）。
 - **ビルド**: なし。`public/` が配信物そのものです。
 - **デプロイ**: `main` へのpushでGitHub Pagesへ自動配置。本番は GitHub Actions「本番サーバー手動デプロイ」を `confirm=DEPLOY` で手動実行します。明示的な指示がある場合だけ実行します。
 - **必要な環境変数名（GitHub Secrets）**: `STAR_SERVER_HOST`、`STAR_SERVER_USER`、`STAR_SERVER_PASSWORD`、`STAR_SERVER_PROTOCOL`、`STAR_SERVER_PORT`、`STAR_SERVER_REMOTE_DIR`、`BACKUP_PASSPHRASE`。ホテルツールは `.env` に楽天API認証情報を置く想定です（`.env.example` は未確認）。値はリポジトリに書きません。

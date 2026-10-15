@@ -9,13 +9,21 @@
  * 前回の取得時刻を出力先の隣に記録し、既定では24時間以内の再取得を断る。
  *
  * 解析は tools/parse-ticket-sales.js が行う。ここは取得だけを受け持つ。
+ *
+ * www.sanga-fc.jp は葉の証明書だけを送り、中間証明書を付けない。
+ * Node は AIA を取りに行かないので、ワークフローでは
+ * NODE_EXTRA_CA_CERTS に tools/certs/cybertrust-japan-sureserver-ca-g4.pem を指定する。
+ * 検証そのものは切らない。
+ *
+ * 2026-10-15 時点で /ticket/schedule はトップページへ 302 する。
+ * 販売スケジュールの案内は /news/detail/ticketschedule/ に移っている。
  */
 
 const fs = require('fs');
 const path = require('path');
 
 const repoRoot = path.resolve(__dirname, '..');
-const SOURCE_URL = 'https://www.sanga-fc.jp/ticket/schedule';
+const SOURCE_URL = 'https://www.sanga-fc.jp/news/detail/ticketschedule/';
 const DEFAULT_OUTPUT = path.join(repoRoot, 'tmp', 'ticket-schedule.html');
 
 /** robots.txt の Crawl-delay に合わせた最小間隔（秒）。再試行の待ちにも使う。 */
@@ -25,8 +33,14 @@ const MIN_INTERVAL_HOURS = 24;
 const MAX_ATTEMPTS = 3;
 const TIMEOUT_MS = 30000;
 
-/** このページであることの目印（販売スケジュールの一覧）。無ければ取得できていても中身が違う。 */
-const PAGE_MARKER = 'schedule__list';
+/**
+ * このページであることの目印。
+ *
+ * 以前の常設ページは `schedule__list` だった。2026-10-15 時点の案内は
+ * リーグと ACL の販売スケジュールを画像で載せている。トップページへ転送された
+ * HTML にはこのファイル名が無いので、転送先をスケジュールページと誤認しない。
+ */
+const PAGE_MARKER = 'league-ticket-schedule.png';
 
 /** 素性を明かし、連絡先の代わりにリポジトリを示す。 */
 const USER_AGENT = 'SangaSupporterTimeline/1.0 (+https://github.com/koteikara/Sanga; unofficial fan tool)';
@@ -69,10 +83,16 @@ async function fetchOnce(url) {
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`HTTP ${response.status} ${response.statusText}`);
-    return await response.text();
+    return { html: await response.text(), url: response.url };
   } finally {
     clearTimeout(timer);
   }
+}
+
+/** トップページへ落ちていたら、そのHTMLを販売スケジュールとして扱わない。 */
+function redirectedHome(finalUrl) {
+  const pathname = new URL(finalUrl).pathname.replace(/\/+$/, '') || '/';
+  return pathname === '/';
 }
 
 /** 何を受け取ったのかを一行にする。題があれば題を、無ければ本文の頭を見せる。 */
@@ -114,10 +134,14 @@ async function fetchWithRetry(url) {
   let unexpectedHtml = null;
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
     try {
-      const html = await fetchOnce(url);
-      if (html.includes(PAGE_MARKER)) return html;
-      unexpectedHtml = html;
-      throw new Error(`目印（${PAGE_MARKER}）がHTMLにありません（${describeHtml(html)}）`);
+      const result = await fetchOnce(url);
+      if (redirectedHome(result.url)) {
+        unexpectedHtml = result.html;
+        throw new Error(`トップページへ転送されました（${result.url} / ${describeHtml(result.html)}）`);
+      }
+      if (result.html.includes(PAGE_MARKER)) return result.html;
+      unexpectedHtml = result.html;
+      throw new Error(`目印（${PAGE_MARKER}）がHTMLにありません（${describeHtml(result.html)}）`);
     } catch (error) {
       lastError = error;
       if (attempt < MAX_ATTEMPTS) {

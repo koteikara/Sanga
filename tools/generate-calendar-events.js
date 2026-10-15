@@ -598,7 +598,11 @@ function buildNews(csvPath, matches, checkedAt) {
 }
 
 function buildAwayTickets(csvPath, matches) {
-  const records = readCsvRecords(csvPath).filter((record) => record.match_date);
+  // 0件もありうる。Jリーグチケットに京都のアウェイ戦が1件も載っていない時期がある
+  // （シーズンの切れ目、次の試合の販売前など）。見出しだけのCSVで生成を止めない。
+  // ページ構成が変わって読めないときは parse-away-tickets.js が目印の欠落で止まる。
+  const records = readCsvRecords(csvPath, { allowEmpty: true })
+    .filter((record) => record.match_date);
   const byDate = new Map();
   matches.forEach((match) => {
     if (match.home_away !== 'A' || !match.match_date) return;
@@ -665,7 +669,10 @@ function awaySaleEvent(record, match) {
  * 人がクラブ公式で確認したもののほうが確かで、あとから上書きできる余地を残す。
  */
 function buildAwaySalesCurrent(csvPath, matchIndex, takenMatchIds) {
-  const records = readCsvRecords(csvPath).filter((record) => record.match_date && record.starts_at);
+  // 0件はふつうの状態。載っている試合がすでに発売中で、開始日時が読めない日がある。
+  // 見出しだけのCSVを失敗にすると、取り込み全体が「公開JSONを生成」で止まる（2026-10-15）。
+  const records = readCsvRecords(csvPath, { allowEmpty: true })
+    .filter((record) => record.match_date && record.starts_at);
   const byDate = new Map();
   matchIndex.forEach((match) => {
     if (match.home_away !== 'A' || !match.match_date) return;

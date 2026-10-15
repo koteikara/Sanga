@@ -97,6 +97,23 @@
 | 中 | 選手データ | 参照した公式選手一覧のURLと確認日を次回更新時に記録する |
 | 低 | リポジトリ全体のライセンス | オープンソース化するか、権利留保のままにするか所有者が決定する |
 
+## TLSの中間証明書（2026-10-15 追加）
+
+| 項目 | 内容 |
+| --- | --- |
+| 対象 | `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` |
+| 名称 | Cybertrust Japan SureServer CA G4 |
+| 配布者 | サイバートラスト株式会社 |
+| 取得元 | http://crl.cybertrust.ne.jp/SureServer/ovcag4/ovcag4.crt （葉の AIA。DER を PEM に変換） |
+| 公開値の確認 | https://www.cybertrust.ne.jp/ssl/download-ca/sureserver-ov.html を 2026-10-15 に確認。SHA-256 `83:46:92:2C:B8:73:0B:B6:AE:71:AB:03:BF:C4:24:62:F4:16:04:23:D9:07:9B:E6:43:85:62:1A:C5:87:76:72` |
+| 発行者 | Security Communication RootCA2（SECOM Trust Systems） |
+| 有効期限 | 2029-05-29 |
+| 使い方 | `ticket-sales-sync.yml` の `NODE_EXTRA_CA_CERTS`。秘密鍵は含まない |
+| 加工 | DER から PEM への変換のみ |
+| 許諾 | 認証局が配布する中間証明書。リポジトリに置いて TLS の検証に使う |
+
+`www.sanga-fc.jp` の葉は、この中間証明書がないと Node が検証できません。検証を無効にはしていません。
+
 ## 第三者製ソフトウェア
 
 全HTML/CSS/JavaScriptを検索し、外部ライブラリ参照として `modern-screenshot@4.6.5` と `html-to-image@1.11.11` を確認しました。その後、検証用プロトタイプ `experiments/stadium-3d/` で `three@0.170.0`（CDN読込）と、座席データを作る開発用ツールとして PyMuPDF（同梱しない）を使い始めました。一覧とライセンス表示の所在は `THIRD_PARTY_NOTICES.md` を正とします。

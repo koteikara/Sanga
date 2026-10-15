@@ -7,6 +7,7 @@
 <meta name="description" content="京都サンガF.C.の試合日程確認、予想スカッド作成、求・譲の投稿フォーマット。ファンが個人で作っている非公式の道具箱です。">
 
 <meta property="og:type" content="website">
+<link rel="canonical" href="https://sangasanga.stars.ne.jp/">
 <meta property="og:url" content="https://sangasanga.stars.ne.jp/">
 <meta property="og:title" content="SANGA TOOLBOX | 京都サンガF.C. 非公式ファンツール">
 <meta property="og:description" content="京都サンガF.C.の試合日程確認、予想スカッド作成、求・譲の投稿フォーマット。ファンが個人で作っている非公式の道具箱です。">
@@ -16,7 +17,7 @@
 <meta property="og:image:alt" content="SANGA TOOLBOX — 観戦をちょっと楽しくする道具を、サンガを応援する人みんなに。">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235b2d7e' width='100' height='100'/><circle cx='50' cy='50' r='40' fill='%23fff' opacity='0.9'/><text x='50' y='60' font-size='60' font-weight='bold' text-anchor='middle' fill='%235b2d7e'>⚽</text></svg>">
-<link rel="stylesheet" href="assets/index.css?v=a21e3b0e">
+<link rel="stylesheet" href="assets/index.css?v=e9aee27f">
 
 <script>
   // 描画が始まる前に決める。module は読み込みが後になるため、
@@ -30,6 +31,7 @@
     document.documentElement.dataset.motion = reduced ? "off" : "on";
   })();
 </script>
+<script src="assets/analytics.js?v=dfd04ff2" defer></script>
 </head>
 <body>
 
@@ -102,15 +104,51 @@
 </section>
 
 <main class="works" id="works">
-  <noscript>
-    <ul class="fallback-list">
-      <li><a href="timeline.html">サポータータイムライン</a></li>
-      <li><a href="sanga202627season.html">年間スケジュール</a></li>
-      <li><a href="squad.html">予想スカッド作成</a></li>
-      <li><a href="calendar.html">過密日程カレンダー</a></li>
-      <li><a href="TradePost/index-v1.html">求・譲 投稿フォーマット</a></li>
+  <!-- tools:begin（tools/build-seo.mjs が data/tools.json から書く。手で直さない） -->
+  <ul class="work-grid">
+    <li class="work" style="--delay: 0ms"><a class="work-link" href="timeline.html">
+      <span class="work-thumb" style="--accent: #8a1f6b"><img src="assets/thumbs/supporter-timeline.webp?v=89195a29" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+      <span class="work-name">サポータータイムライン</span>
+      <span class="work-desc">チケットの販売開始とキックオフを時系列で並べ、次にやることを確かめられます。</span>
+    </a></li>
+    <li class="work" style="--delay: 90ms"><a class="work-link" href="sanga202627season.html">
+      <span class="work-thumb" style="--accent: #7b0064"><img src="assets/thumbs/season-schedule.webp?v=076f8d2d" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+      <span class="work-name">年間スケジュール</span>
+      <span class="work-desc">2026/27シーズンの試合日程を確認し、参戦予定を保存できます。</span>
+    </a></li>
+    <li class="work" style="--delay: 0ms"><a class="work-link" href="squad.html">
+      <span class="work-thumb" style="--accent: #14532d"><img src="assets/thumbs/squad-builder.webp?v=06d75f8d" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+      <span class="work-name">予想スカッド作成</span>
+      <span class="work-desc">フォーメーションを選んでスタメンを並べ、画像にして共有できます。</span>
+    </a></li>
+    <li class="work" style="--delay: 90ms"><a class="work-link" href="calendar.html">
+      <span class="work-thumb" style="--accent: #c8402e"><img src="assets/thumbs/dense-calendar.webp?v=13d0547a" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+      <span class="work-name">過密日程カレンダー</span>
+      <span class="work-desc">2026/27シーズンの試合間隔を色で見て、日程の詰まり具合を確かめられます。</span>
+    </a></li>
+    <li class="work" style="--delay: 0ms"><a class="work-link" href="TradePost/index-v1.html">
+      <span class="work-thumb" style="--accent: #5b1f7e"><img src="assets/thumbs/trade-post.webp?v=6ddbe0a3" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+      <span class="work-name">求・譲 投稿フォーマット</span>
+      <span class="work-desc">チケットやグッズの交換募集を、Xに投稿しやすい形に整えます。</span>
+    </a></li>
+  </ul>
+  <section class="archive" id="archive">
+    <h2 class="archive-title">ARCHIVE</h2>
+    <p class="archive-note">更新は終了していますが、そのまま残しています。</p>
+    <ul class="work-grid">
+      <li class="work" style="--delay: 0ms"><a class="work-link" href="sanga2025season.html">
+        <span class="work-thumb" style="--accent: #3d2352"><img src="assets/thumbs/season-2025.webp?v=f7b0aca4" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+        <span class="work-name">2025シーズン日程</span>
+        <span class="work-desc">2025シーズンの試合日程です。更新は終了しています。</span>
+      </a></li>
+      <li class="work" style="--delay: 90ms"><a class="work-link" href="sanga_slides.html">
+        <span class="work-thumb" style="--accent: #123a52"><img src="assets/thumbs/player-slides.webp?v=c9a5f62f" loading="lazy" decoding="async" width="344" height="704" alt=""></span>
+        <span class="work-name">選手が思う&quot;サンガのみりょく&quot;</span>
+        <span class="work-desc">選手のことばを集めたスライドです。更新は終了しています。</span>
+      </a></li>
     </ul>
-  </noscript>
+  </section>
+  <!-- tools:end -->
 </main>
 
 <section class="about" id="about">
@@ -127,7 +165,7 @@
   <p>SANGA TOOLBOX — unofficial fan tools</p>
 </footer>
 
-<script src="assets/index-page.js?v=7ead5815"></script>
+<script src="assets/index-page.js?v=6c545b67"></script>
 <script type="module">
   // ネビュラは進行的強化として足す。失敗してもCSSの背景が残る
   import { startNebula } from "./assets/index-nebula.js?v=56428a80";

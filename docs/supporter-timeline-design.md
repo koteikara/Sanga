@@ -68,7 +68,7 @@
 | 取得方法の調査 | 完了。AI抽出は不要と結論 | `docs/news-extraction-research.md` |
 | プロトタイプ | 動作する（Phase 1 + Phase 2）。チケット販売は実データ | `experiments/supporter-timeline/` |
 | チケット販売スケジュールの構造 | 2026-08-28に確認済み。1試合最大8件 | `docs/sheets/ticket-sales.2026-08-28.csv`、「販売段階は8つある」 |
-| チケット販売スケジュールの取得と解析 | 動作する。公式HTMLから2026-08-28のスナップショットを再現できることを2026-08-28に確認 | `tools/fetch-ticket-sales.js`、`tools/parse-ticket-sales.js`、「販売スケジュールの取得と解析」 |
+| チケット販売スケジュールの取得と解析 | 表形式HTMLの解析は動作する（作り物の入力で、2026-08-28のスナップショットを再現できる）。2026-10-04以降は公式が中間証明書を送らず取得が落ちていた。2026-10-15に中間証明書を足して取得は通る。同じ日、`/ticket/schedule` はトップへ302し、販売スケジュールは画像の案内記事になっていた。表が戻るまで現在値のCSVは更新できない | `tools/fetch-ticket-sales.js`、`tools/parse-ticket-sales.js`、`tools/certs/cybertrust-japan-sureserver-ca-g4.pem`、「販売スケジュールの取得と解析」 |
 | 本番ページ | `public/timeline.html` に移植済み（2026-08-31）。公開JSONは取り込みPRで作り直す | `public/timeline.html`、「Eの設計」 |
 | 見た目 | 入口ページ基準に作り直し済み（ネビュラ背景＋白場）。プロトタイプで確認 | `experiments/supporter-timeline/`、「地は入口ページのネビュラ」 |
 | 定期実行 | 動作する。毎日22:00 JSTに取得し、差分があればPRを作る。取り込みPRは常に1本だけにし、滞ればIssueで知らせる（2026-10-07） | `.github/workflows/ticket-sales-sync.yml`、「1日1回の取り込み」「取り込みの滞りを知らせる」 |
@@ -99,6 +99,8 @@ Phase 2 で入れたのは次の3つです。
 
 ### できていないこと
 
+- **公式の販売スケジュール表が、2026-10-15時点では画像だけになっている。** `/ticket/schedule` はトップへ302し、案内は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。`schedule__list` が戻るまで `ticket-sales.current.csv` は自動更新できない（「葉の証明書だけが届く」）
+- **ニュース一覧 `/news` も同じ日にトップへ302する。** 記事URL（`/news/detail/…`）は開く。一覧の差分検知は、一覧ページが戻るまで動かない
 - **試合当日のイベント・グッズ・応募は、日時付きのイベントとしては1件もない。** 2026-09-11 に層1
   （試合ごとの案内の件数と出典）を入れたが、日時を持つイベントにする層2・層3は未実装。
   画面の「応募」「試合当日」の絞り込みを押しても、まだ何も出ない（「イベント・配布・物販の取り込み」）
@@ -1121,6 +1123,12 @@ ACLなど国外のアウェイ戦はJリーグチケットに載りません。�
 **構造だけを写した作り物**です。文章を保存しない方針のためで、
 ホーム節の除外・年またぎ・付随チケットの3つを踏む形にしてあります。
 
+**`away-tickets.current.csv` が見出しだけ（0件）でも生成は止めません**（2026-10-15から）。
+シーズンの切れ目や次の試合の販売前は、ページに京都のアウェイ戦が1件も載らないことがあります。
+そのとき公開JSONの `away_tickets` は空になります。ページ構成が変わって読めない場合は
+`parse-away-tickets.js` がアウェイ節の目印の欠落で止まるので、0件と取り違えません。
+0件のときの動きは `npm run check:away-tickets` が `tools/fixtures/away-tickets.current.empty.csv` で確かめます。
+
 ### 段階2で作ったもの（2026-09-01）
 
 `docs/sheets/away-sales.manual.csv` に手で1行足すと、タイムラインとカレンダーに出ます。
@@ -1151,8 +1159,28 @@ ACLなど国外のアウェイ戦はJリーグチケットに載りません。�
 クラブ公式の販売スケジュールで確認したところ、一般販売は「販売開始前」とだけ書かれており、
 日時が出ていませんでした。**推測では入れません。** 公式に日時が出た時点で1行足します。
 
-**2026-09-10 時点で2行あります。** 広島戦（10/17、`sec10`）と大田戦（9/15、`acl-md1`）です。
+**2026-10-15 時点で5行あります。** 広島戦（10/17、`sec10`）、大田戦（9/15、`acl-md1`）、
+東京V戦（12/5、`sec18`）、町田戦（2027/5/3 or 5/4、`sec33`）、ハノイ戦（11/3、`acl-md4`）です。
 大田戦は当日券（キックオフ2時間前）を採りました。理由は「ACLアウェイは京都公式に載る」節に書いています。
+
+ハノイ戦は2026-10-15に足しました。京都公式の案内
+（`https://www.sanga-fc.jp/news/detail/21479`、本文の更新日は2026-10-12）で、前売は
+Jリーグチケットの 2026-10-15 12:00〜10/19 23:59、席種 B8-T1、1500円に手数料220円です。
+当日券はありません。購入時は配送0円を選び、QRは10/29にメールで届きます。
+
+**2026-10-12 時点では4行でした**（ハノイ戦を足す前。広島・大田・東京V・町田）。
+
+東京V戦と町田戦は2026-10-12に足しました。どちらもJリーグチケットで売るクラブですが、
+その時点では京都戦の試合ページがまだ無く、段階3の自動取得では拾えませんでした。
+**クラブ公式の販売日程表にだけ日時が先に出ていた**ので、そちらを出典にしています。
+
+- 東京V戦: 東京Vの販売日程表（`https://www.verdy.co.jp/content/ticket/buy/`）で一般販売 11/13〜。
+  時刻は同じページの「販売開始初日は12:00〜」の注記から取りました
+- 町田戦: 町田の販売スケジュール（`https://www.zelvia.co.jp/stadium-ticket/schedule/`）で一般販売 11/9 12:00〜
+
+町田戦は開催日が候補（5/3 or 5/4）のままですが、販売日時は確定しているので入れられます。
+**`match_date` が空でも、`away-sales.manual.csv` の行は試合イベントと一緒に出ます**
+（試合イベントは「開催日が候補のまま」の形になります）。
 
 **最初の1行は2026-09-10に入れました（広島戦・10/17、`sec10`）。** 広島公式の販売スケジュール
 （`https://www.sanfrecce.co.jp/tickets/schedule`）に日時が出たためです。一般販売は
@@ -1181,6 +1209,12 @@ ACLなど国外のアウェイ戦はJリーグチケットに載りません。�
 
 **手入力（段階2）が同じ試合を持っていれば、そちらを優先します。**
 人がクラブ公式で確認したもののほうが確かで、あとから上書きできる余地を残すためです。
+
+**`away-sales.current.csv` が見出しだけ（0件）でも生成は止めません**（2026-10-15から）。
+載っている試合がすべて発売中で終了日時しか出ていない日は、開始日時が1件も読めず0件になります。
+2026-10-15の手動実行で、これを「CSVに行がありません」として失敗にし、取り込み全体が
+「公開JSONを生成」で止まりました。0件のときの動きは `npm run check:away-tickets` が
+`tools/fixtures/away-sales.current.empty.csv` で確かめます。
 
 #### 収穫は増えました（2026-09-10 更新）
 
@@ -2422,6 +2456,36 @@ HTMLからCSVを作る部分は「販売スケジュールの取得と解析」�
 失敗時の再試行は10秒（`Crawl-delay`）空けて最大3回です。**目印の無いHTMLもここで取り直します**
 （「目印の無いHTMLは取り直す」）。
 
+取得先の既定は `https://www.sanga-fc.jp/news/detail/ticketschedule/` です。
+2026-10-15 に `https://www.sanga-fc.jp/ticket/schedule` がトップページへ 302 するのを確認し、
+トップのニュースから辿れた案内記事へ変えました。トップへ落ちた応答は目印があっても保存しません。
+
+#### 葉の証明書だけが届く（2026-10-15）
+
+2026-10-04 から `ticket-sales-sync.yml` の取得が `fetch failed` /
+`UNABLE_TO_VERIFY_LEAF_SIGNATURE` で落ち続けました（Issue #322、12回以上）。
+
+2026-10-15 に `openssl s_client` と Node の `fetch` で確かめました。
+
+- サーバーが送る証明書は葉だけ。`CN=www.sanga-fc.jp`、発行者は Cybertrust Japan SureServer CA G4、有効期限は 2026-12-08
+- 中間証明書の AIA は `http://crl.cybertrust.ne.jp/SureServer/ovcag4/ovcag4.crt`
+- 葉の Authority Key Identifier は、その中間証明書の Subject Key Identifier と一致する
+- 中間証明書を `--untrusted` に渡すと、`openssl verify` は既定のルートで `OK` になる
+- 中間証明書が無いと Node も `UNABLE_TO_VERIFY_LEAF_SIGNATURE` になる。`NODE_EXTRA_CA_CERTS` に PEM を渡すと `https://www.sanga-fc.jp/` は 200 になる
+
+Node は AIA を取りに行きません。ブラウザは取りに行くので、手元のブラウザでは同じサイトが開きます。
+検証を切る代わりに、中間証明書を `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` として置き、
+`ticket-sales-sync.yml` の `NODE_EXTRA_CA_CERTS` で読みます。ニュース一覧と記事の取得も同じジョブです。
+
+SHA-256 は `83:46:92:2C:B8:73:0B:B6:AE:71:AB:03:BF:C4:24:62:F4:16:04:23:D9:07:9B:E6:43:85:62:1A:C5:87:76:72`。
+サイバートラストの公開ページ（`https://www.cybertrust.ne.jp/ssl/download-ca/sureserver-ov.html`）と同じ値です。
+`node tools/check-sanga-ca.js` がこの値と有効期限を見ます。`npm run check:ticket-sales` から呼びます。
+
+**表は画像になりました。** 案内記事はリーグ用と ACL 用の PNG だけで、`dl.schedule__list` がありません。
+取得の目印は `league-ticket-schedule.png` に変えてあります。解析は画像だけのHTMLを受け取ると失敗し、
+CSVは書き換えません。ワークフローは解析が失敗してもアウェイと案内の取得へ進み、ジョブの最後で失敗にします。
+表形式が戻れば、いまのパーサ（作り物の入力）がそのHTMLを読めます。
+
 **解析（`tools/parse-ticket-sales.js`）** が読むのは次の4つの形です。公式ページは試合ごとに `dt`（見出し）と
 `dd`（販売表）の対で並んでいます。
 
@@ -2528,9 +2592,9 @@ Issueを1本だけ持ち、毎日中身を書き換えます。滞りが無く�
 
 | 道具 | 目印（`PAGE_MARKER`） |
 | --- | --- |
-| `fetch-ticket-sales.js` | `schedule__list` |
+| `fetch-ticket-sales.js` | `league-ticket-schedule.png`（2026-10-15まで `schedule__list`。案内が画像になった） |
 | `fetch-away-tickets.js` | `/sales/perform/` |
-| `fetch-news-list.js` | `/news/detail/` |
+| `fetch-news-list.js` | `/news/detail/`。加えて、最終URLがトップページなら失敗（2026-10-15に `/news` がトップへ302） |
 
 **止まること自体は正しい判断です。**目印の無いHTMLを解析すると、行が黙って消えます。
 ただし2026-09-14の取り込み#19で、この止まり方に2つの穴が見つかりました。

@@ -52,9 +52,9 @@ function checkHtmlReferences(relativePath, requiredRefs) {
   console.log(`参照OK public/${relativePath}: ${requiredRefs.join(", ")}`);
 }
 
-// 入口ページの noscript は tools.json と二重管理になる。ずれると
-// JavaScriptが動かない環境だけ導線が古いまま残るため、突き合わせる。
-function checkIndexNoscriptLinks() {
+// 入口ページのカードは tools/build-seo.mjs が tools.json から index.html に書く。
+// 生成し忘れると検索エンジンとJavaScriptなしの人にだけ古い一覧が見えるため、突き合わせる。
+function checkIndexPrerenderedLinks() {
   const html = readPublicFile("index.html");
   if (html === null) return;
 
@@ -72,28 +72,28 @@ function checkIndexNoscriptLinks() {
     return;
   }
 
-  const noscript = /<noscript>([\s\S]*?)<\/noscript>/.exec(html);
-  if (!noscript) {
-    errors.push("public/index.html に noscript がありません");
+  const block = /<!-- tools:begin[^>]*-->([\s\S]*?)<!-- tools:end -->/.exec(html);
+  if (!block) {
+    errors.push("public/index.html に <!-- tools:begin --> / <!-- tools:end --> がありません");
     return;
   }
 
-  const inNoscript = [...noscript[1].matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
-  const expected = tools.filter((tool) => tool.section === "live").map((tool) => tool.href);
+  const inBlock = [...block[1].matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
+  const expected = tools.map((tool) => tool.href);
 
-  const missing = expected.filter((href) => !inNoscript.includes(href));
-  const extra = inNoscript.filter((href) => !expected.includes(href));
+  const missing = expected.filter((href) => !inBlock.includes(href));
+  const extra = inBlock.filter((href) => !expected.includes(href));
 
   if (missing.length > 0 || extra.length > 0) {
     errors.push(
-      `public/index.html の noscript が tools.json の live と一致しません` +
+      `public/index.html のカードが tools.json と一致しません（node tools/build-seo.mjs を実行）` +
         (missing.length ? ` / 足りない: ${missing.join(", ")}` : "") +
         (extra.length ? ` / 余分: ${extra.join(", ")}` : "")
     );
     return;
   }
 
-  console.log(`noscriptOK public/index.html: tools.json の live ${expected.length}件と一致`);
+  console.log(`カードOK public/index.html: tools.json の ${expected.length}件と一致`);
 }
 
 // CSSとJavaScriptの参照にはバージョンクエリを必ず付ける。
@@ -130,7 +130,7 @@ checkHtmlReferences("index.html", [
   "assets/index-nebula.js",
   "assets/index-motion.js",
 ]);
-checkIndexNoscriptLinks();
+checkIndexPrerenderedLinks();
 
 checkAssetVersions();
 

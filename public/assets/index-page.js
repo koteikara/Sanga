@@ -1,10 +1,11 @@
 // 入口ページ。
 //
-// public/data/tools.json を読み、カードを組み立てる。
-// ツールの追加・削除・文言変更をHTMLの編集なしで行えるようにするため。
+// カードは tools/build-seo.mjs が public/data/tools.json から index.html に
+// 先に書いている（検索エンジンとJavaScriptなしの人にも一覧が見えるように）。
+// ここではその出現演出だけを付ける。
 //
-// 読み込みに失敗しても導線を消さない。index.html の noscript に書いた
-// 素のリンク一覧をそのまま残す。
+// 事前出力が無いHTML（古い版など）のときだけ、従来どおり tools.json を読んで
+// カードを組み立てる。
 
 // 本番サーバーとGitHub Pagesでルートが異なるため、絶対パスと相対パスの
 // 順で試す。squad-builder.js と同じ方式。
@@ -25,7 +26,7 @@ async function loadTools() {
         return data.tools;
       }
     } catch (error) {
-      // 次の候補へ。全滅したら noscript の内容を残す
+      // 次の候補へ
     }
   }
   throw new Error("tools.json を読み込めません");
@@ -128,12 +129,18 @@ function render(tools) {
   observeWorks(main);
 }
 
-loadTools()
+// tools/build-seo.mjs が index.html にカードを先に書いている。あればそれを使い、
+// 作り直さない（検索エンジンとJavaScriptなしの人にも同じ一覧が見える）。
+// 無いとき（古いHTMLやカード生成前）だけ tools.json から組み立てる。
+const prerendered = document.querySelector("#works .work-grid");
+if (prerendered) {
+  observeWorks(document.querySelector("#works"));
+} else loadTools()
   .then(render)
   .catch((error) => {
     console.error("[site-index] ツール一覧を読み込めませんでした:", error);
-    // 導線を消さない。noscript の内容を明示的に出す
+    // 古いHTMLに noscript があれば、その素のリンク一覧を出して導線を残す
     const main = document.querySelector("#works");
-    if (main.querySelector(".work-grid")) return;
-    main.innerHTML = document.querySelector("noscript").textContent;
+    const noscript = main.querySelector("noscript");
+    if (noscript) main.innerHTML = noscript.textContent;
   });

@@ -41,7 +41,7 @@
 | Actions・本番反映 | `docs/deploy-policy.md`、`docs/operation-flow.md` |
 | 本番サーバーからの取り込み | `docs/production-import.md`、`docs/deploy-policy.md` |
 | 公開物の全体像・過去の公開ページ | `docs/production-inventory-audit.md` |
-| 入口ページ・ツール一覧 | `docs/site-index.md`、`docs/ui-prototype-workflow.md` |
+| 入口ページ・ツール一覧・OGP・sitemap・アクセス解析 | `docs/site-index.md`、`docs/ui-prototype-workflow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
 | 過密日程カレンダー | `docs/dense-schedule-calendar.md` |
 | サンガスタジアム 座席ビュー | `experiments/stadium-3d/README.md` |
@@ -100,13 +100,14 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 | コマンド | 対象 |
 | --- | --- |
 | `npm run check` | 下記すべて |
-| `npm run check:static` | 日程ページ（データ・JS契約・公開アセット）と本番取り込みスクリプト |
+| `npm run check:static` | 日程ページ（データ・JS契約・公開アセット）、入口ページとSEO用の生成物、本番取り込みスクリプト |
 | `npm run check:timeline` | SUPPORTER TIMELINE（`calendar-events` の生成物が最新か、内容が仕様どおりか）。`check:static` から呼ぶ |
 | `npm run check:ticket-sales` | チケット販売スケジュールの解析（作り物の入力で結果が変わっていないか）。`check:timeline` から呼ぶ |
 | `npm run check:sync-stall` | 取り込みの滞りの判定（作り物の入力で結果が変わっていないか）。`check:timeline` から呼ぶ |
 | `npm run check:ticket-sales:current` | 現在値のチケット販売CSVから `calendar-events` を組み立てられるか。`check:timeline` から呼ぶ |
 | `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
 | `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
+| `npm run check:seo` | 入口ページのカード、`sitemap.xml` / `robots.txt`、各ページの OGP・canonical が `tools/build-seo.mjs` の生成結果と一致するか。`check:static` から呼ぶ。直すときは `npm run generate:seo` |
 | `npm run check:tools` | 本番取り込みスクリプト（JS構文と、検証用FTPサーバーを使った動作確認）。`check:static` から呼ぶ |
 
 `npm run check:squad:browser` はPlaywrightを利用できる環境でのみ実行します。GitHub ActionsはPR時と
