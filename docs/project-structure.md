@@ -10,7 +10,8 @@
 | 予想スカッド | `public/squad.html` | `public/assets/squad.css`、`public/assets/topbar.css`、`public/assets/squad-builder.js`、`public/assets/squad-formations.js`、`public/assets/squad-tile-offsets.js` | `public/data/players.json`（39件）、`matches.json` |
 | 過密日程カレンダー | `public/calendar.html` | `public/assets/calendar.css`、`public/assets/topbar.css`、`public/assets/calendar.js`、`index-nebula.js`（背景） | `public/data/matches.json`（年間スケジュールと共有） |
 | SUPPORTER TIMELINE | `public/timeline.html` | `public/assets/timeline.css`、`public/assets/topbar.css`、`public/assets/timeline.js`、`index-nebula.js`（背景） | `public/data/calendar-events.json`（生成物）、`benefit-tickets.json`、`matches.json` |
-| 入口ページ | `public/index.html` | `public/assets/index.css`、`index-page.js`、`index-nebula.js`、`index-motion.js` | `public/data/tools.json`（6件） |
+| アウェイ遠征ガイド | `public/away.html` | `public/assets/away.css`、`public/assets/topbar.css`、`public/assets/away-guide.js` | `public/data/away-guide.json`、`public/data/hotels/*.json`、`public/data/affiliates.json` |
+| 入口ページ | `public/index.html` | `public/assets/index.css`、`index-page.js`、`index-nebula.js`、`index-motion.js` | `public/data/tools.json`（8件） |
 
 ## ディレクトリ
 
@@ -35,7 +36,7 @@
 - チケット販売スケジュール: `fetch-ticket-sales.js`（公式ページを取得。取得間隔は既定で24時間以上。2026-10-15時点の取得先は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。`www.sanga-fc.jp` が中間証明書を送らないため、ワークフローは `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` を `NODE_EXTRA_CA_CERTS` で読む）、`parse-ticket-sales.js`（HTMLの表→CSV。列構成は `docs/sheets/ticket-sales.2026-08-28.csv` と同じ。画像だけの案内はCSVにしない）。回帰確認用の作り物の入力は `tools/fixtures/`
 - ホーム戦の販売日時（Jリーグチケット、2026-10-15から）: `parse-away-tickets.js --section home`（ホーム節→`docs/sheets/home-tickets.current.csv`）、`fetch-away-sales.js --input docs/sheets/home-tickets.current.csv --out tmp/home-perform`、`parse-home-sales.js`（→`docs/sheets/home-sales.current.csv`）、`check-home-sales-merge.js`（`generate-calendar-events.js --home-sales` の上書きの決まりを確かめる）
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
-- ホテル: `tools/hotels/`、`validate-hotels.js`
+- ホテル・アウェイ遠征ガイド: `tools/hotels/`（楽天トラベルAPIからホテル候補を取得）、`validate-hotels.js`、`generate-away-guide.js`（`matches.json`・`stadiums.json`・`docs/sheets/away-transport.csv`・`hotel-index.json` から `away-guide.json` を生成、`--check` で差分検出）、`validate-stadiums.js`
 - 本番からの取り込み: `fetch-production-files.mjs`、`ftp-client.mjs`（読み取り専用。手順は `docs/production-import.md`）、`check-import-tools.mjs`（検証用FTPサーバーを立てて動作確認）
 
 ### ルート直下 `package.json`
@@ -60,7 +61,8 @@
 | 初期CSV | `docs/sheets/schedule.initial.csv` | 2026-06-22時点の49件スナップショット |
 | 日程個人状態 | LocalStorage | 既存キー・保存形式を維持する |
 | スカッド保存 | LocalStorage | 新`squad`形式を保存し、旧`bench`形式を読み込む |
-| ホテル索引 | `public/data/hotel-index.json` | 現在0件 |
+| ホテル索引 | `public/data/hotel-index.json` | 2026-10-15時点1件（豊田戦 sec14）。`hotels-sync.yml` が週1回更新 |
+| 会場 | `public/data/stadiums.json` | 18会場。座標は概算。最寄り駅は `docs/sheets/away-transport.csv` |
 
 ## GitHub Actions
 
@@ -69,6 +71,7 @@
 | `static-checks.yml` | 日程、ホテル、選手、年間スケジュールJS等の静的検証 | PR、`main` push |
 | `pages.yml` | `public/` をGitHub Pagesへ配置 | `main` push、手動 |
 | `deploy-production.yml` | `public/` を本番へ配置 | `DEPLOY`確認付き手動 |
+| `hotels-sync.yml` | 国内アウェイ戦の前泊ホテル候補を楽天トラベルAPIから取り直し、差分があれば下書きPRを作る | 毎週月曜10:00 JST、手動 |
 | `ticket-sales-sync.yml` | 公式のチケット販売スケジュールを取得し、差分があればPRを作る。古い取り込みPRは閉じて1本にし、滞ればIssue（ラベル `sync-stall`）で知らせる | 毎日22:00 JST、手動 |
 
 Static Checksと本番デプロイは、再利用可能な `squad-checks.yml` を通して、スカッド用JavaScript構文、選手JSON、静的契約、Chromiumレイアウトを共通検証します。レイアウト検証は幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルを対象にします。

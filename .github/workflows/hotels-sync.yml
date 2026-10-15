@@ -1,0 +1,104 @@
+name: アウェイ遠征ホテル候補の更新
+
+# 週1回、これから行われる国内アウェイ戦の前泊ホテル候補を楽天トラベルAPIから取り直し、
+# public/data/hotels/ と hotel-index.json、away-guide.json に差分があれば下書きPRを作る。
+# away-guide.json が変わると fix:asset-versions が away-guide.js と away.html の ?v= も書き換えるので、
+# 差分の判定とコミットは public/ 全体で行う（public/data だけだと版数の検証で落ちる）。
+# 公開（デプロイ）は行わない。PRを確認してmerge → 手動デプロイの流れ。
+#
+# 必要な GitHub Secrets（Settings → Secrets and variables → Actions）:
+#   RAKUTEN_APP_ID / RAKUTEN_AFFILIATE_ID / RAKUTEN_ACCESS_KEY
+# 値はログにもコミットにも出さない。ホテルのリンクは楽天がアフィリエイトIDつきで返したURLのみ。
+
+on:
+  schedule:
+    # 毎週月曜 10:00 JST（01:00 UTC）
+    - cron: '0 1 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: hotels-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: ホテル候補を取り込む
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v7
+
+      - name: Node.jsを設定
+        uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+
+      - name: Pythonを設定
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 依存を入れる
+        run: pip install -r tools/hotels/requirements.txt
+
+      - name: 認証情報があるか確かめる
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+        run: |
+          for name in RAKUTEN_APP_ID RAKUTEN_AFFILIATE_ID RAKUTEN_ACCESS_KEY; do
+            if [ -z "${!name}" ]; then
+              echo "::error::GitHub Secrets の ${name} が未設定です"
+              exit 1
+            fi
+          done
+
+      - name: ホテル候補を取得
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+        run: python tools/hotels/build_match_hotels.py --all-away
+
+      - name: 遠征ガイドのJSONを作り直す
+        run: |
+          node tools/generate-away-guide.js
+          npm run fix:asset-versions
+
+      - name: 検証
+        run: npm run check:static
+
+      - name: 差分があれば下書きPRを作る
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain public)" ]; then
+            echo "変更なし"
+            exit 0
+          fi
+          branch="automation/hotels-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add public
+          git commit -m "data: アウェイ遠征のホテル候補を更新する"
+          git push origin "$branch"
+          {
+            echo '楽天トラベルAPIから取り直したホテル候補です（週次）。'
+            echo
+            echo '## 確認してほしいこと'
+            echo '- 候補が0件の試合が増えていないか（取得失敗の疑い）。'
+            echo '- リンク先が楽天トラベルのページか。'
+            echo
+            echo '実行: '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          } > pr-body.md
+          # PR作成が設定で拒否されても、ブランチはpush済み。ジョブは失敗にしない。
+          gh pr create --draft --base main --head "$branch" \
+            --title "data: アウェイ遠征のホテル候補を更新する" \
+            --body-file pr-body.md \
+            || echo "::warning::PRを作れませんでした。ブランチ ${branch} から手動で作成してください"

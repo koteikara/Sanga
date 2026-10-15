@@ -19,6 +19,7 @@ export const PAGES = [
   { key: "timeline", title: "サポーター|タイムライン", lead: "チケット販売とキックオフを、ひとつの時系列に。", accent: "#c0398f" },
   { key: "timeline-calendar", title: "カレンダーで|受け取る", lead: "販売開始と試合日程を、自分のカレンダーへ。", accent: "#c0398f" },
   { key: "season", title: "2026/27|年間スケジュール", lead: "全試合の日程を見て、参戦予定を保存。", accent: "#b0168f" },
+  { key: "away", title: "アウェイ|遠征ガイド", lead: "会場・最寄り駅・前泊ホテル候補を、試合ごとに。", accent: "#b0168f" },
   { key: "squad", title: "予想スカッド作成", lead: "スタメンを並べて、画像で共有。", accent: "#2f9e5f" },
   { key: "calendar", title: "過密日程|カレンダー", lead: "2026/27シーズンの試合間隔を色で見る。", accent: "#e0573f" },
   { key: "trade", title: "求・譲|投稿フォーマット", lead: "チケットやグッズの交換を、Xに投稿しやすく。", accent: "#8e44c4" },

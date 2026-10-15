@@ -23,11 +23,11 @@ def load_rakuten_credentials() -> dict[str, str]:
         "affiliateId": os.getenv("RAKUTEN_AFFILIATE_ID", ""),
         "accessKey": os.getenv("RAKUTEN_ACCESS_KEY", ""),
     }
-    missing = [key for key, value in credentials.items() if not value and key != "affiliateId"]
+    # openapi.rakuten.co.jp では accessKey が必須。値は表示しない。
+    names = {"applicationId": "RAKUTEN_APP_ID", "affiliateId": "RAKUTEN_AFFILIATE_ID", "accessKey": "RAKUTEN_ACCESS_KEY"}
+    missing = [names[key] for key, value in credentials.items() if not value]
     if missing:
-        raise RakutenCredentialsMissingError(
-            "RAKUTEN_APP_ID, RAKUTEN_AFFILIATE_ID and RAKUTEN_ACCESS_KEY must be set"
-        )
+        raise RakutenCredentialsMissingError("Missing env: " + ", ".join(missing))
     return credentials
 
 
@@ -64,13 +64,20 @@ def search_vacant_hotels(
         "upClassNum": up_class_num,
         "lowClassNum": low_class_num,
         "hits": hits,
+        "datumType": 1,
     }
     if squeeze_condition is not None:
         params["squeezeCondition"] = squeeze_condition
 
+    # openapi.rakuten.co.jp は Origin ヘッダーで「許可されたサイト」を判定する
+    # （Referer だけだと REQUEST_CONTEXT_BODY_HTTP_REFERRER_MISSING で403）。
+    # 既定は本番サイト。別のドメインを登録している場合は RAKUTEN_ORIGIN で変える。
+    origin = os.getenv("RAKUTEN_ORIGIN") or "https://sangasanga.stars.ne.jp"
+    headers = {"Origin": origin}
     if referer is None:
         referer = os.getenv("RAKUTEN_REFERER")
-    headers = {"Referer": referer} if referer else {}
+    if referer:
+        headers["Referer"] = referer
 
     response = requests.get(VACANT_HOTEL_SEARCH_URL, params=params, headers=headers, timeout=10)
     response.raise_for_status()

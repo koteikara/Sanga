@@ -18,7 +18,7 @@ knowledge_mocs:
 | 分類 | 技術 | 用途 | 根拠となるファイル |
 | --- | --- | --- | --- |
 | 言語 | HTML / CSS / JavaScript（ES Modules、ビルドなし） | 公開ページと検証スクリプト | `public/*.html`、`public/assets/*.js`、`tools/*.js`、`tools/*.mjs` |
-| 言語 | Python 3 | ホテル候補データ生成の初期スキャフォールド（未稼働） | `tools/hotels/*.py`、`tools/hotels/requirements.txt` |
+| 言語 | Python 3 | アウェイ遠征ガイドのホテル候補を楽天トラベルAPIから取得する | `tools/hotels/*.py`、`tools/hotels/requirements.txt` |
 | 言語 | Python 3 + PyMuPDF（AGPL-3.0、同梱せず手元の仮想環境に入れる） | スタジアム座席図PDFから座席配置 `layout.json` を作る開発用ツール。画面とCIからは使わない | `experiments/stadium-3d/extract/`、`THIRD_PARTY_NOTICES.md` |
 | 開発ツール | Blender 4.2（`bpy`、GPL-3.0）+ glTF Transform（MIT）、同梱せず | 座席ビューの構造物に陰影を焼き付けた GLB を作る。画面は URL に `?baked` を付けたときだけ読む | `experiments/stadium-3d/bake/`、`experiments/stadium-3d/baked/`、`THIRD_PARTY_NOTICES.md` |
 | ランタイム | Node.js 20 | 検証・生成スクリプトの実行。npm依存なし | `package.json`（`dependencies` なし、lockファイルなし）、`.github/workflows/*.yml` の `node-version: '20'` |
@@ -32,7 +32,8 @@ knowledge_mocs:
 | 外部サービス | 京都サンガF.C.公式サイト（読み取りのみ） | チケット販売スケジュール、ニュース一覧・記事の取得 | `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js` |
 | 外部サービス | Jリーグチケット（読み取りのみ） | アウェイ席の販売状態と発売日時の取得。2026-10-15からホーム戦の販売段階の開始日時も読み、更新できなくなった公式の販売スケジュールを補う | `tools/fetch-away-tickets.js`、`tools/fetch-away-sales.js`、`tools/parse-home-sales.js` |
 | 外部サービス | Cloudflare Web Analytics | Cookieなしのアクセス解析。2026-10-15にトークンを設定。本番以外のホストでは送らない | `public/assets/analytics.js` |
-| 外部サービス | 楽天トラベルAPI（未稼働） | ホテル候補データ。現状は固定サンプル出力 | `tools/hotels/rakuten_client.py`、`tools/hotels/README.md` |
+| 外部サービス | 楽天トラベルAPI（VacantHotelSearch） | アウェイ遠征ガイドの前泊ホテル候補。週1回 `hotels-sync.yml` が取得して下書きPRを作る。認証情報は GitHub Secrets（`RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`）、許可サイトの判定に Origin ヘッダー（既定は本番ドメイン）を送る | `tools/hotels/rakuten_client.py`、`tools/hotels/build_match_hotels.py`、`.github/workflows/hotels-sync.yml`、`docs/hotels-operation-flow.md` |
+| 外部サービス | A8.net（アフィリエイト） | アウェイ遠征ガイドのバス（エアトリ）・宿（じゃらん）の提携リンクと計測ピクセル。ホストは検証で px.a8.net / www*.a8.net に制限 | `public/data/affiliates.json`、`tools/validate-stadiums.js` |
 | 配信 | iCalendar フィード | タイムラインのカレンダー購読 | `public/timeline.ics`、`public/timeline-events.ics`、`tools/build-ics-feed.js` |
 | インフラ・配信 | スターレンタルサーバー（FTP） | 本番公開先。手動ワークフローで `public/` だけを同期 | `.github/workflows/deploy-production.yml`（SamKirkland/FTP-Deploy-Action v4.4.0）、`docs/deploy-policy.md` |
 | インフラ・配信 | GitHub Pages | 本番反映前の確認環境。`public/` と `experiments/` を配置 | `.github/workflows/pages.yml` |
