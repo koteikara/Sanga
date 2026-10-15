@@ -280,7 +280,8 @@ Playwright はプロジェクトの依存ではないので、見つからない
 `public/assets/analytics.js` を全公開ページ（`PAGES` の9ページ）の `<head>` から `defer` で読みます。
 Cloudflare Web Analytics を使い、Cookie を使わず個人を特定しない集計だけを行います。
 
-* `TOKEN` が空のあいだは何も送らない。2026-10-14時点では空。
+* `TOKEN` が空のあいだは何も送らない。2026-10-15にトークンを設定した（Cloudflare 側のサイト名は `sangasanga.stars.ne.jp`）。トークンはページに公開される値で、秘密情報ではない。
+* 入口ページの ABOUT に「Cookie を使わないアクセス解析（Cloudflare Web Analytics）を使っています。」と書いている。
 * 本番のホスト（`sangasanga.stars.ne.jp`）以外では送らない。GitHub Pages の確認環境や手元の数字は混ざらない。
 * 有効にする手順はファイル冒頭のコメントにある。トークンを入れたら `npm run fix:asset-versions` を実行し、本番反映する。
 
@@ -374,5 +375,4 @@ Cloudflare Web Analytics を使い、Cookie を使わず個人を特定しない
 
 ## この設計で決めていないこと
 
-* アクセス解析を実際に有効にする時期（`analytics.js` の `TOKEN` 設定と本番反映）。有効にする前に、ABOUT に解析を使っている旨を書くかどうか。
 * `TradePost/` に `index.html` が無く `/TradePost/` で到達できない問題（`docs/production-inventory-audit.md` の未解決課題）。入口から `index-v1.html` へ直接リンクすれば導線は成立しますが、URLの見た目としては整えたいところです。
