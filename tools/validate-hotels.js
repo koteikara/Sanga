@@ -358,7 +358,7 @@ function validateHotel(hotel, index, location) {
   if (hotel.area !== undefined && !allowedAreas.has(hotel.area)) {
     addError(hotelLocation, 'area は stadium / station / both のいずれかである必要があります');
   }
-  validateNonNegativeNumberOrNull(hotelLocation, 'distance_km_from_station', hotel.distance_km_from_station);
+  if (hotel.distance_km_from_station !== undefined) validateNonNegativeNumberOrNull(hotelLocation, 'distance_km_from_station', hotel.distance_km_from_station);
   if (hotel.stay_charge_total != null && !(Number.isInteger(hotel.stay_charge_total) && hotel.stay_charge_total > 0)) {
     addError(hotelLocation, 'stay_charge_total は正の整数か null である必要があります');
   }

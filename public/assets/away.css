@@ -303,7 +303,7 @@ button:focus-visible,
 /* マウスで操作する画面だけ、左右に送るボタンを出す（タッチはスワイプで足りる） */
 @media (hover:hover) and (pointer:fine){
   .h-arrow{
-    position:absolute;top:calc(50% - 26px);z-index:1;
+    position:absolute;top:44px;z-index:1;  /* 写真の上に置き、名前や料金に重ねない */
     display:grid;place-items:center;
     width:var(--tap);height:var(--tap);padding:0;
     border:1px solid var(--line);border-radius:50%;

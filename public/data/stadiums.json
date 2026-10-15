@@ -1,26 +1,27 @@
 {
   "meta": {
-    "updated_at": "2026-10-15",
-    "note": "座標は地図サービスの検索結果にもとづく概算（ホテル検索の中心点に使うだけ）。最寄り駅・アクセスは docs/sheets/away-transport.csv で手入力。"
+    "updated_at": "2026-10-16",
+    "note": "スタジアムの座標は地図サービスの検索結果にもとづく概算（ホテル検索の中心点に使うだけ）。最寄り駅・アクセスの説明は docs/sheets/away-transport.csv で手入力。",
+    "station_source": "最寄り駅の座標: 「国土数値情報（鉄道データ）」（国土交通省）（https://nlftp.mlit.go.jp/ksj/gml/datalist/KsjTmplt-N02-2025.html）を OpenPOI API（https://openpoiapi.com/）で検索して取得。CC-BY-4.0。2026-10-16確認"
   },
   "stadiums": [
-    {"id": "peace-stadium-nagasaki", "venue": "ピースタ", "name": "PEACE STADIUM Connected by SoftBank（長崎スタジアムシティ）", "city": "長崎県長崎市", "latitude": 32.7588, "longitude": 129.8650},
-    {"id": "todoroki", "venue": "U等々力", "name": "Uvanceとどろきスタジアム by Fujitsu", "city": "神奈川県川崎市", "latitude": 35.5858, "longitude": 139.6527},
-    {"id": "nissan", "venue": "日産ス", "name": "日産スタジアム", "city": "神奈川県横浜市", "latitude": 35.5100, "longitude": 139.6064},
-    {"id": "ajinomoto", "venue": "味スタ", "name": "味の素スタジアム", "city": "東京都調布市", "latitude": 35.6642, "longitude": 139.5271},
-    {"id": "jfe-harenokuni", "venue": "JFEス", "name": "JFE晴れの国スタジアム", "city": "岡山県岡山市", "latitude": 34.6807, "longitude": 133.9195},
-    {"id": "gion-machida", "venue": "Gスタ", "name": "町田GIONスタジアム", "city": "東京都町田市", "latitude": 35.5925, "longitude": 139.4389},
-    {"id": "edion-peace-wing", "venue": "Eピース", "name": "エディオンピースウイング広島", "city": "広島県広島市", "latitude": 34.4015, "longitude": 132.4546},
-    {"id": "panasonic-suita", "venue": "パナスタ", "name": "パナソニックスタジアム吹田", "city": "大阪府吹田市", "latitude": 34.8026, "longitude": 135.5336},
-    {"id": "toyota", "venue": "豊田ス", "name": "豊田スタジアム", "city": "愛知県豊田市", "latitude": 35.0846, "longitude": 137.1709},
-    {"id": "nihondaira", "venue": "アイスタ", "name": "IAIスタジアム日本平", "city": "静岡県静岡市", "latitude": 34.9847, "longitude": 138.4813},
-    {"id": "kashiwa", "venue": "三協F柏", "name": "三協フロンテア柏スタジアム", "city": "千葉県柏市", "latitude": 35.8479, "longitude": 139.9758},
-    {"id": "nagai", "venue": "ハナサカ", "name": "YANMAR HANASAKA STADIUM（長居球技場）", "city": "大阪府大阪市", "latitude": 34.6141, "longitude": 135.5185},
-    {"id": "fukuari", "venue": "フクアリ", "name": "フクダ電子アリーナ", "city": "千葉県千葉市", "latitude": 35.5775, "longitude": 140.1222},
-    {"id": "mito", "venue": "水戸信ス", "name": "水戸信用金庫スタジアム（笠松運動公園陸上競技場）", "city": "茨城県那珂市", "latitude": 36.4572, "longitude": 140.5382},
-    {"id": "mercari", "venue": "メルスタ", "name": "メルカリスタジアム", "city": "茨城県鹿嶋市", "latitude": 35.9920, "longitude": 140.6404},
-    {"id": "best-denki", "venue": "ベススタ", "name": "ベスト電器スタジアム", "city": "福岡県福岡市", "latitude": 33.5859, "longitude": 130.4608},
-    {"id": "saitama", "venue": "埼玉", "name": "埼玉スタジアム2002", "city": "埼玉県さいたま市", "latitude": 35.9031, "longitude": 139.7176},
-    {"id": "noevir-kobe", "venue": "ノエスタ", "name": "ノエビアスタジアム神戸", "city": "兵庫県神戸市", "latitude": 34.6567, "longitude": 135.1698}
+    {"id": "peace-stadium-nagasaki", "venue": "ピースタ", "name": "PEACE STADIUM Connected by SoftBank（長崎スタジアムシティ）", "city": "長崎県長崎市", "latitude": 32.7588, "longitude": 129.8650, "station_name": "長崎駅", "station_latitude": 32.75243, "station_longitude": 129.86888},
+    {"id": "todoroki", "venue": "U等々力", "name": "Uvanceとどろきスタジアム by Fujitsu", "city": "神奈川県川崎市", "latitude": 35.5858, "longitude": 139.6527, "station_name": "武蔵小杉駅", "station_latitude": 35.57468, "station_longitude": 139.66342},
+    {"id": "nissan", "venue": "日産ス", "name": "日産スタジアム", "city": "神奈川県横浜市", "latitude": 35.5100, "longitude": 139.6064, "station_name": "新横浜駅", "station_latitude": 35.50795, "station_longitude": 139.61744},
+    {"id": "ajinomoto", "venue": "味スタ", "name": "味の素スタジアム", "city": "東京都調布市", "latitude": 35.6642, "longitude": 139.5271, "station_name": "飛田給駅", "station_latitude": 35.65998, "station_longitude": 139.52366},
+    {"id": "jfe-harenokuni", "venue": "JFEス", "name": "JFE晴れの国スタジアム", "city": "岡山県岡山市", "latitude": 34.6807, "longitude": 133.9195, "station_name": "岡山駅", "station_latitude": 34.66667, "station_longitude": 133.91807},
+    {"id": "gion-machida", "venue": "Gスタ", "name": "町田GIONスタジアム", "city": "東京都町田市", "latitude": 35.5925, "longitude": 139.4389, "station_name": "町田駅", "station_latitude": 35.54278, "station_longitude": 139.44580},
+    {"id": "edion-peace-wing", "venue": "Eピース", "name": "エディオンピースウイング広島", "city": "広島県広島市", "latitude": 34.4015, "longitude": 132.4546, "station_name": "広島駅", "station_latitude": 34.39676, "station_longitude": 132.47508},
+    {"id": "panasonic-suita", "venue": "パナスタ", "name": "パナソニックスタジアム吹田", "city": "大阪府吹田市", "latitude": 34.8026, "longitude": 135.5336, "station_name": "万博記念公園駅", "station_latitude": 34.80678, "station_longitude": 135.53016},
+    {"id": "toyota", "venue": "豊田ス", "name": "豊田スタジアム", "city": "愛知県豊田市", "latitude": 35.0846, "longitude": 137.1709, "station_name": "豊田市駅", "station_latitude": 35.08726, "station_longitude": 137.15624},
+    {"id": "nihondaira", "venue": "アイスタ", "name": "IAIスタジアム日本平", "city": "静岡県静岡市", "latitude": 34.9847, "longitude": 138.4813, "station_name": "清水駅", "station_latitude": 35.02340, "station_longitude": 138.48910},
+    {"id": "kashiwa", "venue": "三協F柏", "name": "三協フロンテア柏スタジアム", "city": "千葉県柏市", "latitude": 35.8479, "longitude": 139.9758, "station_name": "柏駅", "station_latitude": 35.86206, "station_longitude": 139.97079},
+    {"id": "nagai", "venue": "ハナサカ", "name": "YANMAR HANASAKA STADIUM（長居球技場）", "city": "大阪府大阪市", "latitude": 34.6141, "longitude": 135.5185, "station_name": "長居駅", "station_latitude": 34.61020, "station_longitude": 135.51330},
+    {"id": "fukuari", "venue": "フクアリ", "name": "フクダ電子アリーナ", "city": "千葉県千葉市", "latitude": 35.5775, "longitude": 140.1222, "station_name": "蘇我駅", "station_latitude": 35.58216, "station_longitude": 140.13074},
+    {"id": "mito", "venue": "水戸信ス", "name": "水戸信用金庫スタジアム（笠松運動公園陸上競技場）", "city": "茨城県那珂市", "latitude": 36.4572, "longitude": 140.5382, "station_name": "東海駅", "station_latitude": 36.46550, "station_longitude": 140.56603},
+    {"id": "mercari", "venue": "メルスタ", "name": "メルカリスタジアム", "city": "茨城県鹿嶋市", "latitude": 35.9920, "longitude": 140.6404, "station_name": "鹿島神宮駅", "station_latitude": 35.97070, "station_longitude": 140.62593},
+    {"id": "best-denki", "venue": "ベススタ", "name": "ベスト電器スタジアム", "city": "福岡県福岡市", "latitude": 33.5859, "longitude": 130.4608, "station_name": "博多駅", "station_latitude": 33.58967, "station_longitude": 130.42089},
+    {"id": "saitama", "venue": "埼玉", "name": "埼玉スタジアム2002", "city": "埼玉県さいたま市", "latitude": 35.9031, "longitude": 139.7176, "station_name": "浦和美園駅", "station_latitude": 35.89368, "station_longitude": 139.72782},
+    {"id": "noevir-kobe", "venue": "ノエスタ", "name": "ノエビアスタジアム神戸", "city": "兵庫県神戸市", "latitude": 34.6567, "longitude": 135.1698, "station_name": "御崎公園駅", "station_latitude": 34.65472, "station_longitude": 135.16526}
   ]
 }

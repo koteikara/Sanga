@@ -59,7 +59,7 @@ node --check public/assets/app.js
 | `docs/sheets/away-transport.csv`（最寄り駅・アクセス・任意の交通リンク） | `public/data/away-guide.json`（`tools/generate-away-guide.js`） |
 
 - 対象は国内のアウェイ戦（ACL は除く）。宿泊は前泊（試合前日チェックイン）と当日泊（試合の日チェックイン）の2通りで、どちらも2名・1泊。1泊ごとにスタジアムから半径3kmと最寄り駅から半径1kmの2回検索し、それぞれ安い順に6件まで、重なりを除いて最大12件を安い順に並べる（1試合4回のAPI呼び出し、1秒1回）。日程未定の試合は候補日の早いほう。
-- 最寄り駅は `stadiums.json` の `station_name` / `station_latitude` / `station_longitude`。座標は日本語版Wikipediaの各駅の記事による（2026-10-16確認）。`tools/validate-stadiums.js` が名前の形と、スタジアムから15km以内であることを確かめる。
+- 最寄り駅は `stadiums.json` の `station_name` / `station_latitude` / `station_longitude`。座標は「国土数値情報（鉄道データ）」（国土交通省、CC-BY-4.0）を OpenPOI API（https://openpoiapi.com/）で駅名とスタジアム周辺15kmで検索し、いちばん近い同名の駅を採った（2026-10-16確認。出典は `stadiums.json` の `meta.station_source`）。`tools/validate-stadiums.js` が名前の形と、スタジアムから15km以内であることを確かめる。
 - 料金は、VacantHotelSearch が返す空室プラン（`roomInfo` の `roomBasicInfo` と直後の `dailyCharge`）のうち、`dailyCharge.total`（その日1泊の合計料金）が最安のもの（`stay_charge_total`）。並び順もこの料金。ページでは「2名1泊 ¥○〜」と、2で割った「1人 約¥○」、食事の有無を出す。プランが取れなかった宿だけ `hotelMinCharge`（楽天の説明では「1部屋1泊あたり、税・サービス料込みの最安値の目安」）を「目安」として出す。楽天の説明には `total` が指定人数分かどうかが書かれていないため、実際の応答で `rakutenCharge`・`chargeFlag`（0=1人あたり、1=1室あたり）と突き合わせて確かめる。
 - 取得条件・日時（`meta.updated_at`、JST）をページに表示する。広告表記（PR）はページ冒頭と各ホテル欄に出す。
 - 見た目は過密日程カレンダーと同じ紫の地・ぼかし（ネビュラ）と紙のカード（`public/assets/away.css`）。試合ごとに大会色の帯（J1 / ルヴァン）、ホテルは写真つきカードを前泊・当日泊の2列で横に流す（2026-10-15、2列化は10-16）。列ごとに件数と「スワイプで他の宿 →」を出し、マウス操作の画面では左右の送りボタンも出す。ホテル名は全角英数字を半角にそろえ（NFKC）、3行まで出す。
