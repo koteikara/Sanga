@@ -1,6 +1,6 @@
 # Third-party notices
 
-確認基準日: 2026-08-21（three.js は2026-09-10、PyMuPDF は2026-10-07に追記）
+確認基準日: 2026-08-21（three.js は2026-09-10、PyMuPDF は2026-10-07、焼き付けの道具は2026-10-09に追記）
 
 この文書は、リポジトリで利用する第三者製ソフトウェアと、そのライセンス表示の所在を記録します。公式サイト由来の画像・データ等は `docs/source-and-license.md` を参照してください。
 
@@ -68,6 +68,11 @@
 - `experiments/stadium-3d/prototype.html`: importmapで `https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js` と `https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/` を固定バージョンで読み込む。
 - `experiments/stadium-3d/prototype.js`: `three` と `three/addons/controls/OrbitControls.js` を読み込む。
 - `experiments/stadium-3d/stadium-model.js`: `three` と `three/addons/utils/BufferGeometryUtils.js` を読み込む。
+- `experiments/stadium-3d/sightlines.js`: `three` と `three/addons/utils/BufferGeometryUtils.js` を読み込む。
+- `experiments/stadium-3d/prototype.js`（URL に `?baked` を付けたときだけ）: `three/addons/loaders/GLTFLoader.js` と、
+  meshoptimizer のデコーダー `three/addons/libs/meshopt_decoder.module.js`（three.js のパッケージに同梱。
+  MIT License、Copyright (C) 2016-2022 Arseny Kapoulkine）を読み込む。
+- `experiments/stadium-3d/bake/export-scene.mjs`（開発用）: ページの中で `three/addons/exporters/GLTFExporter.js` を読み込む。
 
 パッケージ本体はリポジトリへ同梱していません。検証用プロトタイプでのみ使い、公開物（`public/`）からは読み込みません。バージョンを変更するときは、上流のライセンスと配布内容を再確認します。
 
@@ -91,6 +96,20 @@
 使いません。生成物の `layout.json` はPyMuPDFのコードを含みません。AGPLの条件が関わるのは、PyMuPDFを組み込んだ
 ものを配布・提供する場合です。このスクリプトをPyMuPDFと一緒に配布したり、サーバーで提供したりする場合は、
 その時点で条件を確認します。
+
+## 3D モデルの焼き付けに使う道具（同梱しない開発用ツール）
+
+座席ビューの焼き付け版（`experiments/stadium-3d/baked/stadium-baked.glb`）を作るときだけ、作業者が手元に入れて使います。
+リポジトリには同梱せず、`package.json` の依存にもしていません。画面や検証コマンドからは使いません。
+生成物の GLB には、これらの道具のコードは含まれません。
+
+| 道具 | 確認したバージョン | ライセンス | 上流 | 使うところ |
+| --- | --- | --- | --- | --- |
+| Blender（Python モジュール `bpy`） | 4.2.0 | GNU GPL v3.0 | https://www.blender.org/ | `experiments/stadium-3d/bake/bake_ao.py`、`build_stands.py`（形の読み込み、陰影の焼き付け、glTF の書き出し） |
+| glTF Transform（`@gltf-transform/cli`） | 4.5.1 | MIT License | https://gltf-transform.dev/ | 焼き付けた GLB の形を meshopt で圧縮する |
+| Playwright | リポジトリの検証と同じもの | Apache License 2.0 | https://playwright.dev/ | `experiments/stadium-3d/bake/export-scene.mjs`（ブラウザでモデルを組み立てて書き出す） |
+
+確認日: 2026-10-09（各パッケージの記載で確認）。
 
 ## フォント
 

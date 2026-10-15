@@ -20,7 +20,8 @@
 | 対戦相手ロゴ | `public/assets/logos/` 10件 | `docs/sources/` の画像を複製して配置。元ページURLと利用許諾が未確認 |
 | 背番号タイル | `public/assets/players/` 39件 | `docs/sources/players-numbers.jpeg` から切り出した加工物。元ページURLと利用許諾が未確認 |
 | スカッド見出し | `public/assets/squad/` 7件 | リポジトリ内のHTML/CSSから生成。生成元は `experiments/squad-builder/assets/*-source.html`。8番目の「シンプル」は画像を使わず文字で表示 |
-| スタジアムの座席配置 | `experiments/stadium-3d/layout.json` | サンガスタジアム by KYOCERA「座席案内」の座席図PDF（https://sangastadium-by-kyocera.jp/seat-guide ）と、京都府「京都スタジアム（仮称）インフォメーションパッケージ」平成30年1月 p.15・p.18（https://www.pref.kyoto.jp/sposei/news/documents/11ms.pdf ）を2026-10-07に確認し、`experiments/stadium-3d/extract/build_layout.py` で計算した座標。保持するのは席の位置・列・番号・ブロック名と資料の寸法という事実で、PDF・図面・画像・文章は含まない。サンガスタジアム by KYOCERA のサイトは、2026-10-07時点でサイトマップに利用規約のページが無く、プライバシーポリシー（https://sangastadium-by-kyocera.jp/privacy-policy ）にも著作物の扱いの記載がないため、利用条件は未確認。検証用プロトタイプでのみ使い、公開物には未反映 |
+| スタジアムの座席配置 | `experiments/stadium-3d/layout.json` | サンガスタジアム by KYOCERA「座席案内」の座席図PDF（https://sangastadium-by-kyocera.jp/seat-guide ）と、京都府「京都スタジアム（仮称）インフォメーションパッケージ」平成30年1月 p.15・p.18（https://www.pref.kyoto.jp/sposei/news/documents/11ms.pdf ）を2026-10-07に確認し、`experiments/stadium-3d/extract/build_layout.py` で計算した座標。保持するのは席の位置・列・番号（2026-10-09 から座席図に印刷された番号を読み取ったもの）・ブロック名と資料の寸法という事実で、PDF・図面・画像・文章は含まない。サンガスタジアム by KYOCERA のサイトは、2026-10-07時点でサイトマップに利用規約のページが無く、プライバシーポリシー（https://sangastadium-by-kyocera.jp/privacy-policy ）にも著作物の扱いの記載がないため、利用条件は未確認。検証用プロトタイプでのみ使い、公開物には未反映 |
+| スタジアムの位置と向き | `experiments/stadium-3d/sun.js` の `STADIUM` | OpenStreetMap のピッチの形（https://www.openstreetmap.org/way/733921520 、2026-10-09確認）から測った中心の緯度経度と長辺の向きの3つの数値。© OpenStreetMap contributors、ODbL。地図データそのものは含まない。座席ビューの日差しの計算にだけ使う |
 | 画像生成ライブラリ | `modern-screenshot` 4.6.5、`html-to-image` 1.11.11 | いずれもMIT License。前者はライセンス全文と取得記録を同梱、後者は検証ページからCDN読込 |
 | フォント | CSS・生成元HTMLのfont-family指定 | システムフォントのみ。フォントファイルの同梱なし |
 | プロジェクト独自部分 | リポジトリ全体 | ルート `LICENSE` なし。第三者への包括的な利用許諾は未設定 |
