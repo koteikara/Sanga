@@ -21,6 +21,13 @@ for (const s of stadiums) {
   venues.add(s.venue);
   for (const k of ['venue', 'name', 'city']) if (!s[k]) fail(`${loc}: ${k} が空`);
   if (!(s.latitude >= 24 && s.latitude <= 46 && s.longitude >= 122 && s.longitude <= 146)) fail(`${loc}: 座標が日本の範囲外`);
+  // 最寄り駅（ホテルを駅の周りでも探す中心）。名前と座標はそろえて持つ
+  if (!s.station_name || !/駅$/.test(s.station_name)) fail(`${loc}: station_name は「〜駅」の形で必要`);
+  if (!(s.station_latitude >= 24 && s.station_latitude <= 46 && s.station_longitude >= 122 && s.station_longitude <= 146)) fail(`${loc}: 駅の座標が日本の範囲外`);
+  else {
+    const km = 6371 * 2 * Math.asin(Math.sqrt(Math.sin(((s.station_latitude - s.latitude) * Math.PI) / 360) ** 2 + Math.cos((s.latitude * Math.PI) / 180) * Math.cos((s.station_latitude * Math.PI) / 180) * Math.sin(((s.station_longitude - s.longitude) * Math.PI) / 360) ** 2));
+    if (km > 15) fail(`${loc}: 最寄り駅がスタジアムから ${km.toFixed(1)}km 離れています（取り違えの疑い）`);
+  }
 }
 
 // 国内アウェイ戦の会場がすべて登録されていること

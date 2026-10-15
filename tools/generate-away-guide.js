@@ -47,6 +47,7 @@ const entries = matches
       latitude: s ? s.latitude : null,
       longitude: s ? s.longitude : null,
       station: t ? t.station : '',
+      station_name: s && s.station_name ? s.station_name : '',
       access_note: t ? t.access_note : '',
       transport_label: t ? t.transport_label : '',
       transport_url: t ? t.transport_url : '',

@@ -183,6 +183,10 @@ public/
 | `stay_charge_total` | number or null | 任意 | 検索した日・人数（前泊・2名）で空いているプランのうち、`dailyCharge.total`（その日1泊の合計料金）が最安のもの。取得時点の値（2026-10-15追加） |
 | `stay_plan_name` | string or null | 任意 | そのプランの名前（`planName`、無ければ `roomName`） |
 | `stay_meal` | string or null | 任意 | そのプランの食事（`withBreakfastFlag` / `withDinnerFlag` から「朝食付き」「食事なし」など） |
+| `area` | string | 任意 | どの検索で見つかったか。`stadium`（スタジアムから半径3km）/ `station`（最寄り駅から半径1km）/ `both`（2026-10-16追加） |
+| `distance_km_from_station` | number or null | 任意 | 最寄り駅（`stadiums.json` の `station_*`）からの距離 |
+
+試合ごとのファイルには、前泊の `hotels` / `hotel_count` に加えて、当日泊（試合の日にチェックイン）の `same_day_hotels` / `same_day_hotel_count` を置く（項目は `hotels[]` と同じ）。`meta` には `same_day_checkin_date` / `same_day_checkout_date`、最寄り駅の名前 `station_name`、`search_conditions.station_search_radius` を足す。`hotel-index.json` の `hotel_count` は前泊の件数のまま。
 
 ## 5. 公開用に最小限必要な項目
 

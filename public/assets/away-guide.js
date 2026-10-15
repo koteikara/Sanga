@@ -94,7 +94,27 @@
     return "日程未定";
   }
 
-  function hotelCard(h) {
+  // 全角の英数字・空白を半角にそろえる（「ＫＯＫＯ　ＨＯＴＥＬ」→「KOKO HOTEL」）。名前が短くなり、途切れにくい
+  function displayName(name) {
+    var s = String(name || "");
+    if (s.normalize) s = s.normalize("NFKC");
+    return s.replace(/\s+/g, " ").trim();
+  }
+  function iso(d) {
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function addDays(isoDate, n) {
+    var d = new Date(isoDate + "T00:00:00");
+    d.setDate(d.getDate() + n);
+    return iso(d);
+  }
+  function nearLabel(h, stationName) {
+    if (h.area !== "stadium" && stationName && h.distance_km_from_station != null && h.distance_km_from_station <= 1) return stationName + "近く";
+    if (h.stadium_proximity) return "スタジアム近く";
+    return "";
+  }
+
+  function hotelCard(h, stationName) {
     var li = el("li", "hotel");
     var a = safeLink(h.affiliate_url, "hotel-link", "nofollow sponsored noopener noreferrer");
     var box = a || el("div", "hotel-link");
@@ -122,11 +142,14 @@
       empty.append(icon(ICON_HOTEL));
       photo.append(empty);
     }
-    if (h.stadium_proximity) photo.append(el("span", "hotel-near", "会場近く"));
+    var near = nearLabel(h, stationName);
+    if (near) photo.append(el("span", "hotel-near", near));
     box.append(photo);
 
     var text = el("div", "hotel-text");
-    text.append(el("p", "hotel-name", h.hotel_name));
+    var name = el("p", "hotel-name", displayName(h.hotel_name));
+    name.title = h.hotel_name;
+    text.append(name);
     var price = el("p", "hotel-price");
     if (h.stay_charge_total != null) {
       // その日・2名で空いているプランの最安（取得時点）。1人あたりは2で割った目安
@@ -146,7 +169,8 @@
     }
     if (price) text.append(price);
     var sub = el("p", "hotel-sub");
-    if (h.distance_km_from_stadium != null) sub.append(el("span", null, "会場まで" + h.distance_km_from_stadium + "km"));
+    if (h.distance_km_from_stadium != null) sub.append(el("span", null, "スタジアムまで" + h.distance_km_from_stadium + "km"));
+    if (stationName && h.area !== "stadium" && h.distance_km_from_station != null) sub.append(el("span", null, stationName + "まで" + h.distance_km_from_station + "km"));
     if (h.review_average != null && h.review_count) {
       var star = el("span", "hotel-star", "★" + Number(h.review_average).toFixed(1));
       var rv = el("span");
@@ -160,18 +184,64 @@
     return li;
   }
 
+  var rowSeq = 0;
+
+  // 横に流す1列。続きがあることを文字と（マウス操作の画面では）矢印ボタンで示す
+  function hotelRow(hotels, label, stationName) {
+    var wrap = el("div", "h-row");
+    var ul = el("ul", "hotels");
+    ul.id = "hotels-" + (++rowSeq);
+    ul.setAttribute("aria-label", label + "の候補 " + hotels.length + "件");
+    hotels.forEach(function (h) { ul.append(hotelCard(h, stationName)); });
+    if (hotels.length > 1) {
+      [["prev", "前の宿", "M15 18l-6-6 6-6"], ["next", "次の宿", "M9 18l6-6-6-6"]].forEach(function (b) {
+        var btn = el("button", "h-arrow h-arrow-" + b[0]);
+        btn.type = "button";
+        btn.setAttribute("aria-label", label + "：" + b[1]);
+        btn.setAttribute("aria-controls", ul.id);
+        btn.append(icon(b[2]));
+        btn.addEventListener("click", function () {
+          ul.scrollBy({ left: (b[0] === "next" ? 1 : -1) * ul.clientWidth * 0.8, behavior: document.documentElement.dataset.motion === "off" ? "auto" : "smooth" });
+        });
+        wrap.append(btn);
+      });
+      var sync = function () {
+        var max = ul.scrollWidth - ul.clientWidth - 2;
+        wrap.classList.toggle("at-start", ul.scrollLeft <= 2);
+        wrap.classList.toggle("at-end", ul.scrollLeft >= max);
+      };
+      ul.addEventListener("scroll", sync, { passive: true });
+      requestAnimationFrame(sync);
+    }
+    wrap.prepend(ul);
+    return wrap;
+  }
+
+  function night(label, checkin, hotels, stationName) {
+    var sec = el("section", "night");
+    var head = el("div", "night-head");
+    var h = el("h4", "night-title", label);
+    head.append(h);
+    if (checkin) head.append(el("span", "night-date", md(checkin) + " チェックイン"));
+    if (hotels.length > 1) head.append(el("span", "night-hint", hotels.length + "件・スワイプで他の宿 →"));
+    sec.append(head);
+    if (!hotels.length) {
+      sec.append(el("p", "h-empty", "取得時点では条件に合う空室が見つかりませんでした。"));
+    } else {
+      sec.append(hotelRow(hotels, label, stationName));
+    }
+    return sec;
+  }
+
   function renderHotels(box, doc) {
     var m = doc.meta || {};
+    var station = m.station_name || "";
     box.textContent = "";
-    if (!doc.hotels || !doc.hotels.length) {
-      box.append(el("p", "h-empty", "取得時点では条件に合う空室が見つかりませんでした。下の「ほかの宿を探す」からも探せます。"));
-      return;
+    box.append(night("前泊", m.checkin_date, doc.hotels || [], station));
+    if (Array.isArray(doc.same_day_hotels)) {
+      box.append(night("当日泊", m.same_day_checkin_date, doc.same_day_hotels, station));
     }
-    var ul = el("ul", "hotels");
-    ul.setAttribute("aria-label", "前泊ホテルの候補 " + doc.hotels.length + "件（横にスクロールできます）");
-    doc.hotels.forEach(function (h) { ul.append(hotelCard(h)); });
-    box.append(ul);
-    box.append(el("p", "h-foot", "料金は取得時点で空室のあったプランの最安（税・サービス料込み）。取得 " + (m.updated_at || "") + " JST ／ 提供：楽天トラベル"));
+    box.append(el("p", "h-foot", "料金は取得時点で空室のあったプランの最安（2名1泊・税・サービス料込み）。取得 " + (m.updated_at || "") + " JST ／ 提供：楽天トラベル"));
   }
 
   function renderMatch(m) {
@@ -194,7 +264,7 @@
 
     var body = el("div", "m-body");
     var facts = el("dl", "m-facts");
-    facts.append(el("dt", null, "会場"));
+    facts.append(el("dt", null, "スタジアム"));
     var venue = el("dd", null, m.venue_name);
     if (m.city) { venue.append(document.createTextNode(" ")); venue.append(el("span", "m-city", m.city)); }
     facts.append(venue);
@@ -226,16 +296,10 @@
     if (actions.childNodes.length) body.append(actions);
 
     var hh = el("div", "h-head");
-    var ht = el("h3", "h-title", "前泊ホテル");
+    var ht = el("h3", "h-title", "ホテル");
     ht.append(prTag());
     hh.append(ht);
-    var checkin = m.match_date || (m.date_candidates && m.date_candidates[0]);
-    if (checkin) {
-      var prev = new Date(checkin + "T00:00:00");
-      prev.setDate(prev.getDate() - 1);
-      var iso = prev.getFullYear() + "-" + String(prev.getMonth() + 1).padStart(2, "0") + "-" + String(prev.getDate()).padStart(2, "0");
-      hh.append(el("span", "h-cond", shortMd(iso) + " 泊・2名・会場から3km以内・安い順"));
-    }
+    hh.append(el("span", "h-cond", "2名・スタジアムから3km／" + (m.station_name || "最寄り駅") + "から1km・安い順"));
     body.append(hh);
 
     var box = el("div", "h-box");
