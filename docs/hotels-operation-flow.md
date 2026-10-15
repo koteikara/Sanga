@@ -75,3 +75,7 @@ node --check public/assets/app.js
 ### 会場・交通の追加
 
 会場が増えたら `stadiums.json` に追加し、`away-transport.csv` に1行足す。交通のアフィリエイトリンクは `transport_label` と `transport_url`（https のみ）に手で入れる。
+
+### A8.net の提携リンク（バス・宿の汎用リンク）
+
+`public/data/affiliates.json` に、エアトリ（夜行・高速バス）とじゃらん（宿）のA8リンクと計測ピクセルを置く。`away-guide.js` が全試合に同じバスリンクを出し、じゃらんは楽天のホテル候補の下に汎用の宿リンクとして出す（ホテルが「準備中」の試合でも出る）。`rel="nofollow sponsored"`、ピクセルは1×1・alt空。`tools/validate-stadiums.js` が `px.a8.net` と `www*.a8.net/0.gif` 以外を拒否する。IDは公開されるものなのでコミットしてよい。

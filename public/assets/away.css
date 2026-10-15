@@ -18,3 +18,5 @@ body { margin: 0; font-family: system-ui, -apple-system, "Hiragino Sans", "Noto 
 .away a { color: #5b2d7e; }
 .away-notes { font-size: .85rem; color: #4a3a56; }
 .away-notes h2 { font-size: 1rem; }
+.away-match-bus, .away-match-lodging { margin-top: 8px; font-size: .9rem; }
+.away-a8 img { width: 1px; height: 1px; border: 0; }

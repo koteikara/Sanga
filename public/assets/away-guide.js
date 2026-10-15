@@ -11,6 +11,27 @@
     if (text !== undefined) n.textContent = text;
     return n;
   }
+  var A8_LINK = /^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+$/;
+  var A8_PIXEL = /^https:\/\/www\d+\.a8\.net\/0\.gif\?a8mat=[A-Za-z0-9+]+$/;
+  var affiliates = {};
+
+  // A8リンク + 計測ピクセル（1x1、altなし）。ホストとURLの形が合わなければ出さない。
+  function a8Link(item) {
+    if (!item || !A8_LINK.test(item.href || "")) return null;
+    var wrap = el("span", "away-a8");
+    var a = safeLink(item.href, item.label, "nofollow sponsored noopener noreferrer");
+    wrap.append(a);
+    if (A8_PIXEL.test(item.pixel || "")) {
+      var img = document.createElement("img");
+      img.src = item.pixel;
+      img.width = 1;
+      img.height = 1;
+      img.alt = "";
+      img.setAttribute("aria-hidden", "true");
+      wrap.append(img);
+    }
+    return wrap;
+  }
   function safeLink(url, text, rel) {
     if (!/^https:\/\//.test(url || "")) return null;
     var a = el("a", null, text);
@@ -42,7 +63,7 @@
     var ul = el("ul", "away-hotels");
     doc.hotels.forEach(function (h) {
       var li = el("li", "away-hotel");
-      var a = safeLink(h.affiliate_url, h.hotel_name, "sponsored noopener noreferrer");
+      var a = safeLink(h.affiliate_url, h.hotel_name, "nofollow sponsored noopener noreferrer");
       li.append(a || el("span", null, h.hotel_name));
       li.append(el("span", "away-hotel-info", " " + yen(h.min_charge) + " ／ 会場から約" + (h.distance_km_from_stadium != null ? h.distance_km_from_stadium : "?") + "km"));
       ul.append(li);
@@ -65,9 +86,15 @@
       var map = safeLink("https://www.google.com/maps/dir/?api=1&origin=" + encodeURIComponent("京都駅") + "&destination=" + m.latitude + "," + m.longitude, "京都駅からの経路（Googleマップ）");
       if (map) links.append(map);
     }
-    var tr = safeLink(m.transport_url, m.transport_label || "交通の予約", "sponsored noopener noreferrer");
+    var tr = safeLink(m.transport_url, m.transport_label || "交通の予約", "nofollow sponsored noopener noreferrer");
     if (tr) { links.append(document.createTextNode(" ／ ")); links.append(tr); }
     if (links.childNodes.length) li.append(links);
+    var bus = a8Link(affiliates.bus);
+    if (bus) {
+      var busP = el("p", "away-match-bus", "［PR］ ");
+      busP.append(bus);
+      li.append(busP);
+    }
 
     var box = el("div", "away-hotel-box");
     li.append(el("h3", "away-hotel-title", "前泊ホテル候補［PR］"));
@@ -79,10 +106,19 @@
       box.append(el("p", "away-empty", "ホテル候補は準備中です（日程確定後に自動で取得します）。"));
     }
     li.append(box);
+    var jalan = a8Link(affiliates.lodging);
+    if (jalan) {
+      var jp = el("p", "away-match-lodging", "宿を探す［PR］ ");
+      jp.append(jalan);
+      li.append(jp);
+    }
     return li;
   }
 
-  getJson("data/away-guide.json?v=54151935").then(function (doc) {
+  getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }).then(function (a) {
+    affiliates = a;
+    return getJson("data/away-guide.json?v=54151935");
+  }).then(function (doc) {
     // 終わった試合は出さない（日付は日本時間。未定は候補日の最後で判断）
     var today = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
     var upcoming = doc.matches.filter(function (m) {

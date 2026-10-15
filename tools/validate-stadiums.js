@@ -46,6 +46,15 @@ for (const line of lines) {
 }
 for (const id of ids) if (!seen.has(id)) fail(`away-transport.csv: ${id} の行がありません`);
 
+// A8.net 提携リンク（public/data/affiliates.json）。許可するのは A8 のホストだけ
+const aff = JSON.parse(read('public/data/affiliates.json'));
+for (const key of ['bus', 'lodging']) {
+  const a = aff[key] || {};
+  if (!a.label) fail(`affiliates.${key}: label が空`);
+  if (!/^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+$/.test(a.href || '')) fail(`affiliates.${key}: href が px.a8.net の形ではありません`);
+  if (a.pixel && !/^https:\/\/www\d+\.a8\.net\/0\.gif\?a8mat=[A-Za-z0-9+]+$/.test(a.pixel)) fail(`affiliates.${key}: pixel が www*.a8.net/0.gif の形ではありません`);
+}
+
 // 認証情報の混入防止
 for (const f of ['public/data/hotel-index.json', ...fs.readdirSync(path.join(root, 'public/data/hotels')).map((n) => `public/data/hotels/${n}`)]) {
   const t = read(f);

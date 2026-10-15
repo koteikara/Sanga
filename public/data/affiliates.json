@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "note": "A8.net の提携リンク。IDは公開されるもの（コミットしてよい）。ホストは tools/validate-stadiums.js で制限している。"
+  },
+  "bus": {
+    "label": "夜行・高速バスの予約なら【エアトリ】",
+    "href": "https://px.a8.net/svt/ejp?a8mat=4BEH5E+4NW9DE+AD2+3H18R6",
+    "pixel": "https://www11.a8.net/0.gif?a8mat=4BEH5E+4NW9DE+AD2+3H18R6"
+  },
+  "lodging": {
+    "label": "【じゃらん】国内実25,000軒の宿をネットで予約OK！2％ポイント還元！",
+    "href": "https://px.a8.net/svt/ejp?a8mat=4BEH5E+4KBNQQ+14CS+67JUA",
+    "pixel": "https://www17.a8.net/0.gif?a8mat=4BEH5E+4KBNQQ+14CS+67JUA"
+  }
+}
