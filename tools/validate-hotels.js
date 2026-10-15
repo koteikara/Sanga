@@ -17,6 +17,9 @@ const optionalHotelStringFields = [
   'hotel_class_code_raw',
   'affiliate_url',
   'gourmet_area_note',
+  'nearest_station',
+  'stay_plan_name',
+  'stay_meal',
 ];
 const optionalHotelBooleanFields = [
   'stadium_proximity',
@@ -332,6 +335,22 @@ function validateHotel(hotel, index, location) {
   }
 
   optionalHotelStringFields.forEach((field) => validateOptionalString(hotelLocation, field, hotel[field]));
+  // 画像は楽天トラベルの https だけ（ページがそのまま <img src> に入れるため）
+  ['hotel_image_url', 'hotel_thumbnail_url'].forEach((field) => {
+    const value = hotel[field];
+    if (value != null && !(typeof value === 'string' && /^https:\/\/img\.travel\.rakuten\.co\.jp\/[^\s"'<>]+$/.test(value))) {
+      addError(hotelLocation, `${field} は https://img.travel.rakuten.co.jp/ のURLか null である必要があります`);
+    }
+  });
+  if (hotel.review_average != null && !(typeof hotel.review_average === 'number' && hotel.review_average > 0 && hotel.review_average <= 5)) {
+    addError(hotelLocation, 'review_average は 0より大きく5以下の数値か null である必要があります');
+  }
+  if (hotel.stay_charge_total != null && !(Number.isInteger(hotel.stay_charge_total) && hotel.stay_charge_total > 0)) {
+    addError(hotelLocation, 'stay_charge_total は正の整数か null である必要があります');
+  }
+  if (hotel.review_count != null && !(Number.isInteger(hotel.review_count) && hotel.review_count > 0)) {
+    addError(hotelLocation, 'review_count は正の整数か null である必要があります');
+  }
   optionalHotelBooleanFields.forEach((field) => validateOptionalBoolean(hotelLocation, field, hotel[field]));
 }
 

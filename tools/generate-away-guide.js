@@ -34,6 +34,7 @@ const entries = matches
     const h = hotelById[m.id];
     return {
       match_id: m.id,
+      competition: m.competition || '',
       competition_label: m.competition_label || m.competition,
       round: m.round || '',
       opponent: m.opponent,

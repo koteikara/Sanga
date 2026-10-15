@@ -91,9 +91,75 @@ def price_tier(charge: int | None) -> str:
     return PriceTier.PREMIUM if charge >= 16000 else PriceTier.STANDARD
 
 
+RAKUTEN_IMAGE_HOST = "img.travel.rakuten.co.jp"
+
+
+def rakuten_image(url: str | None) -> str | None:
+    """楽天トラベルの画像URLだけを https にそろえて通す。ほかのホストは捨てる。"""
+    url = (url or "").strip()
+    for scheme in ("https://", "http://"):
+        if url.startswith(scheme + RAKUTEN_IMAGE_HOST + "/"):
+            return "https://" + url[len(scheme):]
+    return None
+
+
+def review(info: dict) -> tuple[float | None, int | None]:
+    try:
+        count = int(info.get("reviewCount") or 0)
+        average = float(info.get("reviewAverage") or 0)
+    except (TypeError, ValueError):
+        return None, None
+    if count <= 0 or not 0 < average <= 5:
+        return None, None
+    return round(average, 2), count
+
+
+def meal_label(room: dict) -> str | None:
+    breakfast, dinner = room.get("withBreakfastFlag"), room.get("withDinnerFlag")
+    if breakfast is None and dinner is None:
+        return None
+    if breakfast == 1 and dinner == 1:
+        return "朝夕食付き"
+    if breakfast == 1:
+        return "朝食付き"
+    if dinner == 1:
+        return "夕食付き"
+    return "食事なし"
+
+
+def cheapest_plan(parts: list) -> dict | None:
+    """その日・その人数で空いているプランのうち、1泊の合計料金がいちばん安いもの。
+
+    VacantHotelSearch（formatVersion 1）は hotel の配列に {"roomInfo": [{"roomBasicInfo"}, {"dailyCharge"}]}
+    をプランの数だけ並べる。roomBasicInfo の直後の dailyCharge をそのプランの料金とみなす。
+    """
+    best = None
+    for part in parts:
+        items = part.get("roomInfo") if isinstance(part, dict) else None
+        if not isinstance(items, list):
+            continue
+        room = None
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            if "roomBasicInfo" in item:
+                room = item["roomBasicInfo"] or {}
+            elif "dailyCharge" in item and room is not None:
+                try:
+                    total = int((item["dailyCharge"] or {}).get("total") or 0)
+                except (TypeError, ValueError):
+                    total = 0
+                if total > 0 and (best is None or total < best["total"]):
+                    daily = item["dailyCharge"] or {}
+                    best = {"total": total, "rakuten": daily.get("rakutenCharge"), "flag": daily.get("chargeFlag"), "plan": (room.get("planName") or room.get("roomName") or "").strip() or None, "meal": meal_label(room)}
+                room = None
+    return best
+
+
 def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCandidate]:
     """VacantHotelSearch の応答を内部モデルへ。hotelBasicInfo だけを使う。"""
     out: list[HotelCandidate] = []
+    plans: list[dict | None] = []
     for entry in payload.get("hotels", []):
         info = next((part["hotelBasicInfo"] for part in entry.get("hotel", []) if "hotelBasicInfo" in part), None)
         if not info or not info.get("hotelInformationUrl"):
@@ -102,8 +168,11 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
         distance = None
         if lat and lon:
             distance = round(haversine_km(float(lat), float(lon), stadium["latitude"], stadium["longitude"]), 1)
-        charge = info.get("hotelMinCharge")  # 宿の基本の最安料金（目安）。空室プランの料金ではない
+        charge = info.get("hotelMinCharge")  # 1部屋1泊の最安値の目安（楽天の説明）。日付・人数に関係しない
         parking = (info.get("parkingInformation") or "").strip()
+        review_average, review_count = review(info)
+        plan = cheapest_plan(entry.get("hotel", []))
+        plans.append(plan)
         out.append(HotelCandidate(
             hotel_no=int(info["hotelNo"]),
             hotel_name=info.get("hotelName", ""),
@@ -117,8 +186,21 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str) -> list[HotelCan
             hotel_class_code_raw=info.get("hotelClassCode"),
             affiliate_url=info["hotelInformationUrl"],
             stadium_proximity=(distance is not None and distance <= 1.5),
+            hotel_image_url=rakuten_image(info.get("hotelImageUrl")),
+            hotel_thumbnail_url=rakuten_image(info.get("hotelThumbnailUrl")),
+            review_average=review_average,
+            review_count=review_count,
+            nearest_station=(info.get("nearestStation") or "").strip() or None,
+            stay_charge_total=plan["total"] if plan else None,
+            stay_plan_name=plan["plan"] if plan else None,
+            stay_meal=plan["meal"] if plan else None,
         ))
-    out.sort(key=lambda h: (h.min_charge is None, h.min_charge or 0))
+    # その日の料金が取れた宿を先に、安い順。取れなかった宿は目安の最安料金で後ろへ
+    # total が人数分の合計かを確かめるための記録（Actions のログに出る。認証情報は含まない）
+    sample = next((p for p in plans if p), None)
+    if sample:
+        print(f"  料金の確認: total={sample['total']} rakutenCharge={sample['rakuten']} chargeFlag={sample['flag']} 大人{ADULT_NUM}名")
+    out.sort(key=lambda h: (h.stay_charge_total is None, h.stay_charge_total or 0, h.min_charge is None, h.min_charge or 0))
     return out[:MAX_HOTELS]
 
 

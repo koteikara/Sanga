@@ -49,5 +49,13 @@ class HotelCandidate:
     sightseeing_friendly: bool | None = None
     stadium_proximity: bool | None = None
     gourmet_area_note: str | None = None
+    hotel_image_url: str | None = None
+    hotel_thumbnail_url: str | None = None
+    review_average: float | None = None
+    review_count: int | None = None
+    nearest_station: str | None = None
+    stay_charge_total: int | None = None
+    stay_plan_name: str | None = None
+    stay_meal: str | None = None
     distance_km: float | None = None
     tags: list[str] = field(default_factory=list)
