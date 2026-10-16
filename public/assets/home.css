@@ -57,6 +57,25 @@
 .spot-links .m-chip{gap:6px}
 .spot-links .m-chip svg{width:15px;height:15px;flex:none}
 
+/* 車で来る */
+.parking-note{margin:0 0 8px}
+.parking-services{display:grid;gap:8px;margin:0 0 14px;padding:0;list-style:none}
+@media (min-width:640px){.parking-services{grid-template-columns:1fr 1fr}}
+.parking-service > .away-a8{display:block;height:100%}
+.parking-link{
+  display:flex;flex-direction:column;gap:2px;
+  height:100%;min-height:var(--tap);padding:10px 12px;
+  border:1px solid var(--line);border-radius:12px;
+  background:#fff;color:var(--ink);text-decoration:none;
+}
+.parking-link:hover{border-color:var(--comp)}
+.parking-link:hover .parking-name{text-decoration:underline}
+.parking-name{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:900;color:var(--comp)}
+.parking-name svg{width:18px;height:18px;flex:none}
+.parking-text{font-size:12px;color:var(--muted)}
+.parking-link .pr-tag{align-self:flex-start;color:var(--muted)}
+#parkingBody .m-food{margin:0}
+
 /* そばの2軒 */
 .featured{display:grid;gap:10px;margin:0;padding:0;list-style:none}
 @media (min-width:640px){.featured{grid-template-columns:1fr 1fr}}

@@ -93,7 +93,18 @@ for (const sp of home.spots || []) {
   for (const k of ['name', 'kind', 'text']) if (!sp[k]) fail(`home-guide.json: spots[${sp.id}].${k} が空`);
   if (!inJapan(sp.latitude, sp.longitude) || distKm(hs.latitude, hs.longitude, sp.latitude, sp.longitude) > 20) fail(`home-guide.json: spots[${sp.id}] の座標がスタジアムから20kmより遠いか範囲外`);
   if (sp.url && !/^https:\/\//.test(sp.url)) fail(`home-guide.json: spots[${sp.id}].url は https のみ`);
+  if (!['walk', 'ride'].includes(sp.reach)) fail(`home-guide.json: spots[${sp.id}].reach は walk（歩いて）か ride（電車・バスで）`);
 }
+// 車で来る。予約サービスのリンクは https、提携リンクにするときは affiliates.json のキーを書く
+const pk = home.parking || {};
+if (!Array.isArray(pk.notes) || !pk.notes.length) fail('home-guide.json: parking.notes が空');
+if (!Array.isArray(pk.services) || !pk.services.length) fail('home-guide.json: parking.services が空');
+for (const sv of pk.services || []) {
+  if (!sv.id || !sv.name || !sv.text) fail(`home-guide.json: parking.services[${sv.id}] の id / name / text が空`);
+  if (!/^https:\/\//.test(sv.url || '')) fail(`home-guide.json: parking.services[${sv.id}].url は https のみ`);
+  if (sv.affiliate_key && !aff[sv.affiliate_key]) fail(`home-guide.json: parking.services[${sv.id}].affiliate_key「${sv.affiliate_key}」が affiliates.json にありません`);
+}
+for (const c of pk.coin_places || []) if (!c.label || !inJapan(c.latitude, c.longitude) || distKm(hs.latitude, hs.longitude, c.latitude, c.longitude) > 10) fail('home-guide.json: parking.coin_places は label とスタジアムから10km以内の座標が要る');
 if (home.more_spots && !/^https:\/\//.test(home.more_spots.url || '')) fail('home-guide.json: more_spots.url は https のみ');
 for (const f of home.food_places || []) if (!f.label || !inJapan(f.latitude, f.longitude)) fail('home-guide.json: food_places は label と日本の範囲の座標が要る');
 const featuredNos = new Set();

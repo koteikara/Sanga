@@ -17,7 +17,7 @@
 <meta property="og:image:alt" content="SANGA TOOLBOX ホーム観戦ガイド — サンガスタジアムへの行き方、散策、亀岡の宿。">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/away.css?v=c97430cf">
-<link rel="stylesheet" href="assets/home.css?v=0bf180b0">
+<link rel="stylesheet" href="assets/home.css?v=c68b3ae3">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
 <script>
   // 描画が始まる前に決める。入口ページ・過密日程カレンダー・アウェイ遠征ガイドと同じ先出し。
@@ -54,12 +54,13 @@
 
 <h1 class="page-title">ホーム観戦ガイド<span class="page-season">2026/27</span></h1>
 <p class="away-lead">サンガスタジアム by KYOCERA（京都府亀岡市）への行き方、試合の前後に歩ける場所とごはん、泊まれる宿をまとめています。アウェイから来た方、遠くから泊まりで来る方、日帰りでスタジアムの周りを歩きたい方に向けたページです。日程は<a href="sanga202627season.html">年間スケジュール</a>で確認してください。</p>
-<p class="away-pr"><span class="pr-tag">PR</span>このページには楽天トラベル・じゃらんのアフィリエイトリンク（広告）を含みます。</p>
+<p class="away-pr"><span class="pr-tag">PR</span>このページには楽天トラベル・じゃらんのアフィリエイトリンク（広告）を含みます。広告のリンクには「PR」と書いています。</p>
 
 <nav class="away-jump" aria-label="ページ内の移動">
 <ul class="away-jump-list" id="homeJump">
 <li><a href="#access"><span class="away-jump-opp">アクセス</span></a></li>
-<li><a href="#spots"><span class="away-jump-opp">散策</span></a></li>
+<li><a href="#parking"><span class="away-jump-opp">駐車場</span></a></li>
+<li><a href="#spots"><span class="away-jump-opp">観光</span></a></li>
 <li><a href="#food"><span class="away-jump-opp">ごはん</span></a></li>
 <li><a href="#stay"><span class="away-jump-opp">宿</span></a></li>
 <li><a href="#matches"><span class="away-jump-opp">試合ごとの空室</span></a></li>
@@ -75,11 +76,19 @@
 <div class="home-sec-body" id="accessBody"></div>
 </section>
 
+<section class="home-sec" id="parking" tabindex="-1" aria-labelledby="parkingTitle">
+<h2 class="home-sec-title" id="parkingTitle">車で来る</h2>
+<div class="home-sec-body" id="parkingBody"></div>
+</section>
+
 <section class="home-sec" id="spots" tabindex="-1" aria-labelledby="spotsTitle">
-<h2 class="home-sec-title" id="spotsTitle">試合の前後に歩く</h2>
+<h2 class="home-sec-title" id="spotsTitle">試合の前後に亀岡を巡る</h2>
 <div class="home-sec-body">
-<p class="home-sec-lead">泊まらない方も、早めに着いて少し足をのばせる場所です。</p>
-<ul class="spots" id="spotsList"></ul>
+<p class="home-sec-lead">泊まらない方も、早めに着けば足をのばせる亀岡市内の場所です。</p>
+<h3 class="home-sub">スタジアムから歩いて</h3>
+<ul class="spots" id="spotsWalk"></ul>
+<h3 class="home-sub">電車・バスで少し足をのばす</h3>
+<ul class="spots" id="spotsRide"></ul>
 <p class="m-more" id="spotsMore"></p>
 </div>
 </section>
@@ -116,6 +125,7 @@
 <li>試合ごとの宿は、前泊（試合前日チェックイン）と当日泊（試合の日チェックイン）それぞれについて、2名で空室のある宿を、スタジアムから半径3km以内と湯の花温泉から半径3km以内で探しています。スタジアムのそばの2軒を先に、ほかは区域ごとにその日に空いているプランの最安料金（2名1泊・税・サービス料込み）の安い順です。週1回更新します。日程が未定の試合は、候補日の早いほうで探しています。</li>
 <li>ホテルの写真・評価は楽天トラベルの掲載内容です。</li>
 <li>所要時間は目安です。列車・バス・観光施設の運行や営業は、各公式の案内を優先してください。</li>
+<li>駐車場の予約サービスへのリンクは、各サービスのサンガスタジアム周辺の検索結果を開くだけです。料金・空き・停められる車の大きさは各サービスで確かめてください。</li>
 <li>ごはんのボタンは、Googleマップでその場所の周りを検索します。地図は OpenStreetMap です。</li>
 <li>京都サンガF.C.の公式サイトではありません。個人が運営する非公式のファンツールです。</li>
 </ul>
@@ -124,7 +134,7 @@
 
 </main>
 
-<script src="assets/home-guide.js?v=6e33f4d6" defer></script>
+<script src="assets/home-guide.js?v=8c01c6af" defer></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

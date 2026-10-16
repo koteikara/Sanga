@@ -5,10 +5,15 @@
     "sources": [
       "スタジアムの位置と亀岡駅からの徒歩: 京都府の資料（https://www.pref.kyoto.jp/kyoto_sports/）、OpenStreetMap。2026-10-16確認",
       "スタジアム周辺の宿: 楽天トラベルの宿の案内（https://travel.rakuten.co.jp/HOTEL/187555/、https://travel.rakuten.co.jp/HOTEL/181808/）。2026-10-16確認",
-      "散策: 保津川下り（https://www.hozugawakudari.jp/）、嵯峨野観光鉄道（https://www.sagano-kanko.co.jp/）、亀岡市観光協会（https://kameoka.info/）。2026-10-16確認"
+      "散策: 保津川下り（https://www.hozugawakudari.jp/）、嵯峨野観光鉄道（https://www.sagano-kanko.co.jp/）、亀岡市観光協会（https://kameoka.info/）。2026-10-16確認",
+      "駐車場: タイムズのB「サンガスタジアム周辺」（https://btimes.jp/kyoto/spot/4600/。試合日のスタジアム駐車場は一般利用不可との記載、2021年11月調べ）、akippa（https://www.akippa.com/kinki/kyoto/sangastadiumbykyocera）、特P（https://toku-p.earth-car.com/）、軒先パーキング（https://parking.nokisaki.com/）。2026-10-16確認",
+      "亀岡市内の観光: 亀岡市（https://www.city.kameoka.kyoto.jp/）、京都府南丹広域振興局（https://www.pref.kyoto.jp/nantan/kankou/）、亀岡市観光協会。2026-10-16確認"
     ]
   },
-  "venues": ["サンガスタジアム", "京都府立京都スタジアム"],
+  "venues": [
+    "サンガスタジアム",
+    "京都府立京都スタジアム"
+  ],
   "stadium": {
     "id": "sanga-stadium",
     "name": "サンガスタジアム by KYOCERA",
@@ -20,17 +25,94 @@
     "station_longitude": 135.58247
   },
   "access": [
-    {"label": "京都駅から", "text": "JR嵯峨野線（山陰本線）で亀岡駅まで約20〜30分（快速か普通かで変わります）"},
-    {"label": "大阪方面から", "text": "JR京都線などで京都駅へ出て、嵯峨野線に乗り換え"},
-    {"label": "亀岡駅から", "text": "北口から歩いて約3分。駅からスタジアムが見えます"},
-    {"label": "車で", "text": "駐車場の有無と場所は、試合ごとの公式の来場案内で確かめてください"},
-    {"label": "帰り", "text": "試合のあとは亀岡駅が混み合います。帰りの列車や新幹線の時刻に余裕を持たせてください"}
+    {
+      "label": "京都駅から",
+      "text": "JR嵯峨野線（山陰本線）で亀岡駅まで約20〜30分（快速か普通かで変わります）"
+    },
+    {
+      "label": "大阪方面から",
+      "text": "JR京都線などで京都駅へ出て、嵯峨野線に乗り換え"
+    },
+    {
+      "label": "亀岡駅から",
+      "text": "北口から歩いて約3分。駅からスタジアムが見えます"
+    },
+    {
+      "label": "車で",
+      "text": "試合の日はスタジアムの駐車場を一般の人は使えないと案内されてきました。下の「車で来る」で、予約できる駐車場とコインパーキングを探せます"
+    },
+    {
+      "label": "帰り",
+      "text": "試合のあとは亀岡駅が混み合います。帰りの列車や新幹線の時刻に余裕を持たせてください"
+    }
   ],
   "routes": [
-    {"label": "京都駅から", "origin": "京都駅"},
-    {"label": "大阪駅から", "origin": "大阪駅"},
-    {"label": "新大阪駅から", "origin": "新大阪駅"}
+    {
+      "label": "京都駅から",
+      "origin": "京都駅"
+    },
+    {
+      "label": "大阪駅から",
+      "origin": "大阪駅"
+    },
+    {
+      "label": "新大阪駅から",
+      "origin": "新大阪駅"
+    }
   ],
+  "parking": {
+    "notes": [
+      "試合の日は、スタジアムの駐車場は主催者・関係者用になり、一般の人は使えないと案内されてきました（2021年の情報）。その試合の公式の来場案内も確かめてください。",
+      "試合の前後はスタジアム周辺の道路が混み合います。隣の駅の近くに停めて、JR嵯峨野線で亀岡駅へ向かう方法もあります。"
+    ],
+    "services": [
+      {
+        "id": "akippa",
+        "name": "akippa（アキッパ）",
+        "text": "個人宅や月極の空きを、日単位で予約できる駐車場。サンガスタジアム周辺の一覧が開きます。",
+        "url": "https://www.akippa.com/kinki/kyoto/sangastadiumbykyocera",
+        "affiliate_key": ""
+      },
+      {
+        "id": "btimes",
+        "name": "タイムズのB",
+        "text": "タイムズの予約制駐車場。サンガスタジアム周辺の一覧が開きます。",
+        "url": "https://btimes.jp/kyoto/spot/4600/",
+        "affiliate_key": ""
+      },
+      {
+        "id": "tokup",
+        "name": "特P（とくぴー）",
+        "text": "時間貸し・日貸しの予約駐車場。サンガスタジアムを中心に地図で探せます。",
+        "url": "https://toku-p.earth-car.com/parking-search/35.01704-135.58424-16/%E3%82%B5%E3%83%B3%E3%82%AC%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%A2%E3%83%A0",
+        "affiliate_key": ""
+      },
+      {
+        "id": "nokisaki",
+        "name": "軒先パーキング",
+        "text": "予約制の駐車場。サンガスタジアムの周りを地図で探せます（掲載が無い日もあります）。",
+        "url": "https://parking.nokisaki.com/search?search=%E3%82%B5%E3%83%B3%E3%82%AC%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%A2%E3%83%A0&lat=35.01704&lng=135.58424",
+        "affiliate_key": ""
+      }
+    ],
+    "coin_places": [
+      {
+        "label": "スタジアム・亀岡駅周辺",
+        "latitude": 35.01675,
+        "longitude": 135.58247
+      },
+      {
+        "label": "馬堀駅周辺（亀岡駅の東隣）",
+        "latitude": 35.0106,
+        "longitude": 135.60233
+      },
+      {
+        "label": "並河駅周辺（亀岡駅の西隣）",
+        "latitude": 35.03227,
+        "longitude": 135.55507
+      }
+    ]
+  },
   "spots": [
     {
       "id": "hozugawa",
@@ -39,16 +121,8 @@
       "text": "スタジアムのすぐ東に乗船場があり、保津峡を舟で嵐山まで下ります。乗り場は亀岡駅から歩いて行けます。",
       "latitude": 35.01743,
       "longitude": 135.58664,
-      "url": "https://www.hozugawakudari.jp/"
-    },
-    {
-      "id": "torokko",
-      "name": "トロッコ亀岡駅（嵯峨野観光鉄道）",
-      "kind": "トロッコ列車",
-      "text": "保津峡沿いをトロッコ列車でトロッコ嵯峨駅（嵐山）へ。JR馬堀駅から歩いて約10分。運行日は公式で確かめてください。",
-      "latitude": 35.01314,
-      "longitude": 135.60677,
-      "url": "https://www.sagano-kanko.co.jp/"
+      "url": "https://www.hozugawakudari.jp/",
+      "reach": "walk"
     },
     {
       "id": "kameyama-castle",
@@ -57,6 +131,57 @@
       "text": "明智光秀が築いた城の跡。亀岡駅南口から歩いて約10分。城跡は宗教法人大本の本部の敷地内にあるので、見学は現地の案内に従ってください。",
       "latitude": 35.01357,
       "longitude": 135.58128,
+      "url": "",
+      "reach": "walk"
+    },
+    {
+      "id": "kameoka-museum",
+      "name": "亀岡市文化資料館",
+      "kind": "博物館",
+      "reach": "walk",
+      "text": "亀岡の歴史と文化の展示。亀岡駅から歩いて約7分。月曜は休館です。",
+      "latitude": 35.0135,
+      "longitude": 135.58523,
+      "url": ""
+    },
+    {
+      "id": "torokko",
+      "name": "トロッコ亀岡駅（嵯峨野観光鉄道）",
+      "kind": "トロッコ列車",
+      "text": "保津峡沿いをトロッコ列車でトロッコ嵯峨駅へ。JR嵯峨野線で1駅の馬堀駅から歩いて約10分。冬は運休する期間があるので、運行日は公式で確かめてください。",
+      "latitude": 35.01314,
+      "longitude": 135.60677,
+      "url": "https://www.sagano-kanko.co.jp/",
+      "reach": "ride"
+    },
+    {
+      "id": "izumo-daijingu",
+      "name": "出雲大神宮",
+      "kind": "神社",
+      "reach": "ride",
+      "text": "丹波国一宮。亀岡駅からバスで約15分。バスの本数が少ないので、時刻表を先に確かめてください。",
+      "latitude": 35.05951,
+      "longitude": 135.57869,
+      "url": ""
+    },
+    {
+      "id": "kuwayama",
+      "name": "鍬山神社",
+      "kind": "神社・紅葉",
+      "reach": "ride",
+      "text": "紅葉の名所で、見ごろは11月。亀岡駅から歩くと約30分、コミュニティバスもあります。",
+      "latitude": 34.99669,
+      "longitude": 135.57736,
+      "url": ""
+    },
+    {
+      "id": "anaoji",
+      "name": "穴太寺",
+      "kind": "寺",
+      "reach": "ride",
+      "text": "西国三十三所の第21番札所。亀岡駅からバスで「穴太寺前」へ。",
+      "latitude": 35.00657,
+      "longitude": 135.54916,
       "url": ""
     },
     {
@@ -66,13 +191,25 @@
       "text": "亀岡駅からバスで約20分の温泉地。日帰り入浴を受け付けている宿もあります（受付時間と料金は各宿で確かめてください）。",
       "latitude": 35.02161,
       "longitude": 135.50516,
-      "url": ""
+      "url": "",
+      "reach": "ride"
     }
   ],
-  "more_spots": {"label": "亀岡の観光をもっと探す（亀岡市観光協会）", "url": "https://kameoka.info/"},
+  "more_spots": {
+    "label": "亀岡の観光をもっと探す（亀岡市観光協会）",
+    "url": "https://kameoka.info/"
+  },
   "food_places": [
-    {"label": "スタジアム・亀岡駅周辺", "latitude": 35.01675, "longitude": 135.58247},
-    {"label": "湯の花温泉周辺", "latitude": 35.02161, "longitude": 135.50516}
+    {
+      "label": "スタジアム・亀岡駅周辺",
+      "latitude": 35.01675,
+      "longitude": 135.58247
+    },
+    {
+      "label": "湯の花温泉周辺",
+      "latitude": 35.02161,
+      "longitude": 135.50516
+    }
   ],
   "featured_hotels": [
     {
@@ -89,7 +226,19 @@
     }
   ],
   "search_areas": [
-    {"id": "stadium", "label": "スタジアム周辺", "latitude": 35.01704, "longitude": 135.58424, "radius_km": 3},
-    {"id": "kameoka", "label": "湯の花温泉", "latitude": 35.02161, "longitude": 135.50516, "radius_km": 3}
+    {
+      "id": "stadium",
+      "label": "スタジアム周辺",
+      "latitude": 35.01704,
+      "longitude": 135.58424,
+      "radius_km": 3
+    },
+    {
+      "id": "kameoka",
+      "label": "湯の花温泉",
+      "latitude": 35.02161,
+      "longitude": 135.50516,
+      "radius_km": 3
+    }
   ]
 }

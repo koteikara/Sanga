@@ -152,11 +152,57 @@
     box.append(osmMap(s.name + " と亀岡駅の周辺の地図", s.latitude, s.longitude, 0.006, 0.009));
   }
 
-  // ---------- 散策 ----------
+  // ---------- 車で来る ----------
+  var ICON_CAR = "M5 17h14M6 17v2M18 17v2M4 13l2-5a2 2 0 0 1 1.9-1.4h8.2A2 2 0 0 1 18 8l2 5v4H4v-4zM4 13h16M7.5 15h.01M16.5 15h.01";
+  function renderParking() {
+    var pk = guide.parking || {};
+    var box = document.getElementById("parkingBody");
+    (pk.notes || []).forEach(function (t) { box.append(el("p", "home-note parking-note", t)); });
+
+    box.append(el("h3", "home-sub", "予約できる駐車場"));
+    var ul = el("ul", "parking-services");
+    (pk.services || []).forEach(function (sv) {
+      var li = el("li", "parking-service");
+      // 提携リンク（affiliates.json に A8 のリンクがあるとき）は PR を付けてそちらを使う。無ければ普通のリンク
+      var link = sv.affiliate_key ? a8Link(sv.affiliate_key, "parking-link", function (a) { a.append(prTag()); }) : null;
+      var a = link ? link.querySelector("a") : safeLink(sv.url, "parking-link");
+      if (!a) return;
+      var name = el("span", "parking-name");
+      name.append(icon(ICON_CAR));
+      name.append(document.createTextNode(sv.name));
+      a.append(name);
+      a.append(el("span", "parking-text", sv.text));
+      a.setAttribute("aria-label", sv.name + "：サンガスタジアム周辺の駐車場（新しいタブで開きます）");
+      li.append(link || a);
+      ul.append(li);
+    });
+    box.append(ul);
+
+    box.append(el("h3", "home-sub", "コインパーキングを地図で探す"));
+    var food = el("div", "m-food");
+    (pk.coin_places || []).forEach(function (p) {
+      var row = el("div", "m-food-row");
+      row.append(el("span", "m-food-place", p.label));
+      var list = el("ul", "m-food-list");
+      ["コインパーキング", "駐車場"].forEach(function (w) {
+        var a = safeLink("https://www.google.com/maps/search/" + encodeURIComponent(w) + "/@" + Number(p.latitude).toFixed(5) + "," + Number(p.longitude).toFixed(5) + ",16z", "m-chip");
+        a.textContent = w;
+        a.setAttribute("aria-label", p.label + "の" + w + "をGoogleマップで探す");
+        var li = el("li");
+        li.append(a);
+        list.append(li);
+      });
+      row.append(list);
+      food.append(row);
+    });
+    box.append(food);
+  }
+
+  // ---------- 亀岡を巡る ----------
   function renderSpots() {
     var s = guide.stadium;
-    var ul = document.getElementById("spotsList");
     (guide.spots || []).forEach(function (p) {
+      var ul = document.getElementById(p.reach === "walk" ? "spotsWalk" : "spotsRide");
       var li = el("li", "spot");
       li.append(el("span", "spot-kind", p.kind));
       li.append(el("h3", "spot-name", p.name));
@@ -524,13 +570,14 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=0efbfc5f"),
+    getJson("data/home-guide.json?v=338fbf58"),
     getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];
     affiliates = r[1] || {};
     (guide.featured_hotels || []).forEach(function (h) { featuredNos[h.hotel_no] = true; });
     renderAccess();
+    renderParking();
     renderSpots();
     renderFood();
     renderStay();
