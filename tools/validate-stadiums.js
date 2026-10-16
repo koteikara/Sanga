@@ -64,7 +64,7 @@ for (const id of ids) if (!seen.has(id)) fail(`away-transport.csv: ${id} の行�
 
 // A8.net 提携リンク（public/data/affiliates.json）。許可するのは A8 のホストだけ
 const aff = JSON.parse(read('public/data/affiliates.json'));
-for (const key of ['bus', 'lodging']) {
+for (const key of Object.keys(aff).filter((k) => k !== 'meta')) {
   const a = aff[key] || {};
   if (!a.label) fail(`affiliates.${key}: label が空`);
   if (!/^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+$/.test(a.href || '')) fail(`affiliates.${key}: href が px.a8.net の形ではありません`);

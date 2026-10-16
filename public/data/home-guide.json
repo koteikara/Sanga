@@ -130,9 +130,9 @@
       {
         "id": "tokup",
         "name": "特P（とくぴー）",
-        "text": "時間貸し・日貸しの予約駐車場。サンガスタジアムを中心に地図で探せます。",
+        "text": "時間貸し・日貸しの予約駐車場。開いたら「サンガスタジアム」で検索すると周辺の駐車場が出ます。",
         "url": "https://toku-p.earth-car.com/parking-search/35.01704-135.58424-16/%E3%82%B5%E3%83%B3%E3%82%AC%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%A2%E3%83%A0",
-        "affiliate_key": ""
+        "affiliate_key": "parking_tokup"
       },
       {
         "id": "nokisaki",

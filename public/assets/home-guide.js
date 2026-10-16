@@ -690,8 +690,8 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=54cce78c"),
-    getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }),
+    getJson("data/home-guide.json?v=6f798f38"),
+    getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];
     affiliates = r[1] || {};
