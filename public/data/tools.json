@@ -56,6 +56,15 @@
       "section": "live"
     },
     {
+      "id": "home-guide",
+      "name": "ホーム観戦ガイド",
+      "description": "サンガスタジアムへの行き方、周辺の散策・ごはん、スタジアム周辺と亀岡の宿をまとめます（PRを含みます）。",
+      "href": "home.html",
+      "thumb": "assets/thumbs/home-guide.webp?v=43161f49",
+      "accent": "#7b0064",
+      "section": "live"
+    },
+    {
       "id": "season-2025",
       "name": "2025シーズン日程",
       "description": "2025シーズンの試合日程です。更新は終了しています。",
