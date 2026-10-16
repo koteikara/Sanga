@@ -300,18 +300,12 @@ jobs:
         if: steps.judge.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          TICKET_OUTCOME: ${{ steps.ticket_csv.outcome }}
           AWAY_OUTCOME: ${{ steps.away.outcome }}
           HOME_JLT_OUTCOME: ${{ steps.home_jlt.outcome }}
+          NEWS_OUTCOME: ${{ steps.news.outcome }}
         run: |
           set -euo pipefail
-
-          branch="automation/ticket-sales-$(date -u +%Y%m%d-%H%M%S)"
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git switch -c "$branch"
-          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/home-tickets.current.csv docs/sheets/home-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/timeline-events.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
-          git commit -m "data: チケット販売スケジュールを取り込む"
-          git push -u origin "$branch"
 
           # このPRは開いている取り込みPRをすべて含む（どれも main から作り、CSVは
           # 毎回まるごと書き直す）。古いPRは作成後に閉じ、常に1本だけにする。
@@ -327,44 +321,27 @@ jobs:
             console.log(new Date(Math.min(...dates)).toISOString());
           ' tmp/open-import-prs.json)
 
-          {
-            echo "<!-- pending-since: ${pending_since} -->"
-            echo '## Summary'
-            echo
-            echo '- 公式のチケット販売スケジュールを取得し、`docs/sheets/ticket-sales.current.csv` を更新しました。'
-            echo '- **公開JSONを変更するPRです。** 同じCSVから `public/data/calendar-events.json` を作り直しています。公開ページ（`public/timeline.html`）が読むデータです。'
-            echo '- **購読フィード（`public/timeline.ics` と `public/timeline-events.ics`）も作り直しています。** マージすると購読している人のカレンダーに届きます。予定が消えていないかは特に確認してください。'
-            echo '- 内容を確認してからマージしてください。自動ではマージしません。'
-            echo '- アウェイ席の販売状態（`docs/sheets/away-tickets.current.csv`）も更新しています。発売中の試合に加え、**発売前の試合も載ります**。**ただし載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。'
-            echo '- `tools/fetch-ticket-sales.js` と `tools/parse-ticket-sales.js` による自動取り込みです。手作業の編集は含みません。'
-            echo '- ホーム戦の販売日時は、公式の販売スケジュールが更新できないため、Jリーグチケットの試合ページから補っています（`docs/sheets/home-sales.current.csv`）。公式と日時が違う段階は、こちらで上書きします。'
-            if [ "${HOME_JLT_OUTCOME}" = "failure" ]; then
-              echo '- **ホーム戦（Jリーグチケット）の取り込みは失敗しました。** `home-sales.current.csv` は前回の値のままです。'
-            fi
-            if [ "${AWAY_OUTCOME}" = "failure" ]; then
-              echo '- **アウェイの取り込みは失敗しました。** このPRのアウェイ関連ファイルは前回の値のままです。実行ログを確認してください。'
-            fi
-            echo '- 取得日時と画面表示（受付中・販売中）だけの違いでは更新しません。このPRがあるということは、販売日程か掲載状態が変わっています。'
-            echo
-            echo '## 変更内容'
-            echo
-            echo '`retrieved_at_jst` は全行で動くため、差分そのものは124行すべてが書き換わって見えます。実際に変わったのは次の内容です。'
-            echo
-            echo '```text'
-            cat tmp/parse-result.txt
-            echo '```'
-            echo
-            echo '## Testing'
-            echo
-            echo '- `npm run check:static`（`check:timeline` → `check:ticket-sales:current` を含む）'
-            echo
-            echo '## 確認してほしいこと'
-            echo
-            echo '- 販売日時の変更が、公式ページの表示と一致しているか。'
-            echo '- 掲載済みだった試合が未掲載に戻っていないか（戻っている場合は取得の失敗を疑う）。'
-            echo
-            echo '実行: '"${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-          } > pr-body.md
+          # 本文は実際に変わったファイルから組み立てる（tools/build-import-pr-body.js）。
+          # 固定の文面だと、CSVだけが動いた日にも「公開JSONを作り直した」と書いてしまう。
+          # 前の内容を HEAD から読むので、コミットより前に作る。
+          failed=()
+          if [ "${TICKET_OUTCOME}" = "failure" ]; then failed+=(--failed ticket); fi
+          if [ "${HOME_JLT_OUTCOME}" = "failure" ]; then failed+=(--failed home); fi
+          if [ "${AWAY_OUTCOME}" = "failure" ]; then failed+=(--failed away); fi
+          if [ "${NEWS_OUTCOME}" = "failure" ]; then failed+=(--failed news); fi
+          node tools/build-import-pr-body.js \
+            --pending-since "${pending_since}" \
+            --parse-result tmp/parse-result.txt \
+            --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            "${failed[@]}" > pr-body.md
+
+          branch="automation/ticket-sales-$(date -u +%Y%m%d-%H%M%S)"
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git add docs/sheets/ticket-sales.current.csv docs/sheets/away-tickets.current.csv docs/sheets/away-sales.current.csv docs/sheets/home-tickets.current.csv docs/sheets/home-sales.current.csv docs/sheets/news.current.csv docs/sheets/news-times.current.csv public/data/calendar-events.json public/timeline.ics public/timeline-events.ics public/assets/timeline.js public/timeline.html public/timeline-calendar.html
+          git commit -m "data: チケット販売スケジュールを取り込む"
+          git push -u origin "$branch"
 
           # PR作成は、リポジトリ設定「Allow GitHub Actions to create and approve
           # pull requests」が無効だと拒否される。その場合もブランチのpushは

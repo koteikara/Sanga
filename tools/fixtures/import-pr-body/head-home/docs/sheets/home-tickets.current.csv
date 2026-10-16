@@ -1,0 +1,3 @@
+match_date,kickoff,competition,opponent_raw,venue,state_raw,perform_url,retrieved_at_jst
+2030-07-10,19:00,明治安田Ｊ１リーグ,テストFC,サンガスタジアム,空席あり,https://www.jleague-ticket.jp/sales/perform/2000001/001,2030-07-02T02:30:00+09:00
+2030-08-01,14:00,明治安田Ｊ１リーグ,サンプルFC,サンガスタジアム,発売前,https://www.jleague-ticket.jp/sales/perform/2000003/001,2030-07-02T02:30:00+09:00
