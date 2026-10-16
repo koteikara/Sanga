@@ -184,8 +184,9 @@ button:focus-visible,
 .m-head::-webkit-details-marker{display:none}
 .m-head:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:-4px}
 .m-chev{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.16);align-self:center}
-.m-chev svg{width:18px;height:18px;transition:transform .2s ease}
-.m-details[open] .m-chev svg{transform:rotate(180deg)}
+.m-chev svg{width:18px;height:18px;transition:transform .3s ease}
+.m-details[open]:not(.is-closing) .m-chev svg{transform:rotate(180deg)}
+.m-details .m-body{overflow:hidden}  /* 開け閉めのアニメーション中に中身がはみ出さないように */
 :root[data-motion="off"] .m-chev svg{transition:none}
 .m-comp,.m-date{display:block}
 .m-comp{

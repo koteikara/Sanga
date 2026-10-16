@@ -326,15 +326,45 @@
     head.append(chev);
     details.append(head);
     article.append(details);
+    var body = null;
+    function ensureBody() {
+      if (!body) {
+        body = matchBody(m);
+        details.append(body);
+      }
+      return body;
+    }
     details.addEventListener("toggle", function () {
-      if (details.open && !details.dataset.built) {
-        details.dataset.built = "1";
-        details.append(matchBody(m));
+      if (details.open) ensureBody();
+    });
+    // 見出しを押したときは、中身の高さを 300ms で伸び縮みさせる（動きを止める設定のときはすぐ切り替える）
+    var anim = null;
+    head.addEventListener("click", function (e) {
+      if (document.documentElement.dataset.motion === "off" || !body && details.open) return;
+      e.preventDefault();
+      if (anim) anim.cancel();
+      var opening = !details.open || details.classList.contains("is-closing");
+      var b = ensureBody();
+      if (opening) {
+        details.classList.remove("is-closing");
+        details.open = true;
+        anim = b.animate([{ height: "0px", opacity: 0 }, { height: b.offsetHeight + "px", opacity: 1 }], { duration: 300, easing: "ease-out" });
+        anim.onfinish = function () { anim = null; };
+      } else {
+        details.classList.add("is-closing");
+        anim = b.animate([{ height: b.offsetHeight + "px", opacity: 1 }, { height: "0px", opacity: 0 }], { duration: 300, easing: "ease-in" });
+        anim.onfinish = function () {
+          anim = null;
+          details.classList.remove("is-closing");
+          details.open = false;
+        };
       }
     });
     li.append(article);
     li.openMatch = function () {
+      if (anim) { anim.cancel(); anim = null; details.classList.remove("is-closing"); }
       details.open = true;
+      ensureBody();
     };
     return li;
   }
