@@ -1,10 +1,34 @@
 {
   "meta": {
-    "updated_at": "2026-10-16 10:07",
+    "updated_at": "2026-10-16 11:52",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
   "matches": [
+    {
+      "match_id": "acl-md3",
+      "hotel_count": 10,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-10-26",
+      "checkout_date": "2026-10-27",
+      "data_path": "data/hotels/acl-md3.json"
+    },
+    {
+      "match_id": "acl-md5",
+      "hotel_count": 8,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-11-23",
+      "checkout_date": "2026-11-24",
+      "data_path": "data/hotels/acl-md5.json"
+    },
+    {
+      "match_id": "acl-md7",
+      "hotel_count": 10,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-02-08",
+      "checkout_date": "2027-02-09",
+      "data_path": "data/hotels/acl-md7.json"
+    },
     {
       "match_id": "sec10",
       "hotel_count": 12,
@@ -12,6 +36,14 @@
       "checkin_date": "2026-10-16",
       "checkout_date": "2026-10-17",
       "data_path": "data/hotels/sec10.json"
+    },
+    {
+      "match_id": "sec11",
+      "hotel_count": 8,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-10-20",
+      "checkout_date": "2026-10-21",
+      "data_path": "data/hotels/sec11.json"
     },
     {
       "match_id": "sec12",
@@ -22,12 +54,44 @@
       "data_path": "data/hotels/sec12.json"
     },
     {
+      "match_id": "sec13",
+      "hotel_count": 10,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-10-30",
+      "checkout_date": "2026-10-31",
+      "data_path": "data/hotels/sec13.json"
+    },
+    {
       "match_id": "sec14",
       "hotel_count": 8,
       "stadium_id": "toyota",
       "checkin_date": "2026-11-06",
       "checkout_date": "2026-11-07",
       "data_path": "data/hotels/sec14.json"
+    },
+    {
+      "match_id": "sec15",
+      "hotel_count": 8,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-11-20",
+      "checkout_date": "2026-11-21",
+      "data_path": "data/hotels/sec15.json"
+    },
+    {
+      "match_id": "sec16",
+      "hotel_count": 4,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-04-13",
+      "checkout_date": "2027-04-14",
+      "data_path": "data/hotels/sec16.json"
+    },
+    {
+      "match_id": "sec17",
+      "hotel_count": 7,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-11-27",
+      "checkout_date": "2026-11-28",
+      "data_path": "data/hotels/sec17.json"
     },
     {
       "match_id": "sec18",
@@ -38,12 +102,52 @@
       "data_path": "data/hotels/sec18.json"
     },
     {
+      "match_id": "sec19",
+      "hotel_count": 8,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-12-12",
+      "checkout_date": "2026-12-13",
+      "data_path": "data/hotels/sec19.json"
+    },
+    {
+      "match_id": "sec20",
+      "hotel_count": 11,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-12-18",
+      "checkout_date": "2026-12-19",
+      "data_path": "data/hotels/sec20.json"
+    },
+    {
+      "match_id": "sec21",
+      "hotel_count": 9,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-02-12",
+      "checkout_date": "2027-02-13",
+      "data_path": "data/hotels/sec21.json"
+    },
+    {
       "match_id": "sec22",
       "hotel_count": 8,
       "stadium_id": "nihondaira",
       "checkin_date": "2027-02-19",
       "checkout_date": "2027-02-20",
       "data_path": "data/hotels/sec22.json"
+    },
+    {
+      "match_id": "sec23",
+      "hotel_count": 9,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-02-26",
+      "checkout_date": "2027-02-27",
+      "data_path": "data/hotels/sec23.json"
+    },
+    {
+      "match_id": "sec24",
+      "hotel_count": 8,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-03-05",
+      "checkout_date": "2027-03-06",
+      "data_path": "data/hotels/sec24.json"
     },
     {
       "match_id": "sec25",
@@ -54,12 +158,28 @@
       "data_path": "data/hotels/sec25.json"
     },
     {
+      "match_id": "sec26",
+      "hotel_count": 9,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-03-12",
+      "checkout_date": "2027-03-13",
+      "data_path": "data/hotels/sec26.json"
+    },
+    {
       "match_id": "sec27",
       "hotel_count": 12,
       "stadium_id": "nagai",
       "checkin_date": "2027-03-19",
       "checkout_date": "2027-03-20",
       "data_path": "data/hotels/sec27.json"
+    },
+    {
+      "match_id": "sec28",
+      "hotel_count": 3,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-04-02",
+      "checkout_date": "2027-04-03",
+      "data_path": "data/hotels/sec28.json"
     },
     {
       "match_id": "sec29",
@@ -86,6 +206,14 @@
       "data_path": "data/hotels/sec31.json"
     },
     {
+      "match_id": "sec32",
+      "hotel_count": 3,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-04-28",
+      "checkout_date": "2027-04-29",
+      "data_path": "data/hotels/sec32.json"
+    },
+    {
       "match_id": "sec33",
       "hotel_count": 4,
       "stadium_id": "gion-machida",
@@ -102,12 +230,28 @@
       "data_path": "data/hotels/sec34.json"
     },
     {
+      "match_id": "sec35",
+      "hotel_count": 2,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-05-14",
+      "checkout_date": "2027-05-15",
+      "data_path": "data/hotels/sec35.json"
+    },
+    {
       "match_id": "sec36",
       "hotel_count": 3,
       "stadium_id": "saitama",
       "checkin_date": "2027-05-21",
       "checkout_date": "2027-05-22",
       "data_path": "data/hotels/sec36.json"
+    },
+    {
+      "match_id": "sec37",
+      "hotel_count": 2,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2027-05-28",
+      "checkout_date": "2027-05-29",
+      "data_path": "data/hotels/sec37.json"
     },
     {
       "match_id": "sec38",

@@ -698,7 +698,7 @@
     renderStay();
     return Promise.all([
       getJson("data/matches.json?v=63bd7fcb"),
-      getJson("data/hotel-index.json?v=8b240f17").catch(function () { return { matches: [] }; }),
+      getJson("data/hotel-index.json?v=a281ebbf").catch(function () { return { matches: [] }; }),
     ]);
   }).then(function (r) {
     var n = renderMatches(r[0].matches || [], r[1] || {});
