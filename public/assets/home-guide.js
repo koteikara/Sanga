@@ -129,6 +129,13 @@
   function renderAccess() {
     var s = guide.stadium;
     var box = document.getElementById("accessBody");
+    var sp = s.photo || {};
+    if (COMMONS_IMAGE.test(sp.src || "")) {
+      var sfig = el("figure", "stadium-figure");
+      sfig.append(picture("stadium-photo", [sp.src], sp.alt, ICON_ROUTE));
+      sfig.append(credit(sp));
+      box.append(sfig);
+    }
     var facts = el("dl", "m-facts");
     facts.append(el("dt", null, "スタジアム"));
     var venue = el("dd", null, s.name);
@@ -137,7 +144,14 @@
     facts.append(venue);
     (guide.access || []).forEach(function (a) {
       facts.append(el("dt", null, a.label));
-      facts.append(el("dd", null, a.text));
+      var dd = el("dd", null, a.text);
+      var link = safeLink(a.url, "home-inline-link");
+      if (link) {
+        link.textContent = a.link_label || "案内";
+        link.setAttribute("aria-label", (a.link_label || "案内") + "（新しいタブで開きます）");
+        dd.append(link);
+      }
+      facts.append(dd);
     });
     box.append(facts);
 
@@ -159,7 +173,31 @@
     var box = document.getElementById("parkingBody");
     (pk.notes || []).forEach(function (t) { box.append(el("p", "home-note parking-note", t)); });
 
-    box.append(el("h3", "home-sub", "予約できる駐車場"));
+    // 試合の日に使える駐車場（会員向け・保津川下り・商業施設）
+    if ((pk.match_day_lots || []).length) {
+      box.append(el("h3", "home-sub", "試合の日に停められる駐車場"));
+      var lots = el("ul", "parking-lots");
+      pk.match_day_lots.forEach(function (lot) {
+        var li = el("li", "parking-lot");
+        var name = el("h4", "parking-name");
+        name.append(icon(ICON_CAR));
+        name.append(document.createTextNode(lot.name));
+        li.append(name);
+        li.append(el("p", "parking-text", lot.text));
+        var a = safeLink(lot.url, "home-inline-link");
+        if (a) {
+          a.textContent = lot.link_label || "案内";
+          a.setAttribute("aria-label", lot.name + "：" + (lot.link_label || "案内") + "（新しいタブで開きます）");
+          var pl = el("p", "parking-lot-link");
+          pl.append(a);
+          li.append(pl);
+        }
+        lots.append(li);
+      });
+      box.append(lots);
+    }
+
+    box.append(el("h3", "home-sub", "予約サービスで探す"));
     var ul = el("ul", "parking-services");
     (pk.services || []).forEach(function (sv) {
       var li = el("li", "parking-service");
@@ -179,6 +217,7 @@
     box.append(ul);
 
     box.append(el("h3", "home-sub", "コインパーキングを地図で探す"));
+    box.append(el("p", "home-note parking-note", "離れた駅の近くに停めて、JR嵯峨野線で亀岡駅へ向かうこともできます。"));
     var food = el("div", "m-food");
     (pk.coin_places || []).forEach(function (p) {
       var row = el("div", "m-food-row");
@@ -198,12 +237,54 @@
     box.append(food);
   }
 
+  // 写真。手元に置いた画像（散策）か、楽天トラベルの画像（宿）。読めなければ順に次の候補、最後は絵に替える
+  function picture(cls, srcs, alt, fallbackIcon) {
+    var fig = el("div", cls);
+    var list = srcs.slice();
+    var empty = function () { var e = el("div", "hotel-photo-empty"); e.append(icon(fallbackIcon)); return e; };
+    if (!list.length) { fig.append(empty()); return fig; }
+    var img = document.createElement("img");
+    img.alt = alt || "";
+    img.width = 640;
+    img.height = 480;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
+    img.addEventListener("error", function () {
+      if (list.length) img.src = list.shift();
+      else img.replaceWith(empty());
+    });
+    img.src = list.shift();
+    fig.append(img);
+    return fig;
+  }
+  // 写真は Wikimedia Commons の縮小画像だけ（作者・利用条件をそばに出す）
+  var COMMONS_IMAGE = /^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/;
+  function credit(ph) {
+    var cap = el("figcaption", "spot-credit");
+    cap.append(document.createTextNode("写真：" + (ph.credit || "") + " / "));
+    var lic = safeLink(ph.license_url, null) || el("span");
+    lic.textContent = ph.license || "";
+    cap.append(lic);
+    var src = safeLink(ph.source_url, null);
+    if (src) { cap.append(document.createTextNode("（")); src.textContent = "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode("）")); }
+    return cap;
+  }
+
+
   // ---------- 亀岡を巡る ----------
   function renderSpots() {
     var s = guide.stadium;
     (guide.spots || []).forEach(function (p) {
       var ul = document.getElementById(p.reach === "walk" ? "spotsWalk" : "spotsRide");
       var li = el("li", "spot");
+      var ph = p.photo || {};
+      if (COMMONS_IMAGE.test(ph.src || "")) {
+        var fig = el("figure", "spot-figure");
+        fig.append(picture("spot-photo", [ph.src], ph.alt, ICON_ROUTE));
+        fig.append(credit(ph));  // 作者と利用条件（CC BY などの表示義務）
+        li.append(fig);
+      }
       li.append(el("span", "spot-kind", p.kind));
       li.append(el("h3", "spot-name", p.name));
       li.append(el("p", "spot-text", p.text));
@@ -269,6 +350,11 @@
     var ul = document.getElementById("featuredList");
     (guide.featured_hotels || []).forEach(function (h) {
       var li = el("li", "featured-item");
+      var imgs = (h.image_urls || []).filter(function (u) { return RAKUTEN_IMAGE.test(u); });
+      var fig = el("figure", "featured-figure");
+      fig.append(picture("featured-photo", imgs, h.name, ICON_HOTEL));
+      if (imgs.length) fig.append(el("figcaption", "spot-credit", "写真：楽天トラベル"));
+      li.append(fig);
       li.append(el("h4", "featured-name", h.name));
       li.append(el("p", "featured-text", h.text));
       var a = safeLink(h.url, "m-btn");
@@ -570,7 +656,7 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=338fbf58"),
+    getJson("data/home-guide.json?v=990b0493"),
     getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];
