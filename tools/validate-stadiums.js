@@ -89,6 +89,14 @@ for (const a of home.access || []) {
   if (a.url && (!/^https:\/\//.test(a.url) || !a.link_label)) fail(`home-guide.json: access[${a.label}] の url は https で、link_label も要る`);
 }
 for (const r of home.routes || []) if (!r.label || !r.origin) fail('home-guide.json: routes は label と origin が要る');
+// 写真は Wikimedia Commons の縮小画像だけ。作者・利用条件・出典をそろえる（CC BY などの表示義務）
+function checkPhoto(loc, ph) {
+  if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/.test(ph.src || '')) fail(`home-guide.json: ${loc}.src は Wikimedia Commons の縮小画像（upload.wikimedia.org/wikipedia/commons/thumb/）だけ`);
+  for (const k of ['alt', 'credit', 'license']) if (!ph[k]) fail(`home-guide.json: ${loc}.${k} が空`);
+  if (!/^https:\/\/creativecommons\.org\//.test(ph.license_url || '')) fail(`home-guide.json: ${loc}.license_url は creativecommons.org の条文`);
+  if (!/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(ph.source_url || '')) fail(`home-guide.json: ${loc}.source_url は Commons のファイルページ`);
+}
+if (hs.photo) checkPhoto('stadium.photo', hs.photo);
 const spotIds = new Set();
 for (const sp of home.spots || []) {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(sp.id || '') || spotIds.has(sp.id)) fail(`home-guide.json: spots の id が不正か重複 ${sp.id}`);
@@ -96,14 +104,7 @@ for (const sp of home.spots || []) {
   for (const k of ['name', 'kind', 'text']) if (!sp[k]) fail(`home-guide.json: spots[${sp.id}].${k} が空`);
   if (!inJapan(sp.latitude, sp.longitude) || distKm(hs.latitude, hs.longitude, sp.latitude, sp.longitude) > 20) fail(`home-guide.json: spots[${sp.id}] の座標がスタジアムから20kmより遠いか範囲外`);
   if (sp.url && !/^https:\/\//.test(sp.url)) fail(`home-guide.json: spots[${sp.id}].url は https のみ`);
-  // 写真は public/assets/home/ に置いた画像だけ。作者・利用条件・出典をそろえる（CC BY などの表示義務）
-  if (sp.photo) {
-    const ph = sp.photo;
-    const file = (ph.src || '').replace(/\?v=[0-9a-f]+$/, '');
-    if (!/^assets\/home\/[a-z0-9-]+\.(webp|jpg)$/.test(file) || !fs.existsSync(path.join(root, 'public', file))) fail(`home-guide.json: spots[${sp.id}].photo.src が public/assets/home/ の画像を指していません`);
-    for (const k of ['alt', 'credit', 'license']) if (!ph[k]) fail(`home-guide.json: spots[${sp.id}].photo.${k} が空`);
-    for (const k of ['license_url', 'source_url']) if (!/^https:\/\//.test(ph[k] || '')) fail(`home-guide.json: spots[${sp.id}].photo.${k} は https のみ`);
-  }
+  if (sp.photo) checkPhoto(`spots[${sp.id}].photo`, sp.photo);
   if (!['walk', 'ride'].includes(sp.reach)) fail(`home-guide.json: spots[${sp.id}].reach は walk（歩いて）か ride（電車・バスで）`);
 }
 // 車で来る。予約サービスのリンクは https、提携リンクにするときは affiliates.json のキーを書く

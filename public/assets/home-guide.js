@@ -129,6 +129,13 @@
   function renderAccess() {
     var s = guide.stadium;
     var box = document.getElementById("accessBody");
+    var sp = s.photo || {};
+    if (COMMONS_IMAGE.test(sp.src || "")) {
+      var sfig = el("figure", "stadium-figure");
+      sfig.append(picture("stadium-photo", [sp.src], sp.alt, ICON_ROUTE));
+      sfig.append(credit(sp));
+      box.append(sfig);
+    }
     var facts = el("dl", "m-facts");
     facts.append(el("dt", null, "スタジアム"));
     var venue = el("dd", null, s.name);
@@ -228,13 +235,6 @@
       food.append(row);
     });
     box.append(food);
-    var more = pk.more && safeLink(pk.more.url, "home-inline-link");
-    if (more) {
-      more.textContent = pk.more.label;
-      var pm = el("p", "m-more");
-      pm.append(more);
-      box.append(pm);
-    }
   }
 
   // 写真。手元に置いた画像（散策）か、楽天トラベルの画像（宿）。読めなければ順に次の候補、最後は絵に替える
@@ -258,7 +258,18 @@
     fig.append(img);
     return fig;
   }
-  var LOCAL_IMAGE = /^assets\/home\/[a-z0-9-]+\.(?:webp|jpg)(?:\?v=[0-9a-f]+)?$/;
+  // 写真は Wikimedia Commons の縮小画像だけ（作者・利用条件をそばに出す）
+  var COMMONS_IMAGE = /^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/;
+  function credit(ph) {
+    var cap = el("figcaption", "spot-credit");
+    cap.append(document.createTextNode("写真：" + (ph.credit || "") + " / "));
+    var lic = safeLink(ph.license_url, null) || el("span");
+    lic.textContent = ph.license || "";
+    cap.append(lic);
+    var src = safeLink(ph.source_url, null);
+    if (src) { cap.append(document.createTextNode("（")); src.textContent = "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode("）")); }
+    return cap;
+  }
 
 
   // ---------- 亀岡を巡る ----------
@@ -268,18 +279,10 @@
       var ul = document.getElementById(p.reach === "walk" ? "spotsWalk" : "spotsRide");
       var li = el("li", "spot");
       var ph = p.photo || {};
-      if (LOCAL_IMAGE.test(ph.src || "")) {
+      if (COMMONS_IMAGE.test(ph.src || "")) {
         var fig = el("figure", "spot-figure");
         fig.append(picture("spot-photo", [ph.src], ph.alt, ICON_ROUTE));
-        // 写真の作者と利用条件（CC BY などの表示義務）
-        var cap = el("figcaption", "spot-credit");
-        cap.append(document.createTextNode("写真：" + (ph.credit || "") + " / "));
-        var lic = safeLink(ph.license_url, null) || el("span");
-        lic.textContent = ph.license || "";
-        cap.append(lic);
-        var src = safeLink(ph.source_url, null);
-        if (src) { cap.append(document.createTextNode("（")); src.textContent = "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode("）")); }
-        fig.append(cap);
+        fig.append(credit(ph));  // 作者と利用条件（CC BY などの表示義務）
         li.append(fig);
       }
       li.append(el("span", "spot-kind", p.kind));
@@ -653,7 +656,7 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=f0469116"),
+    getJson("data/home-guide.json?v=990b0493"),
     getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];

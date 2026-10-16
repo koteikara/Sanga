@@ -10,7 +10,9 @@
       "亀岡市内の観光: 亀岡市（https://www.city.kameoka.kyoto.jp/）、京都府南丹広域振興局（https://www.pref.kyoto.jp/nantan/kankou/）、亀岡市観光協会。2026-10-16確認",
       "電車: JR西日本の時刻表（特急まいづるは京都から亀岡まで約18分、西舞鶴から約1時間10分）、京都府南丹広域振興局（快速で約20分）。2026-10-16確認",
       "バス: 京阪京都交通「京都サンガF.C.観戦シャトルバス」（https://www.keihankyotokotsu.jp/single/detail.php?id=599）。2026-10-16確認",
-      "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）、ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新）。2026-10-16確認"
+      "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）。2026-10-16確認",
+      "写真: Wikimedia Commons（作者・利用条件は各 photo に記載）。画像は Wikimedia のサーバーから読み、リポジトリには置かない。2026-10-16確認",
+      "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認"
     ]
   },
   "venues": [
@@ -25,7 +27,15 @@
     "longitude": 135.58424,
     "station_name": "亀岡駅",
     "station_latitude": 35.01675,
-    "station_longitude": 135.58247
+    "station_longitude": 135.58247,
+    "photo": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg/960px-Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg",
+      "alt": "サンガスタジアム by KYOCERA を北西から見た外観",
+      "credit": "J o",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg"
+    }
   },
   "access": [
     {
@@ -147,11 +157,7 @@
         "latitude": 35.01878,
         "longitude": 135.68141
       }
-    ],
-    "more": {
-      "label": "駐車場の詳しいまとめ（ワクタカスポーツ）",
-      "url": "https://wakutakasports.com/kyoto-soccer-parking/"
-    }
+    ]
   },
   "spots": [
     {
@@ -162,7 +168,15 @@
       "latitude": 35.01743,
       "longitude": 135.58664,
       "url": "https://www.hozugawakudari.jp/",
-      "reach": "walk"
+      "reach": "walk",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hozugawa-Kudari_201126b.jpg/960px-Hozugawa-Kudari_201126b.jpg",
+        "alt": "保津川下りの舟と船頭",
+        "credit": "江戸村のとくぞう",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Hozugawa-Kudari_201126b.jpg"
+      }
     },
     {
       "id": "kameyama-castle",
@@ -172,7 +186,15 @@
       "latitude": 35.01357,
       "longitude": 135.58128,
       "url": "",
-      "reach": "walk"
+      "reach": "walk",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Kameyama-jo_Tambanokuni_ishigaki.jpg/960px-Kameyama-jo_Tambanokuni_ishigaki.jpg",
+        "alt": "丹波亀山城跡の石垣",
+        "credit": "kamoseiro",
+        "license": "CC BY-SA 3.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Kameyama-jo_Tambanokuni_ishigaki.jpg"
+      }
     },
     {
       "id": "kameoka-museum",
@@ -182,7 +204,15 @@
       "text": "亀岡の歴史と文化の展示。亀岡駅から歩いて約7分。月曜は休館です。",
       "latitude": 35.0135,
       "longitude": 135.58523,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Kameoka_City_Cultural_Museum.jpg/960px-Kameoka_City_Cultural_Museum.jpg",
+        "alt": "亀岡市文化資料館の建物",
+        "credit": "さかおり",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Kameoka_City_Cultural_Museum.jpg"
+      }
     },
     {
       "id": "torokko",
@@ -192,7 +222,15 @@
       "latitude": 35.01314,
       "longitude": 135.60677,
       "url": "https://www.sagano-kanko.co.jp/",
-      "reach": "ride"
+      "reach": "ride",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Torokko_Kameoka_Station_-_front_A_-_2017_8_19.jpg/960px-Torokko_Kameoka_Station_-_front_A_-_2017_8_19.jpg",
+        "alt": "トロッコ亀岡駅の駅舎",
+        "credit": "Nesnad",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Torokko_Kameoka_Station_-_front_A_-_2017_8_19.jpg"
+      }
     },
     {
       "id": "izumo-daijingu",
@@ -202,7 +240,15 @@
       "text": "丹波国一宮。亀岡駅からバスで約15分。バスの本数が少ないので、時刻表を先に確かめてください。",
       "latitude": 35.05951,
       "longitude": 135.57869,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Izumo-daijing%C5%AB_otorii.jpg/960px-Izumo-daijing%C5%AB_otorii.jpg",
+        "alt": "出雲大神宮の大鳥居",
+        "credit": "Saigen Jiro",
+        "license": "CC0",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Izumo-daijing%C5%AB_otorii.jpg"
+      }
     },
     {
       "id": "kuwayama",
@@ -212,7 +258,15 @@
       "text": "紅葉の名所で、見ごろは11月。亀岡駅から歩くと約30分、コミュニティバスもあります。",
       "latitude": 34.99669,
       "longitude": 135.57736,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kuwayama-jinja_shaden.JPG/960px-Kuwayama-jinja_shaden.JPG",
+        "alt": "鍬山神社の社殿",
+        "credit": "Saigen Jiro",
+        "license": "CC0",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Kuwayama-jinja_shaden.JPG"
+      }
     },
     {
       "id": "anaoji",
@@ -222,7 +276,15 @@
       "text": "西国三十三所の第21番札所。亀岡駅からバスで「穴太寺前」へ。",
       "latitude": 35.00657,
       "longitude": 135.54916,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Anaoji_main_gate.jpg/960px-Anaoji_main_gate.jpg",
+        "alt": "穴太寺の山門",
+        "credit": "Kuroshiononeko",
+        "license": "CC0",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Anaoji_main_gate.jpg"
+      }
     },
     {
       "id": "yunohana",
@@ -232,7 +294,15 @@
       "latitude": 35.02161,
       "longitude": 135.50516,
       "url": "",
-      "reach": "ride"
+      "reach": "ride",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Yunohana_Onsen_Yubata.jpg/960px-Yunohana_Onsen_Yubata.jpg",
+        "alt": "湯の花温泉の湯端の湯",
+        "credit": "ブルーノ・プラス",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Yunohana_Onsen_Yubata.jpg"
+      }
     }
   ],
   "more_spots": {
