@@ -326,46 +326,52 @@
     head.append(chev);
     details.append(head);
     article.append(details);
-    var body = null;
+    // 中身は .m-wrap（grid の行を 0fr⇔1fr で伸び縮み）で包む。高さは実寸を測らず、内容が後から増えても追従する
+    var wrap = null;
     function ensureBody() {
-      if (!body) {
-        body = matchBody(m);
-        details.append(body);
+      if (!wrap) {
+        wrap = el("div", "m-wrap");
+        var clip = el("div", "m-clip");  // 余白を持たない層で切る（.m-body の padding は 0 まで縮まないため）
+        clip.append(matchBody(m));
+        wrap.append(clip);
+        details.append(wrap);
       }
-      return body;
+      return wrap;
     }
+    function reduced() { return document.documentElement.dataset.motion === "off"; }
+    var closing = null;
+    function finishClose() {
+      if (!closing) return;
+      wrap.removeEventListener("transitionend", closing);
+      closing = null;
+      details.open = false;
+    }
+    function expand(animate) {
+      if (closing) { wrap.removeEventListener("transitionend", closing); closing = null; }
+      ensureBody();
+      details.open = true;
+      if (!animate) { details.classList.add("is-open"); return; }
+      void wrap.offsetHeight;  // 0fr の状態を一度描かせてから 1fr へ
+      details.classList.add("is-open");
+    }
+    function collapse() {
+      details.classList.remove("is-open");
+      if (reduced()) { details.open = false; return; }
+      closing = function (e) { if (e.target === wrap && e.propertyName === "grid-template-rows") finishClose(); };
+      wrap.addEventListener("transitionend", closing);
+      setTimeout(finishClose, 700);  // transitionend が来ないときの保険
+    }
+    // ブラウザ自身が開いたとき（ページ内検索など）にも中身を用意する
     details.addEventListener("toggle", function () {
-      if (details.open) ensureBody();
+      if (details.open && !details.classList.contains("is-open")) expand(false);
     });
-    // 見出しを押したときは、中身の高さを 300ms で伸び縮みさせる（動きを止める設定のときはすぐ切り替える）
-    var anim = null;
     head.addEventListener("click", function (e) {
-      if (document.documentElement.dataset.motion === "off" || !body && details.open) return;
       e.preventDefault();
-      if (anim) anim.cancel();
-      var opening = !details.open || details.classList.contains("is-closing");
-      var b = ensureBody();
-      if (opening) {
-        details.classList.remove("is-closing");
-        details.open = true;
-        anim = b.animate([{ height: "0px", opacity: 0 }, { height: b.offsetHeight + "px", opacity: 1 }], { duration: 300, easing: "ease-out" });
-        anim.onfinish = function () { anim = null; };
-      } else {
-        details.classList.add("is-closing");
-        anim = b.animate([{ height: b.offsetHeight + "px", opacity: 1 }, { height: "0px", opacity: 0 }], { duration: 300, easing: "ease-in" });
-        anim.onfinish = function () {
-          anim = null;
-          details.classList.remove("is-closing");
-          details.open = false;
-        };
-      }
+      if (details.classList.contains("is-open")) collapse();
+      else expand(!reduced());
     });
     li.append(article);
-    li.openMatch = function () {
-      if (anim) { anim.cancel(); anim = null; details.classList.remove("is-closing"); }
-      details.open = true;
-      ensureBody();
-    };
+    li.openMatch = function () { expand(false); };
     return li;
   }
 
