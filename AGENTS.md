@@ -43,7 +43,7 @@
 | 公開物の全体像・過去の公開ページ | `docs/production-inventory-audit.md` |
 | 入口ページ・ツール一覧・OGP・sitemap・アクセス解析 | `docs/site-index.md`、`docs/ui-prototype-workflow.md` |
 | 新機能・大きなUI変更 | `docs/roadmap.md`、`docs/ui-prototype-workflow.md` |
-| アウェイ遠征ガイド・ホテル候補 | `docs/hotels-operation-flow.md`、`tools/hotels/README.md` |
+| アウェイ遠征ガイド・ホーム観戦ガイド・ホテル候補 | `docs/hotels-operation-flow.md`、`tools/hotels/README.md` |
 | 過密日程カレンダー | `docs/dense-schedule-calendar.md` |
 | サンガスタジアム 座席ビュー | `experiments/stadium-3d/README.md` |
 | SUPPORTER TIMELINE | `docs/supporter-timeline-design.md`（「現在地と次の一手」から読む）、`experiments/supporter-timeline/README.md` |

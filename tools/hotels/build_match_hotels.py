@@ -3,6 +3,7 @@
 使い方:
   python tools/hotels/build_match_hotels.py --match-id sec14
   python tools/hotels/build_match_hotels.py --all-away          # これから行われる国内アウェイ戦すべて
+  python tools/hotels/build_match_hotels.py --all-home          # これから行われるサンガスタジアムのホーム戦すべて
   python tools/hotels/build_match_hotels.py --match-id sec14 --response-file FIXTURE.json  # APIを呼ばず検証
 
 認証は環境変数 RAKUTEN_APP_ID / RAKUTEN_AFFILIATE_ID / RAKUTEN_ACCESS_KEY（GitHub Secrets 経由）。
@@ -32,6 +33,7 @@ HOTELS_DIR = PUBLIC_DATA_DIR / "hotels"
 HOTEL_INDEX_PATH = PUBLIC_DATA_DIR / "hotel-index.json"
 MATCHES_PATH = PUBLIC_DATA_DIR / "matches.json"
 STADIUMS_PATH = PUBLIC_DATA_DIR / "stadiums.json"
+HOME_GUIDE_PATH = PUBLIC_DATA_DIR / "home-guide.json"
 
 SEARCH_RADIUS_KM = 3          # スタジアムを中心に
 STATION_RADIUS_KM = 1         # 最寄り駅を中心に
@@ -71,6 +73,22 @@ def upcoming_domestic_away(today: date) -> list[dict]:
     result = []
     for match in load_matches():
         if match.get("home_away") != "A" or match.get("competition") == "ACL":
+            continue
+        day = match_day(match)
+        if day and date.fromisoformat(day) > today:
+            result.append(match)
+    return result
+
+
+def load_home_guide() -> dict:
+    return read_json(HOME_GUIDE_PATH)
+
+
+def upcoming_home(today: date, venues: list[str]) -> list[dict]:
+    """これから行われるサンガスタジアムのホーム戦。ACL もホームは国内なので含める。"""
+    result = []
+    for match in load_matches():
+        if match.get("home_away") != "H" or match.get("venue") not in venues or match.get("is_visible") is False:
             continue
         day = match_day(match)
         if day and date.fromisoformat(day) > today:
@@ -275,6 +293,78 @@ def fetch_night(stadium: dict, stadium_id: str, checkin: date, response_file: st
     return merge_areas(around_stadium, around_station)
 
 
+def fetch_home_night(guide: dict, checkin: date, response_file: str | None) -> list[HotelCandidate]:
+    """ホーム戦の1泊ぶん。スタジアム周辺の2軒（featured_hotels）を先頭に、スタジアム周辺のほかの宿、
+    湯の花温泉など亀岡市内の宿（search_areas の2つめ以降）の順に並べる。区域ごとに安い順で PER_AREA 件まで。"""
+    stadium = guide["stadium"]
+    stadium_id = stadium["id"]
+    featured_order = {h["hotel_no"]: i for i, h in enumerate(guide.get("featured_hotels", []))}
+    featured: dict[int, HotelCandidate] = {}
+    groups: list[list[HotelCandidate]] = []
+    seen: set[int] = set()
+    for area in guide.get("search_areas", []):
+        found = parse_hotels(search(area["latitude"], area["longitude"], area["radius_km"], checkin, response_file), stadium, stadium_id, area["id"])
+        rest = []
+        for h in sorted(found, key=price_key):
+            if h.hotel_no in seen:
+                continue
+            seen.add(h.hotel_no)
+            if h.hotel_no in featured_order:
+                h.area = "stadium"
+                featured[h.hotel_no] = h
+            else:
+                rest.append(h)
+        groups.append(rest[:PER_AREA])
+    ordered = sorted(featured.values(), key=lambda h: featured_order[h.hotel_no])
+    for group in groups:
+        ordered += group
+    return ordered
+
+
+def home_hotel_dicts(hotels: list[HotelCandidate], guide: dict) -> list[dict]:
+    featured = {h["hotel_no"] for h in guide.get("featured_hotels", [])}
+    out = []
+    for h in hotels:
+        d = to_public_hotel_dict(h)
+        if h.hotel_no in featured:
+            d["featured"] = True
+        out.append(d)
+    return out
+
+
+def build_home(match: dict, guide: dict, index: dict, response_file: str | None) -> None:
+    stadium = guide["stadium"]
+    day = date.fromisoformat(match_day(match))
+    before = day - timedelta(days=1)
+    pre = fetch_home_night(guide, before, response_file)
+    same_day = fetch_home_night(guide, day, response_file)
+    document = {
+        "match_id": match["id"],
+        "hotel_count": len(pre),
+        "hotels": home_hotel_dicts(pre, guide),
+        "same_day_hotel_count": len(same_day),
+        "same_day_hotels": home_hotel_dicts(same_day, guide),
+        "meta": {
+            "match_id": match["id"],
+            "stadium_id": stadium["id"],
+            "match_date": match.get("match_date", ""),
+            "checkin_date": before.isoformat(),
+            "checkout_date": day.isoformat(),
+            "same_day_checkin_date": day.isoformat(),
+            "same_day_checkout_date": (day + timedelta(days=1)).isoformat(),
+            "station_name": stadium["station_name"],
+            "updated_at": now_jst(),
+            "source": "Rakuten Travel API",
+            "search_conditions": {"adult_num": ADULT_NUM, "up_class_num": 0, "low_class_num": 0, "search_radius": SEARCH_RADIUS_KM, "station_search_radius": SEARCH_RADIUS_KM},
+        },
+    }
+    save_json(document, HOTELS_DIR / f"{match['id']}.json")
+    entry = build_hotel_index_entry(match["id"], len(pre))
+    entry.update(stadium_id=stadium["id"], checkin_date=before.isoformat(), checkout_date=day.isoformat(), data_path=f"data/hotels/{match['id']}.json")
+    index["matches"] = [m for m in index.get("matches", []) if m.get("match_id") != match["id"]] + [entry]
+    print(f"{match['id']}（ホーム）: 前泊{len(pre)}件 ({before}) / 当日泊{len(same_day)}件 ({day})")
+
+
 def save_json(data: dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -320,6 +410,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--match-id", action="append", default=[])
     parser.add_argument("--all-away", action="store_true")
+    parser.add_argument("--all-home", action="store_true", help="サンガスタジアムのホーム戦（home-guide.json の venues）")
     parser.add_argument("--response-file", help="API応答の保存ファイル（検証用。APIは呼ばない）")
     parser.add_argument("--today", help="YYYY-MM-DD（検証用）")
     args = parser.parse_args(argv)
@@ -328,15 +419,21 @@ def main(argv: list[str] | None = None) -> int:
     matches = [find_match(i) for i in args.match_id]
     if args.all_away:
         matches += upcoming_domestic_away(today)
+    guide = load_home_guide()
+    if args.all_home:
+        matches += upcoming_home(today, guide.get("venues", []))
     if not matches:
-        parser.error("--match-id か --all-away を指定してください")
+        parser.error("--match-id / --all-away / --all-home のどれかを指定してください")
 
     stadiums = load_stadiums()
     index = read_json(HOTEL_INDEX_PATH) if HOTEL_INDEX_PATH.exists() else {"meta": {}, "matches": []}
     failures = 0
     for match in matches:
         try:
-            build_one(match, stadiums, index, args.response_file)
+            if match.get("home_away") == "H" and match.get("venue") in guide.get("venues", []):
+                build_home(match, guide, index, args.response_file)
+            else:
+                build_one(match, stadiums, index, args.response_file)
         except Exception as error:  # 1試合の失敗で全体を止めない。キーは例外文に入れていない
             failures += 1
             print(f"{match['id']}: 失敗 {error}", file=sys.stderr)

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-15",
+  "updatedAt": "2026-10-16",
   "tools": [
     {
       "id": "supporter-timeline",
@@ -52,6 +52,15 @@
       "description": "アウェイ戦ごとのスタジアム・最寄り駅・前泊と当日泊のホテル候補をまとめます（PRを含みます）。",
       "href": "away.html",
       "thumb": "assets/thumbs/away-guide.webp?v=eb1d45f9",
+      "accent": "#7b0064",
+      "section": "live"
+    },
+    {
+      "id": "home-guide",
+      "name": "ホーム観戦ガイド",
+      "description": "サンガスタジアムへの行き方、周辺の散策・ごはん、スタジアム周辺と亀岡の宿をまとめます（PRを含みます）。",
+      "href": "home.html",
+      "thumb": "assets/thumbs/home-guide.webp?v=43161f49",
       "accent": "#7b0064",
       "section": "live"
     },

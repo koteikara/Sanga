@@ -1,0 +1,105 @@
+/* ホーム観戦ガイド
+ *
+ * 土台は assets/away.css（地・紙・ホテルのカード・試合の開け閉め・ごはんの札）をそのまま使い、
+ * ここではホーム観戦ガイドにだけある面（案内の区画・散策の札・そばの2軒）を足す。
+ * 制約は away.css と同じ: 色だけに頼らない、操作対象は 44px 前後、動きを止める設定に従う。
+ */
+
+.home-secs{display:grid;gap:14px}
+
+/* 案内の区画。試合のカードと同じ紙に、大会色の帯の代わりに細い見出しを置く */
+.home-sec{
+  --comp:var(--j1);
+  border-radius:16px;
+  background:var(--paper);
+  color:var(--ink);
+  overflow:hidden;
+  scroll-margin-top:72px;  /* 貼り付く移動の帯の下に見出しが来るように */
+}
+.home-sec:focus{outline:none}
+.home-sec:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:2px}
+.home-sec-title{
+  margin:0;padding:12px 16px 10px;
+  border-bottom:1px solid var(--line);
+  font-size:17px;font-weight:900;letter-spacing:.02em;color:var(--comp);
+}
+.home-sec-body{padding:12px 16px 16px}
+.home-sec-lead{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+.home-sub{margin:14px 0 8px;font-size:14px;font-weight:900;color:var(--comp)}
+.home-sub:first-of-type{margin-top:0}
+.home-note{margin:0;font-size:12.5px;color:var(--ink)}
+.home-sec .m-btn svg{flex:none}
+.home-sec .m-actions{margin-bottom:0}
+/* 経路のボタンは3つ並ぶので、スマホでは1行に1つ（away.css の .m-actions .m-btn{flex:1} が横に詰めるため） */
+.home-sec .m-actions .m-btn{flex:1 1 100%}
+@media (min-width:640px){.home-sec .m-actions .m-btn{flex:0 0 auto}}
+.home-sec .m-food{margin:0}
+
+/* 散策の札 */
+.spots{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+@media (min-width:640px){.spots{grid-template-columns:1fr 1fr}}
+.spot{
+  display:flex;flex-direction:column;gap:4px;
+  padding:12px;
+  border:1px solid var(--line);border-radius:12px;
+  background:#fff;
+}
+.spot-kind{
+  align-self:flex-start;
+  padding:0 8px;border-radius:999px;
+  background:var(--paper-2);
+  font-size:10.5px;font-weight:800;color:var(--muted);letter-spacing:.06em;line-height:1.9;
+}
+.spot-name{margin:0;font-size:15px;font-weight:900;line-height:1.35}
+.spot-text{margin:0;font-size:12.5px}
+.spot-dist{margin:0;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.spot-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:4px}
+.spot-links .m-chip{gap:6px}
+.spot-links .m-chip svg{width:15px;height:15px;flex:none}
+
+/* 車で来る */
+.parking-note{margin:0 0 8px}
+.parking-services{display:grid;gap:8px;margin:0 0 14px;padding:0;list-style:none}
+@media (min-width:640px){.parking-services{grid-template-columns:1fr 1fr}}
+.parking-service > .away-a8{display:block;height:100%}
+.parking-link{
+  display:flex;flex-direction:column;gap:2px;
+  height:100%;min-height:var(--tap);padding:10px 12px;
+  border:1px solid var(--line);border-radius:12px;
+  background:#fff;color:var(--ink);text-decoration:none;
+}
+.parking-link:hover{border-color:var(--comp)}
+.parking-link:hover .parking-name{text-decoration:underline}
+.parking-name{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:900;color:var(--comp)}
+.parking-name svg{width:18px;height:18px;flex:none}
+.parking-text{font-size:12px;color:var(--muted)}
+.parking-link .pr-tag{align-self:flex-start;color:var(--muted)}
+#parkingBody .m-food{margin:0}
+
+/* そばの2軒 */
+.featured{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+@media (min-width:640px){.featured{grid-template-columns:1fr 1fr}}
+.featured-item{
+  display:flex;flex-direction:column;gap:6px;
+  padding:12px;
+  border:1px solid var(--line);border-left:4px solid var(--comp);border-radius:12px;
+  background:#fff;
+}
+.featured-name{margin:0;font-size:15px;font-weight:900;line-height:1.35}
+.featured-text{margin:0;font-size:12.5px}
+.featured-item .m-btn{align-self:stretch;justify-content:center;margin-top:auto}
+
+/* 試合ごとの空室 */
+.home-matches{scroll-margin-top:72px;margin-top:6px}
+.home-matches:focus{outline:none}
+.home-matches-title{
+  display:flex;align-items:center;gap:8px;
+  margin:6px 2px 4px;
+  font-size:17px;font-weight:900;letter-spacing:.02em;
+}
+.home-matches-title .pr-tag{margin:0;color:var(--ground-ink-dim)}
+.home-matches .away-list > .h-empty{list-style:none}
+
+/* そばの宿が空いていなかったときのカード */
+.hotel.is-full .hotel-link{background:var(--paper-2)}
+.hotel.is-full .hotel-price{margin-top:auto;font-size:11.5px;font-weight:700;color:var(--ink)}

@@ -11,8 +11,8 @@
 // 順で試す。squad-builder.js と同じ方式。
 // ?v= は tools/asset-versions.mjs が tools.json の内容ハッシュへ書き換える。
 const DATA_CANDIDATES = [
-  "/data/tools.json?v=3ca00575",
-  "data/tools.json?v=3ca00575",
+  "/data/tools.json?v=fda5850b",
+  "data/tools.json?v=fda5850b",
 ];
 
 async function loadTools() {
