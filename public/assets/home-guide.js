@@ -130,7 +130,7 @@
     var s = guide.stadium;
     var box = document.getElementById("accessBody");
     var sp = s.photo || {};
-    if (COMMONS_IMAGE.test(sp.src || "")) {
+    if (PHOTO_SRC.test(sp.src || "")) {
       var sfig = el("figure", "stadium-figure");
       sfig.append(picture("stadium-photo", [sp.src], sp.alt, ICON_ROUTE));
       sfig.append(credit(sp));
@@ -258,8 +258,8 @@
     fig.append(img);
     return fig;
   }
-  // 写真は Wikimedia Commons の縮小画像だけ（作者・利用条件をそばに出す）
-  var COMMONS_IMAGE = /^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/;
+  // 写真は、手元に置いた画像（亀岡市「かめコレ」を縮めたもの）か Wikimedia Commons の縮小画像だけ（作者・利用条件をそばに出す）
+  var PHOTO_SRC = /^(?:assets\/home\/[a-z0-9-]+\.webp(?:\?v=[0-9a-f]+)?|https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+)$/;
   function credit(ph) {
     var cap = el("figcaption", "spot-credit");
     cap.append(document.createTextNode("写真：" + (ph.credit || "") + " / "));
@@ -267,7 +267,7 @@
     lic.textContent = ph.license || "";
     cap.append(lic);
     var src = safeLink(ph.source_url, null);
-    if (src) { cap.append(document.createTextNode("（")); src.textContent = "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode("）")); }
+    if (src) { cap.append(document.createTextNode("（")); src.textContent = ph.source_label || "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode("）")); }
     return cap;
   }
 
@@ -279,7 +279,7 @@
       var ul = document.getElementById(p.reach === "walk" ? "spotsWalk" : "spotsRide");
       var li = el("li", "spot");
       var ph = p.photo || {};
-      if (COMMONS_IMAGE.test(ph.src || "")) {
+      if (PHOTO_SRC.test(ph.src || "")) {
         var fig = el("figure", "spot-figure");
         fig.append(picture("spot-photo", [ph.src], ph.alt, ICON_ROUTE));
         fig.append(credit(ph));  // 作者と利用条件（CC BY などの表示義務）
@@ -324,7 +324,7 @@
     (guide.specialties || []).forEach(function (p) {
       var li = el("li", "spot");
       var ph = p.photo || {};
-      if (COMMONS_IMAGE.test(ph.src || "")) {
+      if (PHOTO_SRC.test(ph.src || "")) {
         var fig = el("figure", "spot-figure");
         fig.append(picture("spot-photo", [ph.src], ph.alt, ICON_ROUTE));
         fig.append(credit(ph));
@@ -684,7 +684,7 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=62045f4b"),
+    getJson("data/home-guide.json?v=6f4ac4b9"),
     getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];

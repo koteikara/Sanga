@@ -89,12 +89,20 @@ for (const a of home.access || []) {
   if (a.url && (!/^https:\/\//.test(a.url) || !a.link_label)) fail(`home-guide.json: access[${a.label}] の url は https で、link_label も要る`);
 }
 for (const r of home.routes || []) if (!r.label || !r.origin) fail('home-guide.json: routes は label と origin が要る');
-// 写真は Wikimedia Commons の縮小画像だけ。作者・利用条件・出典をそろえる（CC BY などの表示義務）
+// 写真は、public/assets/home/ に置いた画像（亀岡市「かめコレ」、CC BY 4.0）か Wikimedia Commons の縮小画像だけ。
+// 作者・利用条件・出典をそろえる（CC BY などの表示義務）
 function checkPhoto(loc, ph) {
-  if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/.test(ph.src || '')) fail(`home-guide.json: ${loc}.src は Wikimedia Commons の縮小画像（upload.wikimedia.org/wikipedia/commons/thumb/）だけ`);
+  const src = ph.src || '';
+  const local = /^assets\/home\/[a-z0-9-]+\.webp(\?v=[0-9a-f]+)?$/.test(src);
+  if (local) {
+    if (!fs.existsSync(path.join(root, 'public', src.replace(/\?v=.*$/, '')))) fail(`home-guide.json: ${loc}.src の画像がありません: ${src}`);
+    if (!/^https:\/\/www\.city\.kameoka\.kyoto\.jp\/site\/kamecolle\//.test(ph.source_url || '')) fail(`home-guide.json: ${loc}.source_url は かめコレ のページ`);
+  } else {
+    if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/.test(src)) fail(`home-guide.json: ${loc}.src は public/assets/home/ の画像か Wikimedia Commons の縮小画像だけ`);
+    if (!/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(ph.source_url || '')) fail(`home-guide.json: ${loc}.source_url は Commons のファイルページ`);
+  }
   for (const k of ['alt', 'credit', 'license']) if (!ph[k]) fail(`home-guide.json: ${loc}.${k} が空`);
   if (!/^https:\/\/creativecommons\.org\//.test(ph.license_url || '')) fail(`home-guide.json: ${loc}.license_url は creativecommons.org の条文`);
-  if (!/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(ph.source_url || '')) fail(`home-guide.json: ${loc}.source_url は Commons のファイルページ`);
 }
 if (hs.photo) checkPhoto('stadium.photo', hs.photo);
 const spotIds = new Set();
