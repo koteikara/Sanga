@@ -116,12 +116,21 @@ checkCssBraces("assets/squad.css");
 checkCssBraces("assets/index.css");
 checkCssBraces("assets/calendar.css");
 checkCssBraces("assets/topbar.css");
+checkCssBraces("assets/away.css");
+checkCssBraces("assets/home.css");
 checkHtmlReferences("sanga202627season.html", ["assets/style.css", "assets/app.js"]);
 checkHtmlReferences("squad.html", ["assets/squad.css", "assets/squad-builder.js"]);
 checkHtmlReferences("calendar.html", [
   "assets/calendar.css",
   "assets/topbar.css",
   "assets/calendar.js",
+  "assets/index-nebula.js",
+]);
+checkHtmlReferences("home.html", [
+  "assets/away.css",
+  "assets/home.css",
+  "assets/topbar.css",
+  "assets/home-guide.js",
   "assets/index-nebula.js",
 ]);
 checkHtmlReferences("index.html", [

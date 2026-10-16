@@ -37,6 +37,6 @@
     "generate:seo": "node tools/build-seo.mjs",
     "check:seo": "node --check public/assets/analytics.js && node --check public/assets/index-page.js && node tools/build-seo.mjs --check",
     "generate:away": "node tools/generate-away-guide.js",
-    "check:away": "node tools/validate-stadiums.js && node tools/generate-away-guide.js --check && node --check public/assets/away-guide.js && python3 -m py_compile tools/hotels/build_match_hotels.py tools/hotels/rakuten_client.py && python3 tools/hotels/build_match_hotels.py --help >/dev/null"
+    "check:away": "node tools/validate-stadiums.js && node tools/generate-away-guide.js --check && node --check public/assets/away-guide.js && node --check public/assets/home-guide.js && python3 -m py_compile tools/hotels/build_match_hotels.py tools/hotels/rakuten_client.py && python3 tools/hotels/build_match_hotels.py --help >/dev/null"
   }
 }

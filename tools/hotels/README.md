@@ -6,7 +6,7 @@ Rakuten Travel API を使ったホテル候補データの生成基盤です。
 
 ## 現在の状態
 
-`build_match_hotels.py` は楽天トラベルの実APIから試合ごとのJSONを作る（`--match-id` / `--all-away`）。必要な環境変数は `RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。詳細は `docs/hotels-operation-flow.md` の「アウェイ遠征ガイド」。以下の「PR #122 時点」は経緯として残す。
+`build_match_hotels.py` は楽天トラベルの実APIから試合ごとのJSONを作る（`--match-id` / `--all-away` / `--all-home`）。`--all-home` はサンガスタジアムのホーム戦で、検索区域とそばの2軒は `public/data/home-guide.json` から読む。必要な環境変数は `RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。詳細は `docs/hotels-operation-flow.md` の「アウェイ遠征ガイド」。以下の「PR #122 時点」は経緯として残す。
 
 ## PR #122 時点の注意
 

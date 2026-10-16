@@ -1,6 +1,7 @@
 name: アウェイ遠征ホテル候補の更新
 
-# 週1回、これから行われる国内アウェイ戦の前泊ホテル候補を楽天トラベルAPIから取り直し、
+# 週1回、これから行われる国内アウェイ戦と、サンガスタジアムのホーム戦（ホーム観戦ガイド home.html）の
+# 前泊・当日泊ホテル候補を楽天トラベルAPIから取り直し、
 # public/data/hotels/ と hotel-index.json、away-guide.json に差分があれば下書きPRを作る。
 # away-guide.json が変わると fix:asset-versions が away-guide.js と away.html の ?v= も書き換えるので、
 # 差分の判定とコミットは public/ 全体で行う（public/data だけだと版数の検証で落ちる）。
@@ -63,7 +64,7 @@ jobs:
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
           RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
-        run: python tools/hotels/build_match_hotels.py --all-away
+        run: python tools/hotels/build_match_hotels.py --all-away --all-home
 
       - name: 遠征ガイドのJSONを作り直す
         run: |
@@ -86,7 +87,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$branch"
           git add public
-          git commit -m "data: アウェイ遠征のホテル候補を更新する"
+          git commit -m "data: アウェイ遠征・ホーム観戦のホテル候補を更新する"
           git push origin "$branch"
           {
             echo '楽天トラベルAPIから取り直したホテル候補です（週次）。'
@@ -99,6 +100,6 @@ jobs:
           } > pr-body.md
           # PR作成が設定で拒否されても、ブランチはpush済み。ジョブは失敗にしない。
           gh pr create --draft --base main --head "$branch" \
-            --title "data: アウェイ遠征のホテル候補を更新する" \
+            --title "data: アウェイ遠征・ホーム観戦のホテル候補を更新する" \
             --body-file pr-body.md \
             || echo "::warning::PRを作れませんでした。ブランチ ${branch} から手動で作成してください"
