@@ -244,6 +244,63 @@
     box.append(el("p", "h-foot", "料金は取得時点で空室のあったプランの最安（2名1泊・税・サービス料込み）。取得 " + (m.updated_at || "") + " JST ／ 提供：楽天トラベル"));
   }
 
+  // スタジアム周辺の地図（OpenStreetMap の埋め込み。キー不要、画面に入ってから読む）
+  function stadiumMap(m) {
+    var wrap = el("figure", "m-map");
+    var lat = Number(m.latitude), lng = Number(m.longitude), dLat = 0.011, dLng = 0.015;
+    var iframe = document.createElement("iframe");
+    iframe.src = "https://www.openstreetmap.org/export/embed.html?bbox=" +
+      [lng - dLng, lat - dLat, lng + dLng, lat + dLat].map(function (n) { return n.toFixed(5); }).join("%2C") +
+      "&layer=mapnik&marker=" + lat.toFixed(5) + "%2C" + lng.toFixed(5);
+    iframe.title = m.venue_name + " 周辺の地図";
+    iframe.loading = "lazy";
+    iframe.referrerPolicy = "no-referrer-when-downgrade";
+    wrap.append(iframe);
+    var cap = el("figcaption", "m-map-cap");
+    var big = safeLink("https://www.google.com/maps/search/?api=1&query=" + lat + "%2C" + lng, null);
+    big.textContent = "大きな地図で見る（Googleマップ）";
+    cap.append(big);
+    wrap.append(cap);
+    return wrap;
+  }
+
+  // 周辺のグルメを地図で一発検索。スタジアムの周りと、駅（泊まる駅があればそこ、無ければ最寄り駅）の周り
+  var FOOD_WORDS = ["グルメ", "ラーメン", "居酒屋", "カフェ"];
+  function foodLinks(m) {
+    var box = el("div", "m-food");
+    box.append(el("h3", "m-food-title", "周辺のごはんを探す"));
+    var places = [];
+    if (m.latitude != null) places.push(["スタジアム周辺", m.latitude, m.longitude]);
+    var stName = m.hub_name || m.station_name;
+    var stLat = m.hub_name ? m.hub_latitude : m.station_latitude;
+    var stLng = m.hub_name ? m.hub_longitude : m.station_longitude;
+    if (stName && stLat != null) places.push([stName + "周辺", stLat, stLng]);
+    places.forEach(function (p) {
+      var row = el("div", "m-food-row");
+      row.append(el("span", "m-food-place", p[0]));
+      var ul = el("ul", "m-food-list");
+      FOOD_WORDS.forEach(function (w) {
+        var a = safeLink("https://www.google.com/maps/search/" + encodeURIComponent(w) + "/@" + Number(p[1]).toFixed(5) + "," + Number(p[2]).toFixed(5) + ",16z", "m-chip");
+        a.textContent = w;
+        a.setAttribute("aria-label", p[0] + "の" + w + "をGoogleマップで探す");
+        var li = el("li");
+        li.append(a);
+        ul.append(li);
+      });
+      row.append(ul);
+      box.append(row);
+    });
+    var city = (m.city || "").replace(/^(東京都|北海道|(?:京都|大阪)府|.{2,3}県)/, "");
+    if (city) {
+      var local = safeLink("https://www.google.com/search?q=" + encodeURIComponent(city + " ご当地グルメ"), "m-food-local");
+      local.textContent = city + "のご当地グルメを調べる";
+      var p2 = el("p", "m-food-more");
+      p2.append(local);
+      box.append(p2);
+    }
+    return box;
+  }
+
   function renderMatch(m) {
     var li = el("li", "away-match" + (m.competition === "LEV" ? " is-lev" : ""));
     li.id = m.match_id;
@@ -272,6 +329,12 @@
       facts.append(el("dt", null, "アクセス"));
       facts.append(el("dd", null, m.access_note || m.station));
     }
+    if (m.hub_name) {
+      facts.append(el("dt", null, "泊まるなら"));
+      var hub = el("dd", null, m.hub_name + "周辺");
+      if (m.hub_note) { hub.append(document.createTextNode(" ")); hub.append(el("span", "m-city", "（" + m.hub_note + "）")); }
+      facts.append(hub);
+    }
     body.append(facts);
 
     var actions = el("div", "m-actions");
@@ -295,11 +358,14 @@
     if (bus) actions.append(bus);
     if (actions.childNodes.length) body.append(actions);
 
+    if (m.latitude != null) body.append(stadiumMap(m));
+    body.append(foodLinks(m));
+
     var hh = el("div", "h-head");
     var ht = el("h3", "h-title", "ホテル");
     ht.append(prTag());
     hh.append(ht);
-    hh.append(el("span", "h-cond", "2名・スタジアムから3km／" + (m.station_name || "最寄り駅") + "から1km・安い順"));
+    hh.append(el("span", "h-cond", "2名・スタジアムから3km／" + (m.hub_name || m.station_name || "最寄り駅") + "から1km・安い順"));
     body.append(hh);
 
     var box = el("div", "h-box");
@@ -340,7 +406,7 @@
 
   getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }).then(function (a) {
     affiliates = a || {};
-    return getJson("data/away-guide.json?v=d6311cc3");
+    return getJson("data/away-guide.json?v=5d87474f");
   }).then(function (doc) {
     // 終わった試合は出さない（日付は日本時間。未定は候補日の最後で判断）
     var today = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);

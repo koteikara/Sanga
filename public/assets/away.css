@@ -195,6 +195,30 @@ button:focus-visible,
 .m-facts dd{margin:0}
 .m-facts .m-city{color:var(--muted);font-size:12px}
 
+/* 周辺の地図 */
+.m-map{margin:10px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--paper-2)}
+.m-map iframe{display:block;width:100%;aspect-ratio:16 / 9;border:0}
+.m-map-cap{padding:6px 10px;font-size:11px;background:#fff;border-top:1px solid var(--line)}
+.m-map-cap a{color:var(--comp);font-weight:700}
+
+/* 周辺のごはん */
+.m-food{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:var(--paper-2)}
+.m-food-title{margin:0 0 6px;font-size:13px;font-weight:900;color:var(--comp)}
+.m-food-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.m-food-row+.m-food-row{margin-top:6px}
+.m-food-place{flex:0 0 100%;font-size:11px;font-weight:800;color:var(--muted)}
+.m-food-list{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.m-chip{
+  display:inline-flex;align-items:center;
+  min-height:var(--tap);padding:0 14px;
+  border:1px solid var(--line);border-radius:999px;
+  background:#fff;color:var(--ink);
+  font-size:12.5px;font-weight:700;text-decoration:none;
+}
+.m-chip:hover{border-color:var(--comp);color:var(--comp)}
+.m-food-more{margin:8px 0 0;font-size:12px}
+.m-food-local{color:var(--comp);font-weight:700}
+
 .m-actions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 4px}
 /* スマホでは各ボタンを1行いっぱいに、広い画面では中身の幅で横に並べる */
 .m-actions > *{flex:1 1 100%;display:flex}
