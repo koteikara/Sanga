@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updated_at": "2026-10-16 01:28",
+    "updated_at": "2026-10-16 10:07",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
@@ -15,7 +15,7 @@
     },
     {
       "match_id": "sec12",
-      "hotel_count": 6,
+      "hotel_count": 12,
       "stadium_id": "panasonic-suita",
       "checkin_date": "2026-10-23",
       "checkout_date": "2026-10-24",
@@ -31,7 +31,7 @@
     },
     {
       "match_id": "sec18",
-      "hotel_count": 7,
+      "hotel_count": 9,
       "stadium_id": "ajinomoto",
       "checkin_date": "2026-12-04",
       "checkout_date": "2026-12-05",
@@ -55,7 +55,7 @@
     },
     {
       "match_id": "sec27",
-      "hotel_count": 8,
+      "hotel_count": 12,
       "stadium_id": "nagai",
       "checkin_date": "2027-03-19",
       "checkout_date": "2027-03-20",
@@ -63,7 +63,7 @@
     },
     {
       "match_id": "sec29",
-      "hotel_count": 3,
+      "hotel_count": 9,
       "stadium_id": "fukuari",
       "checkin_date": "2027-04-09",
       "checkout_date": "2027-04-10",
@@ -71,7 +71,7 @@
     },
     {
       "match_id": "sec30",
-      "hotel_count": 2,
+      "hotel_count": 8,
       "stadium_id": "mito",
       "checkin_date": "2027-04-16",
       "checkout_date": "2027-04-17",
@@ -79,7 +79,7 @@
     },
     {
       "match_id": "sec31",
-      "hotel_count": 1,
+      "hotel_count": 7,
       "stadium_id": "mercari",
       "checkin_date": "2027-04-23",
       "checkout_date": "2027-04-24",
@@ -103,7 +103,7 @@
     },
     {
       "match_id": "sec36",
-      "hotel_count": 1,
+      "hotel_count": 3,
       "stadium_id": "saitama",
       "checkin_date": "2027-05-21",
       "checkout_date": "2027-05-22",
@@ -111,7 +111,7 @@
     },
     {
       "match_id": "sec38",
-      "hotel_count": 6,
+      "hotel_count": 12,
       "stadium_id": "noevir-kobe",
       "checkin_date": "2027-06-05",
       "checkout_date": "2027-06-06",
