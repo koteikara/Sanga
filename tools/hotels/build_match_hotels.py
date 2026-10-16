@@ -78,6 +78,15 @@ def upcoming_domestic_away(today: date) -> list[dict]:
     return result
 
 
+def base_station(stadium: dict) -> tuple[str, float, float] | None:
+    """駅の周りで宿を探す中心。宿泊の拠点駅（hub_*）があればそれ、無ければ最寄り駅（station_*）。"""
+    if stadium.get("hub_latitude") is not None:
+        return stadium["hub_name"], stadium["hub_latitude"], stadium["hub_longitude"]
+    if stadium.get("station_latitude") is not None:
+        return stadium["station_name"], stadium["station_latitude"], stadium["station_longitude"]
+    return None
+
+
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     r = 6371.0
     p1, p2 = math.radians(lat1), math.radians(lat2)
@@ -170,8 +179,9 @@ def parse_hotels(payload: dict, stadium: dict, stadium_id: str, area: str = "sta
         distance = station_distance = None
         if lat and lon:
             distance = round(haversine_km(float(lat), float(lon), stadium["latitude"], stadium["longitude"]), 1)
-            if stadium.get("station_latitude") is not None:
-                station_distance = round(haversine_km(float(lat), float(lon), stadium["station_latitude"], stadium["station_longitude"]), 1)
+            base = base_station(stadium)
+            if base:
+                station_distance = round(haversine_km(float(lat), float(lon), base[1], base[2]), 1)
         charge = info.get("hotelMinCharge")  # 1部屋1泊の最安値の目安（楽天の説明）。日付・人数に関係しない
         parking = (info.get("parkingInformation") or "").strip()
         review_average, review_count = review(info)
@@ -256,11 +266,12 @@ def search(lat: float, lon: float, radius: float, checkin: date, response_file: 
 
 
 def fetch_night(stadium: dict, stadium_id: str, checkin: date, response_file: str | None) -> list[HotelCandidate]:
-    """1泊ぶん。スタジアム周辺（半径3km）と最寄り駅周辺（半径1km）を検索してまとめる。"""
+    """1泊ぶん。スタジアム周辺（半径3km）と、駅（宿泊の拠点駅か最寄り駅）の周辺（半径1km）を検索してまとめる。"""
     around_stadium = parse_hotels(search(stadium["latitude"], stadium["longitude"], SEARCH_RADIUS_KM, checkin, response_file), stadium, stadium_id, "stadium")
     around_station: list[HotelCandidate] = []
-    if stadium.get("station_latitude") is not None:
-        around_station = parse_hotels(search(stadium["station_latitude"], stadium["station_longitude"], STATION_RADIUS_KM, checkin, response_file), stadium, stadium_id, "station")
+    base = base_station(stadium)
+    if base:
+        around_station = parse_hotels(search(base[1], base[2], STATION_RADIUS_KM, checkin, response_file), stadium, stadium_id, "station")
     return merge_areas(around_stadium, around_station)
 
 
@@ -293,7 +304,7 @@ def build_one(match: dict, stadiums: dict[str, dict], index: dict, response_file
         "checkout_date": day.isoformat(),
         "same_day_checkin_date": day.isoformat(),
         "same_day_checkout_date": (day + timedelta(days=1)).isoformat(),
-        "station_name": stadium.get("station_name") or None,
+        "station_name": (base_station(stadium) or (None,))[0],
         "updated_at": now_jst(),
         "source": "Rakuten Travel API",
         "search_conditions": {"adult_num": ADULT_NUM, "up_class_num": 0, "low_class_num": 0, "search_radius": SEARCH_RADIUS_KM, "station_search_radius": STATION_RADIUS_KM},

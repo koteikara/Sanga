@@ -28,6 +28,15 @@ for (const s of stadiums) {
     const km = 6371 * 2 * Math.asin(Math.sqrt(Math.sin(((s.station_latitude - s.latitude) * Math.PI) / 360) ** 2 + Math.cos((s.latitude * Math.PI) / 180) * Math.cos((s.station_latitude * Math.PI) / 180) * Math.sin(((s.station_longitude - s.longitude) * Math.PI) / 360) ** 2));
     if (km > 15) fail(`${loc}: 最寄り駅がスタジアムから ${km.toFixed(1)}km 離れています（取り違えの疑い）`);
   }
+  // 宿泊の拠点駅（任意）。最寄り駅の周りに宿が無いスタジアムだけに置く。4つの項目はそろえる
+  const hubKeys = ['hub_name', 'hub_latitude', 'hub_longitude', 'hub_note'];
+  const hubCount = hubKeys.filter((k) => s[k] !== undefined).length;
+  if (hubCount && hubCount !== hubKeys.length) fail(`${loc}: hub_* は ${hubKeys.join(' / ')} をそろえて置く`);
+  if (hubCount === hubKeys.length) {
+    if (!/駅$/.test(s.hub_name)) fail(`${loc}: hub_name は「〜駅」の形で必要`);
+    if (!(s.hub_latitude >= 24 && s.hub_latitude <= 46 && s.hub_longitude >= 122 && s.hub_longitude <= 146)) fail(`${loc}: 拠点駅の座標が日本の範囲外`);
+    if (!s.hub_note) fail(`${loc}: hub_note（拠点駅からの行き方）が空`);
+  }
 }
 
 // 国内アウェイ戦の会場がすべて登録されていること
