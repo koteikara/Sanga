@@ -28,7 +28,7 @@
   --lev:#b2165b;
   --star:#b06a00;    /* 紙の上で 4.6:1 */
   --tap:44px;
-  --acc-dur:300ms;                         /* 開け閉めの時間 */
+  --acc-dur:620ms;                         /* 開け閉めの時間（参考の「アコーディオン展開」と同じ） */
   --acc-ease:cubic-bezier(.65,0,.35,1);    /* easeInOutCubic */
 }
 

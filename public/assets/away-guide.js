@@ -359,7 +359,7 @@
       if (reduced()) { details.open = false; return; }
       closing = function (e) { if (e.target === wrap && e.propertyName === "grid-template-rows") finishClose(); };
       wrap.addEventListener("transitionend", closing);
-      setTimeout(finishClose, 700);  // transitionend が来ないときの保険
+      setTimeout(finishClose, 900);  // transitionend が来ないときの保険（--acc-dur より長く）
     }
     // ブラウザ自身が開いたとき（ページ内検索など）にも中身を用意する
     details.addEventListener("toggle", function () {
