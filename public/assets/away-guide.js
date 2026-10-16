@@ -169,7 +169,9 @@
     }
     if (price) text.append(price);
     var sub = el("p", "hotel-sub");
-    if (h.distance_km_from_stadium != null) sub.append(el("span", null, "スタジアムまで" + h.distance_km_from_stadium + "km"));
+    // 拠点駅（東京駅など）の周りの宿は、スタジアムまでの距離を出すと遠すぎて紛らわしいので、駅までだけにする
+    var farFromStadium = h.area === "station" && h.distance_km_from_stadium != null && h.distance_km_from_stadium > 5;
+    if (h.distance_km_from_stadium != null && !farFromStadium) sub.append(el("span", null, "スタジアムまで" + h.distance_km_from_stadium + "km"));
     if (stationName && h.area !== "stadium" && h.distance_km_from_station != null) sub.append(el("span", null, stationName + "まで" + h.distance_km_from_station + "km"));
     if (h.review_average != null && h.review_count) {
       var star = el("span", "hotel-star", "★" + Number(h.review_average).toFixed(1));
@@ -307,17 +309,37 @@
     var article = el("article");
     article.setAttribute("aria-labelledby", m.match_id + "-title");
 
-    var head = el("header", "m-head");
-    head.append(el("p", "m-comp", m.competition_label + "　" + m.round));
+    // 試合ごとに開け閉めする（details / summary）。中身は開いたときに組み立てる
+    var details = el("details", "m-details");
+    var head = el("summary", "m-head");
+    head.append(el("span", "m-comp", m.competition_label + "　" + m.round));
     var title = el("h2", "m-title");
     title.id = m.match_id + "-title";
     title.append(el("small", null, "vs"));
     title.append(document.createTextNode(m.opponent));
     head.append(title);
-    var date = el("p", "m-date", dateLabel(m));
+    var date = el("span", "m-date", dateLabel(m));
     date.append(el("small", null, m.match_date ? (m.kickoff_time ? m.kickoff_time + " キックオフ" : "キックオフ未定") : "日程未定"));
     head.append(date);
-    article.append(head);
+    var chev = el("span", "m-chev");
+    chev.append(icon("M6 9l6 6 6-6"));
+    head.append(chev);
+    details.append(head);
+    article.append(details);
+    details.addEventListener("toggle", function () {
+      if (details.open && !details.dataset.built) {
+        details.dataset.built = "1";
+        details.append(matchBody(m));
+      }
+    });
+    li.append(article);
+    li.openMatch = function () {
+      details.open = true;
+    };
+    return li;
+  }
+
+  function matchBody(m) {
 
     var body = el("div", "m-body");
     var facts = el("dl", "m-facts");
@@ -386,22 +408,60 @@
       more.append(jalan);
       body.append(more);
     }
-    article.append(body);
-    li.append(article);
-    return li;
+    return body;
+  }
+
+  function scrollBehavior() {
+    return document.documentElement.dataset.motion === "off" ? "auto" : "smooth";
+  }
+
+  function openAndGo(id, scroll) {
+    var li = document.getElementById(id);
+    if (!li || !li.openMatch) return;
+    li.openMatch();
+    if (scroll) li.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
   }
 
   function renderJump(matches) {
+    var links = {};
     matches.forEach(function (m) {
       var li = el("li");
       var a = el("a");
       a.href = "#" + m.match_id;
       a.append(el("span", "away-jump-date", m.match_date ? shortMd(m.match_date) : (m.date_candidates.length ? shortMd(m.date_candidates[0]) + "〜" : "未定")));
       a.append(el("span", "away-jump-opp", m.opponent));
+      a.addEventListener("click", function (e) {
+        e.preventDefault();
+        openAndGo(m.match_id, true);
+        try { history.replaceState(null, "", "#" + m.match_id); } catch (err) {}
+      });
+      links[m.match_id] = a;
       li.append(a);
       jump.append(li);
     });
     if (matches.length > 1) jump.parentNode.hidden = false;
+
+    // いま見ている試合（見出しが帯のすぐ下を過ぎた最後の試合。無ければ先頭）を、帯の中で濃く示す
+    var current = null;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var id = matches[0].match_id;
+      matches.forEach(function (m) {
+        var li = document.getElementById(m.match_id);
+        if (li && li.getBoundingClientRect().top <= 110) id = m.match_id;
+      });
+      var a = links[id];
+      if (!a || a === current) return;
+      if (current) current.removeAttribute("aria-current");
+      a.setAttribute("aria-current", "true");
+      current = a;
+      jump.scrollTo({ left: Math.max(0, a.offsetLeft - jump.clientWidth / 2 + a.clientWidth / 2), behavior: scrollBehavior() });
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
   }
 
   getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }).then(function (a) {
@@ -416,6 +476,10 @@
     });
     upcoming.forEach(function (m) { list.append(renderMatch(m)); });
     renderJump(upcoming);
+    // 直近の試合は最初から開く。URL に #試合ID があればその試合も開く
+    if (upcoming.length) openAndGo(upcoming[0].match_id, false);
+    var hash = (location.hash || "").slice(1);
+    if (hash && document.getElementById(hash)) openAndGo(hash, true);
     meta.textContent = "これからの国内アウェイ " + upcoming.length + "試合" + (doc.meta.hotels_updated_at ? "／ ホテル情報の取得 " + doc.meta.hotels_updated_at + " JST" : "／ ホテル情報は取得前");
   }).catch(function () {
     meta.textContent = "データを読み込めませんでした。時間をおいて開き直してください。";

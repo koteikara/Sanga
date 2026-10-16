@@ -123,24 +123,31 @@ button:focus-visible,
   font-size:11.5px;color:var(--ground-ink-dim);
 }
 
-/* 試合へ飛ぶ帯。横に流す */
-.away-jump{margin:0 -12px 10px}
+/* 試合へ飛ぶ帯。横に流す。スクロールしても画面の上に貼り付く。
+   PR の枠（薄い白）と見分けられるよう、帯も札も濃い色にする */
+.away-jump{
+  position:sticky;top:0;z-index:5;
+  margin:0 -12px 10px;
+  background:rgba(18,4,20,.96);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
 .away-jump-list{
   display:flex;gap:6px;
-  margin:0;padding:2px 12px 6px;list-style:none;
+  margin:0;padding:8px 12px;list-style:none;
   overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;
 }
 .away-jump-list::-webkit-scrollbar{display:none}
-@media (min-width:760px){.away-jump{margin-inline:0}.away-jump-list{padding-inline:0}}
 .away-jump-list li{flex:none;scroll-snap-align:start}
 .away-jump-list a{
   display:flex;flex-direction:column;justify-content:center;
   min-height:var(--tap);padding:4px 12px;
-  border:1px solid var(--ground-line);border-radius:10px;
-  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.14);border-radius:10px;
+  background:#2a0a2b;
   color:var(--ground-ink);text-decoration:none;line-height:1.25;
 }
-.away-jump-list a:hover{background:rgba(255,255,255,.18)}
+.away-jump-list a:hover{background:#43123f}
+.away-jump-list a[aria-current]{background:var(--j1);border-color:rgba(255,255,255,.55)}
 .away-jump-date{font-size:10px;font-weight:700;color:var(--ground-ink-dim);letter-spacing:.04em}
 .away-jump-opp{font-size:12.5px;font-weight:800;white-space:nowrap}
 
@@ -158,19 +165,29 @@ button:focus-visible,
   border-radius:16px;
   background:var(--paper);
   color:var(--ink);
-  scroll-margin-top:12px;
+  scroll-margin-top:72px;  /* 貼り付く試合の帯（約62px）の下に見出しが来るように */
 }
 .away-match.is-lev{--comp:var(--lev)}
 
+/* 開け閉めの見出し（summary）。▶ の印は消して、右下に向きの変わる矢印を置く */
 .m-head{
+  list-style:none;
+  cursor:pointer;
   display:grid;
-  grid-template-columns:1fr auto;
+  grid-template-columns:1fr auto auto;
   align-items:end;
   gap:2px 12px;
   padding:12px 16px 12px;
   background:var(--comp);
   color:#fff;
 }
+.m-head::-webkit-details-marker{display:none}
+.m-head:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:-4px}
+.m-chev{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.16);align-self:center}
+.m-chev svg{width:18px;height:18px;transition:transform .2s ease}
+.m-details[open] .m-chev svg{transform:rotate(180deg)}
+:root[data-motion="off"] .m-chev svg{transition:none}
+.m-comp,.m-date{display:block}
 .m-comp{
   grid-column:1 / -1;
   margin:0;
