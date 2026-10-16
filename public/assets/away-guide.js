@@ -326,16 +326,52 @@
     head.append(chev);
     details.append(head);
     article.append(details);
-    details.addEventListener("toggle", function () {
-      if (details.open && !details.dataset.built) {
-        details.dataset.built = "1";
-        details.append(matchBody(m));
+    // 中身は .m-wrap（grid の行を 0fr⇔1fr で伸び縮み）で包む。高さは実寸を測らず、内容が後から増えても追従する
+    var wrap = null;
+    function ensureBody() {
+      if (!wrap) {
+        wrap = el("div", "m-wrap");
+        var clip = el("div", "m-clip");  // 余白を持たない層で切る（.m-body の padding は 0 まで縮まないため）
+        clip.append(matchBody(m));
+        wrap.append(clip);
+        details.append(wrap);
       }
+      return wrap;
+    }
+    function reduced() { return document.documentElement.dataset.motion === "off"; }
+    var closing = null;
+    function finishClose() {
+      if (!closing) return;
+      wrap.removeEventListener("transitionend", closing);
+      closing = null;
+      details.open = false;
+    }
+    function expand(animate) {
+      if (closing) { wrap.removeEventListener("transitionend", closing); closing = null; }
+      ensureBody();
+      details.open = true;
+      if (!animate) { details.classList.add("is-open"); return; }
+      void wrap.offsetHeight;  // 0fr の状態を一度描かせてから 1fr へ
+      details.classList.add("is-open");
+    }
+    function collapse() {
+      details.classList.remove("is-open");
+      if (reduced()) { details.open = false; return; }
+      closing = function (e) { if (e.target === wrap && e.propertyName === "grid-template-rows") finishClose(); };
+      wrap.addEventListener("transitionend", closing);
+      setTimeout(finishClose, 900);  // transitionend が来ないときの保険（--acc-dur より長く）
+    }
+    // ブラウザ自身が開いたとき（ページ内検索など）にも中身を用意する
+    details.addEventListener("toggle", function () {
+      if (details.open && !details.classList.contains("is-open")) expand(false);
+    });
+    head.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (details.classList.contains("is-open")) collapse();
+      else expand(!reduced());
     });
     li.append(article);
-    li.openMatch = function () {
-      details.open = true;
-    };
+    li.openMatch = function () { expand(false); };
     return li;
   }
 

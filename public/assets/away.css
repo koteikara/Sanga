@@ -28,6 +28,8 @@
   --lev:#b2165b;
   --star:#b06a00;    /* 紙の上で 4.6:1 */
   --tap:44px;
+  --acc-dur:620ms;                         /* 開け閉めの時間（参考の「アコーディオン展開」と同じ） */
+  --acc-ease:cubic-bezier(.65,0,.35,1);    /* easeInOutCubic */
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -184,8 +186,17 @@ button:focus-visible,
 .m-head::-webkit-details-marker{display:none}
 .m-head:focus-visible{outline:2px solid var(--cyan-soft);outline-offset:-4px}
 .m-chev{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.16);align-self:center}
-.m-chev svg{width:18px;height:18px;transition:transform .2s ease}
-.m-details[open] .m-chev svg{transform:rotate(180deg)}
+.m-chev svg{width:18px;height:18px;transition:transform var(--acc-dur) var(--acc-ease)}
+.m-details.is-open .m-chev svg{transform:rotate(180deg)}
+/* 開け閉め。grid の行を 0fr⇔1fr で変え、内側は overflow:hidden で切る。
+   参考: motion-reference.takayustudio.jp「アコーディオン展開」（easeInOutCubic、高さと透明度） */
+.m-wrap{
+  display:grid;grid-template-rows:0fr;opacity:0;
+  transition:grid-template-rows var(--acc-dur) var(--acc-ease),opacity var(--acc-dur) var(--acc-ease);
+}
+.m-details.is-open .m-wrap{grid-template-rows:1fr;opacity:1}
+.m-clip{min-height:0;overflow:hidden}
+:root[data-motion="off"] .m-wrap{transition:none}
 :root[data-motion="off"] .m-chev svg{transition:none}
 .m-comp,.m-date{display:block}
 .m-comp{
