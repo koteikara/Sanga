@@ -684,7 +684,7 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=18ce5747"),
+    getJson("data/home-guide.json?v=62045f4b"),
     getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];
