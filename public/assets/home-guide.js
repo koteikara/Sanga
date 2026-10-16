@@ -10,7 +10,8 @@
   var SVG_NS = "http://www.w3.org/2000/svg";
   var A8_LINK = /^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+$/;
   var A8_PIXEL = /^https:\/\/www\d+\.a8\.net\/0\.gif\?a8mat=[A-Za-z0-9+]+$/;
-  var RAKUTEN_IMAGE = /^https:\/\/img\.travel\.rakuten\.co\.jp\/[^\s"'<>]+$/;
+  // 楽天トラベルの画像。img.travel.rakuten.co.jp と、宿ページの写真が置かれている trvimg.r10s.jp
+  var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
   var WEEK = ["日", "月", "火", "水", "木", "金", "土"];
   var affiliates = {};
   var pixelShown = {};
@@ -413,20 +414,26 @@
     return "";
   }
 
+  // そばの2軒は home-guide.json の image_urls を先に試す（楽天APIの画像が無いことがあるため）。読めなければ次の候補、最後は絵
+  var featuredImages = {};
   function photo(h) {
     var box = el("div", "hotel-photo");
-    var src = h && [h.hotel_image_url, h.hotel_thumbnail_url].filter(function (u) { return RAKUTEN_IMAGE.test(u || ""); })[0];
+    var list = h ? (featuredImages[h.hotel_no] || []).concat([h.hotel_image_url, h.hotel_thumbnail_url]) : [];
+    list = list.filter(function (u, i) { return RAKUTEN_IMAGE.test(u || "") && list.indexOf(u) === i; });
     var empty = function () { var e = el("div", "hotel-photo-empty"); e.append(icon(ICON_HOTEL)); return e; };
-    if (src) {
+    if (list.length) {
       var img = document.createElement("img");
-      img.src = src;
+      img.src = list.shift();
       img.alt = "";
       img.width = 320;
       img.height = 240;
       img.loading = "lazy";
       img.decoding = "async";
       img.referrerPolicy = "no-referrer";
-      img.addEventListener("error", function () { img.replaceWith(empty()); });
+      img.addEventListener("error", function () {
+        if (list.length) img.src = list.shift();
+        else img.replaceWith(empty());
+      });
       box.append(img);
     } else {
       box.append(empty());
@@ -483,7 +490,7 @@
     var li = el("li", "hotel is-full");
     var a = safeLink(f.url, "hotel-link");
     var box = a || el("div", "hotel-link");
-    var ph = photo(null);
+    var ph = photo({ hotel_no: f.hotel_no });
     ph.append(el("span", "hotel-near", "スタジアムすぐ"));
     box.append(ph);
     var text = el("div", "hotel-text");
@@ -684,12 +691,12 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=6f4ac4b9"),
+    getJson("data/home-guide.json?v=fe03d6b2"),
     getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];
     affiliates = r[1] || {};
-    (guide.featured_hotels || []).forEach(function (h) { featuredNos[h.hotel_no] = true; });
+    (guide.featured_hotels || []).forEach(function (h) { featuredNos[h.hotel_no] = true; featuredImages[h.hotel_no] = h.image_urls || []; });
     renderAccess();
     renderParking();
     renderSpots();
