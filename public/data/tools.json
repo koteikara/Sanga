@@ -38,12 +38,12 @@
       "section": "live"
     },
     {
-      "id": "trade-post",
-      "name": "求・譲 投稿フォーマット",
-      "description": "チケットやグッズの交換募集を、Xに投稿しやすい形に整えます。",
-      "href": "TradePost/index-v1.html",
-      "thumb": "assets/thumbs/trade-post.webp?v=6ddbe0a3",
-      "accent": "#5b1f7e",
+      "id": "home-guide",
+      "name": "ホーム観戦ガイド",
+      "description": "サンガスタジアムへの行き方、周辺の散策・ごはん、スタジアム周辺と亀岡の宿をまとめます（PRを含みます）。",
+      "href": "home.html",
+      "thumb": "assets/thumbs/home-guide.webp?v=c4180dc8",
+      "accent": "#7b0064",
       "section": "live"
     },
     {
@@ -56,12 +56,12 @@
       "section": "live"
     },
     {
-      "id": "home-guide",
-      "name": "ホーム観戦ガイド",
-      "description": "サンガスタジアムへの行き方、周辺の散策・ごはん、スタジアム周辺と亀岡の宿をまとめます（PRを含みます）。",
-      "href": "home.html",
-      "thumb": "assets/thumbs/home-guide.webp?v=43161f49",
-      "accent": "#7b0064",
+      "id": "trade-post",
+      "name": "求・譲 投稿フォーマット",
+      "description": "チケットやグッズの交換募集を、Xに投稿しやすい形に整えます。",
+      "href": "TradePost/index-v1.html",
+      "thumb": "assets/thumbs/trade-post.webp?v=6ddbe0a3",
+      "accent": "#5b1f7e",
       "section": "live"
     },
     {
