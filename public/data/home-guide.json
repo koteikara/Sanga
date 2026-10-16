@@ -7,7 +7,13 @@
       "スタジアム周辺の宿: 楽天トラベルの宿の案内（https://travel.rakuten.co.jp/HOTEL/187555/、https://travel.rakuten.co.jp/HOTEL/181808/）。2026-10-16確認",
       "散策: 保津川下り（https://www.hozugawakudari.jp/）、嵯峨野観光鉄道（https://www.sagano-kanko.co.jp/）、亀岡市観光協会（https://kameoka.info/）。2026-10-16確認",
       "駐車場: タイムズのB「サンガスタジアム周辺」（https://btimes.jp/kyoto/spot/4600/。試合日のスタジアム駐車場は一般利用不可との記載、2021年11月調べ）、akippa（https://www.akippa.com/kinki/kyoto/sangastadiumbykyocera）、特P（https://toku-p.earth-car.com/）、軒先パーキング（https://parking.nokisaki.com/）。2026-10-16確認",
-      "亀岡市内の観光: 亀岡市（https://www.city.kameoka.kyoto.jp/）、京都府南丹広域振興局（https://www.pref.kyoto.jp/nantan/kankou/）、亀岡市観光協会。2026-10-16確認"
+      "亀岡市内の観光: 亀岡市（https://www.city.kameoka.kyoto.jp/）、京都府南丹広域振興局（https://www.pref.kyoto.jp/nantan/kankou/）、亀岡市観光協会。2026-10-16確認",
+      "電車: JR西日本の時刻表（特急まいづるは京都から亀岡まで約18分、西舞鶴から約1時間10分）、京都府南丹広域振興局（快速で約20分）。2026-10-16確認",
+      "バス: 京阪京都交通「京都サンガF.C.観戦シャトルバス」（https://www.keihankyotokotsu.jp/single/detail.php?id=599）。2026-10-16確認",
+      "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）。2026-10-16確認",
+      "写真: Wikimedia Commons（作者・利用条件は各 photo に記載）。画像は Wikimedia のサーバーから読み、リポジトリには置かない。2026-10-16確認",
+      "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認",
+      "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。2026-10-16確認"
     ]
   },
   "venues": [
@@ -22,16 +28,34 @@
     "longitude": 135.58424,
     "station_name": "亀岡駅",
     "station_latitude": 35.01675,
-    "station_longitude": 135.58247
+    "station_longitude": 135.58247,
+    "photo": {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg/960px-Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg",
+      "alt": "サンガスタジアム by KYOCERA を北西から見た外観",
+      "credit": "J o",
+      "license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg"
+    }
   },
   "access": [
     {
       "label": "京都駅から",
-      "text": "JR嵯峨野線（山陰本線）で亀岡駅まで約20〜30分（快速か普通かで変わります）"
+      "text": "JR嵯峨野線（山陰本線）で亀岡駅まで、快速で約20分、普通で約30分。特急（まいづる など。特急券が必要）なら約18分"
     },
     {
       "label": "大阪方面から",
       "text": "JR京都線などで京都駅へ出て、嵯峨野線に乗り換え"
+    },
+    {
+      "label": "舞鶴方面から",
+      "text": "JR特急まいづるで乗り換えなし。西舞鶴から約1時間10分、東舞鶴から約1時間20分（綾部・園部を経由）"
+    },
+    {
+      "label": "バスで",
+      "text": "試合の日は、阪急桂駅東口とJR桂川駅前から京阪京都交通の観戦シャトルバスが出ます（座席定員制、大人片道850円）。運行する試合と時刻は案内で確かめてください",
+      "url": "https://www.keihankyotokotsu.jp/single/detail.php?id=599",
+      "link_label": "京阪京都交通の案内"
     },
     {
       "label": "亀岡駅から",
@@ -39,7 +63,7 @@
     },
     {
       "label": "車で",
-      "text": "試合の日はスタジアムの駐車場を一般の人は使えないと案内されてきました。下の「車で来る」で、予約できる駐車場とコインパーキングを探せます"
+      "text": "試合の日はスタジアムの駐車場は使えません。下の「車で来る」に、試合の日に停められる駐車場をまとめています"
     },
     {
       "label": "帰り",
@@ -56,14 +80,37 @@
       "origin": "大阪駅"
     },
     {
-      "label": "新大阪駅から",
-      "origin": "新大阪駅"
+      "label": "西舞鶴駅から",
+      "origin": "西舞鶴駅"
     }
   ],
   "parking": {
     "notes": [
-      "試合の日は、スタジアムの駐車場は主催者・関係者用になり、一般の人は使えないと案内されてきました（2021年の情報）。その試合の公式の来場案内も確かめてください。",
-      "試合の前後はスタジアム周辺の道路が混み合います。隣の駅の近くに停めて、JR嵯峨野線で亀岡駅へ向かう方法もあります。"
+      "試合の日は、スタジアムの駐車場は主催者・関係者専用になるため使えません。",
+      "試合の前後はスタジアム周辺の道路が混み合います。時間に余裕を持って来てください。"
+    ],
+    "match_day_lots": [
+      {
+        "id": "sanga-crew",
+        "name": "SANGA CREW 会員の駐車場",
+        "text": "SANGA CREW（京都サンガのファンクラブ）会員だけが前もって買える駐車場チケット。1台1,800円。Jリーグチケットで、試合ごとに「駐車場」を選んで買います。",
+        "url": "https://www.jleague-ticket.jp/club/ks/",
+        "link_label": "Jリーグチケット（京都サンガ）"
+      },
+      {
+        "id": "hozugawa",
+        "name": "保津川下りの駐車場",
+        "text": "スタジアムのアウェイ入口の目の前で、歩いて約1分。試合の日だけ開放。1台3,000円（当日現金）。予約もでき、人気の試合は予約がすすめられています（電話 0771-22-5846、9:00〜17:00）。",
+        "url": "https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium",
+        "link_label": "保津川下りの案内"
+      },
+      {
+        "id": "aeon",
+        "name": "イオン亀岡店の立体駐車場",
+        "text": "亀岡駅の南側。買い物をする人のための駐車場です。試合の日などは特定日の料金（30分500円・最大3,000円）になることがあります。",
+        "url": "",
+        "link_label": ""
+      }
     ],
     "services": [
       {
@@ -76,16 +123,16 @@
       {
         "id": "btimes",
         "name": "タイムズのB",
-        "text": "タイムズの予約制駐車場。サンガスタジアム周辺の一覧が開きます。",
+        "text": "タイムズの予約制駐車場。スタジアムまで歩いて約6分の「亀岡駅北口西駐車場」などが載っています（13日前から予約）。",
         "url": "https://btimes.jp/kyoto/spot/4600/",
         "affiliate_key": ""
       },
       {
         "id": "tokup",
         "name": "特P（とくぴー）",
-        "text": "時間貸し・日貸しの予約駐車場。サンガスタジアムを中心に地図で探せます。",
+        "text": "時間貸し・日貸しの予約駐車場。開いたら「サンガスタジアム」で検索すると周辺の駐車場が出ます。",
         "url": "https://toku-p.earth-car.com/parking-search/35.01704-135.58424-16/%E3%82%B5%E3%83%B3%E3%82%AC%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%A2%E3%83%A0",
-        "affiliate_key": ""
+        "affiliate_key": "parking_tokup"
       },
       {
         "id": "nokisaki",
@@ -102,14 +149,14 @@
         "longitude": 135.58247
       },
       {
-        "label": "馬堀駅周辺（亀岡駅の東隣）",
-        "latitude": 35.0106,
-        "longitude": 135.60233
+        "label": "八木駅周辺（亀岡駅からJRで約10分）",
+        "latitude": 35.06911,
+        "longitude": 135.53201
       },
       {
-        "label": "並河駅周辺（亀岡駅の西隣）",
-        "latitude": 35.03227,
-        "longitude": 135.55507
+        "label": "嵯峨嵐山駅周辺（亀岡駅からJRで約10分）",
+        "latitude": 35.01878,
+        "longitude": 135.68141
       }
     ]
   },
@@ -122,7 +169,15 @@
       "latitude": 35.01743,
       "longitude": 135.58664,
       "url": "https://www.hozugawakudari.jp/",
-      "reach": "walk"
+      "reach": "walk",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hozugawa-Kudari_201126b.jpg/960px-Hozugawa-Kudari_201126b.jpg",
+        "alt": "保津川下りの舟と船頭",
+        "credit": "江戸村のとくぞう",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Hozugawa-Kudari_201126b.jpg"
+      }
     },
     {
       "id": "kameyama-castle",
@@ -132,7 +187,15 @@
       "latitude": 35.01357,
       "longitude": 135.58128,
       "url": "",
-      "reach": "walk"
+      "reach": "walk",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Kameyama-jo_Tambanokuni_ishigaki.jpg/960px-Kameyama-jo_Tambanokuni_ishigaki.jpg",
+        "alt": "丹波亀山城跡の石垣",
+        "credit": "kamoseiro",
+        "license": "CC BY-SA 3.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Kameyama-jo_Tambanokuni_ishigaki.jpg"
+      }
     },
     {
       "id": "kameoka-museum",
@@ -142,7 +205,15 @@
       "text": "亀岡の歴史と文化の展示。亀岡駅から歩いて約7分。月曜は休館です。",
       "latitude": 35.0135,
       "longitude": 135.58523,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Kameoka_City_Cultural_Museum.jpg/960px-Kameoka_City_Cultural_Museum.jpg",
+        "alt": "亀岡市文化資料館の建物",
+        "credit": "さかおり",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Kameoka_City_Cultural_Museum.jpg"
+      }
     },
     {
       "id": "torokko",
@@ -152,7 +223,15 @@
       "latitude": 35.01314,
       "longitude": 135.60677,
       "url": "https://www.sagano-kanko.co.jp/",
-      "reach": "ride"
+      "reach": "ride",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Torokko_Kameoka_Station_-_front_A_-_2017_8_19.jpg/960px-Torokko_Kameoka_Station_-_front_A_-_2017_8_19.jpg",
+        "alt": "トロッコ亀岡駅の駅舎",
+        "credit": "Nesnad",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Torokko_Kameoka_Station_-_front_A_-_2017_8_19.jpg"
+      }
     },
     {
       "id": "izumo-daijingu",
@@ -162,7 +241,15 @@
       "text": "丹波国一宮。亀岡駅からバスで約15分。バスの本数が少ないので、時刻表を先に確かめてください。",
       "latitude": 35.05951,
       "longitude": 135.57869,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Izumo-daijing%C5%AB_otorii.jpg/960px-Izumo-daijing%C5%AB_otorii.jpg",
+        "alt": "出雲大神宮の大鳥居",
+        "credit": "Saigen Jiro",
+        "license": "CC0",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Izumo-daijing%C5%AB_otorii.jpg"
+      }
     },
     {
       "id": "kuwayama",
@@ -172,7 +259,15 @@
       "text": "紅葉の名所で、見ごろは11月。亀岡駅から歩くと約30分、コミュニティバスもあります。",
       "latitude": 34.99669,
       "longitude": 135.57736,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Kuwayama-jinja_shaden.JPG/960px-Kuwayama-jinja_shaden.JPG",
+        "alt": "鍬山神社の社殿",
+        "credit": "Saigen Jiro",
+        "license": "CC0",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Kuwayama-jinja_shaden.JPG"
+      }
     },
     {
       "id": "anaoji",
@@ -182,7 +277,15 @@
       "text": "西国三十三所の第21番札所。亀岡駅からバスで「穴太寺前」へ。",
       "latitude": 35.00657,
       "longitude": 135.54916,
-      "url": ""
+      "url": "",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Anaoji_main_gate.jpg/960px-Anaoji_main_gate.jpg",
+        "alt": "穴太寺の山門",
+        "credit": "Kuroshiononeko",
+        "license": "CC0",
+        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Anaoji_main_gate.jpg"
+      }
     },
     {
       "id": "yunohana",
@@ -192,13 +295,71 @@
       "latitude": 35.02161,
       "longitude": 135.50516,
       "url": "",
-      "reach": "ride"
+      "reach": "ride",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Yunohana_Onsen_Yubata.jpg/960px-Yunohana_Onsen_Yubata.jpg",
+        "alt": "湯の花温泉の湯端の湯",
+        "credit": "ブルーノ・プラス",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Yunohana_Onsen_Yubata.jpg"
+      }
     }
   ],
   "more_spots": {
     "label": "亀岡の観光をもっと探す（亀岡市観光協会）",
     "url": "https://kameoka.info/"
   },
+  "specialties": [
+    {
+      "id": "kameoka-beef",
+      "name": "亀岡牛",
+      "kind": "ブランド牛",
+      "text": "亀岡市内で14か月以上育てた黒毛和牛だけが名のれるブランド牛。きめの細かい霜降りで、しつこくない味わいと言われます。焼肉・すき焼きの店や精肉店で味わえます。",
+      "map_query": "亀岡牛",
+      "map_label": "亀岡駅の近くで探す"
+    },
+    {
+      "id": "sake",
+      "name": "丹波の地酒",
+      "kind": "酒蔵",
+      "text": "亀岡駅南口から歩ける横町の丹山酒造（1882年創業）や、湯の花温泉に向かう道沿いの大石酒造（翁鶴）など、市内に酒蔵があります。",
+      "map_query": "亀岡市 酒蔵",
+      "map_label": "酒蔵を地図で見る",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Tanzan_Sake_Brewing_ac.jpg/960px-Tanzan_Sake_Brewing_ac.jpg",
+        "alt": "亀岡市横町の丹山酒造",
+        "credit": "Asturio Cantabrio",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Tanzan_Sake_Brewing_ac.jpg"
+      }
+    },
+    {
+      "id": "tamba",
+      "name": "京野菜と丹波の味",
+      "kind": "農産物",
+      "text": "盆地の霧と寒暖差で育つ京野菜（水菜など）、丹波大納言小豆や丹波黒豆、秋の丹波松茸が亀岡の名産です。",
+      "map_query": "",
+      "map_label": ""
+    },
+    {
+      "id": "botan-nabe",
+      "name": "ぼたん鍋",
+      "kind": "冬の味",
+      "text": "猪肉を味噌仕立てで煮る鍋。冬の湯の花温泉の宿や料理店で出されます。",
+      "map_query": "湯の花温泉 ぼたん鍋",
+      "map_label": "湯の花温泉で探す"
+    },
+    {
+      "id": "tawawa",
+      "name": "たわわ朝霧（JA京都の直売所）",
+      "kind": "おみやげ",
+      "text": "亀岡牛や朝どれの野菜、地元の加工品がそろう大きな直売所。馬堀駅から歩いて約13分。9:00〜17:00。",
+      "map_query": "たわわ朝霧",
+      "map_label": "地図"
+    }
+  ],
   "food_places": [
     {
       "label": "スタジアム・亀岡駅周辺",
@@ -216,13 +377,21 @@
       "hotel_no": 187555,
       "name": "ホテルルートイン京都亀岡駅前",
       "text": "亀岡駅北口から歩いて約1分。天然温泉の大浴場と朝食バイキングがあります。",
-      "url": "https://travel.rakuten.co.jp/HOTEL/187555/"
+      "url": "https://travel.rakuten.co.jp/HOTEL/187555/",
+      "image_urls": [
+        "https://img.travel.rakuten.co.jp/share/HOTEL/187555/187555.jpg",
+        "https://img.travel.rakuten.co.jp/HIMG/90/187555.jpg"
+      ]
     },
     {
       "hotel_no": 181808,
       "name": "サンロイヤルホテル 亀岡駅前",
       "text": "亀岡駅北口を出てすぐ。大浴場とサウナがあります。",
-      "url": "https://travel.rakuten.co.jp/HOTEL/181808/"
+      "url": "https://travel.rakuten.co.jp/HOTEL/181808/",
+      "image_urls": [
+        "https://img.travel.rakuten.co.jp/share/HOTEL/181808/181808.jpg",
+        "https://img.travel.rakuten.co.jp/HIMG/90/181808.jpg"
+      ]
     }
   ],
   "search_areas": [

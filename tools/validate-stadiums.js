@@ -64,7 +64,7 @@ for (const id of ids) if (!seen.has(id)) fail(`away-transport.csv: ${id} の行�
 
 // A8.net 提携リンク（public/data/affiliates.json）。許可するのは A8 のホストだけ
 const aff = JSON.parse(read('public/data/affiliates.json'));
-for (const key of ['bus', 'lodging']) {
+for (const key of Object.keys(aff).filter((k) => k !== 'meta')) {
   const a = aff[key] || {};
   if (!a.label) fail(`affiliates.${key}: label が空`);
   if (!/^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+$/.test(a.href || '')) fail(`affiliates.${key}: href が px.a8.net の形ではありません`);
@@ -84,8 +84,19 @@ if (ids.has(hs.id)) fail(`home-guide.json: stadium.id ${hs.id} が stadiums.json
 if (!inJapan(hs.latitude, hs.longitude) || !inJapan(hs.station_latitude, hs.station_longitude)) fail('home-guide.json: stadium の座標が日本の範囲外');
 else if (distKm(hs.latitude, hs.longitude, hs.station_latitude, hs.station_longitude) > 3) fail('home-guide.json: 駅がスタジアムから3kmより遠い（取り違えの疑い）');
 for (const key of ['access', 'routes', 'spots', 'food_places', 'featured_hotels', 'search_areas']) if (!Array.isArray(home[key]) || !home[key].length) fail(`home-guide.json: ${key} が空`);
-for (const a of home.access || []) if (!a.label || !a.text) fail('home-guide.json: access は label と text が要る');
+for (const a of home.access || []) {
+  if (!a.label || !a.text) fail('home-guide.json: access は label と text が要る');
+  if (a.url && (!/^https:\/\//.test(a.url) || !a.link_label)) fail(`home-guide.json: access[${a.label}] の url は https で、link_label も要る`);
+}
 for (const r of home.routes || []) if (!r.label || !r.origin) fail('home-guide.json: routes は label と origin が要る');
+// 写真は Wikimedia Commons の縮小画像だけ。作者・利用条件・出典をそろえる（CC BY などの表示義務）
+function checkPhoto(loc, ph) {
+  if (!/^https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+$/.test(ph.src || '')) fail(`home-guide.json: ${loc}.src は Wikimedia Commons の縮小画像（upload.wikimedia.org/wikipedia/commons/thumb/）だけ`);
+  for (const k of ['alt', 'credit', 'license']) if (!ph[k]) fail(`home-guide.json: ${loc}.${k} が空`);
+  if (!/^https:\/\/creativecommons\.org\//.test(ph.license_url || '')) fail(`home-guide.json: ${loc}.license_url は creativecommons.org の条文`);
+  if (!/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/.test(ph.source_url || '')) fail(`home-guide.json: ${loc}.source_url は Commons のファイルページ`);
+}
+if (hs.photo) checkPhoto('stadium.photo', hs.photo);
 const spotIds = new Set();
 for (const sp of home.spots || []) {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(sp.id || '') || spotIds.has(sp.id)) fail(`home-guide.json: spots の id が不正か重複 ${sp.id}`);
@@ -93,18 +104,32 @@ for (const sp of home.spots || []) {
   for (const k of ['name', 'kind', 'text']) if (!sp[k]) fail(`home-guide.json: spots[${sp.id}].${k} が空`);
   if (!inJapan(sp.latitude, sp.longitude) || distKm(hs.latitude, hs.longitude, sp.latitude, sp.longitude) > 20) fail(`home-guide.json: spots[${sp.id}] の座標がスタジアムから20kmより遠いか範囲外`);
   if (sp.url && !/^https:\/\//.test(sp.url)) fail(`home-guide.json: spots[${sp.id}].url は https のみ`);
+  if (sp.photo) checkPhoto(`spots[${sp.id}].photo`, sp.photo);
   if (!['walk', 'ride'].includes(sp.reach)) fail(`home-guide.json: spots[${sp.id}].reach は walk（歩いて）か ride（電車・バスで）`);
 }
 // 車で来る。予約サービスのリンクは https、提携リンクにするときは affiliates.json のキーを書く
 const pk = home.parking || {};
 if (!Array.isArray(pk.notes) || !pk.notes.length) fail('home-guide.json: parking.notes が空');
 if (!Array.isArray(pk.services) || !pk.services.length) fail('home-guide.json: parking.services が空');
+for (const lot of pk.match_day_lots || []) {
+  if (!lot.id || !lot.name || !lot.text) fail(`home-guide.json: parking.match_day_lots[${lot.id}] の id / name / text が空`);
+  if (lot.url && (!/^https:\/\//.test(lot.url) || !lot.link_label)) fail(`home-guide.json: parking.match_day_lots[${lot.id}] の url は https で、link_label も要る`);
+}
+if (pk.more && !/^https:\/\//.test(pk.more.url || '')) fail('home-guide.json: parking.more.url は https のみ');
 for (const sv of pk.services || []) {
   if (!sv.id || !sv.name || !sv.text) fail(`home-guide.json: parking.services[${sv.id}] の id / name / text が空`);
   if (!/^https:\/\//.test(sv.url || '')) fail(`home-guide.json: parking.services[${sv.id}].url は https のみ`);
   if (sv.affiliate_key && !aff[sv.affiliate_key]) fail(`home-guide.json: parking.services[${sv.id}].affiliate_key「${sv.affiliate_key}」が affiliates.json にありません`);
 }
 for (const c of pk.coin_places || []) if (!c.label || !inJapan(c.latitude, c.longitude) || distKm(hs.latitude, hs.longitude, c.latitude, c.longitude) > 10) fail('home-guide.json: parking.coin_places は label とスタジアムから10km以内の座標が要る');
+const specIds = new Set();
+for (const sp of home.specialties || []) {
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(sp.id || '') || specIds.has(sp.id)) fail(`home-guide.json: specialties の id が不正か重複 ${sp.id}`);
+  specIds.add(sp.id);
+  for (const k of ['name', 'kind', 'text']) if (!sp[k]) fail(`home-guide.json: specialties[${sp.id}].${k} が空`);
+  if (sp.map_query && !sp.map_label) fail(`home-guide.json: specialties[${sp.id}] は map_query があれば map_label も要る`);
+  if (sp.photo) checkPhoto(`specialties[${sp.id}].photo`, sp.photo);
+}
 if (home.more_spots && !/^https:\/\//.test(home.more_spots.url || '')) fail('home-guide.json: more_spots.url は https のみ');
 for (const f of home.food_places || []) if (!f.label || !inJapan(f.latitude, f.longitude)) fail('home-guide.json: food_places は label と日本の範囲の座標が要る');
 const featuredNos = new Set();
@@ -112,6 +137,7 @@ for (const h of home.featured_hotels || []) {
   if (!Number.isInteger(h.hotel_no) || featuredNos.has(h.hotel_no)) fail(`home-guide.json: featured_hotels の hotel_no が不正か重複 ${h.hotel_no}`);
   featuredNos.add(h.hotel_no);
   if (!h.name || !h.text) fail(`home-guide.json: featured_hotels[${h.hotel_no}] の name / text が空`);
+  for (const u of h.image_urls || []) if (!/^https:\/\/img\.travel\.rakuten\.co\.jp\/[^\s"'<>]+$/.test(u)) fail(`home-guide.json: featured_hotels[${h.hotel_no}].image_urls は楽天トラベルの画像だけ: ${u}`);
   // 宿の案内への普通のリンク（広告リンクは楽天APIが返したものだけを試合ごとのJSONで使う）
   if (!new RegExp(`^https://travel\\.rakuten\\.co\\.jp/HOTEL/${h.hotel_no}/$`).test(h.url || '')) fail(`home-guide.json: featured_hotels[${h.hotel_no}].url は https://travel.rakuten.co.jp/HOTEL/${h.hotel_no}/ の形にする`);
 }

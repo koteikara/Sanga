@@ -17,7 +17,7 @@
 <meta property="og:image:alt" content="SANGA TOOLBOX ホーム観戦ガイド — サンガスタジアムへの行き方、散策、亀岡の宿。">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/away.css?v=c97430cf">
-<link rel="stylesheet" href="assets/home.css?v=c68b3ae3">
+<link rel="stylesheet" href="assets/home.css?v=08fa3481">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
 <script>
   // 描画が始まる前に決める。入口ページ・過密日程カレンダー・アウェイ遠征ガイドと同じ先出し。
@@ -53,15 +53,15 @@
 <main class="screen">
 
 <h1 class="page-title">ホーム観戦ガイド<span class="page-season">2026/27</span></h1>
-<p class="away-lead">サンガスタジアム by KYOCERA（京都府亀岡市）への行き方、試合の前後に歩ける場所とごはん、泊まれる宿をまとめています。アウェイから来た方、遠くから泊まりで来る方、日帰りでスタジアムの周りを歩きたい方に向けたページです。日程は<a href="sanga202627season.html">年間スケジュール</a>で確認してください。</p>
-<p class="away-pr"><span class="pr-tag">PR</span>このページには楽天トラベル・じゃらんのアフィリエイトリンク（広告）を含みます。広告のリンクには「PR」と書いています。</p>
+<p class="away-lead">サンガスタジアム by KYOCERA（京都府亀岡市）への行き方、試合の前後に歩ける場所とごはん、泊まれる宿をまとめています。日程は<a href="sanga202627season.html">年間スケジュール</a>で確認してください。</p>
+<p class="away-pr"><span class="pr-tag">PR</span>このページには楽天トラベル・じゃらん・特Pのアフィリエイトリンク（広告）を含みます。広告のリンクには「PR」と書いています。</p>
 
 <nav class="away-jump" aria-label="ページ内の移動">
 <ul class="away-jump-list" id="homeJump">
 <li><a href="#access"><span class="away-jump-opp">アクセス</span></a></li>
 <li><a href="#parking"><span class="away-jump-opp">駐車場</span></a></li>
 <li><a href="#spots"><span class="away-jump-opp">観光</span></a></li>
-<li><a href="#food"><span class="away-jump-opp">ごはん</span></a></li>
+<li><a href="#food"><span class="away-jump-opp">グルメ</span></a></li>
 <li><a href="#stay"><span class="away-jump-opp">宿</span></a></li>
 <li><a href="#matches"><span class="away-jump-opp">試合ごとの空室</span></a></li>
 </ul>
@@ -94,8 +94,13 @@
 </section>
 
 <section class="home-sec" id="food" tabindex="-1" aria-labelledby="foodTitle">
-<h2 class="home-sec-title" id="foodTitle">周辺のごはん</h2>
-<div class="home-sec-body" id="foodBody"></div>
+<h2 class="home-sec-title" id="foodTitle">亀岡のグルメ</h2>
+<div class="home-sec-body">
+<h3 class="home-sub">亀岡の名物</h3>
+<ul class="spots" id="specialtyList"></ul>
+<h3 class="home-sub">周辺のお店を地図で探す</h3>
+<div id="foodBody"></div>
+</div>
 </section>
 
 <section class="home-sec" id="stay" tabindex="-1" aria-labelledby="stayTitle">
@@ -134,7 +139,7 @@
 
 </main>
 
-<script src="assets/home-guide.js?v=7c6f9ded" defer></script>
+<script src="assets/home-guide.js?v=737ee9c2" defer></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

@@ -500,7 +500,7 @@
     update();
   }
 
-  getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }).then(function (a) {
+  getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }).then(function (a) {
     affiliates = a || {};
     return getJson("data/away-guide.json?v=d214f4c5");
   }).then(function (doc) {
