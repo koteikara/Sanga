@@ -318,6 +318,40 @@
     }
   }
 
+  // ---------- 亀岡の名物 ----------
+  function renderSpecialties() {
+    var ul = document.getElementById("specialtyList");
+    (guide.specialties || []).forEach(function (p) {
+      var li = el("li", "spot");
+      var ph = p.photo || {};
+      if (COMMONS_IMAGE.test(ph.src || "")) {
+        var fig = el("figure", "spot-figure");
+        fig.append(picture("spot-photo", [ph.src], ph.alt, ICON_ROUTE));
+        fig.append(credit(ph));
+        li.append(fig);
+      }
+      li.append(el("span", "spot-kind", p.kind));
+      li.append(el("h3", "spot-name", p.name));
+      li.append(el("p", "spot-text", p.text));
+      if (p.map_query) {
+        var links = el("div", "spot-links");
+        var a = safeLink("https://www.google.com/maps/search/" + encodeURIComponent(p.map_query) + "/@" + Number(guide.stadium.station_latitude).toFixed(5) + "," + Number(guide.stadium.station_longitude).toFixed(5) + ",14z", "m-chip");
+        a.append(icon(ICON_ROUTE));
+        a.append(document.createTextNode(p.map_label || "地図"));
+        a.setAttribute("aria-label", p.name + "：" + (p.map_label || "地図") + "（Googleマップ）");
+        links.append(a);
+        li.append(links);
+      }
+      ul.append(li);
+    });
+    var sg = guide.stadium_gourmet;
+    var link = sg && safeLink(sg.url, "home-inline-link");
+    if (link) {
+      link.textContent = sg.label;
+      document.getElementById("stadiumGourmet").append(link);
+    }
+  }
+
   // ---------- ごはん ----------
   var FOOD_WORDS = ["グルメ", "ラーメン", "居酒屋", "カフェ"];
   function renderFood() {
@@ -656,7 +690,7 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=990b0493"),
+    getJson("data/home-guide.json?v=54cce78c"),
     getJson("data/affiliates.json?v=996953b2").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];
@@ -665,6 +699,7 @@
     renderAccess();
     renderParking();
     renderSpots();
+    renderSpecialties();
     renderFood();
     renderStay();
     return Promise.all([

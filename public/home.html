@@ -61,7 +61,7 @@
 <li><a href="#access"><span class="away-jump-opp">アクセス</span></a></li>
 <li><a href="#parking"><span class="away-jump-opp">駐車場</span></a></li>
 <li><a href="#spots"><span class="away-jump-opp">観光</span></a></li>
-<li><a href="#food"><span class="away-jump-opp">ごはん</span></a></li>
+<li><a href="#food"><span class="away-jump-opp">グルメ</span></a></li>
 <li><a href="#stay"><span class="away-jump-opp">宿</span></a></li>
 <li><a href="#matches"><span class="away-jump-opp">試合ごとの空室</span></a></li>
 </ul>
@@ -94,8 +94,14 @@
 </section>
 
 <section class="home-sec" id="food" tabindex="-1" aria-labelledby="foodTitle">
-<h2 class="home-sec-title" id="foodTitle">周辺のごはん</h2>
-<div class="home-sec-body" id="foodBody"></div>
+<h2 class="home-sec-title" id="foodTitle">亀岡のグルメ</h2>
+<div class="home-sec-body">
+<h3 class="home-sub">亀岡の名物</h3>
+<ul class="spots" id="specialtyList"></ul>
+<p class="m-more" id="stadiumGourmet"></p>
+<h3 class="home-sub">周辺のお店を地図で探す</h3>
+<div id="foodBody"></div>
+</div>
 </section>
 
 <section class="home-sec" id="stay" tabindex="-1" aria-labelledby="stayTitle">
@@ -134,7 +140,7 @@
 
 </main>
 
-<script src="assets/home-guide.js?v=910aa227" defer></script>
+<script src="assets/home-guide.js?v=5f058c49" defer></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

@@ -122,6 +122,15 @@ for (const sv of pk.services || []) {
   if (sv.affiliate_key && !aff[sv.affiliate_key]) fail(`home-guide.json: parking.services[${sv.id}].affiliate_key「${sv.affiliate_key}」が affiliates.json にありません`);
 }
 for (const c of pk.coin_places || []) if (!c.label || !inJapan(c.latitude, c.longitude) || distKm(hs.latitude, hs.longitude, c.latitude, c.longitude) > 10) fail('home-guide.json: parking.coin_places は label とスタジアムから10km以内の座標が要る');
+const specIds = new Set();
+for (const sp of home.specialties || []) {
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(sp.id || '') || specIds.has(sp.id)) fail(`home-guide.json: specialties の id が不正か重複 ${sp.id}`);
+  specIds.add(sp.id);
+  for (const k of ['name', 'kind', 'text']) if (!sp[k]) fail(`home-guide.json: specialties[${sp.id}].${k} が空`);
+  if (sp.map_query && !sp.map_label) fail(`home-guide.json: specialties[${sp.id}] は map_query があれば map_label も要る`);
+  if (sp.photo) checkPhoto(`specialties[${sp.id}].photo`, sp.photo);
+}
+if (home.stadium_gourmet && (!home.stadium_gourmet.label || !/^https:\/\//.test(home.stadium_gourmet.url || ''))) fail('home-guide.json: stadium_gourmet は label と https の url が要る');
 if (home.more_spots && !/^https:\/\//.test(home.more_spots.url || '')) fail('home-guide.json: more_spots.url は https のみ');
 for (const f of home.food_places || []) if (!f.label || !inJapan(f.latitude, f.longitude)) fail('home-guide.json: food_places は label と日本の範囲の座標が要る');
 const featuredNos = new Set();
