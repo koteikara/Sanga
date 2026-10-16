@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-10-15
+updated: 2026-10-16
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -11,7 +11,7 @@ knowledge_mocs:
 
 # プロジェクト概要
 
-京都サンガF.C.のサポーター向けに、非公式のWebツールを公開するプロジェクトです。年間スケジュールの確認と参戦予定の保存、予想スカッド画像の作成、チケット販売開始とキックオフを時系列で並べるSUPPORTER TIMELINE、過密日程カレンダー、求・譲投稿フォーマットを提供します。すべてスマートフォンでの利用を最優先し、個人の状態はLocalStorageにだけ保存します。公式サイトのチケット販売スケジュールとニュース一覧は、GitHub Actionsが1日1回だけ読み取り、差分をPRとして提案します。
+京都サンガF.C.のサポーター向けに、非公式のWebツールを公開するプロジェクトです。年間スケジュールの確認と参戦予定の保存、予想スカッド画像の作成、チケット販売開始とキックオフを時系列で並べるSUPPORTER TIMELINE、過密日程カレンダー、求・譲投稿フォーマット、アウェイ遠征ガイド、ホーム観戦ガイド（サンガスタジアムへの行き方・散策・亀岡の宿）を提供します。すべてスマートフォンでの利用を最優先し、個人の状態はLocalStorageにだけ保存します。公式サイトのチケット販売スケジュールとニュース一覧は、GitHub Actionsが1日1回だけ読み取り、差分をPRとして提案します。
 
 ## 現在の技術構成
 
@@ -32,7 +32,7 @@ knowledge_mocs:
 | 外部サービス | 京都サンガF.C.公式サイト（読み取りのみ） | チケット販売スケジュール、ニュース一覧・記事の取得 | `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js` |
 | 外部サービス | Jリーグチケット（読み取りのみ） | アウェイ席の販売状態と発売日時の取得。2026-10-15からホーム戦の販売段階の開始日時も読み、更新できなくなった公式の販売スケジュールを補う | `tools/fetch-away-tickets.js`、`tools/fetch-away-sales.js`、`tools/parse-home-sales.js` |
 | 外部サービス | Cloudflare Web Analytics | Cookieなしのアクセス解析。2026-10-15にトークンを設定。本番以外のホストでは送らない | `public/assets/analytics.js` |
-| 外部サービス | 楽天トラベルAPI（VacantHotelSearch） | アウェイ遠征ガイドの前泊ホテル候補。週1回 `hotels-sync.yml` が取得して下書きPRを作る。認証情報は GitHub Secrets（`RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`）、許可サイトの判定に Origin ヘッダー（既定は本番ドメイン）を送る | `tools/hotels/rakuten_client.py`、`tools/hotels/build_match_hotels.py`、`.github/workflows/hotels-sync.yml`、`docs/hotels-operation-flow.md` |
+| 外部サービス | 楽天トラベルAPI（VacantHotelSearch） | アウェイ遠征ガイドとホーム観戦ガイドの前泊・当日泊ホテル候補。週1回 `hotels-sync.yml` が取得して下書きPRを作る。認証情報は GitHub Secrets（`RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`）、許可サイトの判定に Origin ヘッダー（既定は本番ドメイン）を送る | `tools/hotels/rakuten_client.py`、`tools/hotels/build_match_hotels.py`、`.github/workflows/hotels-sync.yml`、`docs/hotels-operation-flow.md` |
 | 外部サービス | A8.net（アフィリエイト） | アウェイ遠征ガイドのバス（エアトリ）・宿（じゃらん）の提携リンクと計測ピクセル。ホストは検証で px.a8.net / www*.a8.net に制限 | `public/data/affiliates.json`、`tools/validate-stadiums.js` |
 | 配信 | iCalendar フィード | タイムラインのカレンダー購読 | `public/timeline.ics`、`public/timeline-events.ics`、`tools/build-ics-feed.js` |
 | インフラ・配信 | スターレンタルサーバー（FTP） | 本番公開先。手動ワークフローで `public/` だけを同期 | `.github/workflows/deploy-production.yml`（SamKirkland/FTP-Deploy-Action v4.4.0）、`docs/deploy-policy.md` |

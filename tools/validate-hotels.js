@@ -12,7 +12,7 @@ const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 const allowedPriceTiers = new Set(['budget', 'standard', 'premium']);
 const allowedParkingTags = new Set(['available_free', 'available_paid', 'none', 'unknown']);
 const allowedAccommodationTypeTags = new Set(['hotel', 'ryokan', 'unknown']);
-const allowedAreas = new Set(['stadium', 'station', 'both']);
+const allowedAreas = new Set(['stadium', 'station', 'both', 'kameoka']);  // kameoka: ホーム観戦ガイドの湯の花温泉など
 const optionalHotelStringFields = [
   'parking_raw_text',
   'hotel_class_code_raw',
@@ -25,6 +25,7 @@ const optionalHotelStringFields = [
 const optionalHotelBooleanFields = [
   'stadium_proximity',
   'sightseeing_friendly',
+  'featured',
 ];
 
 const errors = [];
