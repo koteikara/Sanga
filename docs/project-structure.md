@@ -12,7 +12,7 @@
 | SUPPORTER TIMELINE | `public/timeline.html` | `public/assets/timeline.css`、`public/assets/topbar.css`、`public/assets/timeline.js`、`index-nebula.js`（背景） | `public/data/calendar-events.json`（生成物）、`benefit-tickets.json`、`matches.json` |
 | アウェイ遠征ガイド | `public/away.html` | `public/assets/away.css`、`public/assets/topbar.css`、`public/assets/away-guide.js` | `public/data/away-guide.json`、`public/data/hotels/*.json`、`public/data/affiliates.json` |
 | ホーム観戦ガイド | `public/home.html` | `public/assets/away.css`（共有）、`public/assets/home.css`、`public/assets/topbar.css`、`public/assets/home-guide.js` | `public/data/home-guide.json`（手入力の案内）、`matches.json`、`hotel-index.json`、`public/data/hotels/*.json`、`affiliates.json` |
-| 入口ページ | `public/index.html` | `public/assets/index.css`、`index-page.js`、`index-nebula.js`、`index-motion.js` | `public/data/tools.json`（9件） |
+| 入口ページ | `public/index.html` | `public/assets/index.css`、`index-page.js`、`index-nebula.js`、`index-motion.js` | `public/data/tools.json`（8件。ホーム観戦ガイドは入口に載せていない） |
 
 ## ディレクトリ
 

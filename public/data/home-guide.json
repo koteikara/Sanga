@@ -13,7 +13,8 @@
       "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）。2026-10-16確認",
       "写真: Wikimedia Commons（作者・利用条件は各 photo に記載）。画像は Wikimedia のサーバーから読み、リポジトリには置かない。2026-10-16確認",
       "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認",
-      "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。2026-10-16確認"
+      "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。2026-10-16確認",
+      "写真（スタジアム・保津川下り・トロッコ・出雲大神宮）: 亀岡市「かめコレ-かめおか画像オープンデータコレクション-」（https://www.city.kameoka.kyoto.jp/site/kamecolle/ 、CC BY 4.0、提供者 亀岡市）を960×540に切り抜いて縮め、public/assets/home/ に置いた。2026-10-16確認"
     ]
   },
   "venues": [
@@ -30,12 +31,13 @@
     "station_latitude": 35.01675,
     "station_longitude": 135.58247,
     "photo": {
-      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg/960px-Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg",
-      "alt": "サンガスタジアム by KYOCERA を北西から見た外観",
-      "credit": "J o",
-      "license": "CC BY-SA 4.0",
-      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "source_url": "https://commons.wikimedia.org/wiki/File:Kyoto_Prefectural_Kyoto_Stadium_20210131-001.jpg"
+      "src": "assets/home/stadium.webp",
+      "alt": "青空の下のサンガスタジアム by KYOCERA",
+      "credit": "亀岡市",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "source_url": "https://www.city.kameoka.kyoto.jp/site/kamecolle/2062.html",
+      "source_label": "かめコレ（亀岡市）"
     }
   },
   "access": [
@@ -171,12 +173,13 @@
       "url": "https://www.hozugawakudari.jp/",
       "reach": "walk",
       "photo": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Hozugawa-Kudari_201126b.jpg/960px-Hozugawa-Kudari_201126b.jpg",
-        "alt": "保津川下りの舟と船頭",
-        "credit": "江戸村のとくぞう",
-        "license": "CC BY-SA 4.0",
-        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Hozugawa-Kudari_201126b.jpg"
+        "src": "assets/home/hozugawa.webp",
+        "alt": "秋の保津峡を下る保津川下りの舟",
+        "credit": "亀岡市",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://www.city.kameoka.kyoto.jp/site/kamecolle/2059.html",
+        "source_label": "かめコレ（亀岡市）"
       }
     },
     {
@@ -225,12 +228,13 @@
       "url": "https://www.sagano-kanko.co.jp/",
       "reach": "ride",
       "photo": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Sagano_Romantic_Train.jpg/960px-Sagano_Romantic_Train.jpg",
-        "alt": "トロッコ亀岡駅に停まる嵯峨野トロッコ列車",
-        "credit": "Streetdeck",
-        "license": "CC BY-SA 4.0",
-        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Sagano_Romantic_Train.jpg"
+        "src": "assets/home/torokko.webp",
+        "alt": "保津峡を走る嵯峨野トロッコ列車",
+        "credit": "亀岡市",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://www.city.kameoka.kyoto.jp/site/kamecolle/25205.html",
+        "source_label": "かめコレ（亀岡市）"
       }
     },
     {
@@ -243,12 +247,13 @@
       "longitude": 135.57869,
       "url": "",
       "photo": {
-        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Izumo-daijing%C5%AB_otorii.jpg/960px-Izumo-daijing%C5%AB_otorii.jpg",
-        "alt": "出雲大神宮の大鳥居",
-        "credit": "Saigen Jiro",
-        "license": "CC0",
-        "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "source_url": "https://commons.wikimedia.org/wiki/File:Izumo-daijing%C5%AB_otorii.jpg"
+        "src": "assets/home/izumo-daijingu.webp",
+        "alt": "桜の季節の出雲大神宮の鳥居",
+        "credit": "亀岡市",
+        "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "source_url": "https://www.city.kameoka.kyoto.jp/site/kamecolle/2059.html",
+        "source_label": "かめコレ（亀岡市）"
       }
     },
     {
