@@ -12,7 +12,8 @@
       "バス: 京阪京都交通「京都サンガF.C.観戦シャトルバス」（https://www.keihankyotokotsu.jp/single/detail.php?id=599）。2026-10-16確認",
       "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）。2026-10-16確認",
       "写真: Wikimedia Commons（作者・利用条件は各 photo に記載）。画像は Wikimedia のサーバーから読み、リポジトリには置かない。2026-10-16確認",
-      "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認"
+      "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認",
+      "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。2026-10-16確認"
     ]
   },
   "venues": [
@@ -129,9 +130,9 @@
       {
         "id": "tokup",
         "name": "特P（とくぴー）",
-        "text": "時間貸し・日貸しの予約駐車場。サンガスタジアムを中心に地図で探せます。",
+        "text": "時間貸し・日貸しの予約駐車場。開いたら「サンガスタジアム」で検索すると周辺の駐車場が出ます。",
         "url": "https://toku-p.earth-car.com/parking-search/35.01704-135.58424-16/%E3%82%B5%E3%83%B3%E3%82%AC%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%A2%E3%83%A0",
-        "affiliate_key": ""
+        "affiliate_key": "parking_tokup"
       },
       {
         "id": "nokisaki",
@@ -309,6 +310,56 @@
     "label": "亀岡の観光をもっと探す（亀岡市観光協会）",
     "url": "https://kameoka.info/"
   },
+  "specialties": [
+    {
+      "id": "kameoka-beef",
+      "name": "亀岡牛",
+      "kind": "ブランド牛",
+      "text": "亀岡市内で14か月以上育てた黒毛和牛だけが名のれるブランド牛。きめの細かい霜降りで、しつこくない味わいと言われます。焼肉・すき焼きの店や精肉店で味わえます。",
+      "map_query": "亀岡牛",
+      "map_label": "亀岡駅の近くで探す"
+    },
+    {
+      "id": "sake",
+      "name": "丹波の地酒",
+      "kind": "酒蔵",
+      "text": "亀岡駅南口から歩ける横町の丹山酒造（1882年創業）や、湯の花温泉に向かう道沿いの大石酒造（翁鶴）など、市内に酒蔵があります。",
+      "map_query": "亀岡市 酒蔵",
+      "map_label": "酒蔵を地図で見る",
+      "photo": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Tanzan_Sake_Brewing_ac.jpg/960px-Tanzan_Sake_Brewing_ac.jpg",
+        "alt": "亀岡市横町の丹山酒造",
+        "credit": "Asturio Cantabrio",
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Tanzan_Sake_Brewing_ac.jpg"
+      }
+    },
+    {
+      "id": "tamba",
+      "name": "京野菜と丹波の味",
+      "kind": "農産物",
+      "text": "盆地の霧と寒暖差で育つ京野菜（水菜など）、丹波大納言小豆や丹波黒豆、秋の丹波松茸が亀岡の名産です。",
+      "map_query": "",
+      "map_label": ""
+    },
+    {
+      "id": "botan-nabe",
+      "name": "ぼたん鍋",
+      "kind": "冬の味",
+      "text": "猪肉を味噌仕立てで煮る鍋。冬の湯の花温泉の宿や料理店で出されます。",
+      "map_query": "湯の花温泉 ぼたん鍋",
+      "map_label": "湯の花温泉で探す"
+    },
+    {
+      "id": "tawawa",
+      "name": "たわわ朝霧（JA京都の直売所）",
+      "kind": "おみやげ",
+      "text": "亀岡牛や朝どれの野菜、地元の加工品がそろう大きな直売所。馬堀駅から歩いて約13分。9:00〜17:00。",
+      "map_query": "たわわ朝霧",
+      "map_label": "地図"
+    }
+  ],
   "food_places": [
     {
       "label": "スタジアム・亀岡駅周辺",
