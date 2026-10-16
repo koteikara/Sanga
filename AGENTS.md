@@ -105,6 +105,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 | `npm run check:timeline` | SUPPORTER TIMELINE（`calendar-events` の生成物が最新か、内容が仕様どおりか）。`check:static` から呼ぶ |
 | `npm run check:ticket-sales` | チケット販売スケジュールの解析（作り物の入力で結果が変わっていないか）。`check:timeline` から呼ぶ |
 | `npm run check:sync-stall` | 取り込みの滞りの判定（作り物の入力で結果が変わっていないか）。`check:timeline` から呼ぶ |
+| `npm run check:import-pr-body` | 取り込みPRの本文（作り物の前後から、変わったものだけを書いた本文ができるか）。`check:timeline` から呼ぶ |
 | `npm run check:ticket-sales:current` | 現在値のチケット販売CSVから `calendar-events` を組み立てられるか。`check:timeline` から呼ぶ |
 | `npm run check:squad` | 予想スカッド（JS構文・選手データ・静的契約） |
 | `npm run check:squad:browser` | スカッドの実ブラウザレイアウト（Playwright必須） |
