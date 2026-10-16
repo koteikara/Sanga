@@ -344,12 +344,6 @@
       }
       ul.append(li);
     });
-    var sg = guide.stadium_gourmet;
-    var link = sg && safeLink(sg.url, "home-inline-link");
-    if (link) {
-      link.textContent = sg.label;
-      document.getElementById("stadiumGourmet").append(link);
-    }
   }
 
   // ---------- ごはん ----------
@@ -690,7 +684,7 @@
   });
 
   Promise.all([
-    getJson("data/home-guide.json?v=6f798f38"),
+    getJson("data/home-guide.json?v=18ce5747"),
     getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
   ]).then(function (r) {
     guide = r[0];

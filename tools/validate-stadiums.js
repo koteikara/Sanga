@@ -130,7 +130,6 @@ for (const sp of home.specialties || []) {
   if (sp.map_query && !sp.map_label) fail(`home-guide.json: specialties[${sp.id}] は map_query があれば map_label も要る`);
   if (sp.photo) checkPhoto(`specialties[${sp.id}].photo`, sp.photo);
 }
-if (home.stadium_gourmet && (!home.stadium_gourmet.label || !/^https:\/\//.test(home.stadium_gourmet.url || ''))) fail('home-guide.json: stadium_gourmet は label と https の url が要る');
 if (home.more_spots && !/^https:\/\//.test(home.more_spots.url || '')) fail('home-guide.json: more_spots.url は https のみ');
 for (const f of home.food_places || []) if (!f.label || !inJapan(f.latitude, f.longitude)) fail('home-guide.json: food_places は label と日本の範囲の座標が要る');
 const featuredNos = new Set();

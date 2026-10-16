@@ -13,7 +13,7 @@
       "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）。2026-10-16確認",
       "写真: Wikimedia Commons（作者・利用条件は各 photo に記載）。画像は Wikimedia のサーバーから読み、リポジトリには置かない。2026-10-16確認",
       "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認",
-      "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。スタジアムグルメの公式ページは Jリーグの記事（https://www.jleague.jp/j-tano/2865/）から。2026-10-16確認"
+      "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。2026-10-16確認"
     ]
   },
   "venues": [
@@ -360,10 +360,6 @@
       "map_label": "地図"
     }
   ],
-  "stadium_gourmet": {
-    "label": "スタジアムグルメ（京都サンガF.C.公式）",
-    "url": "https://www.sanga-fc.jp/guide/gourmet"
-  },
   "food_places": [
     {
       "label": "スタジアム・亀岡駅周辺",
