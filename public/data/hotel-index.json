@@ -1,13 +1,13 @@
 {
   "meta": {
-    "updated_at": "2026-10-16 11:52",
+    "updated_at": "2026-10-19 14:39",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
   "matches": [
     {
       "match_id": "acl-md3",
-      "hotel_count": 10,
+      "hotel_count": 9,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-10-26",
       "checkout_date": "2026-10-27",
@@ -39,7 +39,7 @@
     },
     {
       "match_id": "sec11",
-      "hotel_count": 8,
+      "hotel_count": 5,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-10-20",
       "checkout_date": "2026-10-21",
@@ -71,7 +71,7 @@
     },
     {
       "match_id": "sec15",
-      "hotel_count": 8,
+      "hotel_count": 7,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-11-20",
       "checkout_date": "2026-11-21",
@@ -127,7 +127,7 @@
     },
     {
       "match_id": "sec22",
-      "hotel_count": 8,
+      "hotel_count": 9,
       "stadium_id": "nihondaira",
       "checkin_date": "2027-02-19",
       "checkout_date": "2027-02-20",
