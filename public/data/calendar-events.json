@@ -3445,7 +3445,7 @@
       "match_ids": [
         "sec41"
       ],
-      "source_url": "https://x.com/jfa_tennouhai/status/2112465115203404166",
+      "source_url": "https://www.jfa.jp/news/00036938/",
       "source_checked_at": "2026-10-20",
       "status": "confirmed",
       "is_visible": true,
@@ -3453,7 +3453,7 @@
       "date_precision": "datetime",
       "date_candidates": [],
       "title": "サンフレッチェ広島戦 キックオフ（サンガスタジアム）",
-      "calendar_sequence": 2,
+      "calendar_sequence": 3,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {

@@ -704,7 +704,7 @@
     renderFood();
     renderStay();
     return Promise.all([
-      getJson("data/matches.json?v=2b655a4a"),
+      getJson("data/matches.json?v=87b51598"),
       getJson("data/hotel-index.json?v=dd6a582c").catch(function () { return { matches: [] }; }),
     ]);
   }).then(function (r) {
