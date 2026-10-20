@@ -1412,16 +1412,16 @@ END:VEVENT
 BEGIN:VEVENT
 UID:match-sec41@sanga-timeline.invalid
 DTSTAMP:20260909T031317Z
-SEQUENCE:2
+SEQUENCE:3
 LAST-MODIFIED:20260909T031317Z
 DTSTART:20261209T100000Z
 DTEND:20261209T120000Z
 SUMMARY:【ホーム】サンフレッチェ広島戦 キックオフ（サ
  ンガスタジアム）
-DESCRIPTION:ラウンド16 サンフレッチェ広島戦\nhttps://x.com/jf
- a_tennouhai/status/2112465115203404166\n※非公式のファンツール
- による予定です。日程が変わっている場合があります
- 。購入・応募の前に公式サイトで確認してください。
+DESCRIPTION:ラウンド16 サンフレッチェ広島戦\nhttps://www.jfa.
+ jp/news/00036938/\n※非公式のファンツールによる予定です
+ 。日程が変わっている場合があります。購入・応募の
+ 前に公式サイトで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
