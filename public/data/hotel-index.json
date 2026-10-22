@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updated_at": "2026-10-19 14:39",
+    "updated_at": "2026-10-22 10:21",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
@@ -23,7 +23,7 @@
     },
     {
       "match_id": "acl-md7",
-      "hotel_count": 10,
+      "hotel_count": 9,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2027-02-08",
       "checkout_date": "2027-02-09",
@@ -47,7 +47,7 @@
     },
     {
       "match_id": "sec12",
-      "hotel_count": 12,
+      "hotel_count": 11,
       "stadium_id": "panasonic-suita",
       "checkin_date": "2026-10-23",
       "checkout_date": "2026-10-24",
@@ -111,7 +111,7 @@
     },
     {
       "match_id": "sec20",
-      "hotel_count": 11,
+      "hotel_count": 10,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-12-18",
       "checkout_date": "2026-12-19",
@@ -260,6 +260,14 @@
       "checkin_date": "2027-06-05",
       "checkout_date": "2027-06-06",
       "data_path": "data/hotels/sec38.json"
+    },
+    {
+      "match_id": "sec41",
+      "hotel_count": 9,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-12-08",
+      "checkout_date": "2026-12-09",
+      "data_path": "data/hotels/sec41.json"
     }
   ]
 }
