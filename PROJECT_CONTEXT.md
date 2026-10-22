@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-10-16
+updated: 2026-10-22
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -21,7 +21,7 @@ knowledge_mocs:
 | 言語 | Python 3 | アウェイ遠征ガイドのホテル候補を楽天トラベルAPIから取得する | `tools/hotels/*.py`、`tools/hotels/requirements.txt` |
 | 言語 | Python 3 + PyMuPDF（AGPL-3.0、同梱せず手元の仮想環境に入れる） | スタジアム座席図PDFから座席配置 `layout.json` を作る開発用ツール。画面とCIからは使わない | `experiments/stadium-3d/extract/`、`THIRD_PARTY_NOTICES.md` |
 | 開発ツール | Blender 4.2（`bpy`、GPL-3.0）+ glTF Transform（MIT）、同梱せず | 座席ビューの構造物に陰影を焼き付けた GLB を作る。画面は URL に `?baked` を付けたときだけ読む | `experiments/stadium-3d/bake/`、`experiments/stadium-3d/baked/`、`THIRD_PARTY_NOTICES.md` |
-| ランタイム | Node.js 20 | 検証・生成スクリプトの実行。npm依存なし | `package.json`（`dependencies` なし、lockファイルなし）、`.github/workflows/*.yml` の `node-version: '20'` |
+| ランタイム | Node.js 24 | 検証・生成スクリプトの実行。npm依存なし | `package.json`（`dependencies` なし、lockファイルなし）、`.github/workflows/*.yml` の `node-version: '24'`（`check-latest: true`） |
 | フレームワーク | なし（素のDOM操作） | 公開ページはフレームワーク・バンドラを使わない | `public/assets/app.js`、`public/assets/squad-builder.js` |
 | UI | 自作CSS、共通トップバー、同梱フォント DM Serif Display | 公開ページの見た目 | `public/assets/style.css`、`public/assets/topbar.css`、`public/assets/dm-serif-display-latin.woff2` |
 | UI | modern-screenshot 4.6.5（MIT、静的同梱） | スカッド・日程のPNG生成 | `public/assets/vendor/modern-screenshot/`、`THIRD_PARTY_NOTICES.md` |
@@ -119,4 +119,4 @@ BASE_URL=http://127.0.0.1:8123/squad.html npm run check:squad:browser   # Playwr
 - **公式由来のロゴ・背番号加工物の利用許諾**: `docs/source-and-license.md` で未確認のままです。
 - **フレームワークやビルドツールを使わない判断の理由**: 文書に明示がなく、理由未確認です。
 - **ルート `LICENSE` がない**: README が明記しています。方針は未決定です。
-- **Node.js の版**: CIは20を指定していますが、手元の検証は22でも通りました。上限は未確認です。
+- **Node.js の版**: CIは24（`check-latest: true` で最新の24系）を指定しています。Node.js 20 は2026-04-30でサポートが終わったため、2026-10-21のセキュリティ修正（24.22.1）に合わせて上げました。手元の検証は22と24.22.1で通りました。24では `public/assets/ics.js` を `import()` するときに `MODULE_TYPELESS_PACKAGE_JSON` の警告が出ますが、検証の結果には影響しません。
