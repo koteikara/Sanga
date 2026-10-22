@@ -49,7 +49,8 @@ jobs:
       - name: Node.jsを設定
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
+          check-latest: true
 
       # 実行のたびに新しいランナーなので、24時間ガード（前回取得時刻の記録）は
       # 効かない。頻度は on.schedule と concurrency で担保する。

@@ -455,3 +455,4 @@ FTP Deploy Actionは `.ftp-deploy-sync-state.json` に記録されたファイ�
 * 現時点ではアップロード成功可否の直接原因ではありませんでした。
 * 今後GitHub Actionsや利用Action側の更新が必要になる可能性があります。
 * 継続的に出る場合は、利用しているActionやNode設定の更新を検討します。
+* この警告は `SamKirkland/FTP-Deploy-Action@v4.4.0` など、Action自体が動くNodeについてのものです。2026-10-22 に `actions/setup-node` の `node-version` を `'24'`（`check-latest: true`）へ上げましたが、これは検証スクリプトが使うNodeであり、Action自体のNodeは変わりません。

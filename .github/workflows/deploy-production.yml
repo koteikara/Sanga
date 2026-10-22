@@ -59,7 +59,8 @@ jobs:
       - name: Node.jsを設定
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
+          check-latest: true
 
       - name: 暗号化の鍵があることを確認
         env:
@@ -133,7 +134,8 @@ jobs:
       - name: Node.jsを設定
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
+          check-latest: true
 
       - name: 静的検証をまとめて実行
         run: npm run check:static

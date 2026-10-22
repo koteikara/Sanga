@@ -41,7 +41,8 @@ jobs:
       - name: Node.jsを設定
         uses: actions/setup-node@v7
         with:
-          node-version: '20'
+          node-version: '24'
+          check-latest: true
 
       - name: 本番サーバーを走査して取り込む
         env:
