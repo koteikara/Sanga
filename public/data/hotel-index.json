@@ -1,13 +1,13 @@
 {
   "meta": {
-    "updated_at": "2026-10-19 14:39",
+    "updated_at": "2026-10-26 14:45",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
   "matches": [
     {
       "match_id": "acl-md3",
-      "hotel_count": 9,
+      "hotel_count": 5,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-10-26",
       "checkout_date": "2026-10-27",
@@ -15,7 +15,7 @@
     },
     {
       "match_id": "acl-md5",
-      "hotel_count": 8,
+      "hotel_count": 7,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-11-23",
       "checkout_date": "2026-11-24",
@@ -55,7 +55,7 @@
     },
     {
       "match_id": "sec13",
-      "hotel_count": 10,
+      "hotel_count": 9,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-10-30",
       "checkout_date": "2026-10-31",
@@ -63,7 +63,7 @@
     },
     {
       "match_id": "sec14",
-      "hotel_count": 8,
+      "hotel_count": 10,
       "stadium_id": "toyota",
       "checkin_date": "2026-11-06",
       "checkout_date": "2026-11-07",
@@ -71,7 +71,7 @@
     },
     {
       "match_id": "sec15",
-      "hotel_count": 7,
+      "hotel_count": 6,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-11-20",
       "checkout_date": "2026-11-21",
@@ -135,7 +135,7 @@
     },
     {
       "match_id": "sec23",
-      "hotel_count": 9,
+      "hotel_count": 8,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2027-02-26",
       "checkout_date": "2027-02-27",
@@ -215,7 +215,7 @@
     },
     {
       "match_id": "sec33",
-      "hotel_count": 4,
+      "hotel_count": 5,
       "stadium_id": "gion-machida",
       "checkin_date": "2027-05-02",
       "checkout_date": "2027-05-03",
@@ -260,6 +260,14 @@
       "checkin_date": "2027-06-05",
       "checkout_date": "2027-06-06",
       "data_path": "data/hotels/sec38.json"
+    },
+    {
+      "match_id": "sec41",
+      "hotel_count": 8,
+      "stadium_id": "sanga-stadium",
+      "checkin_date": "2026-12-08",
+      "checkout_date": "2026-12-09",
+      "data_path": "data/hotels/sec41.json"
     }
   ]
 }
