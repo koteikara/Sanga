@@ -194,6 +194,14 @@ npm run check:production
 `curl` で本文を見るだけでは、JavaScriptが動くかどうかは分かりません。
 落ちていても200は返ります。だからブラウザに読ませます。
 
+前もって落とすのは、HTML・CSS・JavaScriptに書かれた参照だけです。
+`data/hotels/${id}.json` やJSONに書かれた画像のように、**ページが動いてから組み立てるパス**は
+拾えません。そこで、手元に無いファイルをページが求めたら、そのとき本番から取って配ります。
+本番にも無ければ `HTTP 404: <パス>` として数えます。CSSのコメントに書いたパスは読みません。
+
+外部のオリジン（画像の配信元など）へのリクエストは、上の事情で届かないので止めて、
+失敗に数えません。外部の資源が読めるかどうかは、この確認では分かりません。
+
 **見られないものもあります。** 本番サーバーが返すヘッダ（MIMEタイプ・リダイレクト・
 キャッシュ）、HTTPSそのもの、実オリジンに依存する挙動。**同じファイル、違う置き場所**
 なので、そこは別物です。**実機での確認を置き換えるものではありません。**
@@ -201,7 +209,7 @@ npm run check:production
 既定では時系列と案内ページを見ます。ページ名を並べれば対象を変えられます。
 
 ```bash
-node tools/check-production-pages.mjs squad.html calendar.html
+node tools/check-production-pages.mjs squad.html calendar.html away.html home.html
 node tools/check-production-pages.mjs --base https://koteikara.github.io/Sanga  # Pagesを見る
 node tools/check-production-pages.mjs --keep    # 落としたファイルを残す
 ```

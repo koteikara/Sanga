@@ -11,6 +11,10 @@
  * **本番と同じバイト列を、JavaScript込みで動かせます。** 読み込み失敗と実行時エラーを
  * 拾うのが目的で、見た目の確認ではありません。
  *
+ * 手元に無いファイルをページが求めたら、そのとき本番から取って配ります。
+ * `data/hotels/${id}.json` のように、JavaScriptが組み立てるパスは前もって拾えないためです。
+ * 外部のオリジン（画像の配信元など）へのリクエストは、上の事情で届かないので止めて、数えません。
+ *
  * 見られないものもあります。本番サーバーが返すヘッダ（MIMEタイプ・リダイレクト・
  * キャッシュ）、HTTPSそのもの、実オリジンに依存する挙動。**同じファイル、違う置き場所**
  * なので、そこは別物です。実機での確認を置き換えるものではありません。
@@ -107,7 +111,11 @@ async function download(base, ref, dir, seen, problems) {
   // **HTMLは追わない。** トップバーが入口ページを指しているので、追うとサイト全体を
   // 引きずってくる。確かめたいページは呼ぶ側が名前で指定する。
   if (/\.(?:html|css|js|mjs)$/.test(ref)) {
-    for (const child of collectRefs(body.toString("utf8"))) {
+    let text = body.toString("utf8");
+    // CSSのコメントに書いたパス（`assets/topbar.css` など）を、そのファイルからの相対として
+    // 拾うと、実在しない `assets/assets/...` を取りに行ってしまう。コメントは読まない。
+    if (ref.endsWith(".css")) text = text.replace(/\/\*[\s\S]*?\*\//g, "");
+    for (const child of collectRefs(text)) {
       if (child.endsWith(".html")) continue;
       // CSSの url() だけはそのファイルからの相対。HTMLとJavaScriptの参照は、
       // 読み込むページ（サイトの根）からの相対で解決される。
@@ -121,12 +129,26 @@ async function download(base, ref, dir, seen, problems) {
   }
 }
 
-function serve(dir) {
-  const server = http.createServer((request, response) => {
+function serve(dir, base) {
+  const server = http.createServer(async (request, response) => {
     const target = decodeURIComponent(new URL(request.url, "http://localhost").pathname);
     const file = path.join(dir, target);
     // 落とした場所より外は出さない。
-    if (!file.startsWith(dir) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) {
+    if (!file.startsWith(dir + path.sep)) {
+      response.writeHead(404).end("not found");
+      return;
+    }
+    // 前もって拾えなかったもの（JavaScriptが組み立てるパス）は、求められたときに本番から取る。
+    // 本番にも無ければ 404 のまま返す。ページ側がURL付きで数えるので、ここでは数えない。
+    if (!fs.existsSync(file)) {
+      const ref = path.relative(dir, file).split(path.sep).join("/");
+      try {
+        await download(base, ref, dir, new Set(), []);
+      } catch (error) {
+        // 取れなければ下で 404 を返す。
+      }
+    }
+    if (!fs.existsSync(file) || fs.statSync(file).isDirectory()) {
       response.writeHead(404).end("not found");
       return;
     }
@@ -170,11 +192,10 @@ async function main() {
     await download(base, page, dir, seen, problems);
   }
   console.log(`  ${seen.size}件を手元に落としました`);
-  problems.forEach((problem) => console.error(`  ${problem}`));
 
-  const { server, port } = await serve(dir);
+  const { server, port } = await serve(dir, base);
   const browser = await playwright.chromium.launch();
-  let failed = problems.length;
+  let failed = 0;
 
   for (const page of options.pages) {
     const context = await browser.newContext({
@@ -182,12 +203,24 @@ async function main() {
       timezoneId: "Asia/Tokyo",
       locale: "ja-JP",
     });
+    // 外部のオリジンへは出られない（冒頭の注記）。届かないものを失敗に数えないよう、先に止める。
+    const local = `http://127.0.0.1:${port}/`;
+    await context.route((url) => !url.href.startsWith(local), (route) => route.abort());
     const tab = await context.newPage();
     const found = [];
     tab.on("pageerror", (error) => found.push(`JavaScriptエラー: ${String(error).split("\n")[0]}`));
-    tab.on("requestfailed", (request) => found.push(`読み込み失敗: ${request.url()}`));
+    tab.on("requestfailed", (request) => {
+      if (request.url().startsWith(local)) found.push(`読み込み失敗: ${request.url()}`);
+    });
+    // 404などはURLを添えてここで数える。同じ失敗をChromiumが出す
+    // 「Failed to load resource」はURLを含まないので、下の console では数えない。
+    tab.on("response", (res) => {
+      if (res.status() >= 400) found.push(`HTTP ${res.status()}: ${res.url().slice(local.length)}`);
+    });
     tab.on("console", (message) => {
-      if (message.type() === "error") found.push(`console.error: ${message.text().slice(0, 120)}`);
+      if (message.type() !== "error") return;
+      if (message.text().startsWith("Failed to load resource")) return;
+      found.push(`console.error: ${message.text().slice(0, 120)}`);
     });
 
     try {
@@ -210,6 +243,10 @@ async function main() {
 
   await browser.close();
   server.close();
+
+  // 前もって落とした分と、ページが求めて取りに行った分の両方を、最後にまとめて出す。
+  problems.forEach((problem) => console.error(`  ${problem}`));
+  failed += problems.length;
 
   if (options.keep) console.log(`落としたファイル: ${dir}`);
   else fs.rmSync(dir, { recursive: true, force: true });
