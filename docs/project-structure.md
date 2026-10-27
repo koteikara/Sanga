@@ -34,7 +34,7 @@
 - スカッド: `check-squad-layout.mjs`、背番号画像加工ツール
 - 公開アセット: `check-static-assets.mjs`（CSS波括弧数、HTMLのCSS/JS参照、入口ページの事前出力カードと `tools.json` の突き合わせ、版数の突き合わせ）、`asset-versions.mjs`（CSS/JS/JSON/画像の `?v=` を内容ハッシュで生成・検証。`--check` で検出、引数なしで書き換え）、`build-seo.mjs`（入口ページのカード、`sitemap.xml` / `robots.txt`、各ページの OGP・canonical を生成。`--check` で検出）、`ogp/make-ogp.mjs`（ページ別OGP画像の生成。Playwright必須）
 - タイムライン: `generate-calendar-events.js`（チケット販売CSVと `matches.json` から `calendar-events` を生成）、`validate-calendar-events.js`
-- チケット販売スケジュール: `fetch-ticket-sales.js`（公式ページを取得。取得間隔は既定で24時間以上。2026-10-15時点の取得先は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。`www.sanga-fc.jp` が中間証明書を送らないため、ワークフローは `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` を `NODE_EXTRA_CA_CERTS` で読む）、`parse-ticket-sales.js`（HTMLの表→CSV。列構成は `docs/sheets/ticket-sales.2026-08-28.csv` と同じ。画像だけの案内はCSVにしない）。回帰確認用の作り物の入力は `tools/fixtures/`
+- チケット販売スケジュール: `fetch-ticket-sales.js`（公式ページを取得。取得間隔は既定で24時間以上。2026-10-15時点の取得先は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。`www.sanga-fc.jp` が中間証明書を送らないため、ワークフローは `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` を `NODE_EXTRA_CA_CERTS` で読む）、`parse-ticket-sales.js`（HTMLの表→CSV。列構成は `docs/sheets/ticket-sales.2026-08-28.csv` と同じ。画像だけの案内はCSVにしない）。2026-10-27から日次ワークフローは `PAUSE_OFFICIAL_SANGA_FETCH=true` のあいだ、この取得と解析を実行しない（既存CSVは残す。再開は `false`）。回帰確認用の作り物の入力は `tools/fixtures/`
 - ホーム戦の販売日時（Jリーグチケット、2026-10-15から）: `parse-away-tickets.js --section home`（ホーム節→`docs/sheets/home-tickets.current.csv`）、`fetch-away-sales.js --input docs/sheets/home-tickets.current.csv --out tmp/home-perform`、`parse-home-sales.js`（→`docs/sheets/home-sales.current.csv`）、`check-home-sales-merge.js`（`generate-calendar-events.js --home-sales` の上書きの決まりを確かめる）
 - 文書生成: `generate-dom-inventory.mjs`（`docs/dom-inventory.md` を実装から生成、`--check` で差分検出）
 - ホテル・アウェイ遠征ガイド・ホーム観戦ガイド: `tools/hotels/`（楽天トラベルAPIからホテル候補を取得。`--all-home` でサンガスタジアムのホーム戦も）、`validate-hotels.js`、`generate-away-guide.js`（`matches.json`・`stadiums.json`・`docs/sheets/away-transport.csv`・`hotel-index.json` から `away-guide.json` を生成、`--check` で差分検出）、`validate-stadiums.js`（`home-guide.json` の検証も含む）
@@ -58,7 +58,7 @@
 | --- | --- | --- |
 | 日程 | `public/data/matches.json` | 53件。IDはLocalStorage状態と関係する |
 | 選手 | `public/data/players.json` | 39件 |
-| チケット販売スケジュール | `docs/sheets/ticket-sales.current.csv` | 124行。`ticket-sales-sync.yml` が1日1回更新 |
+| チケット販売スケジュール | `docs/sheets/ticket-sales.current.csv` | 124行。2026-10-27から公式サイトからの取得は `PAUSE_OFFICIAL_SANGA_FETCH`（既定 `true`）で一時停止。停止中は前回のCSVのまま。Jリーグチケット側は `ticket-sales-sync.yml` が1日1回更新する |
 | 初期CSV | `docs/sheets/schedule.initial.csv` | 2026-06-22時点の49件スナップショット |
 | 日程個人状態 | LocalStorage | 既存キー・保存形式を維持する |
 | スカッド保存 | LocalStorage | 新`squad`形式を保存し、旧`bench`形式を読み込む |
@@ -74,7 +74,7 @@
 | `pages.yml` | `public/` をGitHub Pagesへ配置 | `main` push、手動 |
 | `deploy-production.yml` | `public/` を本番へ配置 | `DEPLOY`確認付き手動 |
 | `hotels-sync.yml` | 国内アウェイ戦とサンガスタジアムのホーム戦の前泊・当日泊ホテル候補を楽天トラベルAPIから取り直し、差分があれば下書きPRを作る | 毎週月曜10:00 JST、手動 |
-| `ticket-sales-sync.yml` | 公式のチケット販売スケジュールを取得し、差分があればPRを作る。古い取り込みPRは閉じて1本にし、滞ればIssue（ラベル `sync-stall`）で知らせる | 毎日22:00 JST、手動 |
+| `ticket-sales-sync.yml` | Jリーグチケットのホーム掲載・販売日時とアウェイ席を取り込み、差分があれば下書きPRを作る。公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内は `PAUSE_OFFICIAL_SANGA_FETCH`（既定 `true`）で一時停止し、失敗に数えない。再開は `false`。古い取り込みPRは閉じて1本にし、滞ればIssue（ラベル `sync-stall`）で知らせる | 毎日22:00 JST、手動 |
 
 Static Checksと本番デプロイは、再利用可能な `squad-checks.yml` を通して、スカッド用JavaScript構文、選手JSON、静的契約、Chromiumレイアウトを共通検証します。レイアウト検証は幅320px・375px・420px、控え0人・5人・9人・12人、17フォーメーション、8スタイルを対象にします。
 

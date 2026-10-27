@@ -69,11 +69,11 @@
 | 取得方法の調査 | 完了。AI抽出は不要と結論 | `docs/news-extraction-research.md` |
 | プロトタイプ | 動作する（Phase 1 + Phase 2）。チケット販売は実データ | `experiments/supporter-timeline/` |
 | チケット販売スケジュールの構造 | 2026-08-28に確認済み。1試合最大8件 | `docs/sheets/ticket-sales.2026-08-28.csv`、「販売段階は8つある」 |
-| チケット販売スケジュールの取得と解析 | 表形式HTMLの解析は動作する（作り物の入力で、2026-08-28のスナップショットを再現できる）。2026-10-04以降は公式が中間証明書を送らず取得が落ちていた。2026-10-15に中間証明書を足して取得は通る。同じ日、`/ticket/schedule` はトップへ302し、販売スケジュールは画像の案内記事になっていた。表は戻らない見込みで、現在値のCSVは2026-09-09取得のまま。**ホーム戦の販売日時はJリーグチケットの試合ページで補う**（2026-10-15から） | `tools/fetch-ticket-sales.js`、`tools/parse-ticket-sales.js`、`tools/certs/cybertrust-japan-sureserver-ca-g4.pem`、「販売スケジュールの取得と解析」 |
+| チケット販売スケジュールの取得と解析 | 表形式HTMLの解析は動作する（作り物の入力で、2026-08-28のスナップショットを再現できる）。2026-10-15時点で案内は画像だけで表が無く、現在値のCSVは2026-09-09取得のまま。**2026-10-27から日次の取得・解析は `PAUSE_OFFICIAL_SANGA_FETCH=true` で一時停止**（既存CSVは残す。再開は `false`。停止は失敗に数えない）。**ホーム戦の販売日時はJリーグチケットの試合ページで補う**（2026-10-15から） | `tools/fetch-ticket-sales.js`、`tools/parse-ticket-sales.js`、`.github/workflows/ticket-sales-sync.yml`、「販売スケジュールの取得と解析」 |
 | ホーム戦の販売日時（Jリーグチケット） | 動作する。クラブページのホーム節に載った試合のページから、これから始まる販売段階の開始日時を読み、公式の同じ段階を上書きする（2026-10-15） | `tools/parse-away-tickets.js --section home`、`tools/parse-home-sales.js`、`docs/sheets/home-sales.current.csv`、「ホーム戦の販売日時をJリーグチケットで補う」 |
 | 本番ページ | `public/timeline.html` に移植済み（2026-08-31）。公開JSONは取り込みPRで作り直す | `public/timeline.html`、「Eの設計」 |
 | 見た目 | 入口ページ基準に作り直し済み（ネビュラ背景＋白場）。プロトタイプで確認 | `experiments/supporter-timeline/`、「地は入口ページのネビュラ」 |
-| 定期実行 | 動作する。毎日22:00 JSTに取得し、差分があればPRを作る。取り込みPRは常に1本だけにし、滞ればIssueで知らせる（2026-10-07） | `.github/workflows/ticket-sales-sync.yml`、「1日1回の取り込み」「取り込みの滞りを知らせる」 |
+| 定期実行 | 動作する。毎日22:00 JST。2026-10-27から公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内は `PAUSE_OFFICIAL_SANGA_FETCH=true` で一時停止（失敗にしない。再開は `false`）。Jリーグチケットの取り込み、差分があれば下書きPR、滞りのIssueは続ける | `.github/workflows/ticket-sales-sync.yml`、「1日1回の取り込み」「取り込みの滞りを知らせる」 |
 | 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方（実データ全量での月の折りたたみ・下部ドロワーを含む）も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
 
 プロトタイプで動いているのは、タイムライン表示、種別の絞り込み、`date_precision` の出し分け、
@@ -101,8 +101,8 @@ Phase 2 で入れたのは次の3つです。
 
 ### できていないこと
 
-- **公式の販売スケジュール表が、2026-10-15時点では画像だけになっている。** `/ticket/schedule` はトップへ302し、案内は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。表は戻らない見込みで、`ticket-sales.current.csv` は2026-09-09取得のまま（「葉の証明書だけが届く」）。ホーム戦の日時はJリーグチケットで補うが、**Jリーグチケットに試合が載るまでは公式の古い日時が出る**。特典チケット引換はJリーグチケットに無いので補えない（「ホーム戦の販売日時をJリーグチケットで補う」）
-- **ニュース一覧 `/news` も同じ日にトップへ302する。** 記事URL（`/news/detail/…`）は開く。一覧の差分検知は、一覧ページが戻るまで動かない
+- **公式の販売スケジュール表が、2026-10-15時点では画像だけになっている。** `/ticket/schedule` はトップへ302し、案内は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。表は戻らない見込みで、`ticket-sales.current.csv` は2026-09-09取得のまま（「葉の証明書だけが届く」）。**2026-10-27から日次ワークフローはこの取得を止めています**（`PAUSE_OFFICIAL_SANGA_FETCH`。既定 `true`。再開は `false`）。停止中はCSVを空にせず、失敗にも数えません。ホーム戦の日時はJリーグチケットで補うが、**Jリーグチケットに試合が載るまでは公式の古い日時が出る**。特典チケット引換はJリーグチケットに無いので補えない（「ホーム戦の販売日時をJリーグチケットで補う」）
+- **ニュース一覧 `/news` も同じ日にトップへ302する。** 記事URL（`/news/detail/…`）は開く。一覧の差分検知は、一覧ページが戻るまで動かない。**2026-10-27から日次ワークフローは公式の案内の取得も止めています**（同じスイッチ。案内のCSVは前回のまま。失敗として記録しない）
 - **試合当日のイベント・グッズ・応募は、日時付きのイベントとしては1件もない。** 2026-09-11 に層1
   （試合ごとの案内の件数と出典）を入れたが、日時を持つイベントにする層2・層3は未実装。
   画面の「応募」「試合当日」の絞り込みを押しても、まだ何も出ない（「イベント・配布・物販の取り込み」）
@@ -2523,6 +2523,7 @@ HTMLからCSVを作る部分は「販売スケジュールの取得と解析」�
 Node は AIA を取りに行きません。ブラウザは取りに行くので、手元のブラウザでは同じサイトが開きます。
 検証を切る代わりに、中間証明書を `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` として置き、
 `ticket-sales-sync.yml` の `NODE_EXTRA_CA_CERTS` で読みます。ニュース一覧と記事の取得も同じジョブです。
+2026-10-27から、このジョブは `PAUSE_OFFICIAL_SANGA_FETCH` が `true` のあいだ公式サイトへ取りに行きません（「1日1回の取り込み」）。
 
 SHA-256 は `83:46:92:2C:B8:73:0B:B6:AE:71:AB:03:BF:C4:24:62:F4:16:04:23:D9:07:9B:E6:43:85:62:1A:C5:87:76:72`。
 サイバートラストの公開ページ（`https://www.cybertrust.ne.jp/ssl/download-ca/sureserver-ov.html`）と同じ値です。
@@ -2530,7 +2531,12 @@ SHA-256 は `83:46:92:2C:B8:73:0B:B6:AE:71:AB:03:BF:C4:24:62:F4:16:04:23:D9:07:9
 
 **表は画像になりました。** 案内記事はリーグ用と ACL 用の PNG だけで、`dl.schedule__list` がありません。
 取得の目印は `league-ticket-schedule.png` に変えてあります。解析は画像だけのHTMLを受け取ると失敗し、
-CSVは書き換えません。ワークフローは解析が失敗してもアウェイと案内の取得へ進み、ジョブの最後で失敗にします。
+CSVは書き換えません。
+
+**2026-10-27から、この取得と解析は日次ワークフローでは走らせていません。**
+`PAUSE_OFFICIAL_SANGA_FETCH` が `true`（既定）のあいだ、公式ページを取らず、解析もせず、
+ジョブも失敗にしません。`ticket-sales.current.csv` は前回の値のままです。
+`false` に戻すと、以前と同じく、解析の失敗はジョブの失敗になります。
 表形式が戻れば、いまのパーサ（作り物の入力）がそのHTMLを読めます。
 
 **解析（`tools/parse-ticket-sales.js`）** が読むのは次の4つの形です。公式ページは試合ごとに `dt`（見出し）と
@@ -2551,9 +2557,34 @@ CSVは書き換えません。ワークフローは解析が失敗してもア�
 
 #### 1日1回の取り込み
 
-`.github/workflows/ticket-sales-sync.yml` が毎日22:00 JSTに動き、
-`docs/sheets/ticket-sales.current.csv` に差分があればdraft PRを作ります。手動実行もできます。
-1回の実行で送るリクエストは1件だけです。
+`.github/workflows/ticket-sales-sync.yml` が毎日22:00 JSTに動き、差分があればdraft PRを作ります。
+手動実行もできます。
+
+**2026-10-27から、公式サイト（sanga-fc.jp）からの取得だけを一時停止しています。**
+販売スケジュールの案内は画像だけで表が無く、ニュース一覧はトップへ転送されるため、
+毎日の失敗と Issue #322（ラベル `sync-stall`）への連続失敗の追記を止めるための措置です。
+サイトの復旧時期は未定です。
+
+スイッチはワークフローの環境変数 `PAUSE_OFFICIAL_SANGA_FETCH` です。既定は `true`（停止）。
+`false` 以外は停止のままです。再開するときは、この値だけを `false` に戻します。
+取得と解析の手順は残してあります。
+
+`true` のあいだ、次は実行しません。
+
+- 公式の販売スケジュールの取得と解析（`fetch-ticket-sales.js` / `parse-ticket-sales.js`）
+- 公式の案内の取り込み（`fetch-news-list.js` から `parse-news-times.js` まで）
+
+`docs/sheets/ticket-sales.current.csv` と案内のCSV（`news.current.csv` / `news-times.current.csv`）は
+前回の値のまま残します。空にはしません。作り直しもしません。失敗にも数えません。
+公式サイトへのリクエストも送りません。Jリーグチケット側が通っていれば、ジョブは成功で終わります。
+
+止めていないものは、これまでどおりです。Jリーグチケットのホーム掲載、ホームの販売日時、
+アウェイ席の販売状態と発売日時、公開JSONと購読フィードの生成、`npm run check:static`、
+下書きPR、手で確かめるアウェイ戦のIssue、取り込みの滞りのIssueです。
+Jリーグチケット側が失敗したときは、いままでどおりジョブを失敗にします。
+
+取り込みPRの本文は、停止中の公式の段を「失敗しました」ではなく「一時停止しています」と書きます
+（`tools/build-import-pr-body.js` の `--paused ticket` と `--paused news`）。
 
 **取得日時と画面表示だけの違いでは更新しません。** `retrieved_at_jst` は取得のたびに動き、
 `official_display_status`（`受付中` / `販売中`）は販売の開始・終了で日に何度も変わります。
@@ -2581,6 +2612,10 @@ PR本文は `tools/build-import-pr-body.js` が**実際に変わったファイ�
 - `public/data/calendar-events.json` が変わったときだけ「公開JSONを変更するPR」と書きます。
   変わらないときは「公開JSONは変わりません」と書きます。購読フィード（ICS）も同じです
 - 「注意点」の確認項目も、変わったもの（公式・ホーム戦・アウェイ・フィード）に合わせて出します
+- 公式サイトからの取得を止めているあいだ、ワークフローは `--paused ticket` と `--paused news` を渡します。
+  本文は「公式の販売スケジュールの解析は失敗しました」「公式の案内の取り込みは失敗しました」ではなく、
+  「一時停止しています」と書きます。同じ段を `--failed` と同時には指定できません。
+  `PAUSE_OFFICIAL_SANGA_FETCH` を `false` に戻したあとの解析失敗は、これまでどおり `--failed` です
 - 見出しは `docs/codex-workflow.md` に合わせて「概要 / 変更内容 / 確認内容 / 注意点」です。
   先頭の `<!-- pending-since: ... -->` は `tools/report-sync-stall.js` が読むので残します
 - 前の内容を `HEAD` から読むため、ワークフローはコミットより前に本文を作ります

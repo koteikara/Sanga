@@ -17,6 +17,9 @@
  * - 公開ファイル（calendar-events.json・ICS）が変わったときだけ「公開JSONを変更するPR」と書く。
  *   変わらないときは「公開ページは変わらない」と書く
  * - 確認してほしいことも、変わったものに合わせて出す
+ * - 公式サイトからの取得を止めているあいだは `--paused ticket` / `--paused news` を渡す。
+ *   本文は「失敗しました」ではなく「一時停止しています」と書く。同じ段を `--failed` と
+ *   同時には指定できない
  *
  * **外へは1リクエストも出さない。** 前の内容は `git show <ref>:<path>`（既定）か
  * `--base-dir` から読む。手元の作り物で結果を確かめられるようにするため。
@@ -102,10 +105,11 @@ function usage() {
   console.error('  --base-dir <dir>          前の内容を git ではなくこのディレクトリから読む');
   console.error('  --head-dir <dir>          後の内容を読むディレクトリ（既定: リポジトリ）');
   console.error('  --failed <名前>           取り込みに失敗した段（ticket / home / away / news）。複数指定できる');
+  console.error('  --paused <名前>           一時停止中の段（ticket / news）。失敗ではない。複数指定できる');
 }
 
 function parseArgs(argv) {
-  const args = { baseRef: 'HEAD', headDir: repoRoot, failed: [] };
+  const args = { baseRef: 'HEAD', headDir: repoRoot, failed: [], paused: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     const next = () => {
@@ -121,14 +125,20 @@ function parseArgs(argv) {
     else if (arg === '--base-dir') args.baseDir = next();
     else if (arg === '--head-dir') args.headDir = next();
     else if (arg === '--failed') args.failed.push(next());
+    else if (arg === '--paused') args.paused.push(next());
     else if (arg === '--help' || arg === '-h') {
       usage();
       process.exit(0);
     } else throw new Error(`不明なオプションです: ${arg}`);
   }
   const known = ['ticket', 'home', 'away', 'news'];
+  const pausable = ['ticket', 'news'];
   args.failed.forEach((name) => {
     if (!known.includes(name)) throw new Error(`--failed は ${known.join(' / ')} のどれかです: ${name}`);
+  });
+  args.paused.forEach((name) => {
+    if (!pausable.includes(name)) throw new Error(`--paused は ${pausable.join(' / ')} のどれかです: ${name}`);
+    if (args.failed.includes(name)) throw new Error(`--paused と --failed は同時に指定できません: ${name}`);
   });
   return args;
 }
@@ -307,6 +317,7 @@ function build(args) {
   const awayChanged = changed('docs/sheets/away-tickets.current.csv') || changed('docs/sheets/away-sales.current.csv');
   const officialChanged = changed('docs/sheets/ticket-sales.current.csv');
   const failed = (name) => args.failed.includes(name);
+  const paused = (name) => args.paused.includes(name);
 
   const out = [];
   const push = (...lines) => { out.push(...lines); };
@@ -332,10 +343,12 @@ function build(args) {
   if (awayChanged) {
     push('- アウェイ席は、発売中の試合に加え**発売前の試合も載ります**。**ただし載っていない試合は「発売前」ではありません**（別のプレイガイドで売っている場合があります）。');
   }
-  if (failed('ticket')) push('- **公式の販売スケジュールの解析は失敗しました。** `ticket-sales.current.csv` は前回の値のままです。');
+  if (paused('ticket')) push('- **公式の販売スケジュールの取得は一時停止しています。** 公式サイト（sanga-fc.jp）が戻るまで、取得も解析もしません。`ticket-sales.current.csv` は前回の値のままです。');
+  else if (failed('ticket')) push('- **公式の販売スケジュールの解析は失敗しました。** `ticket-sales.current.csv` は前回の値のままです。');
   if (failed('home')) push('- **ホーム戦（Jリーグチケット）の取り込みは失敗しました。** `home-sales.current.csv` は前回の値のままです。');
   if (failed('away')) push('- **アウェイの取り込みは失敗しました。** このPRのアウェイ関連ファイルは前回の値のままです。実行ログを確認してください。');
-  if (failed('news')) push('- **公式の案内の取り込みは失敗しました。** 案内のCSVは前回の値のままです。');
+  if (paused('news')) push('- **公式の案内の取り込みは一時停止しています。** 公式サイト（sanga-fc.jp）が戻るまで取得しません。案内のCSVは前回の値のままです。');
+  else if (failed('news')) push('- **公式の案内の取り込みは失敗しました。** 案内のCSVは前回の値のままです。');
   push('- 取得日時・確認日・画面表示（受付中・販売中）だけの違いでは更新しません。');
   push('');
 

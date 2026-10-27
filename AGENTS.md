@@ -75,7 +75,7 @@ class名、id名、data属性の参照箇所は、文書を読むよりこの一
 
 - 日程: `public/data/matches.json`（53件）
 - 選手: `public/data/players.json`（39件）
-- チケット販売スケジュール: `docs/sheets/ticket-sales.current.csv`（GitHub Actionsが1日1回更新）
+- チケット販売スケジュール: `docs/sheets/ticket-sales.current.csv`（GitHub Actionsが1日1回、Jリーグチケット側を更新。2026-10-27から公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内の取得は一時停止。スイッチは `.github/workflows/ticket-sales-sync.yml` の `PAUSE_OFFICIAL_SANGA_FETCH`（既定 `true`）。再開は `false`。停止中は既存CSVを空にしない）
 - `docs/sheets/schedule.initial.csv` は2026年6月22日時点の49件スナップショットであり、現在値ではない。
 - `docs/sheets/ticket-sales.2026-08-28.csv` も同様にスナップショットであり、書き換えない。
 - 公開情報更新時は可能な限り出典URLと確認日を残す。
