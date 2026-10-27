@@ -61,7 +61,7 @@ Jリーグチケット（ホーム掲載、ホームの販売日時、アウェ�
 
 ### 未確認項目
 
-`workflow_dispatch` の実ランナー結果は、この記録を書いた時点ではまだ。起動できた場合はPR本文に書く。
+この環境の `gh workflow run` は HTTP 403（Resource not accessible by integration）で、`workflow_dispatch` を起動できなかった。2026-10-15 の記録と同じ制限。停止中にジョブが成功することは、ランナーでは未確認。
 
 ### 残課題
 
