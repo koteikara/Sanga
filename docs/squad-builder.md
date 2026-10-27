@@ -153,13 +153,17 @@ FIFA Ultimate Team のカードを参考にしていますが、意匠をその�
 
 見出しは画像アセットとして持ちます。Webフォントに依存しないため、画像生成時に見出しが崩れません。
 
-| ファイル | 内容 |
-| --- | --- |
-| `assets/header-source.html` | モダンの生成元 |
-| `assets/header-victorian-source.html` | ヴィクトリアンの生成元 |
-| `assets/header-styles-source.html` | 残り5スタイルの生成元 |
+| ファイル | 内容 | 寸法 |
+| --- | --- | --- |
+| `assets/squad/header-starting-xi.png` | モダン。生成元は `assets/header-source.html` | 1800×600 |
+| `assets/squad/header-victorian.png` | ヴィクトリアン。生成元は `assets/header-victorian-source.html` | 1920×600 |
+| `assets/squad/header-graffiti.png` ほか4枚 | 残り。生成元は `assets/header-styles-source.html` | 1920×600 |
 
-シンプルだけは画像を使わず、タイトル文字をそのまま見出しにしています。
+`img` にこの幅と高さを書き、CSSの `aspect-ratio` も同じ比にしています。幅は `62cqw`、高さは `auto` のままです。シンプルだけは画像を使わず、タイトル文字をそのまま見出しにしています。
+
+試合の行（`#sq-subtitle`）は、利用者が試合を選ぶまで空です。見本の「第10節 vs ○○」をHTMLに置いておくと、初期化で空文字に戻したときに1行分ピッチが伸びます。
+
+フォーメーションの17ボタンは `squad-builder.js` が空の `#formation-grid` に並べます。ボタンが無いあいだは、パネル幅に応じた `min-height`（ボタン高さ40px、横の最小90px、間隔8pxから決めた行数）を確保します。ボタンが入るとこの指定は外れます。
 
 ### ベンチの見せ方
 

@@ -418,8 +418,16 @@ body:not(.show-ja) [data-style="simple"] .pos-pill{margin-top:1cqw}
 .sq-header{padding:1.4cqw 5cqw 1cqw;text-align:center;position:relative;z-index:2}
 .sq-title-img{
   display:block;width:62cqw;max-width:100%;height:auto;margin:0 auto;
+  /* 既定で見えるモダン（header-starting-xi.png は 1800×600）。読み込み前に高さを確保する */
+  aspect-ratio:1800 / 600;
   filter:drop-shadow(0 .6cqw 1.4cqw rgba(0,0,0,.5));
 }
+.sq-title-img.is-victorian,
+.sq-title-img.is-graffiti,
+.sq-title-img.is-cyber,
+.sq-title-img.is-vapor,
+.sq-title-img.is-synth,
+.sq-title-img.is-scrap{aspect-ratio:1920 / 600}
 .sq-subtitle{
   white-space:nowrap;
   margin-top:.8cqw;font-size:3.1cqw;letter-spacing:.18em;color:#e6d7f0;font-weight:700;
@@ -680,6 +688,9 @@ h1.proto-title{font-size:16px;margin:16px 0 0}
   /* グリッド項目は既定でmin-width:autoとなり、内容（長い選択肢を持つselectなど）で
      押し広げられて横スクロールの原因になるため、縮められるようにする */
   min-width:0;
+  /* フォーメーションボタンの行数はパネル幅で決まる。幅を見て :empty の高さを切り替える */
+  container-type:inline-size;
+  container-name:squad-panel;
 }
 /* セクション内の間隔。見出し・ラベル・入力枠が詰まって見えないよう、
    セクション単位でまとめて余白を持たせる */
@@ -722,6 +733,17 @@ button{
   outline:3px solid #ffd76a;outline-offset:2px;
 }
 .formation-grid{display:flex;flex-wrap:wrap;gap:8px}
+/* ボタンは JS が17個並べるまで空。min-width 90px・高さ40px・間隔8pxで、幅ごとの行数から高さを予約する。
+   ボタンが入ると :empty が外れて、この高さは使わない。 */
+.formation-grid:empty{
+  min-height:424px;
+  border-radius:8px;
+  background-image:repeating-linear-gradient(to bottom, rgba(255,255,255,.06) 0 40px, transparent 40px 48px);
+}
+@container squad-panel (min-width:286px){.formation-grid:empty{min-height:280px}}
+@container squad-panel (min-width:384px){.formation-grid:empty{min-height:232px}}
+@container squad-panel (min-width:482px){.formation-grid:empty{min-height:184px}}
+@container squad-panel (min-width:580px){.formation-grid:empty{min-height:136px}}
 .formation-grid .btn{flex:1 1 auto;min-width:90px}
 .formation-grid .btn[aria-pressed="true"]{background:linear-gradient(180deg,#9c7a1c,#d4af37);color:#2b0a3d;border-color:#d4af37}
 

@@ -16,8 +16,10 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="SANGA TOOLBOX アウェイ遠征ガイド — 会場・最寄り駅・前泊ホテル候補を、試合ごとに。">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/away.css?v=79dbe898">
+<link rel="stylesheet" href="assets/away.css?v=459f768b">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
+<link rel="preload" href="data/affiliates.json?v=0d08689a" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/away-guide.json?v=3739fe61" as="fetch" crossorigin="anonymous">
 <script>
   // 描画が始まる前に決める。入口ページ・過密日程カレンダーと同じ先出し。
   (function () {
@@ -59,13 +61,13 @@
 <p class="away-lead">国内のアウェイ戦ごとに、スタジアム・最寄り駅と、前泊（試合前日の夜）・当日泊（試合の日の夜）のホテル候補をまとめています。日程は<a href="sanga202627season.html">年間スケジュール</a>で確認してください。</p>
 <p class="away-pr" id="awayPr"><span class="pr-tag">PR</span>このページには楽天トラベル・じゃらん・エアトリのアフィリエイトリンク（広告）を含みます。</p>
 
-<nav class="away-jump" aria-label="試合へ移動" hidden>
+<nav class="away-jump is-loading" aria-label="試合へ移動" aria-busy="true">
 <ul class="away-jump-list" id="awayJump"></ul>
 </nav>
 
 <p class="away-meta" id="awayMeta" role="status">読み込んでいます…</p>
 
-<ol class="away-list" id="awayList" tabindex="-1"></ol>
+<ol class="away-list is-loading" id="awayList" tabindex="-1" aria-busy="true"></ol>
 
 <section class="away-notes" aria-labelledby="awayNotesTitle">
 <h2 id="awayNotesTitle">ご利用にあたって</h2>
@@ -84,7 +86,7 @@
 
 </main>
 
-<script src="assets/away-guide.js?v=929d9ecd" defer></script>
+<script src="assets/away-guide.js?v=aabb8044" defer></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

@@ -16,9 +16,13 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="SANGA TOOLBOX ホーム観戦ガイド — サンガスタジアムへの行き方、散策、亀岡の宿。">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/away.css?v=79dbe898">
-<link rel="stylesheet" href="assets/home.css?v=08fa3481">
+<link rel="stylesheet" href="assets/away.css?v=459f768b">
+<link rel="stylesheet" href="assets/home.css?v=295fed9c">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
+<link rel="preload" href="data/home-guide.json?v=fe03d6b2" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/affiliates.json?v=0d08689a" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/matches.json?v=87b51598" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/hotel-index.json?v=f6a0e3e6" as="fetch" crossorigin="anonymous">
 <script>
   // 描画が始まる前に決める。入口ページ・過密日程カレンダー・アウェイ遠征ガイドと同じ先出し。
   (function () {
@@ -77,12 +81,12 @@
 
 <section class="home-sec" id="access" tabindex="-1" aria-labelledby="accessTitle">
 <h2 class="home-sec-title" id="accessTitle">スタジアムへの行き方</h2>
-<div class="home-sec-body" id="accessBody"></div>
+<div class="home-sec-body" id="accessBody" aria-busy="true"></div>
 </section>
 
 <section class="home-sec" id="parking" tabindex="-1" aria-labelledby="parkingTitle">
 <h2 class="home-sec-title" id="parkingTitle">車で来る</h2>
-<div class="home-sec-body" id="parkingBody"></div>
+<div class="home-sec-body" id="parkingBody" aria-busy="true"></div>
 </section>
 
 <section class="home-sec" id="spots" tabindex="-1" aria-labelledby="spotsTitle">
@@ -90,10 +94,10 @@
 <div class="home-sec-body">
 <p class="home-sec-lead">泊まらない方も、早めに着けば足をのばせる亀岡市内の場所です。</p>
 <h3 class="home-sub">スタジアムから歩いて</h3>
-<ul class="spots" id="spotsWalk"></ul>
+<ul class="spots" id="spotsWalk" aria-busy="true"></ul>
 <h3 class="home-sub">電車・バスで少し足をのばす</h3>
-<ul class="spots" id="spotsRide"></ul>
-<p class="m-more" id="spotsMore"></p>
+<ul class="spots" id="spotsRide" aria-busy="true"></ul>
+<p class="m-more" id="spotsMore" aria-busy="true"></p>
 </div>
 </section>
 
@@ -101,9 +105,9 @@
 <h2 class="home-sec-title" id="foodTitle">亀岡のグルメ</h2>
 <div class="home-sec-body">
 <h3 class="home-sub">亀岡の名物</h3>
-<ul class="spots" id="specialtyList"></ul>
+<ul class="spots" id="specialtyList" aria-busy="true"></ul>
 <h3 class="home-sub">周辺のお店を地図で探す</h3>
-<div id="foodBody"></div>
+<div id="foodBody" aria-busy="true"></div>
 </div>
 </section>
 
@@ -112,17 +116,17 @@
 <div class="home-sec-body">
 <p class="home-sec-lead">まずはスタジアムのすぐそばの2軒。空いていなければ、湯の花温泉など亀岡市内の宿を探します。試合の日の空室と料金は、下の「試合ごとの空室」で見られます。</p>
 <h3 class="home-sub">スタジアム・亀岡駅のすぐそば</h3>
-<ul class="featured" id="featuredList"></ul>
+<ul class="featured" id="featuredList" aria-busy="true"></ul>
 <h3 class="home-sub">亀岡市内のほかの宿</h3>
 <p class="home-note">湯の花温泉（亀岡駅からバスで約20分）に旅館が集まっています。試合ごとの欄に、楽天トラベルで空室のあった宿を出します。</p>
-<p class="m-more" id="stayMore"></p>
+<p class="m-more" id="stayMore" aria-busy="true"></p>
 </div>
 </section>
 
 <section class="home-matches" id="matches" tabindex="-1" aria-labelledby="matchesTitle">
 <h2 class="home-matches-title" id="matchesTitle">試合ごとの空室<span class="pr-tag">PR</span></h2>
 <p class="away-meta">前泊（試合の前の夜）と当日泊（試合の日の夜）の空室を、スタジアムのそばの2軒、スタジアム周辺、湯の花温泉の順に並べます。</p>
-<ol class="away-list" id="homeList"></ol>
+<ol class="away-list is-loading" id="homeList" aria-busy="true"></ol>
 </section>
 
 </div>
@@ -143,7 +147,7 @@
 
 </main>
 
-<script src="assets/home-guide.js?v=899de05e" defer></script>
+<script src="assets/home-guide.js?v=04bf7e99" defer></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

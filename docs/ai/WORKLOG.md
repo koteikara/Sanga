@@ -39,6 +39,55 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-10-27 公開ページのCLSを下げる
+
+### 変更ファイル
+
+- `public/away.html`、`public/home.html`、`public/sanga202627season.html`、`public/timeline.html`、`public/squad.html`
+- `public/assets/away.css`、`home.css`、`style.css`、`timeline.css`、`squad.css`
+- `public/assets/away-guide.js`、`home-guide.js`、`app.js`、`timeline.js`、`squad-builder.js`
+- `PROJECT_CONTEXT.md`、`docs/display-modes.md`、`docs/squad-builder.md`、`docs/hotels-operation-flow.md`、`docs/supporter-timeline-design.md`
+
+### 変更内容
+
+空の箱にJSONを描くとき、下の注記やフッターがまとめて下がっていた。描画後の高さに近い `min-height` を、空のあいだ（`:empty`）かホテルの取得が終わるまで（`.is-loading`）だけ置く。
+
+日程ページの約77pxは、カードが無い段階で `applyScheduleFilter()` が「該当する試合はありません」を出していた。カードが無いあいだは出さない。
+
+アウェイ遠征ガイドの `affiliates.json` と `away-guide.json` は `Promise.all`。ホーム観戦ガイドは案内・提携・日程・ホテル索引を同時に取り始める。`?v=` 付きの `fetch` は `cache: "no-store"` をやめた。`data/hotels/*.json` は版数が無いので `no-store` のまま。各ページの先頭JSONは `preload`（`as="fetch"`、`crossorigin="anonymous"`）。
+
+スカッドの見出し画像は、モダンが1800×600、ほかの6枚が1920×600。`width` / `height` と `aspect-ratio` をその比にした。フォーメーション17ボタンは、パネル幅ごとの行数で空の高さを予約する。試合行（`#sq-subtitle`）の見本「第10節 vs ○○」は初期化で消えていたので、HTMLからは空にしてある。
+
+高さの数値は2026-10-27、Chromium、初期状態（日程は2列・通常カード）。試合が減る、月が替わる、表示列を保存している、とずれる。
+
+### 確認結果
+
+`npm run check` は終了コード0。
+
+CLSはローカルの `public/` を Chromium（Playwright）で測った。キャッシュ無効、遅延400ms・上下400kbps、CPU 4倍。値は `layout-shift`（`hadRecentInput` でないもの）の合計。修正前の同じ条件と比べた。
+
+| ページ | 390×844 前 | 後 | 1366×900 前 | 後 |
+| --- | --- | --- | --- | --- |
+| away.html | 0.530 | 0 | 0.219 | 0 |
+| sanga202627season.html | 0.400 | 0 | 0.106 | 0 |
+| timeline.html | 0.498 | 0.000 | 0.178 | 0.000 |
+| home.html | 0.325 | 0 | 0.231 | 0 |
+| squad.html | 0.209 | 0 | 0.072 | 0 |
+
+360×800では、日程が 0.473 → 0、スカッドが 0.213 → 0。タイムラインに残るずれは約2pxで、スコアは 0.00004 前後。各JSONは1回だけ取っている（preloadと `fetch` の二重取りは無し）。ホテルJSON（`sec14.json`、`acl-md3.json`）も1回。描画後の画面に、空の骨格は残っていない。
+
+### 未確認項目
+
+iPhone Safari の実機。`npm run check:squad:browser` は手元のCI用ブラウザ一式が無いため未実行。
+
+### 残課題
+
+予約した高さはデータが変わるとずれる。表示列を1・3・4列で保存している人の日程ページは、2列の高さのまま開く。
+
+### 人間が確認すべき点
+
+アフィリエイト（A8・楽天）のリンクとPRの札が、これまでと同じ位置に出るか。高さの予約が、描画後に余白として残っていないか。
+
 ## 2026-10-27 公式サイトからの取得を一時停止
 
 ### 変更ファイル

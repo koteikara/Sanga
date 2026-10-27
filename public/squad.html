@@ -16,8 +16,10 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="SANGA TOOLBOX 予想スカッド作成 — スタメンを並べて、画像で共有。">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/squad.css?v=37846937">
+<link rel="stylesheet" href="assets/squad.css?v=08c36e22">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
+<link rel="preload" href="data/players.json?v=0a255c4a" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/matches.json?v=87b51598" as="fetch" crossorigin="anonymous">
 <script src="assets/analytics.js?v=1c3ec795" defer></script>
 </head>
 <body class="show-ja show-pill">
@@ -36,7 +38,7 @@
   <div class="panel" aria-label="スカッド作成の設定">
     <section>
       <h2>1. フォーメーション</h2>
-      <div class="formation-grid" id="formation-grid"></div>
+      <div class="formation-grid" id="formation-grid" aria-busy="true"></div>
       <p class="field-row" style="margin-top:8px">
         <button type="button" class="btn" id="reset-positions">位置をプリセットに戻す</button>
       </p>
@@ -149,15 +151,16 @@
         <div class="canvas-frame"><span></span><span></span><span></span><span></span></div>
 
         <header class="sq-header">
-          <img class="sq-title-img is-modern" src="assets/squad/header-starting-xi.png?v=5f0906d8" alt="PREDICTED STARTING XI">
-          <img class="sq-title-img is-victorian" src="assets/squad/header-victorian.png?v=5012f439" alt="PREDICTED STARTING XI">
-          <img class="sq-title-img is-graffiti" src="assets/squad/header-graffiti.png?v=f0c9fd95" alt="PREDICTED STARTING XI">
-          <img class="sq-title-img is-cyber" src="assets/squad/header-cyber.png?v=ddb9d6ef" alt="PREDICTED STARTING XI">
-          <img class="sq-title-img is-vapor" src="assets/squad/header-vapor.png?v=71d8c29e" alt="PREDICTED STARTING XI">
-          <img class="sq-title-img is-synth" src="assets/squad/header-synth.png?v=25691ca5" alt="PREDICTED STARTING XI">
-          <img class="sq-title-img is-scrap" src="assets/squad/header-scrap.png?v=7593d22d" alt="PREDICTED STARTING XI">
+          <img class="sq-title-img is-modern" src="assets/squad/header-starting-xi.png?v=5f0906d8" alt="PREDICTED STARTING XI" width="1800" height="600">
+          <img class="sq-title-img is-victorian" src="assets/squad/header-victorian.png?v=5012f439" alt="PREDICTED STARTING XI" width="1920" height="600">
+          <img class="sq-title-img is-graffiti" src="assets/squad/header-graffiti.png?v=f0c9fd95" alt="PREDICTED STARTING XI" width="1920" height="600">
+          <img class="sq-title-img is-cyber" src="assets/squad/header-cyber.png?v=ddb9d6ef" alt="PREDICTED STARTING XI" width="1920" height="600">
+          <img class="sq-title-img is-vapor" src="assets/squad/header-vapor.png?v=71d8c29e" alt="PREDICTED STARTING XI" width="1920" height="600">
+          <img class="sq-title-img is-synth" src="assets/squad/header-synth.png?v=25691ca5" alt="PREDICTED STARTING XI" width="1920" height="600">
+          <img class="sq-title-img is-scrap" src="assets/squad/header-scrap.png?v=7593d22d" alt="PREDICTED STARTING XI" width="1920" height="600">
           <div class="sq-subtitle" id="sq-title-text">予想スタメン</div>
-          <div class="sq-subtitle" id="sq-subtitle" style="margin-top:.4cqw">2026 明治安田J1リーグ 第10節 vs ○○</div>
+          <!-- 試合未選択の初期状態。見本の1行を置いておくと、初期化で消えた分だけピッチが伸びる -->
+          <div class="sq-subtitle" id="sq-subtitle" style="margin-top:.4cqw"></div>
           <div class="sq-rule"></div>
         </header>
 
@@ -242,6 +245,6 @@
   </div>
 </div>
 
-<script type="module" src="assets/squad-builder.js?v=930a141e"></script>
+<script type="module" src="assets/squad-builder.js?v=1b1d5af7"></script>
 </body>
 </html>
