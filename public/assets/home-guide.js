@@ -73,8 +73,11 @@
     return wrap;
   }
 
+  // ?v= 付きは通常キャッシュ。版数の無い data/hotels/*.json だけ cache: no-store。
+  var openHotelReady = {};
   function getJson(path) {
-    return fetch(path, { cache: "no-store" }).then(function (r) {
+    var versioned = /[?&]v=[0-9a-f]{6,}/i.test(path);
+    return fetch(path, versioned ? undefined : { cache: "no-store" }).then(function (r) {
       if (!r.ok) throw new Error(path + " " + r.status);
       return r.json();
     });
@@ -574,9 +577,10 @@
     var box = el("div", "h-box");
     if (m.hotels_path) {
       box.append(el("p", "h-empty", "読み込んでいます…"));
-      getJson(m.hotels_path).then(function (d) { renderHotels(box, d); })
+      openHotelReady[m.id] = getJson(m.hotels_path).then(function (d) { renderHotels(box, d); })
         .catch(function () { box.textContent = ""; box.append(el("p", "h-empty", "ホテル情報を読み込めませんでした。")); });
     } else {
+      openHotelReady[m.id] = Promise.resolve();
       box.append(el("p", "h-empty", "空室の情報は準備中です（週1回、自動で取得します）。上の「泊まる」から楽天トラベルの宿の案内を開けます。"));
     }
     body.append(box);
@@ -667,14 +671,20 @@
       list.append(renderMatch(m));
     });
     // 直近の試合は最初から開く。URL に #試合ID があればその試合も開く
-    if (home.length) document.getElementById(home[0].id).openMatch();
+    var openIds = [];
+    if (home.length) {
+      document.getElementById(home[0].id).openMatch();
+      openIds.push(home[0].id);
+    }
     var hash = (location.hash || "").slice(1);
     var target = hash && document.getElementById(hash);
     if (target && target.openMatch) {
       target.openMatch();
+      if (openIds.indexOf(hash) < 0) openIds.push(hash);
       target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
     }
     if (!home.length) list.append(el("li", "h-empty", "これからのホーム戦はありません。"));
+    list._openHotelIds = openIds;
     return home.length;
   }
 
@@ -690,10 +700,24 @@
     try { history.replaceState(null, "", a.getAttribute("href")); } catch (err) {}
   });
 
-  Promise.all([
-    getJson("data/home-guide.json?v=fe03d6b2"),
-    getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
-  ]).then(function (r) {
+  function settle(id) {
+    var node = document.getElementById(id);
+    if (!node) return;
+    node.removeAttribute("aria-busy");
+  }
+  function releaseMatchSpace() {
+    if (!list) return;
+    list.classList.remove("is-loading");
+    list.removeAttribute("aria-busy");
+  }
+
+  // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
+  var guideP = getJson("data/home-guide.json?v=fe03d6b2");
+  var affP = getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; });
+  var matchesP = getJson("data/matches.json?v=87b51598");
+  var indexP = getJson("data/hotel-index.json?v=f6a0e3e6").catch(function () { return { matches: [] }; });
+
+  Promise.all([guideP, affP]).then(function (r) {
     guide = r[0];
     affiliates = r[1] || {};
     (guide.featured_hotels || []).forEach(function (h) { featuredNos[h.hotel_no] = true; featuredImages[h.hotel_no] = h.image_urls || []; });
@@ -703,15 +727,19 @@
     renderSpecialties();
     renderFood();
     renderStay();
-    return Promise.all([
-      getJson("data/matches.json?v=87b51598"),
-      getJson("data/hotel-index.json?v=f6a0e3e6").catch(function () { return { matches: [] }; }),
-    ]);
+    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
+    return Promise.all([matchesP, indexP]);
   }).then(function (r) {
     var n = renderMatches(r[0].matches || [], r[1] || {});
     var updated = r[1] && r[1].meta && r[1].meta.updated_at;
     meta.textContent = "これからのホーム戦 " + n + "試合" + (updated ? "／ ホテル情報の取得 " + updated + " JST" : "");
+    var ids = list._openHotelIds || [];
+    return Promise.all(ids.map(function (id) { return openHotelReady[id] || Promise.resolve(); }));
+  }).then(function () {
+    releaseMatchSpace();
   }).catch(function () {
     meta.textContent = "データを読み込めませんでした。時間をおいて開き直してください。";
+    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
+    releaseMatchSpace();
   });
 })();

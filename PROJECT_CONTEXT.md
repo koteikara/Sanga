@@ -80,7 +80,8 @@ flowchart LR
 - **UIを伴う変更は `experiments/` で先に試す**: 公開物の正本は `public/` で、`experiments/` はGitHub Pagesでだけ参照できます（`docs/ui-prototype-workflow.md`）。
 - **入口ページのカードとSEO用ファイルは生成して置く**: 検索エンジンとJavaScript無効の人にも一覧が見えるよう、`tools/build-seo.mjs` が `tools.json` からカードを `index.html` に書き、`sitemap.xml` / `robots.txt` と各ページの `og:image` / canonical をそろえます。`fix:asset-versions` から呼び、`check:seo` でずれを検出します（`docs/site-index.md`）。
 - **アクセス解析はCookieなしで、本番ホストだけ**: Cloudflare Web Analytics を選び、トークン未設定のあいだは送信しない形で入れ物だけ先に置いています（`docs/site-index.md`「アクセス解析」）。
-- **CSS/JS/JSONのキャッシュ版数は内容ハッシュ**: 生成物と参照の版数ずれで2日続けてCIが落ちた経緯から、`generate:timeline:public` が `fix:asset-versions` まで実行します。
+- **CSS/JS/JSONのキャッシュ版数は内容ハッシュ**: 生成物と参照の版数ずれで2日続けてCIが落ちた経緯から、`generate:timeline:public` が `fix:asset-versions` まで実行します。`?v=` の付いたJSONは `fetch` の `cache: "no-store"` を使わない（版数がキャッシュキーになる）。版数の無い `data/hotels/*.json` はこれまでどおり `no-store`。各ページは読むJSONを `<link rel="preload" as="fetch" crossorigin="anonymous">` で先に取り、JSの `fetch`（既定の `same-origin`）と二重に取らない。
+- **空の箱で下を押さない**: 年間スケジュール、タイムライン、アウェイ／ホーム観戦ガイド、予想スカッドは、JSがJSONを描くまで箱が空で、注記やフッターが一度に下がっていた。描画後の高さに近い `min-height` を `:empty` か `.is-loading` に置き、中身が入ったら外す（2026-10-27、Chromiumで測った値。試合数や開いている月が変わるとずれる）。日程ページは、カードが無いあいだ「該当する試合はありません」を出さない。
 - **公開ページの日本語は humanizer-ja で推敲**: 書く人や道具が変わっても同じ基準で読めるよう、スキルをリポジトリ内に置いています（`.claude/skills/humanizer-ja/README.md`）。
 - **フレームワークを使わない理由**: 理由未確認。実装上はビルド不要で `public/` をそのまま配置できる利点があります。
 

@@ -14,6 +14,8 @@
   var WEEK = ["日", "月", "火", "水", "木", "金", "土"];
   var affiliates = {};
   var pixelShown = {};
+  // 開いた試合のホテルJSON。版数の無い data/hotels/*.json はここでのみ取る。
+  var openHotelReady = {};
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -72,8 +74,11 @@
     return wrap;
   }
 
+  // ?v= が付いたJSONは中身が変わると版数も変わる。通常のキャッシュに載せる。
+  // 版数の無いホテルJSONは週1回差し替わるため、キャッシュしない。
   function getJson(path) {
-    return fetch(path, { cache: "no-store" }).then(function (r) {
+    var versioned = /[?&]v=[0-9a-f]{6,}/i.test(path);
+    return fetch(path, versioned ? undefined : { cache: "no-store" }).then(function (r) {
       if (!r.ok) throw new Error(path + " " + r.status);
       return r.json();
     });
@@ -429,9 +434,10 @@
     var box = el("div", "h-box");
     if (m.hotels_path) {
       box.append(el("p", "h-empty", "読み込んでいます…"));
-      getJson(m.hotels_path).then(function (d) { renderHotels(box, d); })
+      openHotelReady[m.match_id] = getJson(m.hotels_path).then(function (d) { renderHotels(box, d); })
         .catch(function () { box.textContent = ""; box.append(el("p", "h-empty", "ホテル情報を読み込めませんでした。")); });
     } else {
+      openHotelReady[m.match_id] = Promise.resolve();
       box.append(el("p", "h-empty", "ホテル候補は準備中です（日程確定後に自動で取得します）。"));
     }
     body.append(box);
@@ -475,7 +481,9 @@
       li.append(a);
       jump.append(li);
     });
-    if (matches.length > 1) jump.parentNode.hidden = false;
+    jump.parentNode.hidden = matches.length <= 1;
+    jump.parentNode.classList.remove("is-loading");
+    jump.parentNode.removeAttribute("aria-busy");
 
     // いま見ている試合（見出しが帯のすぐ下を過ぎた最後の試合。無ければ先頭）を、帯の中で濃く示す
     var current = null;
@@ -500,10 +508,19 @@
     update();
   }
 
-  getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }).then(function (a) {
-    affiliates = a || {};
-    return getJson("data/away-guide.json?v=3739fe61");
-  }).then(function (doc) {
+  function releaseListSpace() {
+    if (!list) return;
+    list.classList.remove("is-loading");
+    list.removeAttribute("aria-busy");
+  }
+
+  // 提携リンクと試合一覧は互いに待たない。ホテルJSONに版数は無いので、開いた試合の分だけ後から取る。
+  Promise.all([
+    getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; }),
+    getJson("data/away-guide.json?v=3739fe61"),
+  ]).then(function (pair) {
+    affiliates = pair[0] || {};
+    var doc = pair[1];
     // 終わった試合は出さない（日付は日本時間。未定は候補日の最後で判断）
     var today = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
     var upcoming = doc.matches.filter(function (m) {
@@ -513,11 +530,27 @@
     upcoming.forEach(function (m) { list.append(renderMatch(m)); });
     renderJump(upcoming);
     // 直近の試合は最初から開く。URL に #試合ID があればその試合も開く
-    if (upcoming.length) openAndGo(upcoming[0].match_id, false);
+    var openIds = [];
+    if (upcoming.length) {
+      openAndGo(upcoming[0].match_id, false);
+      openIds.push(upcoming[0].match_id);
+    }
     var hash = (location.hash || "").slice(1);
-    if (hash && document.getElementById(hash)) openAndGo(hash, true);
+    if (hash && document.getElementById(hash)) {
+      openAndGo(hash, true);
+      if (openIds.indexOf(hash) < 0) openIds.push(hash);
+    }
     meta.textContent = "これからの国内アウェイ " + upcoming.length + "試合" + (doc.meta.hotels_updated_at ? "／ ホテル情報の取得 " + doc.meta.hotels_updated_at + " JST" : "／ ホテル情報は取得前");
+    // 高さの予約は、開いた試合のホテルが出るまで残す。畳んだ試合の取得では高さが変わらない。
+    return Promise.all(openIds.map(function (id) { return openHotelReady[id] || Promise.resolve(); }));
+  }).then(function () {
+    releaseListSpace();
   }).catch(function () {
     meta.textContent = "データを読み込めませんでした。時間をおいて開き直してください。";
+    releaseListSpace();
+    if (jump && jump.parentNode) {
+      jump.parentNode.classList.remove("is-loading");
+      jump.parentNode.removeAttribute("aria-busy");
+    }
   });
 })();

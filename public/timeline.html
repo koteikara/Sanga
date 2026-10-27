@@ -17,8 +17,11 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="SANGA TOOLBOX サポータータイムライン — チケット販売とキックオフを、ひとつの時系列に。">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/timeline.css?v=de67a052">
+<link rel="stylesheet" href="assets/timeline.css?v=250a41df">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
+<link rel="preload" href="data/calendar-events.json?v=e216f026" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/matches.json?v=87b51598" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/benefit-tickets.json?v=a9a2e076" as="fetch" crossorigin="anonymous">
 <script src="assets/analytics.js?v=1c3ec795" defer></script>
 </head>
 <body>
@@ -71,19 +74,19 @@
 
   <section aria-labelledby="timeline-head">
     <h2 id="timeline-head">タイムライン</h2>
-    <div id="timeline" class="timeline"></div>
+    <div id="timeline" class="timeline" aria-busy="true"></div>
   </section>
 
   <section aria-labelledby="undated-head">
     <h2 id="undated-head">日程未定</h2>
     <p class="section-note">日付が確定していないため、時系列には並べていません。カレンダーへも出しません。</p>
-    <div id="undated" class="undated"></div>
+    <div id="undated" class="undated" aria-busy="true"></div>
   </section>
 
   <section aria-labelledby="skipped-head">
     <h2 id="skipped-head">取り込まなかった記事</h2>
     <p class="section-note">機械的に確実に読めなかったものは、日時を取らずURLだけ残します。</p>
-    <ul id="skipped" class="skipped"></ul>
+    <ul id="skipped" class="skipped" aria-busy="true"></ul>
   </section>
 </main>
 
@@ -401,7 +404,7 @@
   </div>
 </dialog>
 
-<script src="assets/timeline.js?v=25e67dee"></script>
+<script src="assets/timeline.js?v=9da4f8d2"></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

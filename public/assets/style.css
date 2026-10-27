@@ -2410,3 +2410,14 @@
     background-repeat: no-repeat;
     background-size: contain;
   }
+
+  /* 日程カードが入るまで下の注記を押さない。高さは 2026-10-27、初期の2列・通常カード、53件。
+     カードが入ると :empty が外れる。1〜4列を保存している人は、この高さとずれることがある。 */
+  .json-preview-grid:empty{
+    min-height:2212px;
+    border-radius:10px;
+    background-image:repeating-linear-gradient(to bottom, rgba(255,255,255,.08) 0 82px, transparent 82px 93px);
+  }
+  @media (max-width:389px){
+    .json-preview-grid:empty{min-height:2128px}
+  }

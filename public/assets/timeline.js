@@ -1457,6 +1457,10 @@
   }
 
   function render() {
+    ["timeline", "undated", "skipped"].forEach(function (id) {
+      var node = document.getElementById(id);
+      if (node) node.removeAttribute("aria-busy");
+    });
     var now = new Date();
     var visible = allEvents().filter(matchesFilter).filter(matchesMine);
     syncProfileDot();
@@ -1992,6 +1996,10 @@
       renderCheckedAt();
       render();
     }).catch(function () {
+      ["timeline", "undated", "skipped"].forEach(function (id) {
+        var node = document.getElementById(id);
+        if (node) node.removeAttribute("aria-busy");
+      });
       document.getElementById("next-body").textContent = "";
       var message = document.createElement("p");
       message.className = "empty";

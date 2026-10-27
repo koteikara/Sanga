@@ -140,3 +140,40 @@
 /* そばの宿が空いていなかったときのカード */
 .hotel.is-full .hotel-link{background:var(--paper-2)}
 .hotel.is-full .hotel-price{margin-top:auto;font-size:11.5px;font-weight:700;color:var(--ink)}
+
+/* 読み込み前の高さ。2026-10-27 の Chromium。狭い幅は 390px、640px以上は画面幅 1366px（本文は最大760px）。
+   :empty と .is-loading が外れると自然な高さに戻る。試合一覧は開いた試合のホテルが出てから外す。 */
+#accessBody:empty,
+#parkingBody:empty,
+.spots:empty,
+#foodBody:empty,
+#featuredList:empty,
+#spotsMore:empty,
+#stayMore:empty,
+#homeList.is-loading{
+  border-radius:12px;
+  background-color:rgba(123,0,100,.04);
+}
+#accessBody:empty{min-height:1196px}
+#parkingBody:empty{min-height:1371px}
+#spotsWalk:empty{min-height:1244px}
+#spotsRide:empty{min-height:2073px}
+#specialtyList:empty{min-height:1106px}
+#foodBody:empty{min-height:184px}
+#featuredList:empty{min-height:685px}
+#spotsMore:empty,#stayMore:empty{min-height:19px}
+#homeList.is-loading{min-height:2492px}
+@media (max-width:389px){
+  #parkingBody:empty{min-height:1410px}
+  #foodBody:empty{min-height:284px}
+  #homeList.is-loading{min-height:2589px}
+}
+@media (min-width:640px){
+  #accessBody:empty{min-height:1279px}
+  #parkingBody:empty{min-height:964px}
+  #spotsWalk:empty{min-height:834px}
+  #spotsRide:empty{min-height:1266px}
+  #specialtyList:empty{min-height:753px}
+  #featuredList:empty{min-height:355px}
+  #homeList.is-loading{min-height:2327px}
+}

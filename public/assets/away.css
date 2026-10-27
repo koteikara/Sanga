@@ -405,3 +405,21 @@ button:focus-visible,
 .away-notes ul{margin:0;padding-left:1.2em}
 .away-notes li+li{margin-top:4px}
 .away-credit{margin:10px 0 0;font-size:11px}
+
+/* 読み込み前の高さ。数値は 2026-10-27 に Chromium で描画した後の border-box（390px幅、640px以上は広い画面）。
+   中身が入って .is-loading が外れると、自然な高さに戻る。ホテルJSONに版数が無い試合は、開いたカードの取得が終わってから外す。 */
+.away-jump.is-loading{min-height:61px}
+#awayList.is-loading{
+  min-height:2485px;
+  border-radius:16px;
+  background-image:repeating-linear-gradient(to bottom, rgba(255,255,255,.08) 0 72px, transparent 72px 86px);
+}
+@media (max-width:389px){
+  #awayList.is-loading{min-height:2605px}
+}
+@media (min-width:640px){
+  #awayList.is-loading{min-height:2612px}
+}
+@media (max-width:599px){
+  #awayMeta{min-height:35px}
+}

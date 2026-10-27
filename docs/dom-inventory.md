@@ -173,6 +173,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 
 #### 操作しているaria属性
 
+- `aria-busy`
 - `aria-label`
 - `aria-pressed`
 
@@ -272,6 +273,7 @@ LocalStorageの保存形式と既定値は `docs/personalization.md` を正本�
 
 #### 操作しているaria属性
 
+- `aria-busy`
 - `aria-hidden`
 - `aria-label`
 - `aria-pressed`

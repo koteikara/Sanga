@@ -17,8 +17,9 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="SANGA TOOLBOX 2026/27 年間スケジュール — 全試合の日程を見て、参戦予定を保存。">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="assets/style.css?v=82056676">
+<link rel="stylesheet" href="assets/style.css?v=ac5d192c">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
+<link rel="preload" href="data/matches.json?v=87b51598" as="fetch" crossorigin="anonymous">
 <script src="assets/analytics.js?v=1c3ec795" defer></script>
 </head>
 <body class="topbar-row">
@@ -53,7 +54,7 @@
 </div>
 <section class="share-capture-target" data-share-capture-target>
 <section class="json-preview" id="json-preview" aria-label="2026/27 日程">
-<div class="grid json-preview-grid" data-json-preview-list></div>
+<div class="grid json-preview-grid" data-json-preview-list aria-busy="true"></div>
 <p class="empty-filter-message" aria-live="polite" hidden>該当する試合はありません。設定パネルから絞り込みを変更してください。</p>
 </section>
 <div class="footer-tools">
@@ -138,6 +139,6 @@
 <button class="settings-close" type="button">閉じる</button>
 </section>
 </main>
-<script type="module" src="assets/app.js?v=00bcf573"></script>
+<script type="module" src="assets/app.js?v=eaa9ed1e"></script>
 </body>
 </html>

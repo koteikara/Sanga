@@ -636,7 +636,9 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
         : `${activeFilter === 'all' ? '' : `${getFilterLabel(activeFilter)}：`}${count}件を表示しています。`;
     }
     if(emptyFilterMessage){
-      emptyFilterMessage.hidden=count !== 0;
+      // カードがまだ無い（matches.json の取得前）は出さない。出すと空の一覧の下に
+      // 約77pxの注記が先に現れ、取得後に消えて下の文が二度動く。
+      emptyFilterMessage.hidden=getScheduleCards().length === 0 || count !== 0;
     }
   }
 
@@ -988,10 +990,13 @@ import { domToPng } from './vendor/modern-screenshot/modern-screenshot.mjs?v=ddf
       const {data, dataPath}=await fetchJsonPreviewData();
       const matches=Array.isArray(data.matches) ? data.matches : [];
       jsonPreviewList.replaceChildren(...createJsonPreviewItems(matches));
+      jsonPreviewList.removeAttribute('aria-busy');
       initializeMatchStates(jsonPreviewList);
       applyScheduleFilter();
     }catch(error){
       jsonPreviewList.replaceChildren();
+      jsonPreviewList.removeAttribute('aria-busy');
+      if(emptyFilterMessage) emptyFilterMessage.hidden=false;
       console.warn('JSON schedule rendering failed:', error);
     }
   }

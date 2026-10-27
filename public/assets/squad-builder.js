@@ -68,7 +68,7 @@ async function loadPlayers() {
   ];
   for (const url of candidates) {
     try {
-      const res = await fetch(url, { cache: "no-store" });
+      const res = await fetch(url);
       if (!res.ok) continue;
       const json = await res.json();
       if (Array.isArray(json.players) && json.players.length) {
@@ -151,6 +151,7 @@ let pickerFilter = "ALL";
    フォーメーション選択
 ------------------------------------------------------------------ */
 function buildFormationButtons() {
+  formationGrid.removeAttribute("aria-busy");
   formationGrid.innerHTML = "";
   Object.entries(FORMATIONS).forEach(([key, f]) => {
     const btn = document.createElement("button");
@@ -274,7 +275,7 @@ async function loadMatchOptions() {
   ];
   for (const url of candidates) {
     try {
-      const res = await fetch(url, { cache: "no-cache" });
+      const res = await fetch(url);
       if (!res.ok) continue;
       const data = await res.json();
       const matches = (data.matches || []).filter((m) => m.is_visible !== false);
