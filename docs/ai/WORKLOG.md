@@ -39,6 +39,38 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-10-27 公式サイトからの取得を一時停止
+
+### 変更ファイル
+
+- `.github/workflows/ticket-sales-sync.yml`
+- `tools/build-import-pr-body.js`、`tools/fixtures/import-pr-body/paused.expected.md`、`package.json`
+- `AGENTS.md`、`PROJECT_CONTEXT.md`、`docs/project-structure.md`、`docs/supporter-timeline-design.md`
+
+### 変更内容
+
+公式サイト（sanga-fc.jp）は販売スケジュールが画像だけで、ニュース一覧はトップへ転送される。日次ジョブが毎日失敗し、Issue #322 に連続失敗が積み上がっていた。
+
+スイッチは `PAUSE_OFFICIAL_SANGA_FETCH`。既定は `true`。`true` のあいだは販売スケジュールの取得・解析と公式の案内の取り込みを実行しない。既存の `ticket-sales.current.csv` と案内のCSVは触らない。失敗には数えない。再開は同じ変数を `false` にする。`false` 以外は停止のまま。
+
+Jリーグチケット（ホーム掲載、ホームの販売日時、アウェイ席）、公開JSONの生成、検証、下書きPR、滞りのIssueは続ける。取り込みPRの本文は、停止中の公式の段を「失敗しました」ではなく「一時停止しています」と書く。
+
+### 確認結果
+
+`npm run check` は成功（`check:static` と `check:squad`。`check:import-pr-body` に停止中の本文の突き合わせを足した）。
+
+### 未確認項目
+
+この環境の `gh workflow run` は HTTP 403（Resource not accessible by integration）で、`workflow_dispatch` を起動できなかった。2026-10-15 の記録と同じ制限。停止中にジョブが成功することは、ランナーでは未確認。
+
+### 残課題
+
+公式サイトが戻ったら `PAUSE_OFFICIAL_SANGA_FETCH` を `false` に戻す。表が画像のまま戻しても、解析は失敗してジョブは赤くなる（停止前と同じ）。
+
+### 人間が確認すべき点
+
+停止中の取り込みPRに「一時停止しています」と出ること。Jリーグチケット側の失敗は、いままでどおりジョブを赤くすること。
+
 ## 2026-10-15 公式サイトの中間証明書と、ハノイ戦のアウェイ発売
 
 ### 変更ファイル

@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-10-22
+updated: 2026-10-27
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -11,7 +11,7 @@ knowledge_mocs:
 
 # プロジェクト概要
 
-京都サンガF.C.のサポーター向けに、非公式のWebツールを公開するプロジェクトです。年間スケジュールの確認と参戦予定の保存、予想スカッド画像の作成、チケット販売開始とキックオフを時系列で並べるSUPPORTER TIMELINE、過密日程カレンダー、求・譲投稿フォーマット、アウェイ遠征ガイド、ホーム観戦ガイド（サンガスタジアムへの行き方・散策・亀岡の宿）を提供します。すべてスマートフォンでの利用を最優先し、個人の状態はLocalStorageにだけ保存します。公式サイトのチケット販売スケジュールとニュース一覧は、GitHub Actionsが1日1回だけ読み取り、差分をPRとして提案します。
+京都サンガF.C.のサポーター向けに、非公式のWebツールを公開するプロジェクトです。年間スケジュールの確認と参戦予定の保存、予想スカッド画像の作成、チケット販売開始とキックオフを時系列で並べるSUPPORTER TIMELINE、過密日程カレンダー、求・譲投稿フォーマット、アウェイ遠征ガイド、ホーム観戦ガイド（サンガスタジアムへの行き方・散策・亀岡の宿）を提供します。すべてスマートフォンでの利用を最優先し、個人の状態はLocalStorageにだけ保存します。Jリーグチケットの販売情報は、GitHub Actionsが1日1回だけ読み取り、差分をPRとして提案します。公式サイト（sanga-fc.jp）のチケット販売スケジュールとニュース一覧の取得は、2026-10-27から `PAUSE_OFFICIAL_SANGA_FETCH`（既定 `true`）で一時停止しています。再開は同じ変数を `false` に戻します。
 
 ## 現在の技術構成
 
@@ -29,7 +29,7 @@ knowledge_mocs:
 | データ保存 | 静的JSON（公開データの正本） | 日程53件、選手39件、ツール一覧、タイムライン用イベント | `public/data/matches.json`、`public/data/players.json`、`public/data/tools.json`、`public/data/calendar-events.json`（生成物） |
 | データ保存 | CSV（運用データ・取り込み結果） | チケット販売、アウェイ席、ニュースの現在値と履歴スナップショット | `docs/sheets/*.csv` |
 | データ保存 | ブラウザLocalStorage | 参戦予定、表示設定、スカッド保存など個人状態 | `public/assets/app.js`、`public/assets/squad-builder.js`、`docs/personalization.md` |
-| 外部サービス | 京都サンガF.C.公式サイト（読み取りのみ） | チケット販売スケジュール、ニュース一覧・記事の取得 | `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js` |
+| 外部サービス | 京都サンガF.C.公式サイト（読み取りのみ） | チケット販売スケジュール、ニュース一覧・記事の取得。2026-10-27から日次ワークフローでは一時停止（`PAUSE_OFFICIAL_SANGA_FETCH=true`）。道具はそのまま残し、`false` で再開する | `tools/fetch-ticket-sales.js`、`tools/fetch-news-list.js`、`tools/fetch-news-articles.js`、`.github/workflows/ticket-sales-sync.yml` |
 | 外部サービス | Jリーグチケット（読み取りのみ） | アウェイ席の販売状態と発売日時の取得。2026-10-15からホーム戦の販売段階の開始日時も読み、更新できなくなった公式の販売スケジュールを補う | `tools/fetch-away-tickets.js`、`tools/fetch-away-sales.js`、`tools/parse-home-sales.js` |
 | 外部サービス | Cloudflare Web Analytics | Cookieなしのアクセス解析。2026-10-15にトークンを設定。本番以外のホストでは送らない | `public/assets/analytics.js` |
 | 外部サービス | 楽天トラベルAPI（VacantHotelSearch） | アウェイ遠征ガイドとホーム観戦ガイドの前泊・当日泊ホテル候補。週1回 `hotels-sync.yml` が取得して下書きPRを作る。認証情報は GitHub Secrets（`RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`）、許可サイトの判定に Origin ヘッダー（既定は本番ドメイン）を送る | `tools/hotels/rakuten_client.py`、`tools/hotels/build_match_hotels.py`、`.github/workflows/hotels-sync.yml`、`docs/hotels-operation-flow.md` |
@@ -53,7 +53,7 @@ Lint、フォーマッター、TypeScript、バンドラは使われていませ
 
 - **公開ページ（`public/`）**: 各HTMLが `public/assets/` のCSS/JSを読み、`public/data/` のJSONを `fetch` して描画します。サーバー側の処理はありません。個人状態はLocalStorageに保存し、公開JSONへは含めません。
 - **データ生成（`tools/`）**: スプレッドシート由来のCSVから日程・選手JSONを生成します。公式サイトとJリーグチケットから取得したHTMLをCSVに解析し、`generate-calendar-events.js` が `matches.json` と合わせて `calendar-events.json` とICSフィードを組み立てます。
-- **自動化（`.github/workflows/`）**: `ticket-sales-sync.yml` が毎日22:00 JSTに取得・解析・生成・検証を行い、差分があればドラフトPRを作ります。手で確かめるアウェイ戦はIssue1本を書き換えて知らせます。取り込みPRは常に1本だけにし、未マージが3日続くか取得が2回続けて失敗したら、別のIssue1本でメンション付きで知らせます。`static-checks.yml` がPRごとに `npm run check:static` と、文書以外の変更時にスカッドのChromium検証を走らせます。
+- **自動化（`.github/workflows/`）**: `ticket-sales-sync.yml` が毎日22:00 JSTに取得・解析・生成・検証を行い、差分があればドラフトPRを作ります。2026-10-27から、公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内だけは `PAUSE_OFFICIAL_SANGA_FETCH`（既定 `true`）で取得しません。既存の `ticket-sales.current.csv` と案内のCSVは残し、停止は失敗に数えません。Jリーグチケットのホーム掲載・販売日時・アウェイ席は続けます。再開は同じ変数を `false` にします。手で確かめるアウェイ戦はIssue1本を書き換えて知らせます。取り込みPRは常に1本だけにし、未マージが3日続くか取得が2回続けて失敗したら、別のIssue1本でメンション付きで知らせます。停止中の公式取得は、この連続失敗には入りません。`static-checks.yml` がPRごとに `npm run check:static` と、文書以外の変更時にスカッドのChromium検証を走らせます。
 - **配信**: `main` へのpushでGitHub Pagesへ確認用に配置し、本番は `deploy-production.yml` を `DEPLOY` 入力付きで手動実行します。デプロイ前に本番ファイルを暗号化して退避し、`public/` だけをFTPで差分同期します。
 
 ```mermaid
@@ -72,9 +72,9 @@ flowchart LR
 - **依存パッケージを持たない**: `package.json` に `dependencies` がなく、lockファイルもありません。検証は `node --check` と自作スクリプトで完結させ、手元とCIで同じ `npm run check:*` を呼びます。ワークフローYAMLへ検証コマンドを直接書かない方針です（`AGENTS.md`「基本検証」）。
 - **Playwrightはリポジトリに入れず、CIで都度インストール**: `squad-checks.yml` が `npm install --no-save --package-lock=false` で固定版を入れます。手元での実ブラウザ検証は任意です。
 - **modern-screenshot をCDNではなく静的同梱**: iOS Safariでの画像生成の安定と、公開物の自己完結のためと読めます。`THIRD_PARTY_NOTICES.md` にライセンス表示を集約しています（同梱に切り替えた理由の記録は未確認）。
-- **公式サイトへの負荷を抑える**: `robots.txt` の `Crawl-delay: 10` に従い、1日1回・1リクエスト、ステップ間に `sleep 10` を置きます（`ticket-sales-sync.yml` のコメント、`docs/supporter-timeline-design.md`「公式サイトの利用条件」）。
+- **公式サイトへの負荷を抑える**: `robots.txt` の `Crawl-delay: 10` に従い、1日1回・1リクエスト、ステップ間に `sleep 10` を置きます（`ticket-sales-sync.yml` のコメント、`docs/supporter-timeline-design.md`「公式サイトの利用条件」）。2026-10-27から `PAUSE_OFFICIAL_SANGA_FETCH=true` のあいだ、日次ジョブは公式サイトへリクエストを送りません。
 - **公式サイトのTLS検証は切らない**: `www.sanga-fc.jp` は葉だけを送る（2026-10-04から取得が `UNABLE_TO_VERIFY_LEAF_SIGNATURE`）。中間証明書 Cybertrust Japan SureServer CA G4 を `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` に置き、`ticket-sales-sync.yml` が `NODE_EXTRA_CA_CERTS` で読む。フィンガープリントは `tools/check-sanga-ca.js` が公開値と突き合わせる。
-- **失敗を沈黙させない**: アウェイ・ニュース取り込みは `continue-on-error` で本流を止めない一方、最後のステップでジョブを失敗させます。2026-08-31から10日間の失敗に気付けなかった経緯が根拠です。
+- **失敗を沈黙させない**: アウェイとホーム戦（Jリーグチケット）の取り込みは `continue-on-error` で本流を止めない一方、最後のステップでジョブを失敗させます。2026-08-31から10日間の失敗に気付けなかった経緯が根拠です。公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内は、サイトが戻るまで取得自体を止めています（`PAUSE_OFFICIAL_SANGA_FETCH=true`）。これは失敗の握りつぶしではなく、壊れた取得先へ毎日取りに行かないための停止です。停止中はジョブを赤くせず、Issueの連続失敗にも足しません。`false` に戻したあとの解析失敗は、これまでどおりジョブの失敗になります。
 - **本番デプロイは手動のみ**: 自動デプロイは行わず、`main` かつ `DEPLOY` 入力を要求します。デプロイ前に暗号化バックアップを必須にします（公開リポジトリのアーティファクトは誰でも取得できるため）。
 - **LocalStorageの互換性を守る**: 既存キー・保存形式を移行方針なしに変えません。スカッドは新 `squad` 形式を保存しつつ旧 `bench` 形式を読みます（`docs/project-structure.md`）。
 - **UIを伴う変更は `experiments/` で先に試す**: 公開物の正本は `public/` で、`experiments/` はGitHub Pagesでだけ参照できます（`docs/ui-prototype-workflow.md`）。

@@ -7,6 +7,11 @@ name: チケット販売スケジュールの取り込み
 # robots.txt に一般的な Disallow は無いが Crawl-delay: 10 の指定があるため、
 # 1回の実行で1リクエストだけ送り、頻度は1日1回にとどめる。
 # 公式サイトへは何も書き込まない読み取り専用の処理で、デプロイは行わない。
+#
+# 公式サイト（sanga-fc.jp）からの取得は、PAUSE_OFFICIAL_SANGA_FETCH が
+# true のあいだ止める。対象は販売スケジュールの取得・解析と、公式の案内の取り込みだけ。
+# Jリーグチケット、公開JSONの生成、検証、下書きPRは止めない。
+# 再開するときは、同じ変数を false にする。
 
 on:
   schedule:
@@ -42,6 +47,13 @@ jobs:
       # 検証は切らない。公開の中間証明書を追加の信頼アンカーとして読む。
       # フィンガープリントは tools/check-sanga-ca.js が固定値と突き合わせる。
       NODE_EXTRA_CA_CERTS: ${{ github.workspace }}/tools/certs/cybertrust-japan-sureserver-ca-g4.pem
+      # 公式サイト（sanga-fc.jp）からの取得を一時停止するスイッチ。これだけを変える。
+      # true（既定）: 販売スケジュールの取得・解析と、公式の案内の取り込みをしない。
+      #   既存の ticket-sales.current.csv と案内のCSVは触らない。失敗には数えない。
+      # false: 再開する。公式サイトが戻ったら、この値を false にする。
+      # Jリーグチケット（ホームの掲載・販売日時、アウェイ席）はこの値に従わない。
+      # true 以外でも false 以外は停止のまま（綴りを誤っても取得を再開しない）。
+      PAUSE_OFFICIAL_SANGA_FETCH: 'true'
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v7
@@ -54,7 +66,9 @@ jobs:
 
       # 実行のたびに新しいランナーなので、24時間ガード（前回取得時刻の記録）は
       # 効かない。頻度は on.schedule と concurrency で担保する。
+      # PAUSE_OFFICIAL_SANGA_FETCH が false のときだけ公式サイトへ取りに行く。
       - name: 公式ページを取得
+        if: env.PAUSE_OFFICIAL_SANGA_FETCH == 'false'
         run: node tools/fetch-ticket-sales.js tmp/ticket-schedule.html
 
       # 取得日時の記録ファイルをCSVと一緒にコミットしてしまわないよう、
@@ -65,8 +79,11 @@ jobs:
       # 取得は通っても、2026-10-15 時点の案内は画像だけで表が無い。
       # そのときは CSV を書き換えずに、あとのアウェイと案内へ進む。
       # ジョブ自体は最後の確認で失敗させ、取り込みの滞りを消したことにしない。
+      # PAUSE_OFFICIAL_SANGA_FETCH が true のあいだは実行しない。
+      # CSVは前回の値のまま残し、解析の失敗としても数えない。再開は false。
       - name: CSVを更新
         id: ticket_csv
+        if: env.PAUSE_OFFICIAL_SANGA_FETCH == 'false'
         continue-on-error: true
         env:
           FORCE_PR: ${{ inputs.force_pr }}
@@ -130,8 +147,11 @@ jobs:
       #
       # アウェイと同じく、失敗してもホーム戦の取り込みは止めない。ただし黙って終わらせず、
       # 最後の確認ステップでジョブを失敗させる。
+      # PAUSE_OFFICIAL_SANGA_FETCH が true のあいだは実行しない。
+      # 案内のCSVは前回の値のまま残し、失敗としても数えない。再開は false。
       - name: 公式の案内を取り込む
         id: news
+        if: env.PAUSE_OFFICIAL_SANGA_FETCH == 'false'
         continue-on-error: true
         run: |
           set -euo pipefail
@@ -171,6 +191,20 @@ jobs:
             echo "実行ログ: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           } >> "$GITHUB_STEP_SUMMARY"
           echo "::warning::公式の案内の取り込みに失敗しました。案内の件数は更新されていません。"
+
+      # 停止中は上の失敗記録を出さない。実行サマリーに、止めた理由と再開の仕方を残す。
+      - name: 公式サイトからの取得は一時停止
+        if: env.PAUSE_OFFICIAL_SANGA_FETCH != 'false'
+        run: |
+          set -euo pipefail
+          {
+            echo '## 公式サイト（sanga-fc.jp）からの取得は一時停止しています'
+            echo
+            echo '販売スケジュールの取得・解析と、公式の案内の取り込みは行っていません。'
+            echo '`docs/sheets/ticket-sales.current.csv` と案内のCSV（`news.current.csv` / `news-times.current.csv`）は前回の値のままです。'
+            echo 'この停止は失敗として数えません。Jリーグチケット側の取り込みが通っていれば、この実行は成功です。'
+            echo '再開するときは、このワークフローの `PAUSE_OFFICIAL_SANGA_FETCH` を `false` にします。'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # アウェイが失敗した日も、静かな日（PRが立たない日）にこそ気付けるようにする。
       - name: ホーム戦（Jリーグチケット）の失敗を記録
@@ -274,9 +308,15 @@ jobs:
           {
             echo '## 販売スケジュールの変更'
             echo
-            echo '```text'
-            cat tmp/parse-result.txt
-            echo '```'
+            if [ -f tmp/parse-result.txt ]; then
+              echo '```text'
+              cat tmp/parse-result.txt
+              echo '```'
+            elif [ "${PAUSE_OFFICIAL_SANGA_FETCH}" != "false" ]; then
+              echo '公式サイトからの取得は一時停止中です。販売スケジュールは解析していません。`docs/sheets/ticket-sales.current.csv` は前回の値のままです。'
+            else
+              echo '販売スケジュールの解析結果がありません。'
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       # PRを作る前に、取り込んだCSVが calendar-events を組み立てられる形かを見る。
@@ -326,14 +366,21 @@ jobs:
           # 固定の文面だと、CSVだけが動いた日にも「公開JSONを作り直した」と書いてしまう。
           # 前の内容を HEAD から読むので、コミットより前に作る。
           failed=()
-          if [ "${TICKET_OUTCOME}" = "failure" ]; then failed+=(--failed ticket); fi
+          paused=()
+          # 停止中は公式の段を失敗にしない。本文は「一時停止」と書く。
+          if [ "${PAUSE_OFFICIAL_SANGA_FETCH}" != "false" ]; then
+            paused+=(--paused ticket --paused news)
+          else
+            if [ "${TICKET_OUTCOME}" = "failure" ]; then failed+=(--failed ticket); fi
+            if [ "${NEWS_OUTCOME}" = "failure" ]; then failed+=(--failed news); fi
+          fi
           if [ "${HOME_JLT_OUTCOME}" = "failure" ]; then failed+=(--failed home); fi
           if [ "${AWAY_OUTCOME}" = "failure" ]; then failed+=(--failed away); fi
-          if [ "${NEWS_OUTCOME}" = "failure" ]; then failed+=(--failed news); fi
           node tools/build-import-pr-body.js \
             --pending-since "${pending_since}" \
             --parse-result tmp/parse-result.txt \
             --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            "${paused[@]}" \
             "${failed[@]}" > pr-body.md
 
           branch="automation/ticket-sales-$(date -u +%Y%m%d-%H%M%S)"
