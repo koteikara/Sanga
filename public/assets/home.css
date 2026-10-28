@@ -162,7 +162,7 @@
 #parkingBody:empty{min-height:1371px}
 #spotsWalk:empty{min-height:1244px}
 #spotsRide:empty{min-height:2073px}
-#matchFoodList:empty{min-height:1055px}  /* 2026-10-28 に測った値（日本語版） */
+#matchFoodList:empty{min-height:1155px}  /* 2026-10-28 に測った値（日本語版） */
 #specialtyList:empty{min-height:1106px}
 #foodBody:empty{min-height:184px}
 #featuredList:empty{min-height:685px}
@@ -170,7 +170,7 @@
 #homeList.is-loading{min-height:2492px}
 @media (max-width:389px){
   #parkingBody:empty{min-height:1410px}
-  #matchFoodList:empty{min-height:1165px}
+  #matchFoodList:empty{min-height:1225px}
   #foodBody:empty{min-height:284px}
   #homeList.is-loading{min-height:2589px}
 }
@@ -179,7 +179,7 @@
   #parkingBody:empty{min-height:964px}
   #spotsWalk:empty{min-height:834px}
   #spotsRide:empty{min-height:1266px}
-  #matchFoodList:empty{min-height:532px}
+  #matchFoodList:empty{min-height:572px}
   #specialtyList:empty{min-height:753px}
   #featuredList:empty{min-height:355px}
   #homeList.is-loading{min-height:2327px}

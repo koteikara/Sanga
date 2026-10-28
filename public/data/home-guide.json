@@ -13,7 +13,7 @@
       "試合日の駐車場: サンガスタジアム公式（試合日は主催者・関係者専用）、Jリーグチケット（SANGA CREW 会員の駐車場チケット 1,800円）、保津川下り（https://www.hozugawakudari.jp/raft_blog/1minutes-walk-parking-for-sangastadium）。2026-10-16確認",
       "写真: Wikimedia Commons（作者・利用条件は各 photo に記載）。画像は Wikimedia のサーバーから読み、リポジトリには置かない。2026-10-16確認",
       "イオン亀岡店の特定日料金と駐車場の全体像の参考: ワクタカスポーツのまとめ（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）。2026-10-16確認",
-      "スタジアムと周辺のグルメ: 京都サンガF.C.公式Xの投稿（https://x.com/sangafc/status/2090001511543869856 、2026-08-19。グルメ街道のメインスタンド側への拡大、選手コラボメニュー13品）と、そこからリンクされた公式ニュース（https://www.sanga-fc.jp/news/detail/21281 グルメ街道）。かめおかecoマルシェ（https://kyotanba.net/eco-marche/ 。主催 一般社団法人かめおかコンベンションビューロー）。スタジアム公式の周辺グルメ情報（https://sangastadium-by-kyocera.jp/gourmet）とフードコート（https://sangastadium-by-kyocera.jp/ancillary-facilities/food-court）、結や（https://nishicori.com/musubiya/ 、スタジアム1階 Football Diner、平日11〜17時・土日祝とイベントの日11〜22時、水木定休）。グルかめナビ（https://www.kameoka.info/sanga/ 、亀岡市観光協会）。2026-10-28確認",
+      "スタジアムと周辺のグルメ: 京都サンガF.C.公式Xの投稿（https://x.com/sangafc/status/2090001511543869856 、2026-08-19。グルメ街道のメインスタンド側への拡大、選手コラボメニュー13品）と、そこからリンクされた公式ニュース（https://www.sanga-fc.jp/news/detail/21281 グルメ街道）。かめおかecoマルシェ（https://kyotanba.net/eco-marche/ 。主催 一般社団法人かめおかコンベンションビューロー）。スタジアム公式の周辺グルメ情報（https://sangastadium-by-kyocera.jp/gourmet）とフードコート（https://sangastadium-by-kyocera.jp/ancillary-facilities/food-court）、結や（https://nishicori.com/musubiya/ 、スタジアム1階 Football Diner、平日11〜17時・土日祝とイベントの日11〜22時、水木定休）、グルかめナビの店の案内（麺処つるり https://www.kameoka.info/sanga/gourmet/detail/post-32.php 、Café de MOTHERS post-106、食ぱん道 post-107）。常設の売店とキッチンカー形式の店の区別、フードコートの5店の顔ぶれは https://hrsg01.net/164.html も参考にした（個人のまとめ記事。ページからはリンクしない）。グルかめナビ（https://www.kameoka.info/sanga/ 、亀岡市観光協会）。2026-10-28確認",
       "名物: 亀岡市（亀岡牛の条件、特産品）、京都府（たわわ朝霧 9:00〜17:00）、各酒蔵の所在地は OpenStreetMap。2026-10-16確認",
       "写真（スタジアム・保津川下り・トロッコ・出雲大神宮）: 亀岡市「かめコレ-かめおか画像オープンデータコレクション-」（https://www.city.kameoka.kyoto.jp/site/kamecolle/ 、CC BY 4.0、提供者 亀岡市）を960×540に切り抜いて縮め、public/assets/home/ に置いた。2026-10-16確認"
     ]
@@ -321,7 +321,7 @@
       "id": "stadium-gourmet",
       "name": "スタジアムグルメ",
       "kind": "試合の日",
-      "text": "試合の日は、スタジアムの外周に店が並ぶ「グルメ街道」が開かれます。2026/27シーズンからメインスタンド側にも広がり、選手コラボメニュー（13品。買うとオリジナル選手カードがもらえる）も出ます。出店とメニューは試合ごとに変わるので、京都サンガF.C.の公式の案内で確かめてください。",
+      "text": "試合の日は、スタジアムのコンコースに常設の売店と、試合ごとに顔ぶれが変わるキッチンカー形式の店が並びます。外周の「グルメ街道」は2026/27シーズンからメインスタンド側にも広がり、選手コラボメニュー（13品。買うとオリジナル選手カードがもらえる）も出ます。出店とメニューは試合ごとに変わるので、京都サンガF.C.の公式の案内で確かめてください。",
       "latitude": 35.01704,
       "longitude": 135.58424,
       "url": "https://www.sanga-fc.jp/news/detail/21281",
@@ -331,7 +331,7 @@
       "id": "food-court",
       "name": "スタジアムのフードコート",
       "kind": "試合のない日も",
-      "text": "スタジアム1階のフードコート（Football Diner）。肉吸いとおにぎりの「結や」、食パン、カフェ、牛カツなど5つの店が入り、靴を脱いで遊べるキッズエリアもあります。ふだんは11:00〜17:00ごろ。試合などイベントの日は、結やが22時まで開くなど営業時間が変わります（店ごとに定休日があります）。",
+      "text": "スタジアム1階の屋内のフードコート（Football Diner）。肉吸いとおにぎりの「結や」、うどんの「麺処つるり」、亀岡牛のハンバーグなどの「Café de MOTHERS」、牛カツの「縁」、「食ぱん道」の5店が入り、靴を脱いで遊べるキッズエリアもあります。ふだんは11:00〜17:00ごろ（カフェと食ぱん道は朝から）。試合などイベントの日は、結やが22時まで開くなど営業時間が変わります（店ごとに定休日があります）。",
       "latitude": 35.01704,
       "longitude": 135.58424,
       "url": "https://sangastadium-by-kyocera.jp/ancillary-facilities/food-court",
