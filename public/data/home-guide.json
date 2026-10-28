@@ -120,7 +120,7 @@
         "name": "akippa（アキッパ）",
         "text": "個人宅や月極の空きを、日単位で予約できる駐車場。サンガスタジアム周辺の一覧が開きます。",
         "url": "https://www.akippa.com/kinki/kyoto/sangastadiumbykyocera",
-        "affiliate_key": ""
+        "affiliate_key": "parking_akippa"
       },
       {
         "id": "btimes",

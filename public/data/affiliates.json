@@ -16,5 +16,10 @@
     "label": "パーキング予約なら特P（とくぴー）",
     "href": "https://px.a8.net/svt/ejp?a8mat=4BEHXB+2YKM2A+43U8+C03K2",
     "pixel": "https://www19.a8.net/0.gif?a8mat=4BEHXB+2YKM2A+43U8+C03K2"
+  },
+  "parking_akippa": {
+    "label": "サンガスタジアム周辺の駐車場を予約（akippa）",
+    "href": "https://px.a8.net/svt/ejp?a8mat=4BEHXB+383JQQ+3NAY+BW8O2&a8ejpredirect=https%3A%2F%2Fwww.akippa.com%2Fkinki%2Fkyoto%2Fsangastadiumbykyocera",
+    "pixel": "https://www18.a8.net/0.gif?a8mat=4BEHXB+383JQQ+3NAY+BW8O2"
   }
 }

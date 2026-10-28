@@ -8,7 +8,8 @@
   var list = document.getElementById("homeList");
 
   var SVG_NS = "http://www.w3.org/2000/svg";
-  var A8_LINK = /^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+$/;
+  // A8のリンク。飛び先を指定したもの（&a8ejpredirect=エンコードした https のURL）も通す
+  var A8_LINK = /^https:\/\/px\.a8\.net\/svt\/ejp\?a8mat=[A-Za-z0-9+]+(?:&a8ejpredirect=https%3A%2F%2F[A-Za-z0-9%._~-]+)?$/;
   var A8_PIXEL = /^https:\/\/www\d+\.a8\.net\/0\.gif\?a8mat=[A-Za-z0-9+]+$/;
   // 楽天トラベルの画像。img.travel.rakuten.co.jp と、宿ページの写真が置かれている trvimg.r10s.jp
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
@@ -712,8 +713,8 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=fe03d6b2");
-  var affP = getJson("data/affiliates.json?v=0d08689a").catch(function () { return {}; });
+  var guideP = getJson("data/home-guide.json?v=d9b105c0");
+  var affP = getJson("data/affiliates.json?v=d51a049a").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");
   var indexP = getJson("data/hotel-index.json?v=f6a0e3e6").catch(function () { return { matches: [] }; });
 
