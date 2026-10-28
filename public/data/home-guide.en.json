@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "lang": "en",
+    "updated_at": "2026-10-28",
+    "note": "English overlay for home-en.html. Only strings are replaced; URLs, coordinates and photos come from home-guide.json. Arrays line up with home-guide.json by position (items with an id must repeat it). Checked by tools/validate-stadiums.js."
+  },
+  "ui": {
+    "map_big": "Open a larger map (Google Maps)",
+    "stadium": "Stadium",
+    "guide_link": "Details",
+    "new_tab": "{0} (opens in a new tab)",
+    "colon": ": ",
+    "route": "Route from {0}",
+    "map_title": "Map of {0} and around {1}",
+    "lots_title": "Car parks you can use on match days",
+    "services_title": "Book a parking space online",
+    "service_label": "{0}: parking around Sanga Stadium (opens in a new tab)",
+    "coin_title": "Find coin parking on the map",
+    "coin_note": "You can also park near a station farther out and take the JR Sagano Line to Kameoka Station.",
+    "coin_words": "coin parking,parking",
+    "maps_search": "Search {1} around {0} on Google Maps",
+    "photo": "Photo: ",
+    "paren_open": " (",
+    "paren_close": ")",
+    "dist": "About {1} km from {0} in a straight line",
+    "map": "Map",
+    "maps_view": "View {0} on Google Maps",
+    "official": "Official site",
+    "official_label": "Official site of {0} (opens in a new tab)",
+    "gmaps_suffix": " (Google Maps)",
+    "food_words": "restaurants,ramen,izakaya,cafe",
+    "food_query": "Kameoka local food",
+    "food_local": "Look up Kameoka's local food",
+    "rt_name": "Rakuten Travel",
+    "rt_view": "View on Rakuten Travel (Japanese)",
+    "rt_view_label": "View {0} on Rakuten Travel, a Japanese-language site (opens in a new tab)",
+    "jalan": "Search on Jalan (Japanese)",
+    "stay_more": "Find other places to stay: ",
+    "near_featured": "Next to stadium",
+    "near_yunohana": "Yunohana Onsen",
+    "near_stadium": "Near stadium",
+    "price_two": "2 guests, 1 night ",
+    "price_per": "approx. ¥{0} per person",
+    "sep": " · ",
+    "price_suffix": "+",
+    "price_from": "From ",
+    "price_check": "See Rakuten Travel for prices",
+    "hotel_dist": "{0} km to stadium",
+    "reviews": " ({0} reviews)",
+    "full": "No room for 2 was available when we checked",
+    "full_check": "Check on Rakuten Travel",
+    "row_label": "{0}: {1} options",
+    "prev": "Previous hotel",
+    "next": "Next hotel",
+    "checkin": "Check-in {0}",
+    "swipe": "{0} hotels · swipe for more →",
+    "night_before": "Night before",
+    "night_same": "Match night",
+    "hotel_foot": "Lowest price among plans with rooms available when checked (2 guests, 1 night, tax and service included). Checked {0} JST / Data: Rakuten Travel",
+    "hotels": "Hotels",
+    "hotel_cond": "2 guests · the 2 next to the stadium → within 3 km of the stadium → Yunohana Onsen · cheapest first in each area",
+    "loading": "Loading…",
+    "hotel_error": "Could not load hotel information.",
+    "hotel_pending": "Room availability is not ready yet (we check once a week). You can open the hotels on Rakuten Travel from “Where to stay” above.",
+    "comp_sep": " · ",
+    "kickoff": "Kick-off {0}",
+    "kickoff_tbd": "Kick-off TBC",
+    "date_tbd": "Date TBC",
+    "date": "{2}, {0}/{1}",
+    "date_or": " or ",
+    "week": "Sun,Mon,Tue,Wed,Thu,Fri,Sat",
+    "round_sec": "Matchday {0}",
+    "round_n": "Round {0}",
+    "round_of": "Round of {0}",
+    "no_matches": "There are no upcoming home matches.",
+    "meta_count": "{0} upcoming home matches",
+    "meta_updated": " / Hotels checked {0} JST",
+    "load_error": "Could not load the data. Please try again later."
+  },
+  "names": {
+    "competitions": {
+      "J1": "J1 League",
+      "EMP": "Emperor's Cup",
+      "ACL": "AFC Champions League",
+      "LEV": "J.League YBC Levain Cup"
+    },
+    "rounds": {
+      "準々決勝": "Quarter-final",
+      "準決勝": "Semi-final",
+      "決勝": "Final"
+    },
+    "opponents": {
+      "C大阪": "Cerezo Osaka",
+      "FCマルヤス岡崎": "FC Maruyasu Okazaki",
+      "FC東京": "FC Tokyo",
+      "FC町田ゼルビア": "FC Machida Zelvia",
+      "G大阪": "Gamba Osaka",
+      "コンアン・ハノイ": "Cong An Hanoi",
+      "サンフレッチェ広島": "Sanfrecce Hiroshima",
+      "ニューカッスル・ジェッツ": "Newcastle Jets",
+      "ブリーラム・ユナイテッド": "Buriram United",
+      "ポートFC": "Port FC",
+      "ラーチャブリーFC": "Ratchaburi FC",
+      "全北現代モータース": "Jeonbuk Hyundai Motors",
+      "千葉": "JEF United Chiba",
+      "名古屋": "Nagoya Grampus",
+      "大田ハナ・シチズン": "Daejeon Hana Citizen",
+      "岡山": "Fagiano Okayama",
+      "川崎F": "Kawasaki Frontale",
+      "広島": "Sanfrecce Hiroshima",
+      "未定": "TBC",
+      "東京V": "Tokyo Verdy",
+      "柏": "Kashiwa Reysol",
+      "横浜FM": "Yokohama F. Marinos",
+      "水戸": "Mito HollyHock",
+      "浦和": "Urawa Red Diamonds",
+      "浦項スティーラーズ": "Pohang Steelers",
+      "清水": "Shimizu S-Pulse",
+      "町田": "FC Machida Zelvia",
+      "神戸": "Vissel Kobe",
+      "福岡": "Avispa Fukuoka",
+      "藤枝MYFC": "Fujieda MYFC",
+      "長崎": "V-Varen Nagasaki",
+      "鹿島": "Kashima Antlers"
+    },
+    "meals": {
+      "食事なし": "Room only",
+      "朝食付き": "Breakfast",
+      "朝夕食付き": "Breakfast & dinner"
+    }
+  },
+  "guide": {
+    "stadium": {
+      "name": "Sanga Stadium by KYOCERA",
+      "city": "Kameoka, Kyoto",
+      "station_name": "Kameoka Station",
+      "photo": {
+        "alt": "Sanga Stadium by KYOCERA under a blue sky",
+        "credit": "Kameoka City",
+        "source_label": "Kamecolle (Kameoka City)"
+      }
+    },
+    "access": [
+      { "label": "From Kyoto Station", "text": "Take the JR Sagano Line (San'in Line) to Kameoka Station: about 20 min by rapid, about 30 min by local train. Limited expresses (such as the Maizuru; limited express ticket required) take about 18 min." },
+      { "label": "From Osaka", "text": "Go to Kyoto Station on the JR Kyoto Line or similar, then change to the Sagano Line." },
+      { "label": "From Maizuru", "text": "The JR Limited Express Maizuru runs direct: about 1 h 10 min from Nishi-Maizuru, about 1 h 20 min from Higashi-Maizuru (via Ayabe and Sonobe)." },
+      { "label": "By bus", "text": "On match days, Keihan Kyoto Kotsu runs a shuttle bus from Hankyu Katsura Station (east exit) and JR Katsuragawa Station (reserved seats, adults ¥850 one way). Check the operator's page for which matches it runs and the times.", "link_label": "Keihan Kyoto Kotsu (Japanese)" },
+      { "label": "From Kameoka Station", "text": "About 3 min on foot from the north exit. You can see the stadium from the station." },
+      { "label": "By car", "text": "The stadium car park cannot be used on match days. See “Coming by car” below for car parks you can use." },
+      { "label": "Going home", "text": "Kameoka Station gets crowded after the match. Leave plenty of time for your train or Shinkansen." }
+    ],
+    "routes": [
+      { "label": "Kyoto Station" },
+      { "label": "Osaka Station" },
+      { "label": "Nishi-Maizuru Station" }
+    ],
+    "parking": {
+      "notes": [
+        "On match days, the stadium car park is reserved for organisers and staff, so you cannot use it.",
+        "Roads around the stadium get busy before and after the match. Please allow plenty of time."
+      ],
+      "match_day_lots": [
+        { "id": "sanga-crew", "name": "SANGA CREW members' car park", "text": "Parking tickets that only SANGA CREW (Kyoto Sanga fan club) members can buy in advance. ¥1,800 per car. Buy them on J.League Ticket by choosing “parking” for each match.", "link_label": "J.League Ticket – Kyoto Sanga (Japanese)" },
+        { "id": "hozugawa", "name": "Hozugawa River Boat Ride car park", "text": "Right in front of the stadium's away entrance, about 1 min on foot. Open on match days only. ¥3,000 per car (cash on the day). Reservations are possible and recommended for popular matches (phone 0771-22-5846, 9:00–17:00, Japanese).", "link_label": "Hozugawa River Boat Ride (Japanese)" },
+        { "id": "aeon", "name": "AEON Kameoka multi-storey car park", "text": "South of Kameoka Station. It is for shoppers. On match days and similar, special rates may apply (¥500 per 30 min, up to ¥3,000)." }
+      ],
+      "services": [
+        { "id": "akippa", "name": "akippa", "text": "Book spaces at private homes and monthly car parks by the day. Opens the list around Sanga Stadium (Japanese)." },
+        { "id": "btimes", "name": "Times no B", "text": "Times' reservation car parks, including Kameoka Station North Exit West, about 6 min on foot from the stadium (bookable 13 days ahead, Japanese)." },
+        { "id": "tokup", "name": "toku-P", "text": "Hourly and daily reservation car parks. Search for “サンガスタジアム” after it opens to see car parks nearby (Japanese)." },
+        { "id": "nokisaki", "name": "Nokisaki Parking", "text": "Reservation car parks. Look around Sanga Stadium on the map (some days have no listings, Japanese)." }
+      ],
+      "coin_places": [
+        { "label": "Stadium / Kameoka Station" },
+        { "label": "Yagi Station (about 10 min from Kameoka by JR)" },
+        { "label": "Saga-Arashiyama Station (about 10 min from Kameoka by JR)" }
+      ]
+    },
+    "spots": [
+      { "id": "hozugawa", "name": "Hozugawa River Boat Ride", "kind": "River boat", "text": "The boarding point is just east of the stadium. Wooden boats take you down the Hozukyo Gorge to Arashiyama. You can walk there from Kameoka Station.", "photo": { "alt": "A Hozugawa river boat going down the gorge in autumn", "credit": "Kameoka City", "source_label": "Kamecolle (Kameoka City)" } },
+      { "id": "kameyama-castle", "name": "Tamba Kameyama Castle ruins", "kind": "Historic site", "text": "Ruins of the castle built by Akechi Mitsuhide. About 10 min on foot from the south exit of Kameoka Station. The ruins are on the grounds of the Oomoto religious headquarters, so follow the guidance on site.", "photo": { "alt": "Stone walls of the Tamba Kameyama Castle ruins" } },
+      { "id": "kameoka-museum", "name": "Kameoka City Cultural Museum", "kind": "Museum", "text": "Exhibits on Kameoka's history and culture. About 7 min on foot from Kameoka Station. Closed on Mondays.", "photo": { "alt": "The Kameoka City Cultural Museum building" } },
+      { "id": "torokko", "name": "Torokko Kameoka Station (Sagano Scenic Railway)", "kind": "Scenic train", "text": "Ride the open-air train along the Hozukyo Gorge to Torokko Saga. About 10 min on foot from Umahori Station, one stop on the JR Sagano Line. It does not run for part of the winter, so check the official site for operating days.", "photo": { "alt": "The Sagano Romantic Train running through the Hozukyo Gorge", "credit": "Kameoka City", "source_label": "Kamecolle (Kameoka City)" } },
+      { "id": "izumo-daijingu", "name": "Izumo Daijingu Shrine", "kind": "Shrine", "text": "The first-ranked shrine of the old Tamba Province. About 15 min by bus from Kameoka Station. Buses are infrequent, so check the timetable first.", "photo": { "alt": "The torii gate of Izumo Daijingu in cherry blossom season", "credit": "Kameoka City", "source_label": "Kamecolle (Kameoka City)" } },
+      { "id": "kuwayama", "name": "Kuwayama Shrine", "kind": "Shrine / autumn leaves", "text": "Known for autumn leaves, best in November. About 30 min on foot from Kameoka Station; there is also a community bus.", "photo": { "alt": "The main hall of Kuwayama Shrine" } },
+      { "id": "anaoji", "name": "Anaoji Temple", "kind": "Temple", "text": "Temple No. 21 of the Saigoku 33 Kannon Pilgrimage. Take a bus from Kameoka Station to “Anaoji-mae”.", "photo": { "alt": "The main gate of Anaoji Temple" } },
+      { "id": "yunohana", "name": "Yunohana Onsen", "kind": "Hot spring", "text": "A hot-spring village about 20 min by bus from Kameoka Station. Some inns accept day visitors for bathing (check hours and prices with each inn).", "photo": { "alt": "Yubata no Yu at Yunohana Onsen" } }
+    ],
+    "more_spots": {
+      "label": "More sightseeing in Kameoka (Kameoka Tourism Association, Japanese)"
+    },
+    "specialties": [
+      { "id": "kameoka-beef", "name": "Kameoka beef", "kind": "Wagyu brand", "text": "Only Japanese Black cattle raised in Kameoka for 14 months or more may carry the name. Finely marbled and said to be light rather than heavy. Try it at yakiniku and sukiyaki restaurants or butcher shops.", "map_label": "Find near Kameoka Station" },
+      { "id": "sake", "name": "Tamba sake", "kind": "Sake brewery", "text": "Kameoka has sake breweries, such as Tanzan Shuzo (founded 1882) in Yokomachi, within walking distance of the station's south exit, and Oishi Shuzo (Okinazuru) on the road to Yunohana Onsen.", "map_label": "Breweries on the map", "photo": { "alt": "Tanzan Sake Brewery in Yokomachi, Kameoka" } },
+      { "id": "tamba", "name": "Kyoto vegetables and Tamba flavours", "kind": "Local produce", "text": "Kyoto vegetables such as mizuna grow in the basin's fog and temperature swings. Tamba Dainagon azuki beans, Tamba black soybeans and autumn Tamba matsutake are local specialities." },
+      { "id": "botan-nabe", "name": "Botan nabe", "kind": "Winter dish", "text": "A wild boar hot pot in miso broth, served in winter at inns and restaurants in Yunohana Onsen.", "map_label": "Find in Yunohana Onsen" },
+      { "id": "tawawa", "name": "Tawawa Asagiri (JA Kyoto farmers' market)", "kind": "Souvenirs", "text": "A large farmers' market with Kameoka beef, freshly picked vegetables and local products. About 13 min on foot from Umahori Station. Open 9:00–17:00.", "map_label": "Map" }
+    ],
+    "food_places": [
+      { "label": "Stadium / Kameoka Station" },
+      { "label": "Yunohana Onsen" }
+    ],
+    "featured_hotels": [
+      { "name": "Hotel Route-Inn Kyoto Kameoka Ekimae", "text": "About 1 min on foot from the north exit of Kameoka Station. Natural hot-spring bath and breakfast buffet." },
+      { "name": "Sun Royal Hotel Kameoka Ekimae", "text": "Right outside the north exit of Kameoka Station. Large public bath and sauna." }
+    ]
+  }
+}

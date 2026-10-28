@@ -133,6 +133,20 @@ checkHtmlReferences("home.html", [
   "assets/home-guide.js",
   "assets/index-nebula.js",
 ]);
+checkHtmlReferences("home-en.html", [
+  "assets/away.css",
+  "assets/home.css",
+  "assets/topbar.css",
+  "assets/home-guide.js",
+  "assets/index-nebula.js",
+]);
+checkHtmlReferences("home-ko.html", [
+  "assets/away.css",
+  "assets/home.css",
+  "assets/topbar.css",
+  "assets/home-guide.js",
+  "assets/index-nebula.js",
+]);
 checkHtmlReferences("index.html", [
   "assets/index.css",
   "assets/index-page.js",

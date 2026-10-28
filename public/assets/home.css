@@ -177,3 +177,12 @@
   #featuredList:empty{min-height:355px}
   #homeList.is-loading{min-height:2327px}
 }
+
+/* 英語版への入口（日本語版だけに置く）。英語版・韓国語版は .guide-switch を言語の切り替えに使う */
+.lang-link{display:flex;justify-content:flex-end;margin:0 0 4px}
+.lang-link a{
+  display:inline-flex;align-items:center;min-height:var(--tap);padding:0 14px;
+  border:1px solid var(--ground-line);border-radius:999px;
+  color:var(--ground-ink);font-size:13px;font-weight:800;text-decoration:none;
+}
+.lang-link a:hover{background:rgba(255,255,255,.1)}

@@ -158,8 +158,57 @@ for (const a of home.search_areas || []) {
 }
 if ((home.search_areas || [])[0] && home.search_areas[0].id !== 'stadium') fail('home-guide.json: search_areas の先頭は stadium（そばの2軒はこの検索で見つける）');
 
+// 英語版・韓国語版の訳（public/data/home-guide.{en,ko}.json）。
+// guide は home-guide.json に重ねる文字列だけ。URL・座標・写真の場所は日本語版から取るので、訳では書き換えさせない。
+// ui は assets/home-guide.js の T("キー", "日本語") と同じキーを過不足なく持ち、{0} などの差し込みも揃える。
+const TR_KEYS = new Set(['name', 'city', 'station_name', 'alt', 'credit', 'source_label', 'label', 'text', 'link_label', 'kind', 'map_label']);
+const guideJs = read('public/assets/home-guide.js');
+const uiJa = {};
+for (const m of guideJs.matchAll(/\bT\("([a-z_]+)", "((?:[^"\\]|\\.)*)"/g)) uiJa[m[1]] = m[2];
+const holes = (t) => [...String(t).matchAll(/\{\d\}/g)].map((x) => x[0]).sort().join(',');
+function checkOverlay(file, loc, base, tr) {
+  if (Array.isArray(base)) {
+    if (!Array.isArray(tr) || tr.length !== base.length) return fail(`${file}: ${loc} は日本語版と同じ ${base.length} 件の配列にする`);
+    tr.forEach((t, i) => {
+      if (base[i] && typeof base[i] === 'object' && base[i].id && t && t.id !== base[i].id) fail(`${file}: ${loc}[${i}].id は日本語版と同じ「${base[i].id}」にする（並びがずれていないか）`);
+      checkOverlay(file, `${loc}[${i}]`, base[i], t);
+    });
+    return;
+  }
+  if (base && typeof base === 'object') {
+    if (!tr || typeof tr !== 'object' || Array.isArray(tr)) return fail(`${file}: ${loc} はオブジェクトにする`);
+    for (const k of Object.keys(tr)) {
+      if (!(k in base)) fail(`${file}: ${loc}.${k} は日本語版にないキー`);
+      else if (k === 'id') continue;
+      else if (typeof base[k] === 'string' && !TR_KEYS.has(k) && loc !== 'guide.parking.notes') fail(`${file}: ${loc}.${k} は訳で書き換えない（日本語版の値を使う）`);
+      else checkOverlay(file, `${loc}.${k}`, base[k], tr[k]);
+    }
+    return;
+  }
+  if (typeof base !== 'string' || typeof tr !== 'string' || !tr.trim()) fail(`${file}: ${loc} は空でない文字列にする`);
+}
+for (const lang of ['en', 'ko']) {
+  const file = `home-guide.${lang}.json`;
+  const tr = JSON.parse(read(`public/data/${file}`));
+  if ((tr.meta || {}).lang !== lang) fail(`${file}: meta.lang は ${lang}`);
+  checkOverlay(file, 'guide', home, tr.guide || {});
+  const ui = tr.ui || {};
+  for (const k of Object.keys(uiJa)) {
+    if (typeof ui[k] !== 'string') fail(`${file}: ui.${k} がない（home-guide.js が使うキー）`);
+    else if (holes(ui[k]) !== holes(uiJa[k])) fail(`${file}: ui.${k} の差し込み（{0} など）が日本語「${uiJa[k]}」と違う`);
+  }
+  for (const k of Object.keys(ui)) if (!(k in uiJa)) fail(`${file}: ui.${k} は home-guide.js で使っていないキー`);
+  for (const k of ['week', 'food_words', 'coin_words']) if (typeof ui[k] === 'string' && ui[k].split(',').length !== uiJa[k].split(',').length) fail(`${file}: ui.${k} はカンマ区切りで日本語と同じ数にする`);
+  const names = tr.names || {};
+  for (const c of new Set(matches.map((m) => m.competition))) if (!(names.competitions || {})[c]) fail(`${file}: names.competitions.${c} がない`);
+  // 対戦相手の訳が無いときは日本語のまま出る。日程の取り込みを止めないよう、これからのホーム戦の分だけ警告にする
+  const today = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+  const missing = [...new Set(matches.filter((m) => m.home_away === 'H' && (home.venues || []).includes(m.venue) && (m.match_date || '9999') >= today && !(names.opponents || {})[m.opponent]).map((m) => m.opponent))];
+  if (missing.length) console.warn(`注意 ${file}: names.opponents に訳がない対戦相手（日本語のまま出ます）: ${missing.join('、')}`);
+}
+
 // 認証情報の混入防止
-for (const f of ['public/data/hotel-index.json', 'public/data/home-guide.json', ...fs.readdirSync(path.join(root, 'public/data/hotels')).map((n) => `public/data/hotels/${n}`)]) {
+for (const f of ['public/data/hotel-index.json', 'public/data/home-guide.json', 'public/data/home-guide.en.json', 'public/data/home-guide.ko.json', ...fs.readdirSync(path.join(root, 'public/data/hotels')).map((n) => `public/data/hotels/${n}`)]) {
   const t = read(f);
   if (/applicationId=|accessKey|RAKUTEN_/i.test(t)) fail(`${f}: 認証情報らしい文字列が含まれています`);
 }
