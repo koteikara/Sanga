@@ -17,7 +17,7 @@
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
   var LANG = (document.documentElement.lang || "ja").slice(0, 2);
   // 訳の重ね書き。版数は tools/asset-versions.mjs が揃える
-  var OVERLAY = { en: "data/home-guide.en.json?v=7145fb43", ko: "data/home-guide.ko.json?v=a96e67f3" }[LANG] || "";
+  var OVERLAY = { en: "data/home-guide.en.json?v=22f0df81", ko: "data/home-guide.ko.json?v=a8ff3698" }[LANG] || "";
   var ui = {};
   var names = {};
   function T(key, ja, args) {
@@ -83,8 +83,10 @@
     var a = safeLink(item.href, cls, "nofollow sponsored noopener noreferrer");
     build(a, item.label);
     wrap.append(a);
-    if (!pixelShown[key] && A8_PIXEL.test(item.pixel || "")) {
-      pixelShown[key] = true;
+    // 同じ提携（a8mat が同じ）のリンクが複数あっても、ピクセルは1回だけ
+    var mat = (item.pixel || "").split("a8mat=")[1];
+    if (mat && !pixelShown[mat] && A8_PIXEL.test(item.pixel)) {
+      pixelShown[mat] = true;
       var img = document.createElement("img");
       img.src = item.pixel;
       img.width = 1;
@@ -426,9 +428,18 @@
         a.setAttribute("aria-label", T("rt_view_label", "{0}を楽天トラベルで見る（新しいタブで開きます）", [h.name]));
         li.append(a);
       }
+      // 英語版・韓国語版だけ、見る人の言語で開く Agoda の宿ページも出す（日本語版は楽天トラベルだけ）
+      var agoda = LANG !== "ja" && h.agoda_key ? a8Link(h.agoda_key, "m-btn", function (b) {
+        b.append(icon(ICON_HOTEL));
+        b.append(document.createTextNode(T("agoda_view", "Agodaで見る")));
+        b.append(prTag());
+        b.setAttribute("aria-label", T("agoda_view_label", "{0}をAgodaで見る（広告・新しいタブで開きます）", [h.name]));
+      }) : null;
+      if (agoda) { agoda.classList.add("featured-a8"); li.append(agoda); }
       ul.append(li);
     });
-    var jalan = a8Link("lodging", null, function (a) { a.textContent = T("jalan", "じゃらんで探す"); });
+    // ほかの宿: 日本語版はじゃらん、英語版・韓国語版は言語が切り替わる Agoda
+    var jalan = a8Link(LANG === "ja" ? "lodging" : "lodging_agoda", null, function (a) { a.textContent = T("stay_search", "じゃらんで探す"); });
     if (jalan) {
       var more = document.getElementById("stayMore");
       more.append(prTag());
@@ -745,9 +756,9 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=d9b105c0");
+  var guideP = getJson("data/home-guide.json?v=46fe28f7");
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
-  var affP = getJson("data/affiliates.json?v=d51a049a").catch(function () { return {}; });
+  var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");
   var indexP = getJson("data/hotel-index.json?v=f6a0e3e6").catch(function () { return { matches: [] }; });
 

@@ -125,6 +125,10 @@
 .featured-name{margin:0;font-size:15px;font-weight:900;line-height:1.35}
 .featured-text{margin:0;font-size:12.5px}
 .featured-item .m-btn{align-self:stretch;justify-content:center;margin-top:auto}
+/* 英語版・韓国語版の Agoda のボタン（楽天トラベルのボタンの下に並べる） */
+.featured-a8{display:flex;flex-direction:column}
+.featured-a8 .m-btn{margin-top:0}
+.featured-a8 .pr-tag{margin-left:2px}
 
 /* 試合ごとの空室 */
 .home-matches{scroll-margin-top:72px;margin-top:6px}

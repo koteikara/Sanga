@@ -21,5 +21,20 @@
     "label": "サンガスタジアム周辺の駐車場を予約（akippa）",
     "href": "https://px.a8.net/svt/ejp?a8mat=4BEHXB+383JQQ+3NAY+BW8O2&a8ejpredirect=https%3A%2F%2Fwww.akippa.com%2Fkinki%2Fkyoto%2Fsangastadiumbykyocera",
     "pixel": "https://www18.a8.net/0.gif?a8mat=4BEHXB+383JQQ+3NAY+BW8O2"
+  },
+  "lodging_agoda": {
+    "label": "Hotels in Kameoka (Agoda)",
+    "href": "https://px.a8.net/svt/ejp?a8mat=4BEHXB+7PG0OI+4X1W+BW8O2&a8ejpredirect=https%3A%2F%2Fwww.agoda.com%2Fsearch%3Farea%3D547159",
+    "pixel": "https://www12.a8.net/0.gif?a8mat=4BEHXB+7PG0OI+4X1W+BW8O2"
+  },
+  "lodging_agoda_187555": {
+    "label": "Hotel Route Inn Kyoto Kameoka Ekimae (Agoda)",
+    "href": "https://px.a8.net/svt/ejp?a8mat=4BEHXB+7PG0OI+4X1W+BW8O2&a8ejpredirect=https%3A%2F%2Fwww.agoda.com%2Fhotel-route-inn-kyoto-kameoka-ekimae%2Fhotel%2Fkyoto-jp.html",
+    "pixel": "https://www10.a8.net/0.gif?a8mat=4BEHXB+7PG0OI+4X1W+BW8O2"
+  },
+  "lodging_agoda_181808": {
+    "label": "Sun Royal Hotel Kameoka Ekimae (Agoda)",
+    "href": "https://px.a8.net/svt/ejp?a8mat=4BEHXB+7PG0OI+4X1W+BW8O2&a8ejpredirect=https%3A%2F%2Fwww.agoda.com%2Fsun-royal-hotel-kameoka-ekimae%2Fhotel%2Fosaka-jp.html",
+    "pixel": "https://www12.a8.net/0.gif?a8mat=4BEHXB+7PG0OI+4X1W+BW8O2"
   }
 }

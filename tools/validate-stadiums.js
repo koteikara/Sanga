@@ -145,6 +145,7 @@ for (const h of home.featured_hotels || []) {
   if (!Number.isInteger(h.hotel_no) || featuredNos.has(h.hotel_no)) fail(`home-guide.json: featured_hotels の hotel_no が不正か重複 ${h.hotel_no}`);
   featuredNos.add(h.hotel_no);
   if (!h.name || !h.text) fail(`home-guide.json: featured_hotels[${h.hotel_no}] の name / text が空`);
+  if (h.agoda_key && !aff[h.agoda_key]) fail(`home-guide.json: featured_hotels[${h.hotel_no}].agoda_key「${h.agoda_key}」が affiliates.json にありません`);
   for (const u of h.image_urls || []) if (!/^https:\/\/(img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/.test(u)) fail(`home-guide.json: featured_hotels[${h.hotel_no}].image_urls は楽天トラベルの画像だけ: ${u}`);
   // 宿の案内への普通のリンク（広告リンクは楽天APIが返したものだけを試合ごとのJSONで使う）
   if (!new RegExp(`^https://travel\\.rakuten\\.co\\.jp/HOTEL/${h.hotel_no}/$`).test(h.url || '')) fail(`home-guide.json: featured_hotels[${h.hotel_no}].url は https://travel.rakuten.co.jp/HOTEL/${h.hotel_no}/ の形にする`);

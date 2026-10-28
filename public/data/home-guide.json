@@ -380,6 +380,7 @@
   "featured_hotels": [
     {
       "hotel_no": 187555,
+      "agoda_key": "lodging_agoda_187555",
       "name": "ホテルルートイン京都亀岡駅前",
       "text": "亀岡駅北口から歩いて約1分。天然温泉の大浴場と朝食バイキングがあります。",
       "url": "https://travel.rakuten.co.jp/HOTEL/187555/",
@@ -391,6 +392,7 @@
     },
     {
       "hotel_no": 181808,
+      "agoda_key": "lodging_agoda_181808",
       "name": "サンロイヤルホテル 亀岡駅前",
       "text": "亀岡駅北口を出てすぐ。大浴場とサウナがあります。",
       "url": "https://travel.rakuten.co.jp/HOTEL/181808/",
