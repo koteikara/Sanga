@@ -20,9 +20,9 @@
 <meta property="og:image:alt" content="SANGA TOOLBOX ホーム観戦ガイド — サンガスタジアムへの行き方、散策、亀岡の宿。">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/away.css?v=459f768b">
-<link rel="stylesheet" href="assets/home.css?v=d6969893">
+<link rel="stylesheet" href="assets/home.css?v=b32c0ca8">
 <link rel="stylesheet" href="assets/topbar.css?v=2875c312">
-<link rel="preload" href="data/home-guide.json?v=46fe28f7" as="fetch" crossorigin="anonymous">
+<link rel="preload" href="data/home-guide.json?v=265c17b3" as="fetch" crossorigin="anonymous">
 <link rel="preload" href="data/affiliates.json?v=3ccbd3a2" as="fetch" crossorigin="anonymous">
 <link rel="preload" href="data/matches.json?v=87b51598" as="fetch" crossorigin="anonymous">
 <link rel="preload" href="data/hotel-index.json?v=f6a0e3e6" as="fetch" crossorigin="anonymous">
@@ -108,6 +108,8 @@
 <section class="home-sec" id="food" tabindex="-1" aria-labelledby="foodTitle">
 <h2 class="home-sec-title" id="foodTitle">亀岡のグルメ</h2>
 <div class="home-sec-body">
+<h3 class="home-sub">スタジアムと周辺のグルメ</h3>
+<ul class="spots" id="matchFoodList" aria-busy="true"></ul>
 <h3 class="home-sub">亀岡の名物</h3>
 <ul class="spots" id="specialtyList" aria-busy="true"></ul>
 <h3 class="home-sub">周辺のお店を地図で探す</h3>
@@ -151,7 +153,7 @@
 
 </main>
 
-<script src="assets/home-guide.js?v=125a95a9" defer></script>
+<script src="assets/home-guide.js?v=91fbffa6" defer></script>
 <script type="module">
   // 入口ページと同じネビュラを進行的強化として足す。失敗してもCSSのぼかしが残る。
   if (new URLSearchParams(location.search).get("nebula") !== "off") {

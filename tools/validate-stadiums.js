@@ -130,6 +130,15 @@ for (const sv of pk.services || []) {
   if (sv.affiliate_key && !aff[sv.affiliate_key]) fail(`home-guide.json: parking.services[${sv.id}].affiliate_key「${sv.affiliate_key}」が affiliates.json にありません`);
 }
 for (const c of pk.coin_places || []) if (!c.label || !inJapan(c.latitude, c.longitude) || distKm(hs.latitude, hs.longitude, c.latitude, c.longitude) > 10) fail('home-guide.json: parking.coin_places は label とスタジアムから10km以内の座標が要る');
+// スタジアムと周辺のグルメ（試合の日のグルメ街道、フードコート、かめきたサンガ広場のマルシェ、周辺の店の案内）。座標は任意
+const foodIds = new Set();
+for (const f of home.match_food || []) {
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(f.id || '') || foodIds.has(f.id)) fail(`home-guide.json: match_food の id が不正か重複 ${f.id}`);
+  foodIds.add(f.id);
+  for (const k of ['name', 'kind', 'text']) if (!f[k]) fail(`home-guide.json: match_food[${f.id}].${k} が空`);
+  if (f.latitude != null && (!inJapan(f.latitude, f.longitude) || distKm(hs.latitude, hs.longitude, f.latitude, f.longitude) > 1)) fail(`home-guide.json: match_food[${f.id}] の座標がスタジアムから1kmより遠いか範囲外`);
+  if (f.url && (!/^https:\/\//.test(f.url) || !f.link_label)) fail(`home-guide.json: match_food[${f.id}] の url は https で、link_label も要る`);
+}
 const specIds = new Set();
 for (const sp of home.specialties || []) {
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(sp.id || '') || specIds.has(sp.id)) fail(`home-guide.json: specialties の id が不正か重複 ${sp.id}`);

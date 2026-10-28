@@ -17,7 +17,7 @@
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
   var LANG = (document.documentElement.lang || "ja").slice(0, 2);
   // 訳の重ね書き。版数は tools/asset-versions.mjs が揃える
-  var OVERLAY = { en: "data/home-guide.en.json?v=22f0df81", ko: "data/home-guide.ko.json?v=a8ff3698" }[LANG] || "";
+  var OVERLAY = { en: "data/home-guide.en.json?v=a1e66e91", ko: "data/home-guide.ko.json?v=dc8870bc" }[LANG] || "";
   var ui = {};
   var names = {};
   function T(key, ja, args) {
@@ -353,6 +353,34 @@
       a.textContent = more.label;
       document.getElementById("spotsMore").append(a);
     }
+  }
+
+  // ---------- スタジアムと周辺のグルメ（試合の日のグルメ街道・フードコート・広場のマルシェ・周辺の店の案内） ----------
+  function renderMatchFood() {
+    var ul = document.getElementById("matchFoodList");
+    (guide.match_food || []).forEach(function (p) {
+      var li = el("li", "spot");
+      li.append(el("span", "spot-kind", p.kind));
+      li.append(el("h4", "spot-name", p.name));
+      li.append(el("p", "spot-text", p.text));
+      var links = el("div", "spot-links");
+      if (p.latitude != null) {
+        var map = safeLink(mapsPlace(p.latitude, p.longitude), "m-chip");
+        map.append(icon(ICON_ROUTE));
+        map.append(document.createTextNode(T("map", "地図")));
+        map.setAttribute("aria-label", T("maps_view", "{0}をGoogleマップで見る", [p.name]));
+        links.append(map);
+      }
+      var site = safeLink(p.url, "m-chip");
+      if (site) {
+        site.append(icon(ICON_LINK));
+        site.append(document.createTextNode(p.link_label || T("guide_link", "案内")));
+        site.setAttribute("aria-label", T("new_tab", "{0}（新しいタブで開きます）", [p.link_label || T("guide_link", "案内")]));
+        links.append(site);
+      }
+      li.append(links);
+      ul.append(li);
+    });
   }
 
   // ---------- 亀岡の名物 ----------
@@ -756,7 +784,7 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=46fe28f7");
+  var guideP = getJson("data/home-guide.json?v=265c17b3");
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
   var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");
@@ -776,10 +804,11 @@
     renderAccess();
     renderParking();
     renderSpots();
+    renderMatchFood();
     renderSpecialties();
     renderFood();
     renderStay();
-    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
+    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "matchFoodList", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
     return Promise.all([matchesP, indexP]);
   }).then(function (r) {
     var n = renderMatches(r[0].matches || [], r[1] || {});
@@ -791,7 +820,7 @@
     releaseMatchSpace();
   }).catch(function () {
     meta.textContent = T("load_error", "データを読み込めませんでした。時間をおいて開き直してください。");
-    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
+    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "matchFoodList", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
     releaseMatchSpace();
   });
 })();
