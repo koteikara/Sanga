@@ -2,6 +2,8 @@
 // サンガスタジアムのホーム戦を拾い、試合ごとの data/hotels/{id}.json を読んで並べる。
 // ホテルのカード・横に流す列・試合の開け閉めは assets/away-guide.js と同じ作り（見た目は away.css を共有）。
 // 文字列は textContent だけで入れる。リンクは https のものだけ。ホテルの写真は楽天トラベルの画像ホストのものだけ。
+// 英語版（home-en.html）・韓国語版（home-ko.html）も同じスクリプト。<html lang> で data/home-guide.{en,ko}.json を重ね、
+// 画面の文言は T(キー, 日本語) で引く（訳が無いキーは日本語のまま出る）。
 (function () {
   "use strict";
   var meta = document.getElementById("homeMeta");
@@ -13,7 +15,27 @@
   var A8_PIXEL = /^https:\/\/www\d+\.a8\.net\/0\.gif\?a8mat=[A-Za-z0-9+]+$/;
   // 楽天トラベルの画像。img.travel.rakuten.co.jp と、宿ページの写真が置かれている trvimg.r10s.jp
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
-  var WEEK = ["日", "月", "火", "水", "木", "金", "土"];
+  var LANG = (document.documentElement.lang || "ja").slice(0, 2);
+  // 訳の重ね書き。版数は tools/asset-versions.mjs が揃える
+  var OVERLAY = { en: "data/home-guide.en.json?v=db09d40a", ko: "data/home-guide.ko.json?v=8d09eb62" }[LANG] || "";
+  var ui = {};
+  var names = {};
+  function T(key, ja, args) {
+    var s = typeof ui[key] === "string" ? ui[key] : ja;
+    (args || []).forEach(function (v, i) { s = s.split("{" + i + "}").join(v); });
+    return s;
+  }
+  // 訳は文字列だけを差し替える。配列は位置で、オブジェクトはキーで重ねる（URL・座標・写真の場所は日本語版のまま）
+  function overlay(base, tr) {
+    if (Array.isArray(base)) return Array.isArray(tr) ? base.map(function (b, i) { return overlay(b, tr[i]); }) : base;
+    if (base && typeof base === "object") {
+      if (!tr || typeof tr !== "object" || Array.isArray(tr)) return base;
+      var out = {};
+      Object.keys(base).forEach(function (k) { out[k] = overlay(base[k], tr[k]); });
+      return out;
+    }
+    return typeof base === "string" && typeof tr === "string" ? tr : base;
+  }
   var affiliates = {};
   var pixelShown = {};
   var guide = null;
@@ -61,8 +83,10 @@
     var a = safeLink(item.href, cls, "nofollow sponsored noopener noreferrer");
     build(a, item.label);
     wrap.append(a);
-    if (!pixelShown[key] && A8_PIXEL.test(item.pixel || "")) {
-      pixelShown[key] = true;
+    // 同じ提携（a8mat が同じ）のリンクが複数あっても、ピクセルは1回だけ
+    var mat = (item.pixel || "").split("a8mat=")[1];
+    if (mat && !pixelShown[mat] && A8_PIXEL.test(item.pixel)) {
+      pixelShown[mat] = true;
       var img = document.createElement("img");
       img.src = item.pixel;
       img.width = 1;
@@ -87,12 +111,20 @@
   function md(iso) {
     var p = iso.split("-");
     var day = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2])).getDay();
-    return Number(p[1]) + "/" + Number(p[2]) + "（" + WEEK[day] + "）";
+    return T("date", "{0}/{1}（{2}）", [Number(p[1]), Number(p[2]), T("week", "日,月,火,水,木,金,土").split(",")[day]]);
   }
   function dateLabel(m) {
     if (m.match_date) return md(m.match_date);
-    if (m.date_candidates && m.date_candidates.length) return m.date_candidates.map(md).join(" か ");
-    return "日程未定";
+    if (m.date_candidates && m.date_candidates.length) return m.date_candidates.map(md).join(T("date_or", " か "));
+    return T("date_tbd", "日程未定");
+  }
+  // 節・回戦。訳が無い形（MD1 など）はそのまま
+  function roundLabel(r) {
+    var n;
+    if ((n = /^第(\d+)節$/.exec(r))) return T("round_sec", "第{0}節", [n[1]]);
+    if ((n = /^(\d+)回戦$/.exec(r))) return T("round_n", "{0}回戦", [n[1]]);
+    if ((n = /^ラウンド(\d+)$/.exec(r))) return T("round_of", "ラウンド{0}", [n[1]]);
+    return (names.rounds || {})[r] || r;
   }
   function displayName(name) {
     var s = String(name || "");
@@ -124,7 +156,7 @@
     wrap.append(iframe);
     var cap = el("figcaption", "m-map-cap");
     var big = safeLink(mapsPlace(lat, lng), null);
-    big.textContent = "大きな地図で見る（Googleマップ）";
+    big.textContent = T("map_big", "大きな地図で見る（Googleマップ）");
     cap.append(big);
     wrap.append(cap);
     return wrap;
@@ -142,7 +174,7 @@
       box.append(sfig);
     }
     var facts = el("dl", "m-facts");
-    facts.append(el("dt", null, "スタジアム"));
+    facts.append(el("dt", null, T("stadium", "スタジアム")));
     var venue = el("dd", null, s.name);
     venue.append(document.createTextNode(" "));
     venue.append(el("span", "m-city", s.city));
@@ -152,8 +184,8 @@
       var dd = el("dd", null, a.text);
       var link = safeLink(a.url, "home-inline-link");
       if (link) {
-        link.textContent = a.link_label || "案内";
-        link.setAttribute("aria-label", (a.link_label || "案内") + "（新しいタブで開きます）");
+        link.textContent = a.link_label || T("guide_link", "案内");
+        link.setAttribute("aria-label", T("new_tab", "{0}（新しいタブで開きます）", [a.link_label || T("guide_link", "案内")]));
         dd.append(link);
       }
       facts.append(dd);
@@ -164,11 +196,11 @@
     (guide.routes || []).forEach(function (r) {
       var a = safeLink("https://www.google.com/maps/dir/?api=1&travelmode=transit&origin=" + encodeURIComponent(r.origin) + "&destination=" + s.latitude + "," + s.longitude, "m-btn");
       a.append(icon(ICON_ROUTE));
-      a.append(document.createTextNode(r.label + "の経路"));
+      a.append(document.createTextNode(T("route", "{0}の経路", [r.label])));
       actions.append(a);
     });
     if (actions.childNodes.length) box.append(actions);
-    box.append(osmMap(s.name + " と亀岡駅の周辺の地図", s.latitude, s.longitude, 0.006, 0.009));
+    box.append(osmMap(T("map_title", "{0} と{1}の周辺の地図", [s.name, s.station_name]), s.latitude, s.longitude, 0.006, 0.009));
   }
 
   // ---------- 車で来る ----------
@@ -180,7 +212,7 @@
 
     // 試合の日に使える駐車場（会員向け・保津川下り・商業施設）
     if ((pk.match_day_lots || []).length) {
-      box.append(el("h3", "home-sub", "試合の日に停められる駐車場"));
+      box.append(el("h3", "home-sub", T("lots_title", "試合の日に停められる駐車場")));
       var lots = el("ul", "parking-lots");
       pk.match_day_lots.forEach(function (lot) {
         var li = el("li", "parking-lot");
@@ -191,8 +223,8 @@
         li.append(el("p", "parking-text", lot.text));
         var a = safeLink(lot.url, "home-inline-link");
         if (a) {
-          a.textContent = lot.link_label || "案内";
-          a.setAttribute("aria-label", lot.name + "：" + (lot.link_label || "案内") + "（新しいタブで開きます）");
+          a.textContent = lot.link_label || T("guide_link", "案内");
+          a.setAttribute("aria-label", T("new_tab", "{0}（新しいタブで開きます）", [lot.name + T("colon", "：") + (lot.link_label || T("guide_link", "案内"))]));
           var pl = el("p", "parking-lot-link");
           pl.append(a);
           li.append(pl);
@@ -202,7 +234,7 @@
       box.append(lots);
     }
 
-    box.append(el("h3", "home-sub", "予約サービスで探す"));
+    box.append(el("h3", "home-sub", T("services_title", "予約サービスで探す")));
     var ul = el("ul", "parking-services");
     (pk.services || []).forEach(function (sv) {
       var li = el("li", "parking-service");
@@ -215,23 +247,23 @@
       name.append(document.createTextNode(sv.name));
       a.append(name);
       a.append(el("span", "parking-text", sv.text));
-      a.setAttribute("aria-label", sv.name + "：サンガスタジアム周辺の駐車場（新しいタブで開きます）");
+      a.setAttribute("aria-label", T("service_label", "{0}：サンガスタジアム周辺の駐車場（新しいタブで開きます）", [sv.name]));
       li.append(link || a);
       ul.append(li);
     });
     box.append(ul);
 
-    box.append(el("h3", "home-sub", "コインパーキングを地図で探す"));
-    box.append(el("p", "home-note parking-note", "離れた駅の近くに停めて、JR嵯峨野線で亀岡駅へ向かうこともできます。"));
+    box.append(el("h3", "home-sub", T("coin_title", "コインパーキングを地図で探す")));
+    box.append(el("p", "home-note parking-note", T("coin_note", "離れた駅の近くに停めて、JR嵯峨野線で亀岡駅へ向かうこともできます。")));
     var food = el("div", "m-food");
     (pk.coin_places || []).forEach(function (p) {
       var row = el("div", "m-food-row");
       row.append(el("span", "m-food-place", p.label));
       var list = el("ul", "m-food-list");
-      ["コインパーキング", "駐車場"].forEach(function (w) {
+      T("coin_words", "コインパーキング,駐車場").split(",").forEach(function (w) {
         var a = safeLink("https://www.google.com/maps/search/" + encodeURIComponent(w) + "/@" + Number(p.latitude).toFixed(5) + "," + Number(p.longitude).toFixed(5) + ",16z", "m-chip");
         a.textContent = w;
-        a.setAttribute("aria-label", p.label + "の" + w + "をGoogleマップで探す");
+        a.setAttribute("aria-label", T("maps_search", "{0}の{1}をGoogleマップで探す", [p.label, w]));
         var li = el("li");
         li.append(a);
         list.append(li);
@@ -267,12 +299,12 @@
   var PHOTO_SRC = /^(?:assets\/home\/[a-z0-9-]+\.webp(?:\?v=[0-9a-f]+)?|https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/[^\s"'<>]+)$/;
   function credit(ph) {
     var cap = el("figcaption", "spot-credit");
-    cap.append(document.createTextNode("写真：" + (ph.credit || "") + " / "));
+    cap.append(document.createTextNode(T("photo", "写真：") + (ph.credit || "") + " / "));
     var lic = safeLink(ph.license_url, null) || el("span");
     lic.textContent = ph.license || "";
     cap.append(lic);
     var src = safeLink(ph.source_url, null);
-    if (src) { cap.append(document.createTextNode("（")); src.textContent = ph.source_label || "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode("）")); }
+    if (src) { cap.append(document.createTextNode(T("paren_open", "（"))); src.textContent = ph.source_label || "Wikimedia Commons"; cap.append(src); cap.append(document.createTextNode(T("paren_close", "）"))); }
     return cap;
   }
 
@@ -295,21 +327,21 @@
       li.append(el("p", "spot-text", p.text));
       if (p.latitude != null) {
         var d = km(s.station_latitude, s.station_longitude, p.latitude, p.longitude);
-        li.append(el("p", "spot-dist", s.station_name + "から直線で約" + (d < 1 ? d.toFixed(1) : Math.round(d)) + "km"));
+        li.append(el("p", "spot-dist", T("dist", "{0}から直線で約{1}km", [s.station_name, d < 1 ? d.toFixed(1) : Math.round(d)])));
       }
       var links = el("div", "spot-links");
       if (p.latitude != null) {
         var map = safeLink(mapsPlace(p.latitude, p.longitude), "m-chip");
         map.append(icon(ICON_ROUTE));
-        map.append(document.createTextNode("地図"));
-        map.setAttribute("aria-label", p.name + "をGoogleマップで見る");
+        map.append(document.createTextNode(T("map", "地図")));
+        map.setAttribute("aria-label", T("maps_view", "{0}をGoogleマップで見る", [p.name]));
         links.append(map);
       }
       var site = safeLink(p.url, "m-chip");
       if (site) {
         site.append(icon(ICON_LINK));
-        site.append(document.createTextNode("公式サイト"));
-        site.setAttribute("aria-label", p.name + "の公式サイト（新しいタブで開きます）");
+        site.append(document.createTextNode(T("official", "公式サイト")));
+        site.setAttribute("aria-label", T("official_label", "{0}の公式サイト（新しいタブで開きます）", [p.name]));
         links.append(site);
       }
       li.append(links);
@@ -321,6 +353,34 @@
       a.textContent = more.label;
       document.getElementById("spotsMore").append(a);
     }
+  }
+
+  // ---------- スタジアムと周辺のグルメ（試合の日のグルメ街道・フードコート・広場のマルシェ・周辺の店の案内） ----------
+  function renderMatchFood() {
+    var ul = document.getElementById("matchFoodList");
+    (guide.match_food || []).forEach(function (p) {
+      var li = el("li", "spot");
+      li.append(el("span", "spot-kind", p.kind));
+      li.append(el("h4", "spot-name", p.name));
+      li.append(el("p", "spot-text", p.text));
+      var links = el("div", "spot-links");
+      if (p.latitude != null) {
+        var map = safeLink(mapsPlace(p.latitude, p.longitude), "m-chip");
+        map.append(icon(ICON_ROUTE));
+        map.append(document.createTextNode(T("map", "地図")));
+        map.setAttribute("aria-label", T("maps_view", "{0}をGoogleマップで見る", [p.name]));
+        links.append(map);
+      }
+      var site = safeLink(p.url, "m-chip");
+      if (site) {
+        site.append(icon(ICON_LINK));
+        site.append(document.createTextNode(p.link_label || T("guide_link", "案内")));
+        site.setAttribute("aria-label", T("new_tab", "{0}（新しいタブで開きます）", [p.link_label || T("guide_link", "案内")]));
+        links.append(site);
+      }
+      li.append(links);
+      ul.append(li);
+    });
   }
 
   // ---------- 亀岡の名物 ----------
@@ -342,8 +402,8 @@
         var links = el("div", "spot-links");
         var a = safeLink("https://www.google.com/maps/search/" + encodeURIComponent(p.map_query) + "/@" + Number(guide.stadium.station_latitude).toFixed(5) + "," + Number(guide.stadium.station_longitude).toFixed(5) + ",14z", "m-chip");
         a.append(icon(ICON_ROUTE));
-        a.append(document.createTextNode(p.map_label || "地図"));
-        a.setAttribute("aria-label", p.name + "：" + (p.map_label || "地図") + "（Googleマップ）");
+        a.append(document.createTextNode(p.map_label || T("map", "地図")));
+        a.setAttribute("aria-label", p.name + T("colon", "：") + (p.map_label || T("map", "地図")) + T("gmaps_suffix", "（Googleマップ）"));
         links.append(a);
         li.append(links);
       }
@@ -352,17 +412,16 @@
   }
 
   // ---------- ごはん ----------
-  var FOOD_WORDS = ["グルメ", "ラーメン", "居酒屋", "カフェ"];
   function renderFood() {
     var box = el("div", "m-food");
     (guide.food_places || []).forEach(function (p) {
       var row = el("div", "m-food-row");
       row.append(el("span", "m-food-place", p.label));
       var ul = el("ul", "m-food-list");
-      FOOD_WORDS.forEach(function (w) {
+      T("food_words", "グルメ,ラーメン,居酒屋,カフェ").split(",").forEach(function (w) {
         var a = safeLink("https://www.google.com/maps/search/" + encodeURIComponent(w) + "/@" + Number(p.latitude).toFixed(5) + "," + Number(p.longitude).toFixed(5) + ",16z", "m-chip");
         a.textContent = w;
-        a.setAttribute("aria-label", p.label + "の" + w + "をGoogleマップで探す");
+        a.setAttribute("aria-label", T("maps_search", "{0}の{1}をGoogleマップで探す", [p.label, w]));
         var li = el("li");
         li.append(a);
         ul.append(li);
@@ -370,8 +429,8 @@
       row.append(ul);
       box.append(row);
     });
-    var local = safeLink("https://www.google.com/search?q=" + encodeURIComponent("亀岡市 ご当地グルメ"), "m-food-local");
-    local.textContent = "亀岡市のご当地グルメを調べる";
+    var local = safeLink("https://www.google.com/search?q=" + encodeURIComponent(T("food_query", "亀岡市 ご当地グルメ")), "m-food-local");
+    local.textContent = T("food_local", "亀岡市のご当地グルメを調べる");
     var p2 = el("p", "m-food-more");
     p2.append(local);
     box.append(p2);
@@ -386,35 +445,45 @@
       var imgs = (h.image_urls || []).filter(function (u) { return RAKUTEN_IMAGE.test(u); });
       var fig = el("figure", "featured-figure");
       fig.append(picture("featured-photo", imgs, h.name, ICON_HOTEL));
-      if (imgs.length) fig.append(el("figcaption", "spot-credit", "写真：楽天トラベル"));
+      if (imgs.length) fig.append(el("figcaption", "spot-credit", T("photo", "写真：") + T("rt_name", "楽天トラベル")));
       li.append(fig);
       li.append(el("h4", "featured-name", h.name));
       li.append(el("p", "featured-text", h.text));
       var a = safeLink(h.url, "m-btn");
       if (a) {
         a.append(icon(ICON_HOTEL));
-        a.append(document.createTextNode("楽天トラベルで見る"));
-        a.setAttribute("aria-label", h.name + "を楽天トラベルで見る（新しいタブで開きます）");
+        a.append(document.createTextNode(T("rt_view", "楽天トラベルで見る")));
+        a.setAttribute("aria-label", T("rt_view_label", "{0}を楽天トラベルで見る（新しいタブで開きます）", [h.name]));
         li.append(a);
       }
+      // 英語版・韓国語版だけ、見る人の言語で開く Agoda の宿ページも出す（日本語版は楽天トラベルだけ）
+      var agoda = LANG !== "ja" && h.agoda_key ? a8Link(h.agoda_key, "m-btn", function (b) {
+        b.append(icon(ICON_HOTEL));
+        b.append(document.createTextNode(T("agoda_view", "Agodaで見る")));
+        b.append(prTag());
+        b.setAttribute("aria-label", T("agoda_view_label", "{0}をAgodaで見る（広告・新しいタブで開きます）", [h.name]));
+      }) : null;
+      if (agoda) { agoda.classList.add("featured-a8"); li.append(agoda); }
       ul.append(li);
     });
-    var jalan = a8Link("lodging", null, function (a) { a.textContent = "じゃらんで探す"; });
+    // ほかの宿: 日本語版はじゃらん、英語版・韓国語版は言語が切り替わる Agoda
+    var jalan = a8Link(LANG === "ja" ? "lodging" : "lodging_agoda", null, function (a) { a.textContent = T("stay_search", "じゃらんで探す"); });
     if (jalan) {
       var more = document.getElementById("stayMore");
       more.append(prTag());
-      more.append(document.createTextNode("ほかの宿を探す："));
+      more.append(document.createTextNode(T("stay_more", "ほかの宿を探す：")));
       more.append(jalan);
     }
   }
 
   // ---------- 試合ごとの空室 ----------
   var featuredNos = {};
+  var featuredNames = {};
 
   function nearLabel(h) {
-    if (h.featured) return "スタジアムすぐ";
-    if (h.area === "kameoka") return "湯の花温泉";
-    if (h.stadium_proximity) return "スタジアム近く";
+    if (h.featured) return T("near_featured", "スタジアムすぐ");
+    if (h.area === "kameoka") return T("near_yunohana", "湯の花温泉");
+    if (h.stadium_proximity) return T("near_stadium", "スタジアム近く");
     return "";
   }
 
@@ -455,32 +524,34 @@
     box.append(ph);
 
     var text = el("div", "hotel-text");
-    var name = el("p", "hotel-name", displayName(h.hotel_name));
+    // そばの2軒は案内に書いた名前（英語版・韓国語版では訳した名前）。ほかは楽天トラベルの名前のまま
+    var name = el("p", "hotel-name", featuredNames[h.hotel_no] || displayName(h.hotel_name));
     name.title = h.hotel_name;
     text.append(name);
     var price = el("p", "hotel-price");
     if (h.stay_charge_total != null) {
-      price.append(document.createTextNode("2名1泊 "));
+      price.append(document.createTextNode(T("price_two", "2名1泊 ")));
       price.append(el("b", null, "¥" + Number(h.stay_charge_total).toLocaleString("ja-JP")));
-      price.append(document.createTextNode("〜"));
+      price.append(document.createTextNode(T("price_suffix", "〜")));
       text.append(price);
-      var per = "1人 約¥" + Math.round(h.stay_charge_total / 2).toLocaleString("ja-JP");
-      text.append(el("p", "hotel-plan", h.stay_meal ? per + "・" + h.stay_meal : per));
+      var per = T("price_per", "1人 約¥{0}", [Math.round(h.stay_charge_total / 2).toLocaleString("ja-JP")]);
+      var meal = h.stay_meal && ((names.meals || {})[h.stay_meal] || h.stay_meal);
+      text.append(el("p", "hotel-plan", meal ? per + T("sep", "・") + meal : per));
     } else if (h.min_charge != null) {
-      price.append(document.createTextNode("目安 "));
+      price.append(document.createTextNode(T("price_from", "目安 ")));
       price.append(el("b", null, "¥" + Number(h.min_charge).toLocaleString("ja-JP")));
-      price.append(document.createTextNode("〜"));
+      price.append(document.createTextNode(T("price_suffix", "〜")));
       text.append(price);
     } else {
-      price.textContent = "料金は楽天トラベルで確認";
+      price.textContent = T("price_check", "料金は楽天トラベルで確認");
       text.append(price);
     }
     var sub = el("p", "hotel-sub");
-    if (h.distance_km_from_stadium != null) sub.append(el("span", null, "スタジアムまで" + h.distance_km_from_stadium + "km"));
+    if (h.distance_km_from_stadium != null) sub.append(el("span", null, T("hotel_dist", "スタジアムまで{0}km", [h.distance_km_from_stadium])));
     if (h.review_average != null && h.review_count) {
       var rv = el("span");
       rv.append(el("span", "hotel-star", "★" + Number(h.review_average).toFixed(1)));
-      rv.append(document.createTextNode("（" + h.review_count + "件）"));
+      rv.append(document.createTextNode(T("reviews", "（{0}件）", [h.review_count])));
       sub.append(rv);
     }
     if (sub.childNodes.length) text.append(sub);
@@ -495,12 +566,12 @@
     var a = safeLink(f.url, "hotel-link");
     var box = a || el("div", "hotel-link");
     var ph = photo({ hotel_no: f.hotel_no });
-    ph.append(el("span", "hotel-near", "スタジアムすぐ"));
+    ph.append(el("span", "hotel-near", T("near_featured", "スタジアムすぐ")));
     box.append(ph);
     var text = el("div", "hotel-text");
     text.append(el("p", "hotel-name", f.name));
-    text.append(el("p", "hotel-price", "取得時点では2名の空室が見つかりませんでした"));
-    text.append(el("p", "hotel-sub", "楽天トラベルで確かめる"));
+    text.append(el("p", "hotel-price", T("full", "取得時点では2名の空室が見つかりませんでした")));
+    text.append(el("p", "hotel-sub", T("full_check", "楽天トラベルで確かめる")));
     box.append(text);
     li.append(box);
     return li;
@@ -511,13 +582,13 @@
     var wrap = el("div", "h-row");
     var ul = el("ul", "hotels");
     ul.id = "home-hotels-" + (++rowSeq);
-    ul.setAttribute("aria-label", label + "の候補 " + cards.length + "件");
+    ul.setAttribute("aria-label", T("row_label", "{0}の候補 {1}件", [label, cards.length]));
     cards.forEach(function (c) { ul.append(c); });
     if (cards.length > 1) {
-      [["prev", "前の宿", "M15 18l-6-6 6-6"], ["next", "次の宿", "M9 18l6-6-6-6"]].forEach(function (b) {
+      [["prev", T("prev", "前の宿"), "M15 18l-6-6 6-6"], ["next", T("next", "次の宿"), "M9 18l6-6-6-6"]].forEach(function (b) {
         var btn = el("button", "h-arrow h-arrow-" + b[0]);
         btn.type = "button";
-        btn.setAttribute("aria-label", label + "：" + b[1]);
+        btn.setAttribute("aria-label", label + T("colon", "：") + b[1]);
         btn.setAttribute("aria-controls", ul.id);
         btn.append(icon(b[2]));
         btn.addEventListener("click", function () {
@@ -541,7 +612,7 @@
     var sec = el("section", "night");
     var head = el("div", "night-head");
     head.append(el("h4", "night-title", label));
-    if (checkin) head.append(el("span", "night-date", md(checkin) + " チェックイン"));
+    if (checkin) head.append(el("span", "night-date", T("checkin", "{0} チェックイン", [md(checkin)])));
     // そばの2軒は、空いていなくても先頭に出す（空いていないことも知りたいことなので）
     var found = {};
     hotels.forEach(function (h) { if (h.featured) found[h.hotel_no] = true; });
@@ -551,7 +622,7 @@
     });
     var featuredCards = hotels.filter(function (h) { return h.featured; }).map(hotelCard);
     cards = featuredCards.concat(cards).concat(hotels.filter(function (h) { return !h.featured; }).map(hotelCard));
-    if (cards.length > 1) head.append(el("span", "night-hint", cards.length + "件・スワイプで他の宿 →"));
+    if (cards.length > 1) head.append(el("span", "night-hint", T("swipe", "{0}件・スワイプで他の宿 →", [cards.length])));
     sec.append(head);
     sec.append(hotelRow(cards, label));
     return sec;
@@ -562,27 +633,27 @@
     // featured の印が無いデータでも、宿の番号でそばの2軒を見分ける
     (doc.hotels || []).concat(doc.same_day_hotels || []).forEach(function (h) { if (featuredNos[h.hotel_no]) h.featured = true; });
     box.textContent = "";
-    box.append(night("前泊", m.checkin_date, doc.hotels || []));
-    if (Array.isArray(doc.same_day_hotels)) box.append(night("当日泊", m.same_day_checkin_date, doc.same_day_hotels));
-    box.append(el("p", "h-foot", "料金は取得時点で空室のあったプランの最安（2名1泊・税・サービス料込み）。取得 " + (m.updated_at || "") + " JST ／ 提供：楽天トラベル"));
+    box.append(night(T("night_before", "前泊"), m.checkin_date, doc.hotels || []));
+    if (Array.isArray(doc.same_day_hotels)) box.append(night(T("night_same", "当日泊"), m.same_day_checkin_date, doc.same_day_hotels));
+    box.append(el("p", "h-foot", T("hotel_foot", "料金は取得時点で空室のあったプランの最安（2名1泊・税・サービス料込み）。取得 {0} JST ／ 提供：楽天トラベル", [m.updated_at || ""])));
   }
 
   function matchBody(m) {
     var body = el("div", "m-body");
     var hh = el("div", "h-head");
-    var ht = el("h3", "h-title", "ホテル");
+    var ht = el("h3", "h-title", T("hotels", "ホテル"));
     ht.append(prTag());
     hh.append(ht);
-    hh.append(el("span", "h-cond", "2名・スタジアムのそばの2軒→スタジアムから3km→湯の花温泉・各区域で安い順"));
+    hh.append(el("span", "h-cond", T("hotel_cond", "2名・スタジアムのそばの2軒→スタジアムから3km→湯の花温泉・各区域で安い順")));
     body.append(hh);
     var box = el("div", "h-box");
     if (m.hotels_path) {
-      box.append(el("p", "h-empty", "読み込んでいます…"));
+      box.append(el("p", "h-empty", T("loading", "読み込んでいます…")));
       openHotelReady[m.id] = getJson(m.hotels_path).then(function (d) { renderHotels(box, d); })
-        .catch(function () { box.textContent = ""; box.append(el("p", "h-empty", "ホテル情報を読み込めませんでした。")); });
+        .catch(function () { box.textContent = ""; box.append(el("p", "h-empty", T("hotel_error", "ホテル情報を読み込めませんでした。"))); });
     } else {
       openHotelReady[m.id] = Promise.resolve();
-      box.append(el("p", "h-empty", "空室の情報は準備中です（週1回、自動で取得します）。上の「泊まる」から楽天トラベルの宿の案内を開けます。"));
+      box.append(el("p", "h-empty", T("hotel_pending", "空室の情報は準備中です（週1回、自動で取得します）。上の「泊まる」から楽天トラベルの宿の案内を開けます。")));
     }
     body.append(box);
     return body;
@@ -595,14 +666,14 @@
     article.setAttribute("aria-labelledby", m.id + "-title");
     var details = el("details", "m-details");
     var head = el("summary", "m-head");
-    head.append(el("span", "m-comp", (m.competition_label || m.competition) + "　" + (m.round || "")));
+    head.append(el("span", "m-comp", ((names.competitions || {})[m.competition] || m.competition_label || m.competition) + T("comp_sep", "　") + roundLabel(m.round || "")));
     var title = el("h3", "m-title");
     title.id = m.id + "-title";
     title.append(el("small", null, "vs"));
-    title.append(document.createTextNode(m.opponent));
+    title.append(document.createTextNode((names.opponents || {})[m.opponent] || m.opponent));
     head.append(title);
     var date = el("span", "m-date", dateLabel(m));
-    date.append(el("small", null, m.match_date ? (m.kickoff_time ? m.kickoff_time + " キックオフ" : "キックオフ未定") : "日程未定"));
+    date.append(el("small", null, m.match_date ? (m.kickoff_time ? T("kickoff", "{0} キックオフ", [m.kickoff_time]) : T("kickoff_tbd", "キックオフ未定")) : T("date_tbd", "日程未定")));
     head.append(date);
     var chev = el("span", "m-chev");
     chev.append(icon("M6 9l6 6 6-6"));
@@ -684,7 +755,7 @@
       if (openIds.indexOf(hash) < 0) openIds.push(hash);
       target.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
     }
-    if (!home.length) list.append(el("li", "h-empty", "これからのホーム戦はありません。"));
+    if (!home.length) list.append(el("li", "h-empty", T("no_matches", "これからのホーム戦はありません。")));
     list._openHotelIds = openIds;
     return home.length;
   }
@@ -713,34 +784,43 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=d9b105c0");
-  var affP = getJson("data/affiliates.json?v=d51a049a").catch(function () { return {}; });
+  var guideP = getJson("data/home-guide.json?v=526f710e");
+  var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
+  var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");
   var indexP = getJson("data/hotel-index.json?v=f6a0e3e6").catch(function () { return { matches: [] }; });
 
-  Promise.all([guideP, affP]).then(function (r) {
-    guide = r[0];
+  Promise.all([guideP, affP, trP]).then(function (r) {
+    var tr = r[2] || {};
+    ui = tr.ui || {};
+    names = tr.names || {};
+    guide = overlay(r[0], tr.guide);
     affiliates = r[1] || {};
-    (guide.featured_hotels || []).forEach(function (h) { featuredNos[h.hotel_no] = true; featuredImages[h.hotel_no] = h.image_urls || []; });
+    (guide.featured_hotels || []).forEach(function (h) {
+      featuredNos[h.hotel_no] = true;
+      featuredImages[h.hotel_no] = h.image_urls || [];
+      if (LANG !== "ja") featuredNames[h.hotel_no] = h.name;
+    });
     renderAccess();
     renderParking();
     renderSpots();
+    renderMatchFood();
     renderSpecialties();
     renderFood();
     renderStay();
-    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
+    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "matchFoodList", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
     return Promise.all([matchesP, indexP]);
   }).then(function (r) {
     var n = renderMatches(r[0].matches || [], r[1] || {});
     var updated = r[1] && r[1].meta && r[1].meta.updated_at;
-    meta.textContent = "これからのホーム戦 " + n + "試合" + (updated ? "／ ホテル情報の取得 " + updated + " JST" : "");
+    meta.textContent = T("meta_count", "これからのホーム戦 {0}試合", [n]) + (updated ? T("meta_updated", "／ ホテル情報の取得 {0} JST", [updated]) : "");
     var ids = list._openHotelIds || [];
     return Promise.all(ids.map(function (id) { return openHotelReady[id] || Promise.resolve(); }));
   }).then(function () {
     releaseMatchSpace();
   }).catch(function () {
-    meta.textContent = "データを読み込めませんでした。時間をおいて開き直してください。";
-    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
+    meta.textContent = T("load_error", "データを読み込めませんでした。時間をおいて開き直してください。");
+    ["accessBody", "parkingBody", "spotsWalk", "spotsRide", "matchFoodList", "specialtyList", "foodBody", "featuredList", "spotsMore", "stayMore"].forEach(settle);
     releaseMatchSpace();
   });
 })();

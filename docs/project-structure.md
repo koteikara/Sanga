@@ -11,7 +11,7 @@
 | 過密日程カレンダー | `public/calendar.html` | `public/assets/calendar.css`、`public/assets/topbar.css`、`public/assets/calendar.js`、`index-nebula.js`（背景） | `public/data/matches.json`（年間スケジュールと共有） |
 | SUPPORTER TIMELINE | `public/timeline.html` | `public/assets/timeline.css`、`public/assets/topbar.css`、`public/assets/timeline.js`、`index-nebula.js`（背景） | `public/data/calendar-events.json`（生成物）、`benefit-tickets.json`、`matches.json` |
 | アウェイ遠征ガイド | `public/away.html` | `public/assets/away.css`、`public/assets/topbar.css`、`public/assets/away-guide.js` | `public/data/away-guide.json`、`public/data/hotels/*.json`、`public/data/affiliates.json` |
-| ホーム観戦ガイド | `public/home.html` | `public/assets/away.css`（共有）、`public/assets/home.css`、`public/assets/topbar.css`、`public/assets/home-guide.js` | `public/data/home-guide.json`（手入力の案内）、`matches.json`、`hotel-index.json`、`public/data/hotels/*.json`、`affiliates.json` |
+| ホーム観戦ガイド | `public/home.html`（英語版 `public/home-en.html`、韓国語版 `public/home-ko.html`） | `public/assets/away.css`（共有）、`public/assets/home.css`、`public/assets/topbar.css`、`public/assets/home-guide.js` | `public/data/home-guide.json`（手入力の案内）、`home-guide.{en,ko}.json`（訳の重ね書き）、`matches.json`、`hotel-index.json`、`public/data/hotels/*.json`、`affiliates.json` |
 | 入口ページ | `public/index.html` | `public/assets/index.css`、`index-page.js`、`index-nebula.js`、`index-motion.js` | `public/data/tools.json`（9件） |
 
 ## ディレクトリ
@@ -65,6 +65,7 @@
 | ホテル索引 | `public/data/hotel-index.json` | 2026-10-15時点1件（豊田戦 sec14）。`hotels-sync.yml` が週1回更新 |
 | 会場 | `public/data/stadiums.json` | 18会場。座標は概算。最寄り駅は `docs/sheets/away-transport.csv` |
 | ホーム観戦ガイドの案内 | `public/data/home-guide.json` | 行き方・散策・そばの宿2軒・宿の検索区域を手で書く。2026-10-16作成 |
+| ホーム観戦ガイドの訳 | `public/data/home-guide.en.json`、`public/data/home-guide.ko.json` | 英語版・韓国語版の文言と、`home-guide.json` に重ねる訳。2026-10-28作成 |
 
 ## GitHub Actions
 

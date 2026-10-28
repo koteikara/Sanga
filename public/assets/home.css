@@ -125,6 +125,10 @@
 .featured-name{margin:0;font-size:15px;font-weight:900;line-height:1.35}
 .featured-text{margin:0;font-size:12.5px}
 .featured-item .m-btn{align-self:stretch;justify-content:center;margin-top:auto}
+/* 英語版・韓国語版の Agoda のボタン（楽天トラベルのボタンの下に並べる） */
+.featured-a8{display:flex;flex-direction:column}
+.featured-a8 .m-btn{margin-top:0}
+.featured-a8 .pr-tag{margin-left:2px}
 
 /* 試合ごとの空室 */
 .home-matches{scroll-margin-top:72px;margin-top:6px}
@@ -158,6 +162,7 @@
 #parkingBody:empty{min-height:1371px}
 #spotsWalk:empty{min-height:1244px}
 #spotsRide:empty{min-height:2073px}
+#matchFoodList:empty{min-height:1155px}  /* 2026-10-28 に測った値（日本語版） */
 #specialtyList:empty{min-height:1106px}
 #foodBody:empty{min-height:184px}
 #featuredList:empty{min-height:685px}
@@ -165,6 +170,7 @@
 #homeList.is-loading{min-height:2492px}
 @media (max-width:389px){
   #parkingBody:empty{min-height:1410px}
+  #matchFoodList:empty{min-height:1225px}
   #foodBody:empty{min-height:284px}
   #homeList.is-loading{min-height:2589px}
 }
@@ -173,7 +179,17 @@
   #parkingBody:empty{min-height:964px}
   #spotsWalk:empty{min-height:834px}
   #spotsRide:empty{min-height:1266px}
+  #matchFoodList:empty{min-height:572px}
   #specialtyList:empty{min-height:753px}
   #featuredList:empty{min-height:355px}
   #homeList.is-loading{min-height:2327px}
 }
+
+/* 英語版への入口（日本語版だけに置く）。英語版・韓国語版は .guide-switch を言語の切り替えに使う */
+.lang-link{display:flex;justify-content:flex-end;margin:0 0 4px}
+.lang-link a{
+  display:inline-flex;align-items:center;min-height:var(--tap);padding:0 14px;
+  border:1px solid var(--ground-line);border-radius:999px;
+  color:var(--ground-ink);font-size:13px;font-weight:800;text-decoration:none;
+}
+.lang-link a:hover{background:rgba(255,255,255,.1)}

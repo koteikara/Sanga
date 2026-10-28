@@ -65,6 +65,7 @@
 | `timeline-calendar.html` | `assets/topbar.css` | X | `index.html` |
 | `away.html` | `assets/topbar.css` | X | `index.html` |
 | `home.html` | `assets/topbar.css` | X | `index.html` |
+| `home-en.html`、`home-ko.html` | `assets/topbar.css` | X | `index.html` |
 | `sanga2025season.html` | `assets/topbar.css` | X | `index.html` |
 | `sanga_slides.html` | `assets/topbar.css` | X | `index.html` |
 | `TradePost/index-v1.html` | `../assets/topbar.css` | X | `../index.html` |
@@ -153,6 +154,7 @@
 2026-10-15にアウェイ遠征ガイド（`away.html`）を現役の末尾へ足しました。アフィリエイト（PR）を含むため、カードの説明文にも「PRを含みます」と書きます。日程ページ（timeline・年間スケジュール）からはリンクしません（2026-07-09の方針。`docs/hotels-operation-flow.md`）。
 2026-10-16に現役の並びを、サポータータイムライン・年間スケジュール・予想スカッド・過密日程カレンダー・ホーム観戦ガイド・アウェイ遠征ガイド・求・譲 投稿フォーマットの順にしました（運営者の指定。観戦ガイド2つを並べ、求・譲を末尾へ）。ホーム観戦ガイドのサムネイルは、ページ上部に観戦ガイドの切り替えを足したので撮り直しました。
 2026-10-16にホーム観戦ガイド（`home.html`）をアウェイ遠征ガイドの次へ足しました。考え方はアウェイ遠征ガイドと同じで、説明文に「PRを含みます」と書き、日程ページからはリンクしません。サムネイルはページの頭（行き方の欄）を撮っています。
+2026-10-28にホーム観戦ガイドの英語版（`home-en.html`）と韓国語版（`home-ko.html`）を足しました。入口のカードは日本語版の1枚のままで、英語版へは日本語版の右上の「English」から辿ります。`sitemap.xml` と各ページの OGP は `tools/build-seo.mjs` の PAGES に足して生成しています（画像は日本語版と同じ）。
 
 ### サムネイル
 
