@@ -20,6 +20,8 @@
 
 本番公開物の正本です。日程・選手・ホテル索引JSON、CSS、JavaScript、ロゴ、背番号タイル、静的配置した `modern-screenshot` を含みます。`hotel-index.json` は現在0件で画面表示は未実装です。
 
+`public/googled046798270e9dd53.html` は Google Search Console の所有権確認用です。中身を変えたり消したりしないでください。消すと確認が外れます。
+
 `public/assets/topbar.css` は入口ページ以外の公開ページが共通で読むトップバーです。各ページから
 `index.html` へ戻る導線をここにまとめています。画面には固定せず、スクロールで流れて消えます。
 仕様と、ページごとの `body` の違いを吸収する指定は
