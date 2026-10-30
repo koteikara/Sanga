@@ -17,7 +17,7 @@
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
   var LANG = (document.documentElement.lang || "ja").slice(0, 2);
   // 訳の重ね書き。版数は tools/asset-versions.mjs が揃える
-  var OVERLAY = { en: "data/home-guide.en.json?v=aa73223c", ko: "data/home-guide.ko.json?v=89227214" }[LANG] || "";
+  var OVERLAY = { en: "data/home-guide.en.json?v=aa73223c", ko: "data/home-guide.ko.json?v=ec4dbb21" }[LANG] || "";
   var ui = {};
   var names = {};
   function T(key, ja, args) {

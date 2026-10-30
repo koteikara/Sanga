@@ -78,7 +78,7 @@
     "meta_count": "예정된 홈경기 {0}경기",
     "meta_updated": " / 호텔 정보 확인 {0} JST",
     "load_error": "데이터를 불러오지 못했습니다. 잠시 후 다시 열어 주세요.",
-    "venue_afc": "‘교토 스타디움(京都府立京都スタジアム)’으로 표기되지만 산가 스타디움 by KYOCERA와 같은 경기장입니다"
+    "venue_afc": "‘교토 스타디움(Kyoto Stadium)’으로 표기되나 ‘산가 스타디움 by KYOCERA’와 동일한 경기장입니다"
   },
   "names": {
     "competitions": {
