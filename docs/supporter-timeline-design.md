@@ -101,7 +101,7 @@ Phase 2 で入れたのは次の3つです。
 
 ### できていないこと
 
-- **公式の販売スケジュール表が、2026-10-15時点では画像だけになっている。** `/ticket/schedule` はトップへ302し、案内は `https://www.sanga-fc.jp/news/detail/ticketschedule/`。表は戻らない見込みで、`ticket-sales.current.csv` は2026-09-09取得のまま（「葉の証明書だけが届く」）。**2026-10-27から日次ワークフローはこの取得を止めています**（`PAUSE_OFFICIAL_SANGA_FETCH`。既定 `true`。再開は `false`）。停止中はCSVを空にせず、失敗にも数えません。ホーム戦の日時はJリーグチケットで補うが、**Jリーグチケットに試合が載るまでは公式の古い日時が出る**。特典チケット引換はJリーグチケットに無いので補えない（「ホーム戦の販売日時をJリーグチケットで補う」）
+- **公式の販売スケジュールは取得を止めたままで、`ticket-sales.current.csv` は2026-09-09取得のまま。** 2026-10-15から `/ticket/schedule` はトップへ302し、案内記事 `/news/detail/ticketschedule/` は画像だけだった。2026-10-30の公式サイト復旧後は案内記事が404になり、`https://www.sanga-fc.jp/ticket/schedule` が表付きで200を返す（今のパーサーで23試合・163行を解析できた。取得先もここへ戻した。「葉の証明書だけが届く」）。**2026-10-27から日次ワークフローはこの取得を止めています**（`PAUSE_OFFICIAL_SANGA_FETCH`。既定 `true`。再開は `false`）。停止中はCSVを空にせず、失敗にも数えません。ホーム戦の日時はJリーグチケットで補うが、**Jリーグチケットに試合が載るまでは公式の古い日時が出る**。特典チケット引換はJリーグチケットに無いので補えない（「ホーム戦の販売日時をJリーグチケットで補う」）
 - **ニュース一覧 `/news` も同じ日にトップへ302する。** 記事URL（`/news/detail/…`）は開く。一覧の差分検知は、一覧ページが戻るまで動かない。**2026-10-27から日次ワークフローは公式の案内の取得も止めています**（同じスイッチ。案内のCSVは前回のまま。失敗として記録しない）
 - **試合当日のイベント・グッズ・応募は、日時付きのイベントとしては1件もない。** 2026-09-11 に層1
   （試合ごとの案内の件数と出典）を入れたが、日時を持つイベントにする層2・層3は未実装。
@@ -2505,9 +2505,14 @@ HTMLからCSVを作る部分は「販売スケジュールの取得と解析」�
 失敗時の再試行は10秒（`Crawl-delay`）空けて最大3回です。**目印の無いHTMLもここで取り直します**
 （「目印の無いHTMLは取り直す」）。
 
-取得先の既定は `https://www.sanga-fc.jp/news/detail/ticketschedule/` です。
-2026-10-15 に `https://www.sanga-fc.jp/ticket/schedule` がトップページへ 302 するのを確認し、
-トップのニュースから辿れた案内記事へ変えました。トップへ落ちた応答は目印があっても保存しません。
+取得先の既定は `https://www.sanga-fc.jp/ticket/schedule` です（2026-10-30 に戻しました）。
+2026-10-15 に同じURLがトップページへ 302 するのを確認し、トップのニュースから辿れた案内記事
+`https://www.sanga-fc.jp/news/detail/ticketschedule/` へいったん変えていました。
+2026-10-30 に公式サイトが一時止まって復旧したあと、その案内記事は 404 になり、
+`/ticket/schedule` は 200 で表（`schedule__list`、`aco_box`、`schedule__list__table`、`onsale`）を返しました。
+今の `parse-ticket-sales.js` で解析でき、23試合・163行になりました（`parse-ticket-sales.js` の出典もこのURLです）。
+**取得は一時停止のままです**（`PAUSE_OFFICIAL_SANGA_FETCH` は `true`）。取得先を直しただけで、再開はしていません。
+トップへ落ちた応答は目印があっても保存しません。
 
 #### 葉の証明書だけが届く（2026-10-15）
 
@@ -2531,9 +2536,10 @@ SHA-256 は `83:46:92:2C:B8:73:0B:B6:AE:71:AB:03:BF:C4:24:62:F4:16:04:23:D9:07:9
 サイバートラストの公開ページ（`https://www.cybertrust.ne.jp/ssl/download-ca/sureserver-ov.html`）と同じ値です。
 `node tools/check-sanga-ca.js` がこの値と有効期限を見ます。`npm run check:ticket-sales` から呼びます。
 
-**表は画像になりました。** 案内記事はリーグ用と ACL 用の PNG だけで、`dl.schedule__list` がありません。
-取得の目印は `league-ticket-schedule.png` に変えてあります。解析は画像だけのHTMLを受け取ると失敗し、
-CSVは書き換えません。
+**表は一時、画像になっていました（2026-10-15〜2026-10-30）。** 案内記事はリーグ用と ACL 用の PNG だけで、
+`dl.schedule__list` がありませんでした。そのあいだ取得の目印は `league-ticket-schedule.png` でしたが、
+取得先を `/ticket/schedule` に戻したので目印も `schedule__list` に戻しました。解析は画像だけのHTMLを
+受け取ると失敗し、CSVは書き換えません。
 
 **2026-10-27から、この取得と解析は日次ワークフローでは走らせていません。**
 `PAUSE_OFFICIAL_SANGA_FETCH` が `true`（既定）のあいだ、公式ページを取らず、解析もせず、
@@ -2696,7 +2702,7 @@ Issueを1本だけ持ち、毎日中身を書き換えます。滞りが無く�
 
 | 道具 | 目印（`PAGE_MARKER`） |
 | --- | --- |
-| `fetch-ticket-sales.js` | `league-ticket-schedule.png`（2026-10-15まで `schedule__list`。案内が画像になった） |
+| `fetch-ticket-sales.js` | `schedule__list`（2026-10-15〜2026-10-30は案内記事が画像だったので `league-ticket-schedule.png`） |
 | `fetch-away-tickets.js` | `/sales/perform/` |
 | `fetch-news-list.js` | `/news/detail/`。加えて、最終URLがトップページなら失敗（2026-10-15に `/news` がトップへ302） |
 

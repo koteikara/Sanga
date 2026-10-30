@@ -786,7 +786,7 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=a6e8e966");
+  var guideP = getJson("data/home-guide.json?v=aa82e912");
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
   var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");
