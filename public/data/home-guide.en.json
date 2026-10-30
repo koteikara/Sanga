@@ -77,7 +77,8 @@
     "no_matches": "There are no upcoming home matches.",
     "meta_count": "{0} upcoming home matches",
     "meta_updated": " / Hotels checked {0} JST",
-    "load_error": "Could not load the data. Please try again later."
+    "load_error": "Could not load the data. Please try again later.",
+    "venue_afc": "Listed as Kyoto Stadium (京都府立京都スタジアム), the same stadium as Sanga Stadium by KYOCERA"
   },
   "names": {
     "competitions": {
@@ -158,7 +159,6 @@
     ],
     "parking": {
       "notes": [
-        "On match days, the stadium car park is reserved for organisers and staff, so you cannot use it.",
         "Roads around the stadium get busy before and after the match. Please allow plenty of time."
       ],
       "match_day_lots": [

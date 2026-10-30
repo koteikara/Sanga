@@ -146,50 +146,90 @@
 .hotel.is-full .hotel-price{margin-top:auto;font-size:11.5px;font-weight:700;color:var(--ink)}
 
 /* 読み込み前の高さ。2026-10-27 の Chromium。狭い幅は 390px、640px以上は画面幅 1366px（本文は最大760px）。
-   :empty と .is-loading が外れると自然な高さに戻る。試合一覧は開いた試合のホテルが出てから外す。 */
-#accessBody:empty,
-#parkingBody:empty,
-.spots:empty,
-#foodBody:empty,
-#featuredList:empty,
-#spotsMore:empty,
-#stayMore:empty,
-#homeList.is-loading{
+   :empty と .is-loading が外れると自然な高さに戻る。試合一覧は開いた試合のホテルが出てから外す。
+   :root[data-motion] は head の先出しスクリプトが付ける印。JavaScript が動かないときは高さを取らない（空白だけが残らないように） */
+:root[data-motion] #accessBody:empty,
+:root[data-motion] #parkingBody:empty,
+:root[data-motion] .spots:empty,
+:root[data-motion] #foodBody:empty,
+:root[data-motion] #featuredList:empty,
+:root[data-motion] #spotsMore:empty,
+:root[data-motion] #stayMore:empty,
+:root[data-motion] #homeList.is-loading{
   border-radius:12px;
   background-color:rgba(123,0,100,.04);
 }
-#accessBody:empty{min-height:1196px}
-#parkingBody:empty{min-height:1371px}
-#spotsWalk:empty{min-height:1244px}
-#spotsRide:empty{min-height:2073px}
-#matchFoodList:empty{min-height:1155px}  /* 2026-10-28 に測った値（日本語版） */
-#specialtyList:empty{min-height:1106px}
-#foodBody:empty{min-height:184px}
-#featuredList:empty{min-height:685px}
-#spotsMore:empty,#stayMore:empty{min-height:19px}
-#homeList.is-loading{min-height:2492px}
+:root[data-motion] #accessBody:empty{min-height:1196px}
+:root[data-motion] #parkingBody:empty{min-height:1362px}  /* 2026-10-30 に測り直した値（日本語版） */
+:root[data-motion] #spotsWalk:empty{min-height:1244px}
+:root[data-motion] #spotsRide:empty{min-height:2073px}
+:root[data-motion] #matchFoodList:empty{min-height:1155px}  /* 2026-10-28 に測った値（日本語版） */
+:root[data-motion] #specialtyList:empty{min-height:1106px}
+:root[data-motion] #foodBody:empty{min-height:184px}
+:root[data-motion] #featuredList:empty{min-height:685px}
+:root[data-motion] #spotsMore:empty,:root[data-motion] #stayMore:empty{min-height:19px}
+:root[data-motion] #homeList.is-loading{min-height:2492px}
 @media (max-width:389px){
-  #parkingBody:empty{min-height:1410px}
-  #matchFoodList:empty{min-height:1225px}
-  #foodBody:empty{min-height:284px}
-  #homeList.is-loading{min-height:2589px}
+  :root[data-motion] #parkingBody:empty{min-height:1401px}
+  :root[data-motion] #matchFoodList:empty{min-height:1225px}
+  :root[data-motion] #foodBody:empty{min-height:284px}
+  :root[data-motion] #homeList.is-loading{min-height:2589px}
 }
 @media (min-width:640px){
-  #accessBody:empty{min-height:1279px}
-  #parkingBody:empty{min-height:964px}
-  #spotsWalk:empty{min-height:834px}
-  #spotsRide:empty{min-height:1266px}
-  #matchFoodList:empty{min-height:572px}
-  #specialtyList:empty{min-height:753px}
-  #featuredList:empty{min-height:355px}
-  #homeList.is-loading{min-height:2327px}
+  :root[data-motion] #accessBody:empty{min-height:1279px}
+  :root[data-motion] #parkingBody:empty{min-height:937px}
+  :root[data-motion] #spotsWalk:empty{min-height:834px}
+  :root[data-motion] #spotsRide:empty{min-height:1266px}
+  :root[data-motion] #matchFoodList:empty{min-height:572px}
+  :root[data-motion] #specialtyList:empty{min-height:753px}
+  :root[data-motion] #featuredList:empty{min-height:355px}
+  :root[data-motion] #homeList.is-loading{min-height:2327px}
 }
 
-/* 英語版への入口（日本語版だけに置く）。英語版・韓国語版は .guide-switch を言語の切り替えに使う */
-.lang-link{display:flex;justify-content:flex-end;margin:0 0 4px}
-.lang-link a{
-  display:inline-flex;align-items:center;min-height:var(--tap);padding:0 14px;
-  border:1px solid var(--ground-line);border-radius:999px;
-  color:var(--ground-ink);font-size:13px;font-weight:800;text-decoration:none;
+
+/* ACL の試合の見出しに添える会場表記の注（AFC では「京都府立京都スタジアム」と載る） */
+.m-venue{grid-column:1 / -1;font-size:11px;font-weight:700;line-height:1.45;opacity:.92}
+
+/* 公式の英語チケットページへの案内（英語版・韓国語版）。席種とユニフォームの決まりは公式に任せる */
+.home-ticket{
+  display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;
+  margin:0 0 12px;padding:10px 12px;
+  border:1px solid var(--ground-line);border-radius:12px;
+  background:rgba(255,255,255,.1);
+  font-size:12.5px;color:var(--ground-ink-dim);
 }
-.lang-link a:hover{background:rgba(255,255,255,.1)}
+.home-ticket a{
+  display:inline-flex;align-items:center;min-height:var(--tap);padding:0 14px;
+  border-radius:999px;background:var(--paper);color:var(--accent);
+  font-size:14px;font-weight:900;text-decoration:none;
+}
+.home-ticket a:hover{text-decoration:underline}
+
+/* 行き方の要約。HTML に直接書いてあり、JavaScript が動かなくても読める。詳しい案内は下の #accessBody に描く */
+.home-access-static{padding-bottom:0}
+.home-venue-note{
+  margin:0 0 12px;padding:8px 10px;
+  border-left:4px solid var(--comp);border-radius:4px;
+  background:var(--paper-2);
+  font-size:12.5px;
+}
+.access-steps{
+  display:flex;flex-wrap:wrap;gap:6px;
+  margin:0 0 8px;padding:0;list-style:none;counter-reset:step;
+  font-size:13px;font-weight:800;
+}
+.access-steps li{
+  counter-increment:step;
+  display:flex;align-items:center;gap:6px;
+  padding:4px 10px 4px 4px;border:1px solid var(--line);border-radius:999px;background:#fff;
+}
+.access-steps li::before{
+  content:counter(step);
+  display:grid;place-items:center;width:22px;height:22px;flex:none;
+  border-radius:50%;background:var(--comp);color:#fff;font-size:11px;
+}
+.home-access-static .home-note{margin:0}
+.home-src{margin:0;font-size:12.5px}
+
+/* 駐車場の欄の先頭。試合の日はスタジアムに駐車場が無いことを、予約駐車場（PR）より先に出す */
+.parking-official{margin:0;padding-bottom:0;font-size:12.5px}

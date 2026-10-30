@@ -284,6 +284,30 @@ body {
   letter-spacing: 0.08em;
 }
 
+/* ホーム観戦ガイドの英語版・韓国語版への入口。カードは日本語版の1枚なので、ここから辿れるようにする */
+.hero-lang {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+
+.hero-lang a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hero-lang a:hover { background: rgba(255, 255, 255, 0.1); }
+
 /* ---------------- 作品グリッド ---------------- */
 
 .works,
