@@ -77,7 +77,8 @@
     "no_matches": "There are no upcoming home matches.",
     "meta_count": "{0} upcoming home matches",
     "meta_updated": " / Hotels checked {0} JST",
-    "load_error": "Could not load the data. Please try again later."
+    "load_error": "Could not load the data. Please try again later.",
+    "venue_afc": "Listed as Kyoto Stadium (京都府立京都スタジアム), the same stadium as Sanga Stadium by KYOCERA"
   },
   "names": {
     "competitions": {
@@ -148,7 +149,7 @@
       { "label": "From Maizuru", "text": "The JR Limited Express Maizuru runs direct: about 1 h 10 min from Nishi-Maizuru, about 1 h 20 min from Higashi-Maizuru (via Ayabe and Sonobe)." },
       { "label": "By bus", "text": "On match days, Keihan Kyoto Kotsu runs a shuttle bus from Hankyu Katsura Station (east exit) and JR Katsuragawa Station (reserved seats, adults ¥850 one way). Check the operator's page for which matches it runs and the times.", "link_label": "Keihan Kyoto Kotsu (Japanese)" },
       { "label": "From Kameoka Station", "text": "About 3 min on foot from the north exit. You can see the stadium from the station." },
-      { "label": "By car", "text": "The stadium car park cannot be used on match days. See “Coming by car” below for car parks you can use." },
+      { "label": "By car", "text": "See “Coming by car” below." },
       { "label": "Going home", "text": "Kameoka Station gets crowded after the match. Leave plenty of time for your train or Shinkansen." }
     ],
     "routes": [
@@ -158,7 +159,6 @@
     ],
     "parking": {
       "notes": [
-        "On match days, the stadium car park is reserved for organisers and staff, so you cannot use it.",
         "Roads around the stadium get busy before and after the match. Please allow plenty of time."
       ],
       "match_day_lots": [

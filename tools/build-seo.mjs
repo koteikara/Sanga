@@ -1,13 +1,15 @@
 // 検索とSNS向けの土台をまとめて作る。
 //
-// 1. public/sitemap.xml と public/robots.txt
+// 1. public/sitemap.xml と public/robots.txt（各ページの lastmod は tools/seo-lastmod.json から）
 // 2. public/index.html のツールカード（<!-- tools:begin --> と <!-- tools:end --> の間）
 //    JavaScriptが動かない検索エンジンにもリンクが見えるよう、tools.json から先に書いておく。
 // 3. 各ページの og:image / og:image:alt / og:url / canonical（PAGES の表どおりにそろえる）
+// 4. sitemap の lastmod。ページの中身（?v= を除く）が変わった日。記録は tools/seo-lastmod.json
 //
 // 使い方:
 //   node tools/build-seo.mjs          生成して書き込む
 //   node tools/build-seo.mjs --check  ずれがあれば失敗する（check:static から呼ぶ）
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -16,6 +18,12 @@ const ORIGIN = "https://sangasanga.stars.ne.jp";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const pub = path.join(root, "public");
 const check = process.argv.includes("--check");
+// sitemap の lastmod の記録。ページごとに、本文の指紋（?v= の版数を除いたHTMLの sha256 の先頭12桁）と、
+// それが変わった日（JST）を持つ。版数だけが変わる自動の取り込み（ホテル・チケット）では lastmod を動かさない。
+const lastmodPath = path.join(root, "tools/seo-lastmod.json");
+const lastmods = fs.existsSync(lastmodPath) ? JSON.parse(fs.readFileSync(lastmodPath, "utf8")) : {};
+const todayJst = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+const fingerprint = (html) => crypto.createHash("sha256").update(html.replace(/\?v=[0-9a-f]+/g, "")).digest("hex").slice(0, 12);
 
 // file: public/ からの位置 / ogp: assets/ からの画像 / alt: 画像の代替テキスト / url: canonical
 // ページ別の画像は tools/ogp/make-ogp.mjs が作る。alt は画像に描いた文字と合わせる。
@@ -29,7 +37,7 @@ const PAGES = [
   { file: "home.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX ホーム観戦ガイド — サンガスタジアムへの行き方、散策、亀岡の宿。", priority: "0.8" },
   // 英語版・韓国語版は日本語版と同じ画像（文字は日本語）。alt はそれぞれの言語で画像の内容を書く
   { file: "home-en.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX Home match guide — getting to Sanga Stadium, walks, and places to stay in Kameoka.", priority: "0.6" },
-  { file: "home-ko.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX 홈 관전 가이드 — 산가 스타디움 가는 법, 산책, 가메오카의 숙소.", priority: "0.6" },
+  { file: "home-ko.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX 홈 직관 가이드 — 산가 스타디움 가는 법, 산책, 가메오카의 숙소.", priority: "0.6" },
   { file: "squad.html", ogp: "ogp/squad.jpg", alt: "SANGA TOOLBOX 予想スカッド作成 — スタメンを並べて、画像で共有。", priority: "0.8" },
   { file: "calendar.html", ogp: "ogp/calendar.jpg", alt: "SANGA TOOLBOX 過密日程カレンダー — 2026/27シーズンの試合間隔を色で見る。", priority: "0.8" },
   { file: "TradePost/index-v1.html", ogp: "ogp/trade.jpg", alt: "SANGA TOOLBOX 求・譲 投稿フォーマット — チケットやグッズの交換を、Xに投稿しやすく。", priority: "0.7" },
@@ -50,16 +58,8 @@ function put(rel, text) {
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
-// --- 1. sitemap / robots ---
+// --- 1. robots（sitemap は各ページを書き終えてから。lastmod にページの中身を使うため） ---
 const urlOf = (p) => ORIGIN + (p.url ?? "/" + p.file);
-const sitemap = [
-  '<?xml version="1.0" encoding="UTF-8"?>',
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-  ...PAGES.map((p) => `  <url><loc>${esc(urlOf(p))}</loc><priority>${p.priority}</priority></url>`),
-  "</urlset>",
-  "",
-].join("\n");
-put("sitemap.xml", sitemap);
 put("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${ORIGIN}/sitemap.xml\n`);
 
 // --- 2. ツールカード ---
@@ -105,6 +105,30 @@ for (const p of PAGES) {
   if (/<link rel="canonical"[^>]*>/.test(html)) html = html.replace(/<link rel="canonical"[^>]*>/, canon);
   else html = html.replace(/(\n([ \t]*)<meta property="og:url"[^\n]*)/, `\n$2${canon}$1`);
   put(p.file, html);
+  // 中身が前回の記録と違えば、lastmod を今日（JST）にする
+  const fp = fingerprint(html);
+  const rec = lastmods[p.file];
+  if (!rec || rec.fingerprint !== fp) {
+    if (check) problems.push(`${p.file} の lastmod が古い。node tools/build-seo.mjs を実行してください`);
+    lastmods[p.file] = { fingerprint: fp, lastmod: todayJst };
+  }
+}
+
+// --- 4. sitemap ---
+const sitemap = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  ...PAGES.map((p) => `  <url><loc>${esc(urlOf(p))}</loc><lastmod>${lastmods[p.file].lastmod}</lastmod><priority>${p.priority}</priority></url>`),
+  "</urlset>",
+  "",
+].join("\n");
+put("sitemap.xml", sitemap);
+const kept = Object.fromEntries(PAGES.map((p) => [p.file, lastmods[p.file]]));
+const lastmodText = JSON.stringify(kept, null, 2) + "\n";
+const oldLastmod = fs.existsSync(lastmodPath) ? fs.readFileSync(lastmodPath, "utf8") : null;
+if (oldLastmod !== lastmodText) {
+  if (check) problems.push("tools/seo-lastmod.json が古い。node tools/build-seo.mjs を実行してください");
+  else { fs.writeFileSync(lastmodPath, lastmodText); writes.push("../tools/seo-lastmod.json"); }
 }
 
 if (problems.length) {

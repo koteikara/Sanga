@@ -1,12 +1,13 @@
 # 公開サイト入口ページの設計
 
-確認基準日: 2026-10-14
+確認基準日: 2026-10-30
 
 状態: 実装済み。`public/index.html` が入口ページとして動いています（`assets/index.css`、`index-page.js`、
 `index-nebula.js`、`index-motion.js`、`public/data/tools.json` 6件）。
 2026-09-08に、入口ページ以外の公開ページへ共通トップバーを足しました（「公開ページ共通のトップバー」）。
 2026-10-14に、ツールカードの事前出力、ページ別OGP画像、canonical、`sitemap.xml` / `robots.txt`、
 アクセス解析の入れ物を足しました（「描画方式とJavaScript無効時の扱い」「ページ共通のメタ情報」「検索エンジン向けのファイル」「アクセス解析」）。
+2026-10-30に、`sitemap.xml` へ `lastmod` を足し、入口ページの見出しの下にホーム観戦ガイドの英語版・韓国語版への入口を置きました（「検索エンジン向けのファイル」「情報構造」）。
 以降の見た目変更は、これまでどおりプロトタイプで確認してから入れます（`docs/ui-prototype-workflow.md`）。
 
 ## 索引
@@ -155,6 +156,7 @@
 2026-10-16に現役の並びを、サポータータイムライン・年間スケジュール・予想スカッド・過密日程カレンダー・ホーム観戦ガイド・アウェイ遠征ガイド・求・譲 投稿フォーマットの順にしました（運営者の指定。観戦ガイド2つを並べ、求・譲を末尾へ）。ホーム観戦ガイドのサムネイルは、ページ上部に観戦ガイドの切り替えを足したので撮り直しました。
 2026-10-16にホーム観戦ガイド（`home.html`）をアウェイ遠征ガイドの次へ足しました。考え方はアウェイ遠征ガイドと同じで、説明文に「PRを含みます」と書き、日程ページからはリンクしません。サムネイルはページの頭（行き方の欄）を撮っています。
 2026-10-28にホーム観戦ガイドの英語版（`home-en.html`）と韓国語版（`home-ko.html`）を足しました。入口のカードは日本語版の1枚のままで、英語版へは日本語版の右上の「English」から辿ります。`sitemap.xml` と各ページの OGP は `tools/build-seo.mjs` の PAGES に足して生成しています（画像は日本語版と同じ）。
+2026-10-30に、入口ページの見出し（`.hero`）の「公式サイトではありません」の下へ、英語版・韓国語版への入口（`.hero-lang`、「English Match Day Guide」「한국어 직관 가이드」）を置きました。ACL のホーム戦（浦項・全北）に来る韓国・英語圏の人が、入口から迷わず辿れるようにするためです。カードは増やしていません（`tools.json` は9件のまま）。アウェイ遠征ガイドの右上にも同じ2つの入口（`.lang-link`）を置いています。
 
 ### サムネイル
 
@@ -280,6 +282,13 @@ Playwright はプロジェクトの依存ではないので、見つからない
 手で編集しません。載せるのは入口ページ、主要8ページ、アーカイブ2ページの計11ページで、`priority` も表で決めます。
 `robots.txt` はすべて許可し、`sitemap.xml` の場所だけを示します。
 
+各ページの `lastmod`（2026-10-30から）は、ページの中身が変わった日（JST）です。`tools/build-seo.mjs` が各ページのHTMLの指紋
+（`?v=` の版数を除いた sha256 の先頭12桁）と日付を `tools/seo-lastmod.json` に持ち、指紋が変わったときだけ日付をその日にします。
+版数だけが変わる自動の取り込み（`hotels-sync.yml`・`ticket-sales-sync.yml`）では日付は動きません。チケットの取り込みは
+`sitemap.xml` をコミットしないので、版数で日付が動くとCIが落ちるためでもあります。手でページを直したら `npm run fix:asset-versions`
+（または `npm run generate:seo`）で `sitemap.xml` と `tools/seo-lastmod.json` を一緒に更新してコミットします。
+最初の日付は、今回変えたページ（入口・ホーム観戦ガイド3ページ・アウェイ遠征ガイド）が2026-10-30、ほかは各ページの最後のコミット日です。
+
 ページを足す・外すときは `PAGES` の表を直し、`npm run generate:seo` を実行します。
 
 ## アクセス解析
@@ -347,7 +356,7 @@ Cloudflare Web Analytics を使い、Cookie を使わず個人を特定しない
 * `<!-- tools:begin -->` と `<!-- tools:end -->` の間のリンク先が、`tools.json` の全件の `href` と一致すること。
 
 `npm run check:seo`（`check:static` から呼ぶ）は、`node tools/build-seo.mjs --check` で
-カード、`sitemap.xml`、`robots.txt`、各ページの `og:image` / `og:image:alt` / `og:url` / canonical が生成結果と一致するかを見ます。
+カード、`sitemap.xml`（`lastmod` を含む）、`robots.txt`、各ページの `og:image` / `og:image:alt` / `og:url` / canonical が生成結果と一致するか、`tools/seo-lastmod.json` の指紋がいまのページと一致するかを見ます。
 
 ## 実装の段取り
 
@@ -375,7 +384,8 @@ Cloudflare Web Analytics を使い、Cookie を使わず個人を特定しない
 | `public/assets/analytics.js` | アクセス解析。全公開ページから読む |
 | `public/assets/ogp/` | ページ別のOGP画像 |
 | `public/sitemap.xml` / `public/robots.txt` | 検索エンジン向け。`tools/build-seo.mjs` が生成 |
-| `tools/build-seo.mjs` | カード、sitemap、robots、各ページのOGP・canonical をそろえる |
+| `tools/build-seo.mjs` | カード、sitemap（`lastmod` 付き）、robots、各ページのOGP・canonical をそろえる |
+| `tools/seo-lastmod.json` | sitemap の `lastmod` の記録（ページごとの指紋と日付）。`tools/build-seo.mjs` が書く。公開しない |
 | `tools/ogp/` | ページ別OGP画像の型と生成スクリプト |
 
 `index-` を頭に付けているのは、`assets/` に日程・スカッドのファイルが同居しているためです。どのページのものかがファイル名で分かるようにしています。

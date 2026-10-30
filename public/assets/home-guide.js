@@ -17,7 +17,7 @@
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
   var LANG = (document.documentElement.lang || "ja").slice(0, 2);
   // 訳の重ね書き。版数は tools/asset-versions.mjs が揃える
-  var OVERLAY = { en: "data/home-guide.en.json?v=db09d40a", ko: "data/home-guide.ko.json?v=8d09eb62" }[LANG] || "";
+  var OVERLAY = { en: "data/home-guide.en.json?v=94f90951", ko: "data/home-guide.ko.json?v=bb900e96" }[LANG] || "";
   var ui = {};
   var names = {};
   function T(key, ja, args) {
@@ -678,6 +678,8 @@
     var chev = el("span", "m-chev");
     chev.append(icon("M6 9l6 6 6-6"));
     head.append(chev);
+    // AFC の大会は正式名称「京都府立京都スタジアム」で載る。別の会場と思わないよう、同じ施設だと添える
+    if (m.venue === "京都府立京都スタジアム") head.append(el("span", "m-venue", T("venue_afc", "会場の表記は「京都府立京都スタジアム」。サンガスタジアム by KYOCERA と同じ施設です")));
     details.append(head);
     article.append(details);
 
@@ -784,7 +786,7 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=526f710e");
+  var guideP = getJson("data/home-guide.json?v=a6e8e966");
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
   var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");
