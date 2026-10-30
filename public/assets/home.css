@@ -159,7 +159,7 @@
   border-radius:12px;
   background-color:rgba(123,0,100,.04);
 }
-:root[data-motion] #accessBody:empty{min-height:1196px}
+:root[data-motion] #accessBody:empty{min-height:1154px}  /* 2026-10-30 に測り直した値（日本語版） */
 :root[data-motion] #parkingBody:empty{min-height:1362px}  /* 2026-10-30 に測り直した値（日本語版） */
 :root[data-motion] #spotsWalk:empty{min-height:1244px}
 :root[data-motion] #spotsRide:empty{min-height:2073px}
@@ -170,13 +170,14 @@
 :root[data-motion] #spotsMore:empty,:root[data-motion] #stayMore:empty{min-height:19px}
 :root[data-motion] #homeList.is-loading{min-height:2492px}
 @media (max-width:389px){
+  :root[data-motion] #accessBody:empty{min-height:1162px}
   :root[data-motion] #parkingBody:empty{min-height:1401px}
   :root[data-motion] #matchFoodList:empty{min-height:1225px}
   :root[data-motion] #foodBody:empty{min-height:284px}
   :root[data-motion] #homeList.is-loading{min-height:2589px}
 }
 @media (min-width:640px){
-  :root[data-motion] #accessBody:empty{min-height:1279px}
+  :root[data-motion] #accessBody:empty{min-height:1259px}
   :root[data-motion] #parkingBody:empty{min-height:937px}
   :root[data-motion] #spotsWalk:empty{min-height:834px}
   :root[data-motion] #spotsRide:empty{min-height:1266px}

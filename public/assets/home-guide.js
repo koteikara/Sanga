@@ -17,7 +17,7 @@
   var RAKUTEN_IMAGE = /^https:\/\/(?:img\.travel\.rakuten\.co\.jp|trvimg\.r10s\.jp)\/[^\s"'<>]+$/;
   var LANG = (document.documentElement.lang || "ja").slice(0, 2);
   // 訳の重ね書き。版数は tools/asset-versions.mjs が揃える
-  var OVERLAY = { en: "data/home-guide.en.json?v=aa73223c", ko: "data/home-guide.ko.json?v=ec4dbb21" }[LANG] || "";
+  var OVERLAY = { en: "data/home-guide.en.json?v=94f90951", ko: "data/home-guide.ko.json?v=bb900e96" }[LANG] || "";
   var ui = {};
   var names = {};
   function T(key, ja, args) {
@@ -786,7 +786,7 @@
   }
 
   // 案内・提携・日程・ホテル索引は同時に取り始める。描画は案内が揃ってから、試合欄はその次。
-  var guideP = getJson("data/home-guide.json?v=f5e63768");
+  var guideP = getJson("data/home-guide.json?v=a6e8e966");
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
   var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=87b51598");

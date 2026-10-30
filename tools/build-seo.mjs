@@ -37,7 +37,7 @@ const PAGES = [
   { file: "home.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX ホーム観戦ガイド — サンガスタジアムへの行き方、散策、亀岡の宿。", priority: "0.8" },
   // 英語版・韓国語版は日本語版と同じ画像（文字は日本語）。alt はそれぞれの言語で画像の内容を書く
   { file: "home-en.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX Home match guide — getting to Sanga Stadium, walks, and places to stay in Kameoka.", priority: "0.6" },
-  { file: "home-ko.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX 홈 관전 가이드 — 산가 스타디움 가는 법, 산책, 가메오카의 숙소.", priority: "0.6" },
+  { file: "home-ko.html", ogp: "ogp/home.jpg", alt: "SANGA TOOLBOX 홈 직관 가이드 — 산가 스타디움 가는 법, 산책, 가메오카의 숙소.", priority: "0.6" },
   { file: "squad.html", ogp: "ogp/squad.jpg", alt: "SANGA TOOLBOX 予想スカッド作成 — スタメンを並べて、画像で共有。", priority: "0.8" },
   { file: "calendar.html", ogp: "ogp/calendar.jpg", alt: "SANGA TOOLBOX 過密日程カレンダー — 2026/27シーズンの試合間隔を色で見る。", priority: "0.8" },
   { file: "TradePost/index-v1.html", ogp: "ogp/trade.jpg", alt: "SANGA TOOLBOX 求・譲 投稿フォーマット — チケットやグッズの交換を、Xに投稿しやすく。", priority: "0.7" },

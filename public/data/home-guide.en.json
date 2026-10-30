@@ -149,7 +149,7 @@
       { "label": "From Maizuru", "text": "The JR Limited Express Maizuru runs direct: about 1 h 10 min from Nishi-Maizuru, about 1 h 20 min from Higashi-Maizuru (via Ayabe and Sonobe)." },
       { "label": "By bus", "text": "On match days, Keihan Kyoto Kotsu runs a shuttle bus from Hankyu Katsura Station (east exit) and JR Katsuragawa Station (reserved seats, adults ¥850 one way). Check the operator's page for which matches it runs and the times.", "link_label": "Keihan Kyoto Kotsu (Japanese)" },
       { "label": "From Kameoka Station", "text": "About 3 min on foot from the north exit. You can see the stadium from the station." },
-      { "label": "By car", "text": "The stadium car park cannot be used on match days. See “Coming by car” below for car parks you can use." },
+      { "label": "By car", "text": "See “Coming by car” below." },
       { "label": "Going home", "text": "Kameoka Station gets crowded after the match. Leave plenty of time for your train or Shinkansen." }
     ],
     "routes": [
