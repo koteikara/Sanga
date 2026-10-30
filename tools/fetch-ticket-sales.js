@@ -15,15 +15,16 @@
  * NODE_EXTRA_CA_CERTS に tools/certs/cybertrust-japan-sureserver-ca-g4.pem を指定する。
  * 検証そのものは切らない。
  *
- * 2026-10-15 時点で /ticket/schedule はトップページへ 302 する。
- * 販売スケジュールの案内は /news/detail/ticketschedule/ に移っている。
+ * 2026-10-15 から一時 /ticket/schedule はトップページへ 302 し、案内は
+ * /news/detail/ticketschedule/ に移っていた。2026-10-30 の公式サイト復旧後は
+ * その案内が 404 になり、/ticket/schedule が表（schedule__list）付きで 200 を返す。
  */
 
 const fs = require('fs');
 const path = require('path');
 
 const repoRoot = path.resolve(__dirname, '..');
-const SOURCE_URL = 'https://www.sanga-fc.jp/news/detail/ticketschedule/';
+const SOURCE_URL = 'https://www.sanga-fc.jp/ticket/schedule';
 const DEFAULT_OUTPUT = path.join(repoRoot, 'tmp', 'ticket-schedule.html');
 
 /** robots.txt の Crawl-delay に合わせた最小間隔（秒）。再試行の待ちにも使う。 */
@@ -36,11 +37,12 @@ const TIMEOUT_MS = 30000;
 /**
  * このページであることの目印。
  *
- * 以前の常設ページは `schedule__list` だった。2026-10-15 時点の案内は
- * リーグと ACL の販売スケジュールを画像で載せている。トップページへ転送された
- * HTML にはこのファイル名が無いので、転送先をスケジュールページと誤認しない。
+ * 常設ページ /ticket/schedule の表は `schedule__list` で始まる。2026-10-15 から
+ * 2026-10-30 までの案内記事は画像（league-ticket-schedule.png）だけだったので、
+ * そのあいだは目印をファイル名にしていた。トップページへ転送された HTML は
+ * redirectedHome で弾く。
  */
-const PAGE_MARKER = 'league-ticket-schedule.png';
+const PAGE_MARKER = 'schedule__list';
 
 /** 素性を明かし、連絡先の代わりにリポジトリを示す。 */
 const USER_AGENT = 'SangaSupporterTimeline/1.0 (+https://github.com/koteikara/Sanga; unofficial fan tool)';
