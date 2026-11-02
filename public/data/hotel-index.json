@@ -1,6 +1,6 @@
 {
   "meta": {
-    "updated_at": "2026-10-26 14:45",
+    "updated_at": "2026-11-02 16:07",
     "source": "Rakuten Travel API",
     "season": "2026-27"
   },
@@ -15,7 +15,7 @@
     },
     {
       "match_id": "acl-md5",
-      "hotel_count": 7,
+      "hotel_count": 8,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-11-23",
       "checkout_date": "2026-11-24",
@@ -79,7 +79,7 @@
     },
     {
       "match_id": "sec16",
-      "hotel_count": 4,
+      "hotel_count": 6,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2027-04-13",
       "checkout_date": "2027-04-14",
@@ -95,7 +95,7 @@
     },
     {
       "match_id": "sec18",
-      "hotel_count": 9,
+      "hotel_count": 10,
       "stadium_id": "ajinomoto",
       "checkin_date": "2026-12-04",
       "checkout_date": "2026-12-05",
@@ -103,7 +103,7 @@
     },
     {
       "match_id": "sec19",
-      "hotel_count": 8,
+      "hotel_count": 7,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-12-12",
       "checkout_date": "2026-12-13",
@@ -175,7 +175,7 @@
     },
     {
       "match_id": "sec28",
-      "hotel_count": 3,
+      "hotel_count": 5,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2027-04-02",
       "checkout_date": "2027-04-03",
@@ -183,7 +183,7 @@
     },
     {
       "match_id": "sec29",
-      "hotel_count": 9,
+      "hotel_count": 11,
       "stadium_id": "fukuari",
       "checkin_date": "2027-04-09",
       "checkout_date": "2027-04-10",
@@ -207,7 +207,7 @@
     },
     {
       "match_id": "sec32",
-      "hotel_count": 3,
+      "hotel_count": 7,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2027-04-28",
       "checkout_date": "2027-04-29",
@@ -215,7 +215,7 @@
     },
     {
       "match_id": "sec33",
-      "hotel_count": 5,
+      "hotel_count": 4,
       "stadium_id": "gion-machida",
       "checkin_date": "2027-05-02",
       "checkout_date": "2027-05-03",
@@ -247,7 +247,7 @@
     },
     {
       "match_id": "sec37",
-      "hotel_count": 2,
+      "hotel_count": 1,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2027-05-28",
       "checkout_date": "2027-05-29",
@@ -263,7 +263,7 @@
     },
     {
       "match_id": "sec41",
-      "hotel_count": 8,
+      "hotel_count": 9,
       "stadium_id": "sanga-stadium",
       "checkin_date": "2026-12-08",
       "checkout_date": "2026-12-09",
