@@ -517,7 +517,7 @@
   // 提携リンクと試合一覧は互いに待たない。ホテルJSONに版数は無いので、開いた試合の分だけ後から取る。
   Promise.all([
     getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; }),
-    getJson("data/away-guide.json?v=3739fe61"),
+    getJson("data/away-guide.json?v=016a314b"),
   ]).then(function (pair) {
     affiliates = pair[0] || {};
     var doc = pair[1];
