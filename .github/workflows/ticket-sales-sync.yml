@@ -48,12 +48,13 @@ jobs:
       # フィンガープリントは tools/check-sanga-ca.js が固定値と突き合わせる。
       NODE_EXTRA_CA_CERTS: ${{ github.workspace }}/tools/certs/cybertrust-japan-sureserver-ca-g4.pem
       # 公式サイト（sanga-fc.jp）からの取得を一時停止するスイッチ。これだけを変える。
-      # true（既定）: 販売スケジュールの取得・解析と、公式の案内の取り込みをしない。
+      # true: 販売スケジュールの取得・解析と、公式の案内の取り込みをしない。
       #   既存の ticket-sales.current.csv と案内のCSVは触らない。失敗には数えない。
       # false: 再開する。公式サイトが戻ったら、この値を false にする。
       # Jリーグチケット（ホームの掲載・販売日時、アウェイ席）はこの値に従わない。
       # true 以外でも false 以外は停止のまま（綴りを誤っても取得を再開しない）。
-      PAUSE_OFFICIAL_SANGA_FETCH: 'true'
+      # 2026-11-06 再開: /ticket/schedule が 200 で schedule__list ありを確認したため false。
+      PAUSE_OFFICIAL_SANGA_FETCH: 'false'
     steps:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v7
