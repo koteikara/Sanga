@@ -38,6 +38,34 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:news-22070-sec19-entry-1200@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261112T030000Z
+SUMMARY:千葉戦 応募の締切
+DESCRIPTION:第19節 千葉戦（試合日 12/13（日））\nhttps://www.s
+ anga-fc.jp/news/detail/22070\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22071-sec19-entry-1200@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261112T030000Z
+SUMMARY:千葉戦 応募の締切
+DESCRIPTION:第19節 千葉戦（試合日 12/13（日））\nhttps://www.s
+ anga-fc.jp/news/detail/22071\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:news-22072-sec17-entry-2359@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
