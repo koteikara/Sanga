@@ -66,6 +66,34 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:news-22091-sec15-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261115T145900Z
+SUMMARY:浦和戦 応募の締切
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22091\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22093-sec15-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261115T145900Z
+SUMMARY:浦和戦 応募の締切
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22093\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:news-22072-sec17-entry-2359@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
