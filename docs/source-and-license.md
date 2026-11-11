@@ -12,7 +12,7 @@
 
 | 区分 | 対象 | 現在の状態 |
 | --- | --- | --- |
-| 日程データ | `public/data/matches.json` | 各試合に `source_url` と `source_checked_at` を保持。Jリーグ・京都サンガF.C.等の公開情報を参照 |
+| 日程データ | `public/data/matches.json` | 各試合に `source_url` と `source_checked_at` を保持。Jリーグ・京都サンガF.C.等の公開情報を参照。acl-md8 の会場だけは下の「acl-md8 の会場」 |
 | チケット販売スケジュール | `docs/sheets/ticket-sales.2026-08-28.csv` | 公式のチケット販売スケジュールを2026-08-28に確認したスナップショット。全行に `source_url` と `retrieved_at_jst` を保持。保持するのは日時・対象・試合との対応という事実のみで、記事本文・画像は含まない。`experiments/supporter-timeline/` のプロトタイプが参照し、公開物には未反映 |
 | 特典チケットの条件 | `experiments/supporter-timeline/benefit-tickets.json` | SANGA CREWの各コースの特典チケット枚数と有効期間を2026-08-28に確認したもの。`sources` に公式ページのURLを保持。プロトタイプが枚数の初期値と利用条件の表示に使う |
 | 祝日データ | `public/assets/calendar.js` の `HOLIDAYS`（35件） | 内閣府「国民の祝日について」令和8年（2026年）・令和9年（2027年）を2026-09-08に確認して書き写したもの。出典 https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html 、機械可読版 https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv 。取り込んだのは祝日法（昭和23年法律第178号）が定める日付そのもので、ページの文章・画像は含まない。内閣府サイトの利用条件ページは確認基準日時点で所在を確認できておらず、利用条件は未確認 |
@@ -29,6 +29,19 @@
 | 画像生成ライブラリ | `modern-screenshot` 4.6.5、`html-to-image` 1.11.11 | いずれもMIT License。前者はライセンス全文と取得記録を同梱、後者は検証ページからCDN読込 |
 | フォント | CSS・生成元HTMLのfont-family指定 | システムフォントのみ。フォントファイルの同梱なし |
 | プロジェクト独自部分 | リポジトリ全体 | ルート `LICENSE` なし。第三者への包括的な利用許諾は未設定 |
+
+## acl-md8 の会場（2026-11-11）
+
+ACL 2026/27 リーグステージ第8節（match id `acl-md8`、ポートFC、2027-02-16 19:00）の会場を、パトゥムターニー・スタジアム（True BGスタジアム）に更新した。
+
+| 項目 | 内容 |
+| --- | --- |
+| 保持したもの | 会場名の文字列と、出典URL、確認日 `2026-11-11`。投稿の本文は写していない |
+| 出典URL | https://x.com/ThaiFootballs/status/2120056622617969015 |
+| 以前の出典 | https://www.sanga-fc.jp/news/detail/21321 （2026-11-11 時点でも会場はタマサートスタジアムのまま） |
+| 探して見つからなかったもの | ポートFC公式サイト（https://portfcofficial.com/）と公式SNS、AFC公式で、この試合の会場変更が分かるページ。AFCの日程表PDF（https://assets.the-afc.com/2026-27_ACL_Elite/Downloads/Match_Schedule/ACL-Elite-26-27-LS-%E2%80%93-Draw-Results-&-Match-Schedule.pdf ）は 2026-08-18 時点で、2月16日の会場が Thammasat Stadium のまま |
+| 使わなかったもの | 鹿島アントラーズ公式の会場変更告知（https://www.antlers.co.jp/en-world/blogs/news/2611119tnpx7 、2026-11-11）。対象は12月2日の鹿島戦だけで、京都の試合は書いていない。報道サイトの記事も出典にしていない |
+| 住所・座標 | 未確認。作っていない。`stadiums.json` の座標は日本国内に限る検証があり、タイの会場は入れられない |
 
 ## 公式由来画像の対応関係
 

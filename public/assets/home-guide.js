@@ -789,7 +789,7 @@
   var guideP = getJson("data/home-guide.json?v=aa82e912");
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
   var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
-  var matchesP = getJson("data/matches.json?v=87b51598");
+  var matchesP = getJson("data/matches.json?v=1b06b975");
   var indexP = getJson("data/hotel-index.json?v=460919c2").catch(function () { return { matches: [] }; });
 
   Promise.all([guideP, affP, trP]).then(function (r) {
