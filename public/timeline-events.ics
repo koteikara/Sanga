@@ -10,34 +10,6 @@ X-WR-CALDESC:京都サンガF.C. の試合当日の予定（非公式）。
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:news-22035-sec17-entry-2359@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261029T145900Z
-SUMMARY:C大阪戦 応募の締切
-DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
- sanga-fc.jp/news/detail/22035\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22036-sec17-entry-2359@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261029T145900Z
-SUMMARY:C大阪戦 応募の締切
-DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
- sanga-fc.jp/news/detail/22036\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:news-22070-sec19-entry-1200@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
@@ -66,6 +38,34 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:news-22091-sec15-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261115T145900Z
+SUMMARY:浦和戦 応募の締切
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22091\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22093-sec15-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261115T145900Z
+SUMMARY:浦和戦 応募の締切
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22093\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:news-22072-sec17-entry-2359@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
@@ -77,6 +77,34 @@ DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
  予定です。日程が変わっている場合があります。購入
  ・応募の前に公式サイトで確認してください。
 STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22035-sec17-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261029T145900Z
+SUMMARY:C大阪戦 応募の締切
+DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
+ sanga-fc.jp/news/detail/22035\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22036-sec17-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261029T145900Z
+SUMMARY:C大阪戦 応募の締切
+DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
+ sanga-fc.jp/news/detail/22036\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
