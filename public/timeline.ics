@@ -1903,16 +1903,16 @@ END:VEVENT
 BEGIN:VEVENT
 UID:match-acl-md8@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
-SEQUENCE:1
-LAST-MODIFIED:20260909T031317Z
+SEQUENCE:2
+LAST-MODIFIED:20261108T180927Z
 DTSTART:20270216T100000Z
 DTEND:20270216T120000Z
-SUMMARY:【アウェイ】ポートFC戦 キックオフ（タマサート
- スタジアム）
-DESCRIPTION:MD8 ポートFC戦\nhttps://www.sanga-fc.jp/news/detail/21321\n
- ※非公式のファンツールによる予定です。日程が変わ
- っている場合があります。購入・応募の前に公式サイ
- トで確認してください。
+SUMMARY:【アウェイ】ポートFC戦 キックオフ（パトゥムタ
+ ーニー・スタジアム（True BGスタジアム））
+DESCRIPTION:MD8 ポートFC戦\nhttps://x.com/ThaiFootballs/status/21200566
+ 22617969015\n※非公式のファンツールによる予定です。日
+ 程が変わっている場合があります。購入・応募の前に
+ 公式サイトで確認してください。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT

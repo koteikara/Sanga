@@ -4587,16 +4587,16 @@
       "match_ids": [
         "acl-md8"
       ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/21321",
-      "source_checked_at": "2026-08-20",
+      "source_url": "https://x.com/ThaiFootballs/status/2120056622617969015",
+      "source_checked_at": "2026-11-11",
       "status": "confirmed",
       "is_visible": true,
       "starts_at": "2027-02-16T19:00:00+09:00",
       "date_precision": "datetime",
       "date_candidates": [],
-      "title": "ポートFC戦 キックオフ（タマサートスタジアム）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
+      "title": "ポートFC戦 キックオフ（パトゥムターニー・スタジアム（True BGスタジアム））",
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "ticket-sec28-season",

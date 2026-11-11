@@ -39,6 +39,40 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-11-11 acl-md8 の会場をパトゥムターニー・スタジアムへ
+
+### 変更ファイル
+
+- `public/data/matches.json`（acl-md8 の会場・出典・確認日）
+- 生成物: `public/data/calendar-events.json`、`public/timeline.ics`、`public/timeline-events.ics`、参照の版数、`experiments/supporter-timeline/calendar-events.sample.json`
+- `docs/schedule-audit.md`、`docs/source-and-license.md`
+
+### 変更内容
+
+ACL MD8 ポートFC戦（2027-02-16 19:00）の会場を、タマサートスタジアムからパトゥムターニー・スタジアム（True BGスタジアム）に変えた。日時は変えていない。正本は `matches.json`。`docs/sheets/schedule.initial.csv` は 2026-06-22 時点のスナップショットなので触っていない。
+
+出典は、ポートFC公式とAFC公式に変更ページが見つからなかったため、指定のX投稿にした。住所と座標は確認できていないので足していない。
+
+### 確認結果
+
+`npm run generate:timeline` のあと `npm run check` は終了コード 0。`calendar-events.json` のイベントは 218 件のまま。`match-acl-md8` の題は新しい会場名、開始は `2027-02-16T19:00:00+09:00`。`public/timeline.ics` は `tools/build-ics-feed.js --check` で生成結果と一致（145件）。`public/` に「タマサート」「Thammasat」は残っていない。
+
+日程カードの会場は、2列表示だと省略される。幅360pxの電話枠で、新しい会場名は「パトゥムターニー…」、既存の「大田ワールドカップスタジアム」も同じ省略。枠からはみ出さない。読み上げ用の名前とタイムラインの題には全文が入る。
+
+### 未確認項目
+
+X投稿の本文は、この環境では取得できなかった（ページは403、投稿APIは課金スコープ不足）。URLは依頼で指定されたものを使った。
+
+### 残課題
+
+京都サンガ公式が会場を直したら、`source_url` を公式のページに戻す。ポートFC公式かAFC公式の変更ページが見つかったときも同じ。
+
+開いている取り込み下書き PR #390 は `calendar-events.json` だけを変えていて、題が旧会場のまま。このPRのあとにそのままマージすると、公開カレンダーの題が戻る。`matches.json` は触っていないので、マージ前に main の試合データから作り直す。
+
+### 人間が確認すべき点
+
+会場名の表記と、出典がX投稿であることの可否。マージと本番反映は別作業。
+
 ## 2026-10-27 公開ページのCLSを下げる
 
 ### 変更ファイル
