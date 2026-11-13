@@ -157,7 +157,7 @@
 :root[data-motion] #stayMore:empty,
 :root[data-motion] #homeList.is-loading{
   border-radius:12px;
-  background-color:rgba(123,0,100,.04);
+  background-color:rgba(114,36,108,.04);
 }
 :root[data-motion] #accessBody:empty{min-height:1154px}  /* 2026-10-30 に測り直した値（日本語版） */
 :root[data-motion] #parkingBody:empty{min-height:1362px}  /* 2026-10-30 に測り直した値（日本語版） */

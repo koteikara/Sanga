@@ -16,6 +16,7 @@
 | チケット販売スケジュール | `docs/sheets/ticket-sales.2026-08-28.csv` | 公式のチケット販売スケジュールを2026-08-28に確認したスナップショット。全行に `source_url` と `retrieved_at_jst` を保持。保持するのは日時・対象・試合との対応という事実のみで、記事本文・画像は含まない。`experiments/supporter-timeline/` のプロトタイプが参照し、公開物には未反映 |
 | 特典チケットの条件 | `experiments/supporter-timeline/benefit-tickets.json` | SANGA CREWの各コースの特典チケット枚数と有効期間を2026-08-28に確認したもの。`sources` に公式ページのURLを保持。プロトタイプが枚数の初期値と利用条件の表示に使う |
 | 祝日データ | `public/assets/calendar.js` の `HOLIDAYS`（35件） | 内閣府「国民の祝日について」令和8年（2026年）・令和9年（2027年）を2026-09-08に確認して書き写したもの。出典 https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html 、機械可読版 https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv 。取り込んだのは祝日法（昭和23年法律第178号）が定める日付そのもので、ページの文章・画像は含まない。内閣府サイトの利用条件ページは確認基準日時点で所在を確認できておらず、利用条件は未確認 |
+| クラブカラー | 入口の `--purple-base` ほか（下の「クラブカラー」） | Jリーグ公式ブランドガイド 2026/27 の京都サンガF.C. Primary `#72246C`。2026-11-13に色の数値だけを確認。ロゴとグラデーション画像は置いていない。利用条件は未確認 |
 | 選手データ | `public/data/players.json`、`docs/sheets/players.csv` | 公式サイトを参照して手入力。公式ページの具体的URLと確認日が未記録 |
 | 対戦相手ロゴ | `public/assets/logos/` 10件 | `docs/sources/` の画像を複製して配置。元ページURLと利用許諾が未確認 |
 | 背番号タイル | `public/assets/players/` 39件 | `docs/sources/players-numbers.jpeg` から切り出した加工物。元ページURLと利用許諾が未確認 |
@@ -130,6 +131,19 @@ ACL 2026/27 リーグステージ第8節（match id `acl-md8`、ポートFC、20
 | 許諾 | 認証局が配布する中間証明書。リポジトリに置いて TLS の検証に使う |
 
 `www.sanga-fc.jp` の葉は、この中間証明書がないと Node が検証できません。検証を無効にはしていません。
+
+## クラブカラー（2026-11-13）
+
+公開ページで共有するサンガ色を、Jリーグ公式ブランドガイドのクラブカラーに合わせました。
+
+| 項目 | 内容 |
+| --- | --- |
+| ページ | クラブカラーグラデーション（見出しは 2026/27 Season） https://brand.jleague.jp/ja/visual-identity/color/club-colors-gradient/ |
+| 確認日 | 2026-11-13。京都サンガＦ.Ｃ. は Primary `#72246C` のみ。Secondary の表示は無い。グラデーションは `#72246C` から `#450041` |
+| 画面に置いた値 | Primary `#72246C`（RGB 114, 36, 108）。入口 `index.css` の `--purple-base`、年間スケジュール `style.css` の `--purple` と、その色の `rgba(114,36,108,…)`、タイムライン `timeline.css` の `--anchor`、観戦ガイド `away.css` の `--accent` / `--j1`（ホームはこれを継承。読み込み前の面は `home.css` の `rgba(114,36,108,.04)`）、過密日程の J1（`calendar.css` の `--j1` と `calendar.js`）、`tools.json` の年間スケジュール・ホーム観戦ガイド・アウェイ遠征ガイドの `accent`、各ページ favicon の紫 |
+| 置いていないもの | グラデーション暗側 `#450041`。入口の `--purple-deep` / `--purple-lit`、ネビュラの色、予想スカッドの背番号タイル地色 `#750069`、ツールごとの別アクセント。ガイドの画像・ロゴも複製していない |
+| 白文字との比 | `#72246C` と `#FFFFFF` で約 9.6:1 |
+| 利用条件 | 未確認。非公式のファンサイトが、公開されている色の数値を自分のUIに使うことの許諾としては扱っていない |
 
 ## 第三者製ソフトウェア
 
