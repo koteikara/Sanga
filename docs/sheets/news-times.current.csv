@@ -1,7 +1,10 @@
 event_id,article_id,match_id,kind,label,starts_at,source_url,retrieved_at_jst
-news-22070-sec19-entry-1200,22070,sec19,応募の締切,応募の締切,2026-11-12T12:00:00+09:00,https://www.sanga-fc.jp/news/detail/22070,2026-11-12T04:59:49+09:00
-news-22071-sec19-entry-1200,22071,sec19,応募の締切,応募の締切,2026-11-12T12:00:00+09:00,https://www.sanga-fc.jp/news/detail/22071,2026-11-12T04:59:49+09:00
-news-22091-sec15-entry-2359,22091,sec15,応募の締切,応募の締切,2026-11-15T23:59:00+09:00,https://www.sanga-fc.jp/news/detail/22091,2026-11-12T04:59:49+09:00
-news-22093-sec15-entry-2359,22093,sec15,応募の締切,応募の締切,2026-11-15T23:59:00+09:00,https://www.sanga-fc.jp/news/detail/22093,2026-11-12T04:59:49+09:00
-news-22072-sec17-entry-2359,22072,sec17,応募の締切,応募の締切,2026-11-17T23:59:00+09:00,https://www.sanga-fc.jp/news/detail/22072,2026-11-12T04:59:49+09:00
-news-22058-sec17-happening-1100,22058,sec17,場内の催し,催しの開始,2026-11-28T11:00:00+09:00,https://www.sanga-fc.jp/news/detail/22058,2026-11-12T04:59:49+09:00
+news-22070-sec19-entry-1200,22070,sec19,応募の締切,応募の締切,2026-11-12T12:00:00+09:00,https://www.sanga-fc.jp/news/detail/22070,2026-11-14T05:14:50+09:00
+news-22071-sec19-entry-1200,22071,sec19,応募の締切,応募の締切,2026-11-12T12:00:00+09:00,https://www.sanga-fc.jp/news/detail/22071,2026-11-14T05:14:50+09:00
+news-22091-sec15-entry-2359,22091,sec15,応募の締切,応募の締切,2026-11-15T23:59:00+09:00,https://www.sanga-fc.jp/news/detail/22091,2026-11-14T05:14:50+09:00
+news-22093-sec15-entry-2359,22093,sec15,応募の締切,応募の締切,2026-11-15T23:59:00+09:00,https://www.sanga-fc.jp/news/detail/22093,2026-11-14T05:14:50+09:00
+news-22072-sec17-entry-2359,22072,sec17,応募の締切,応募の締切,2026-11-17T23:59:00+09:00,https://www.sanga-fc.jp/news/detail/22072,2026-11-14T05:14:50+09:00
+news-22058-sec17-happening-1100,22058,sec17,場内の催し,催しの開始,2026-11-28T11:00:00+09:00,https://www.sanga-fc.jp/news/detail/22058,2026-11-14T05:14:50+09:00
+news-22107-sec19-entry-1200,22107,sec19,応募の締切,応募の締切,2026-11-28T12:00:00+09:00,https://www.sanga-fc.jp/news/detail/22107,2026-11-14T05:14:50+09:00
+news-22107-sec20-entry-1200,22107,sec20,応募の締切,応募の締切,2026-11-28T12:00:00+09:00,https://www.sanga-fc.jp/news/detail/22107,2026-11-14T05:14:50+09:00
+news-22105-acl-md6-flow-1715,22105,acl-md6,当日の流れ,入場開始,2026-12-01T17:15:00+09:00,https://www.sanga-fc.jp/news/detail/22105,2026-11-14T05:14:50+09:00

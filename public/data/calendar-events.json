@@ -2915,7 +2915,7 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22070",
-      "source_checked_at": "2026-11-12",
+      "source_checked_at": "2026-11-14",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -2939,7 +2939,7 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22071",
-      "source_checked_at": "2026-11-12",
+      "source_checked_at": "2026-11-14",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3034,7 +3034,7 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22091",
-      "source_checked_at": "2026-11-12",
+      "source_checked_at": "2026-11-14",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3058,7 +3058,7 @@
         "sec15"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22093",
-      "source_checked_at": "2026-11-12",
+      "source_checked_at": "2026-11-14",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3136,7 +3136,7 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22072",
-      "source_checked_at": "2026-11-12",
+      "source_checked_at": "2026-11-14",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3532,6 +3532,54 @@
       "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
+      "id": "news-22107-sec19-entry-1200",
+      "starts_at": "2026-11-28T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "entry",
+      "title": "千葉戦 応募の締切",
+      "source": "official",
+      "action_type": "action",
+      "derived_from": "news_article",
+      "news_kind": "応募の締切",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec19"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22107",
+      "source_checked_at": "2026-11-14",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
+    },
+    {
+      "id": "news-22107-sec20-entry-1200",
+      "starts_at": "2026-11-28T12:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "entry",
+      "title": "岡山戦 応募の締切",
+      "source": "official",
+      "action_type": "action",
+      "derived_from": "news_article",
+      "news_kind": "応募の締切",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec20"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22107",
+      "source_checked_at": "2026-11-14",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
+    },
+    {
       "id": "ticket-sec20-general",
       "starts_at": "2026-11-28T12:00:00+09:00",
       "ends_at": "2026-11-28T12:15:00+09:00",
@@ -3575,6 +3623,30 @@
       "title": "C大阪戦 キックオフ（サンガスタジアム）",
       "calendar_sequence": 2,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
+    },
+    {
+      "id": "news-22105-acl-md6-flow-1715",
+      "starts_at": "2026-12-01T17:15:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "event",
+      "title": "ブリーラム・ユナイテッド戦 入場開始",
+      "source": "official",
+      "action_type": "information",
+      "derived_from": "news_article",
+      "news_kind": "当日の流れ",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md6"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22105",
+      "source_checked_at": "2026-11-14",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "match-acl-md6",
@@ -5635,26 +5707,9 @@
     "source": "https://www.sanga-fc.jp/news",
     "csv": "docs/sheets/news.current.csv",
     "checked_at": "2026-11-09",
-    "article_count": 51,
-    "linked_count": 26,
+    "article_count": 52,
+    "linked_count": 25,
     "by_match": [
-      {
-        "match_id": "acl-md3",
-        "count": 1,
-        "categories": [
-          {
-            "name": "グッズ",
-            "count": 1
-          }
-        ],
-        "articles": [
-          {
-            "published_on": "2026-10-27",
-            "category": "グッズ",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22037"
-          }
-        ]
-      },
       {
         "match_id": "acl-md5",
         "count": 1,
@@ -5674,14 +5729,28 @@
       },
       {
         "match_id": "acl-md6",
-        "count": 1,
+        "count": 3,
         "categories": [
+          {
+            "name": "試合情報",
+            "count": 2
+          },
           {
             "name": "トップチーム",
             "count": 1
           }
         ],
         "articles": [
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22105"
+          },
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22104"
+          },
           {
             "published_on": "2026-11-06",
             "category": "トップチーム",
@@ -5725,11 +5794,11 @@
       },
       {
         "match_id": "sec13",
-        "count": 8,
+        "count": 3,
         "categories": [
           {
             "name": "試合情報",
-            "count": 7
+            "count": 2
           },
           {
             "name": "チケット",
@@ -5737,11 +5806,6 @@
           }
         ],
         "articles": [
-          {
-            "published_on": "2026-10-30",
-            "category": "試合情報",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22061"
-          },
           {
             "published_on": "2026-10-30",
             "category": "試合情報",
@@ -5755,27 +5819,7 @@
           {
             "published_on": "2026-10-30",
             "category": "試合情報",
-            "source_url": "https://www.sanga-fc.jp/news/detail/21470"
-          },
-          {
-            "published_on": "2026-10-30",
-            "category": "試合情報",
             "source_url": "https://www.sanga-fc.jp/news/detail/21421"
-          },
-          {
-            "published_on": "2026-10-29",
-            "category": "試合情報",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22050"
-          },
-          {
-            "published_on": "2026-10-29",
-            "category": "試合情報",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22049"
-          },
-          {
-            "published_on": "2026-10-29",
-            "category": "試合情報",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22045"
           }
         ]
       },
@@ -5843,15 +5887,11 @@
       },
       {
         "match_id": "sec17",
-        "count": 5,
+        "count": 4,
         "categories": [
           {
             "name": "試合情報",
             "count": 4
-          },
-          {
-            "name": "チケット",
-            "count": 1
           }
         ],
         "articles": [
@@ -5872,11 +5912,6 @@
           },
           {
             "published_on": "2026-10-30",
-            "category": "チケット",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22053"
-          },
-          {
-            "published_on": "2026-10-30",
             "category": "試合情報",
             "source_url": "https://www.sanga-fc.jp/news/detail/22019"
           }
@@ -5884,18 +5919,42 @@
       },
       {
         "match_id": "sec19",
-        "count": 3,
+        "count": 7,
         "categories": [
           {
-            "name": "ファンクラブ",
-            "count": 2
+            "name": "試合情報",
+            "count": 3
           },
           {
             "name": "チケット",
-            "count": 1
+            "count": 2
+          },
+          {
+            "name": "ファンクラブ",
+            "count": 2
           }
         ],
         "articles": [
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22111"
+          },
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22107"
+          },
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22100"
+          },
+          {
+            "published_on": "2026-11-13",
+            "category": "チケット",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22095"
+          },
           {
             "published_on": "2026-11-09",
             "category": "ファンクラブ",
@@ -5910,6 +5969,33 @@
             "published_on": "2026-11-06",
             "category": "チケット",
             "source_url": "https://www.sanga-fc.jp/news/detail/22063"
+          }
+        ]
+      },
+      {
+        "match_id": "sec20",
+        "count": 3,
+        "categories": [
+          {
+            "name": "試合情報",
+            "count": 3
+          }
+        ],
+        "articles": [
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22111"
+          },
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22107"
+          },
+          {
+            "published_on": "2026-11-13",
+            "category": "試合情報",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22100"
           }
         ]
       }
