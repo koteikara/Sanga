@@ -184,8 +184,12 @@ function checkEvent(event, index, matchIds) {
   }
 }
 
-function checkTicketStages(events) {
+/** クラブの販売スケジュールで売る大会。先行5段階＋特典引換3件の8件規則の対象。 */
+const EIGHT_STAGE_COMPETITIONS = new Set(['J1', 'ACL']);
+
+function checkTicketStages(events, matchesById) {
   // 1試合の販売は先行5段階と特典チケット引換3件。段階が欠けたり重複したら知らせる。
+  // この8件はJ1とACLのホーム戦（クラブが売る）に限る。天皇杯はJFAが売り、段階の構成が違う。
   const byMatch = new Map();
   events.forEach((event) => {
     // 8件の規則はホーム戦の販売段階のもの。アウェイ席は段階が無く、0件か1件。
@@ -205,6 +209,8 @@ function checkTicketStages(events) {
     if (unique.size !== suffixes.length) {
       addError(`match ${matchId}`, 'チケットイベントのIDが重複しています');
     }
+    const match = matchesById && matchesById.get(matchId);
+    if (match && !EIGHT_STAGE_COMPETITIONS.has(match.competition)) return;
     if (list.length !== 8) {
       addError(`match ${matchId}`, `チケットイベントが8件ではありません: ${list.length}件`);
     }
@@ -407,12 +413,13 @@ function main(argv) {
 
   const targetPath = positional[0];
   let data;
+  let matches;
   let matchIds;
   let awayMatchIds;
   try {
     data = JSON.parse(fs.readFileSync(targetPath, 'utf8'));
     const rawMatches = JSON.parse(fs.readFileSync(matchesPath, 'utf8'));
-    const matches = Array.isArray(rawMatches) ? rawMatches : rawMatches.matches;
+    matches = Array.isArray(rawMatches) ? rawMatches : rawMatches.matches;
     matchIds = new Set(matches.map((match) => match.id));
     awayMatchIds = new Set(matches.filter((match) => match.home_away === 'A').map((match) => match.id));
   } catch (error) {
@@ -434,7 +441,7 @@ function main(argv) {
     }
   });
 
-  checkTicketStages(data.events);
+  checkTicketStages(data.events, new Map(matches.map((match) => [match.id, match])));
   checkAwaySales(data.events, awayMatchIds);
   checkAwayTickets(data.away_tickets, awayMatchIds, matchIds);
   checkNews(data.news, matchIds);

@@ -85,6 +85,7 @@ function usage() {
   console.error('  --matches <path>   試合データ（既定: public/data/matches.json）');
   console.error('  --samples <path>   検証用の作り物イベントを足す（events と skipped を持つJSON）');
   console.error('  --home-sales <csv> Jリーグチケットから読んだホーム戦の販売日時。公式の同じ段階を上書きする');
+  console.error('  --home-sales-manual <csv> 手入力のホーム戦販売。公式とJリーグチケットより優先する');
   console.error('  --news <csv>       ニュース一覧のCSV。試合ごとの案内の件数を足す');
   console.error('  --news-times <csv>        記事から読んだ日時。イベントとして並べる');
   console.error('  --news-times-manual <csv> 上の手直し（drop / edit）');
@@ -741,6 +742,56 @@ function buildAwaySales(csvPath, matchIndex) {
 }
 
 /**
+ * ホーム戦の販売開始日時の手入力（--home-sales-manual）。
+ *
+ * Jリーグチケットに載らない大会（天皇杯はJFAが売る）と、公式の販売スケジュールに
+ * まだ出ていない段階を、クラブ公式の案内を見て手で入れる。
+ * **手入力が同じ試合・同じ段階を持っていれば、公式よりもJリーグチケットよりも優先する。**
+ * 日次の取り込み（`home-sales.current.csv`）は手入力のCSVを書き換えない。
+ *
+ * 列は `match_id` と公式の段階名（`sale_type`）。日付だけだと同じ日のホーム戦が
+ * 将来重なったときに結び付けを誤るため、試合IDで結ぶ。
+ * 見出しだけで中身が無いのが、行を足す前の通常の状態。
+ */
+function readHomeSalesManual(csvPath, matchIndex) {
+  const text = fs.readFileSync(csvPath, 'utf8').replace(/^\ufeff/, '');
+  const hasRows = text.split('\n').slice(1).some((line) => line.trim() !== '');
+  if (!hasRows) return { entries: new Map(), problems: [] };
+
+  const entries = new Map();
+  const problems = [];
+  readCsvRecords(csvPath).filter((record) => record.match_id).forEach((record) => {
+    const match = matchIndex.get(record.match_id);
+    if (!match) {
+      problems.push(`matches.json にない試合IDです: ${record.match_id}`);
+      return;
+    }
+    if (match.home_away !== 'H') {
+      problems.push(`ホーム戦ではありません: ${record.match_id}`);
+      return;
+    }
+    if (!record.sale_type || !STAGES[record.sale_type]) {
+      problems.push(`知らない販売段階です: ${record.match_id} ${record.sale_type || '（空）'}`);
+      return;
+    }
+    if (!record.starts_at) {
+      problems.push(`starts_at が空です: ${record.match_id}`);
+      return;
+    }
+    if (!DATETIME_PATTERN.test(record.starts_at)) {
+      problems.push(`starts_at の形式が不正です: ${record.match_id} ${record.starts_at}（YYYY-MM-DDTHH:MM:SS+09:00）`);
+      return;
+    }
+    if (!record.source_url) {
+      problems.push(`source_url が空です: ${record.match_id}（出典はクラブ公式のURL）`);
+      return;
+    }
+    entries.set(`${match.id}|${STAGES[record.sale_type].suffix}`, { match, record });
+  });
+  return { entries, problems };
+}
+
+/**
  * ホーム戦の販売開始日時を、Jリーグチケットの試合ページから読んだもの（--home-sales）。
  *
  * 公式の販売スケジュール（--csv の ticket-sales.current.csv）は2026-09-09の取得で止まっている。
@@ -808,11 +859,41 @@ function build(options) {
   const events = [];
   const rounds = new Set();
 
+  const homeSalesManual = options.homeSalesManualPath
+    ? readHomeSalesManual(options.homeSalesManualPath, matchIndex)
+    : { entries: new Map(), problems: [] };
   const homeSales = options.homeSalesPath
     ? readHomeSales(options.homeSalesPath, matchIndex)
     : { entries: new Map(), problems: [] };
-  const homeSaleMatchIds = new Set(Array.from(homeSales.entries.values(), (entry) => entry.match.id));
+  const homeSaleMatchIds = new Set([
+    ...Array.from(homeSalesManual.entries.values(), (entry) => entry.match.id),
+    ...Array.from(homeSales.entries.values(), (entry) => entry.match.id),
+  ]);
   const homeSaleChanges = [];
+
+  /**
+   * 同じ試合・同じ段階なら手入力を最優先し、次にJリーグチケット、最後に公式。
+   * 使ったキーは両方の地図から消して、あとに重複して足さない。
+   */
+  function takeHomeSale(key) {
+    if (!key) return null;
+    const manual = homeSalesManual.entries.get(key);
+    if (manual) {
+      homeSalesManual.entries.delete(key);
+      homeSales.entries.delete(key);
+      return { entry: manual, via: 'manual' };
+    }
+    const current = homeSales.entries.get(key);
+    if (current) {
+      homeSales.entries.delete(key);
+      return { entry: current, via: 'current' };
+    }
+    return null;
+  }
+
+  function changeSuffix(via) {
+    return via === 'manual' ? '（手入力）' : '';
+  }
 
   records.forEach((record) => {
     const matchId = matchIdFor(record.competition, record.round);
@@ -820,38 +901,41 @@ function build(options) {
     if (!match) throw new Error(`matches.json に該当する試合がありません: ${matchId}`);
     rounds.add(matchId);
 
-    // Jリーグチケットに段階が出ている試合は、公式の「未掲載」をもう出さない。
+    // 手入力かJリーグチケットに段階が出ている試合は、公式の「未掲載」をもう出さない。
     if (record.schedule_status === '未掲載' && homeSaleMatchIds.has(matchId)) return;
 
     const stage = STAGES[record.sale_type];
     const key = stage ? `${matchId}|${stage.suffix}` : '';
-    const override = key ? homeSales.entries.get(key) : null;
-    if (override) {
-      homeSales.entries.delete(key);
-    }
-    if (override && override.record.starts_at !== record.sale_start) {
-      homeSaleChanges.push(`${matchId} ${record.sale_type}: ${record.sale_start || '（なし）'} → ${override.record.starts_at}`);
+    const override = takeHomeSale(key);
+    if (override && override.entry.record.starts_at !== record.sale_start) {
+      homeSaleChanges.push(`${matchId} ${record.sale_type}: ${record.sale_start || '（なし）'} → ${override.entry.record.starts_at}${changeSuffix(override.via)}`);
       const updated = Object.assign({}, record, {
-        sale_start: override.record.starts_at,
-        source_url: override.record.source_url,
+        sale_start: override.entry.record.starts_at,
+        source_url: override.entry.record.source_url,
       });
-      events.push(ticketEvent(updated, match, override.record.checked_at || checkedAt));
+      events.push(ticketEvent(updated, match, override.entry.record.checked_at || checkedAt));
       return;
     }
     events.push(ticketEvent(record, match, checkedAt));
   });
 
-  // 公式に無い段階（公式の取得が止まったあとに告知された試合など）を足す。
-  homeSales.entries.forEach(({ match, record }) => {
-    rounds.add(match.id);
-    homeSaleChanges.push(`${match.id} ${record.sale_type}: （公式に無い） → ${record.starts_at}`);
-    events.push(ticketEvent({
-      sale_type: record.sale_type,
-      sale_start: record.starts_at,
-      source_url: record.source_url,
-      schedule_status: '',
-    }, match, record.checked_at || checkedAt));
-  });
+  // 公式に無い段階（天皇杯など公式表に載らない大会、取得が止まったあとに告知された試合）を足す。
+  function addRemainingHomeSales(entries, via) {
+    entries.forEach(({ match, record }) => {
+      const key = `${match.id}|${STAGES[record.sale_type].suffix}`;
+      homeSales.entries.delete(key);
+      rounds.add(match.id);
+      homeSaleChanges.push(`${match.id} ${record.sale_type}: （公式に無い） → ${record.starts_at}${changeSuffix(via)}`);
+      events.push(ticketEvent({
+        sale_type: record.sale_type,
+        sale_start: record.starts_at,
+        source_url: record.source_url,
+        schedule_status: '',
+      }, match, record.checked_at || checkedAt));
+    });
+  }
+  addRemainingHomeSales(homeSalesManual.entries, 'manual');
+  addRemainingHomeSales(homeSales.entries, 'current');
 
   let awaySaleProblems = [];
   const awaySaleMatchIds = new Set();
@@ -929,7 +1013,7 @@ function build(options) {
     awayUnmatched,
     awaySaleProblems,
     newsTimeProblems,
-    homeSaleProblems: homeSales.problems,
+    homeSaleProblems: homeSales.problems.concat(homeSalesManual.problems),
     homeSaleChanges,
     meta: {
       note: options.samplesPath
@@ -953,7 +1037,7 @@ function build(options) {
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', homeSalesPath: '', newsPath: '', newsTimesPath: '', newsTimesManualPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', homeSalesPath: '', homeSalesManualPath: '', newsPath: '', newsTimesPath: '', newsTimesManualPath: '', checkedAt: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -963,6 +1047,7 @@ function main(argv) {
     if (arg === '--away-sales') { options.awaySalesPath = argv[i += 1]; continue; }
     if (arg === '--away-sales-current') { options.awaySalesCurrentPath = argv[i += 1]; continue; }
     if (arg === '--home-sales') { options.homeSalesPath = argv[i += 1]; continue; }
+    if (arg === '--home-sales-manual') { options.homeSalesManualPath = argv[i += 1]; continue; }
     if (arg === '--news') { options.newsPath = argv[i += 1]; continue; }
     if (arg === '--news-times') { options.newsTimesPath = argv[i += 1]; continue; }
     if (arg === '--news-times-manual') { options.newsTimesManualPath = argv[i += 1]; continue; }
@@ -1000,7 +1085,7 @@ function main(argv) {
   delete data.homeSaleChanges;
 
   if (homeSaleProblems.length) {
-    console.error(`ホーム戦の販売日時（Jリーグチケット）に問題があります（${homeSaleProblems.length}件）。その行は取り込んでいません。`);
+    console.error(`ホーム戦の販売日時に問題があります（${homeSaleProblems.length}件）。その行は取り込んでいません。`);
     homeSaleProblems.forEach((line) => { console.error(`  ${line}`); });
   }
   if (homeSaleChanges.length && !options.check) {
