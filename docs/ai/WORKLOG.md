@@ -39,6 +39,47 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-11-13 天皇杯R16の一般販売開始を手入力する
+
+### 変更ファイル
+
+- `docs/sheets/home-sales.manual.csv`（新設。`sec41` を1行追加）
+- `tools/generate-calendar-events.js`（`--home-sales-manual`。公式とJリーグチケットより優先する）
+- `tools/validate-calendar-events.js`（8件規則をJ1とACLのホーム戦に限る）
+- `tools/check-home-sales-merge.js` と `tools/fixtures/home-sales.manual.sample.csv`
+- 生成物: `public/data/calendar-events.json`、`public/timeline.ics`、参照の版数
+- `docs/supporter-timeline-design.md`、`docs/project-structure.md`、`AGENTS.md`
+
+### 変更内容
+
+天皇杯ラウンド16 サンフレッチェ広島戦（`sec41`、2026-12-09 19:00、サンガスタジアム、ホーム）の
+チケット発売が、京都公式の案内（https://www.sanga-fc.jp/news/detail/22015 、11/10追記）と
+JFAのチケットページ（https://www.jfa.jp/match/emperorscup_2026/ticket.html ）に出た。
+11/14(土) 13:00 から発売開始。終了日時と会員先行は書いていないので入れない。
+天皇杯はJFAが売るため、Jリーグチケットのホーム節にも公式の販売スケジュールにも載らず、
+日次の取り込みでは拾えない。ホーム戦用の手入力CSVを新設し、アウェイの手入力と同じく
+取り込み対象外にした。
+
+検証の「1試合8件」は、クラブの販売スケジュールで売るJ1とACLのホーム戦に限る。
+天皇杯は段階の構成が違うので、分かっている段階だけを入れる。
+
+### 確認結果
+
+`TZ=UTC npm run check` は終了コード 0。公開イベントは 219 件から 220 件になった。
+`ticket-sec41-general` は `starts_at: 2026-11-14T13:00:00+09:00`、`ends_at` は既存どおり開始から15分、
+`date_precision: datetime`、出典は https://www.sanga-fc.jp/news/detail/22015 。
+`public/timeline.ics` は 146 件から 147 件。`DTSTART` は `20261114T040000Z`（13:00 JST）。
+`public/timeline-events.ics` は変更なし（当日の予定用で、この発売は入らない）。
+
+
+### 未確認項目
+
+なし。
+
+### 残課題
+
+なし。
+
 ## 2026-11-13 ブリーラム戦のアウェイ席一般発売を手入力する
 
 ### 変更ファイル
