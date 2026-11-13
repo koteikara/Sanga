@@ -39,6 +39,44 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-11-13 サンガ色を公式クラブカラーに合わせる
+
+### 変更ファイル
+
+- 公開CSS/JS: `public/assets/index.css`、`style.css`、`timeline.css`、`away.css`、`home.css`、`calendar.css`、`calendar.js`
+- データと入口: `public/data/tools.json`、`public/index.html`
+- favicon: 公開HTML一式と `experiments/site-index/prototype.html`
+- 版数と sitemap: `tools/seo-lastmod.json`、`public/sitemap.xml`、参照の `?v=`
+- 文書: `docs/source-and-license.md`、`docs/site-index.md`、`docs/dense-schedule-calendar.md`、`docs/supporter-timeline-design.md`、`PROJECT_CONTEXT.md`
+
+### 変更内容
+
+共有しているサンガ色 `#7b0064` を、Jリーグ公式ブランドガイド 2026/27 の京都サンガF.C. Primary `#72246C` にした。Secondary は無く、グラデーションの暗側 `#450041` は置いていない。同じ色の `rgba(123,0,100,…)` は `rgba(114,36,108,…)` にした（年間スケジュールの表示切替・絞り込み、ホーム観戦ガイドの読み込み前の面）。favicon の `#5b2d7e` も同じ Primary にした。
+
+変えていないもの: 背番号タイル地色 `#750069`、`--purple-deep` / `--purple-lit`、ネビュラ、ツールごとの別アクセント、プロトタイプCSSに残る `#7b0064`。
+
+### 確認結果
+
+`TZ=UTC npm run check` は終了コード 0。
+`#72246C` と `#FFFFFF` のコントラスト比は 9.614:1（約 9.6:1）。
+ブランドガイドのページを 2026-11-13 に開き、京都サンガＦ.Ｃ. の Primary が `#72246C`、Secondary が無く、グラデーションが `#72246C` から `#450041` であることを確認した。
+変更前後の画面は、入口、年間スケジュール、タイムライン、ホーム観戦ガイド、アウェイ遠征ガイド、過密日程カレンダーを幅 430px で撮った。
+
+### 未確認項目
+
+- ブランドガイドの利用条件。色の数値以外は複製していない。許諾としては未確認。
+- iPhone Safari などの実機。
+
+### 残課題
+
+- `experiments/site-index/` と `experiments/supporter-timeline/` の `#7b0064` は、当時のプロトタイプとして残している。
+- 本番デプロイはしていない。
+
+### 人間が確認すべき点
+
+- 変更前後のスクリーンショットで、日付の帯・J1・サムネイルの地が意図した紫か。
+- このPRは下書きのままにする。マージと本番反映は別判断。
+
 ## 2026-11-13 天皇杯R16の一般販売開始を手入力する
 
 ### 変更ファイル

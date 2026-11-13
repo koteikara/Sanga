@@ -45,7 +45,7 @@
 
   // 大会。ラベルは年間スケジュールの大会リボン（app.js の getCompetitionBadgeText）に合わせる。
   var COMPETITIONS = {
-    J1: { label: "J1", cls: "comp-j1", color: "#7b0064" },
+    J1: { label: "J1", cls: "comp-j1", color: "#72246c" },
     ACL: { label: "ACL", cls: "comp-acl", color: "#116b66" },
     EMP: { label: "天皇杯", cls: "comp-emp", color: "#8a6212" },
     LEV: { label: "ルヴァン", cls: "comp-lev", color: "#b2165b" },

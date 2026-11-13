@@ -73,7 +73,7 @@
 | ホーム戦の販売日時（Jリーグチケット） | 動作する。クラブページのホーム節に載った試合のページから、これから始まる販売段階の開始日時を読み、公式の同じ段階を上書きする（2026-10-15） | `tools/parse-away-tickets.js --section home`、`tools/parse-home-sales.js`、`docs/sheets/home-sales.current.csv`、「ホーム戦の販売日時をJリーグチケットで補う」 |
 | ホーム戦の販売日時（手入力） | 動作する。Jリーグチケットに載らない大会（天皇杯など）は `docs/sheets/home-sales.manual.csv` に手で1行足す。公式とJリーグチケットより優先し、日次取り込みは書き換えない（2026-11-13） | `docs/sheets/home-sales.manual.csv`、「ホーム戦の販売日時を手入力する」 |
 | 本番ページ | `public/timeline.html` に移植済み（2026-08-31）。公開JSONは取り込みPRで作り直す | `public/timeline.html`、「Eの設計」 |
-| 見た目 | 入口ページ基準に作り直し済み（ネビュラ背景＋白場）。プロトタイプで確認 | `experiments/supporter-timeline/`、「地は入口ページのネビュラ」 |
+| 見た目 | 入口ページ基準に作り直し済み（ネビュラ背景＋白場）。試合と月の帯（`--anchor`）は公式 Primary `#72246C`（2026-11-13）。地の `#2a0a2b` とネビュラは変えていない | `public/assets/timeline.css`、「地は入口ページのネビュラ」 |
 | 定期実行 | 動作する。毎日22:00 JST。公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内は、2026-10-27から一時停止し、2026-11-06に `PAUSE_OFFICIAL_SANGA_FETCH=false` で再開（`true` に戻すと再び停止し、失敗にしない）。Jリーグチケットの取り込み、差分があれば下書きPR、滞りのIssueは続ける | `.github/workflows/ticket-sales-sync.yml`、「1日1回の取り込み」「取り込みの滞りを知らせる」 |
 | 実機確認 | Android・iOSでICSがカレンダーアプリに渡ることを確認。Phase 2 と見せ方（実データ全量での月の折りたたみ・下部ドロワーを含む）も2026-08-28にiPhone Safariで確認済み（問題なし） | `experiments/supporter-timeline/README.md` |
 
@@ -577,10 +577,14 @@ LocalStorageキーは既存の命名に合わせ、`sanga-timeline-personal-even
 ### 地は入口ページのネビュラ、内容は白場に載せる（2026-08-28 決定）
 
 本番移植にあたって、**入口ページ（`public/assets/index.css`）を基準にすることを決めました。**
-3つの公開ページはそれぞれ別の紫を持ち、共有しているのは `#7b0064` だけで、統一された
-デザインシステムはありません。そのなかで入口ページを選んだのは、`--radius` と `--tap` を
+2026-08-28時点では、3つの公開ページはそれぞれ別の紫を持ち、共有しているのは `#7b0064` だけで、統一された
+デザインシステムはありませんでした。そのなかで入口ページを選んだのは、`--radius` と `--tap` を
 持つ唯一のページで、`rem` とトークンで書かれているためです。年間スケジュールは `px` 固定で
 6pxの文字を持つため、真似ると読みやすさが後退します。
+
+共有していたサンガ色（入口の `--purple-base`、このページの `--anchor`）は、2026-11-13に
+Jリーグ公式ブランドガイドの京都サンガF.C. Primary `#72246C` へ合わせました。
+`--purple-deep`、`--purple-lit`、ネビュラの色は変えていません。出典は `docs/source-and-license.md`。
 
 背景は入口ページの二層構成をそのまま借ります。WebGLのネビュラ（`startNebula`）が使えれば
 それを敷き、使えなければCSSのぼかしが残る進行的強化です。プロトタイプは

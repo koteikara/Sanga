@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-11-06
+updated: 2026-11-13
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -78,6 +78,7 @@ flowchart LR
 - **本番デプロイは手動のみ**: 自動デプロイは行わず、`main` かつ `DEPLOY` 入力を要求します。デプロイ前に暗号化バックアップを必須にします（公開リポジトリのアーティファクトは誰でも取得できるため）。
 - **LocalStorageの互換性を守る**: 既存キー・保存形式を移行方針なしに変えません。スカッドは新 `squad` 形式を保存しつつ旧 `bench` 形式を読みます（`docs/project-structure.md`）。
 - **UIを伴う変更は `experiments/` で先に試す**: 公開物の正本は `public/` で、`experiments/` はGitHub Pagesでだけ参照できます（`docs/ui-prototype-workflow.md`）。
+- **サンガ色は公式の Primary `#72246C`**: 入口、年間スケジュール、タイムラインの試合と月の帯、観戦ガイド、過密日程のJ1で共有する紫です。出典はJリーグ公式ブランドガイド 2026/27（2026-11-13確認、`docs/source-and-license.md`）。背番号タイルの `#750069`、`--purple-deep` / `--purple-lit`、ネビュラ、ツールごとの別アクセントは別の色として残します。グラデーションの暗側 `#450041` は画面に使っていません。
 - **入口ページのカードとSEO用ファイルは生成して置く**: 検索エンジンとJavaScript無効の人にも一覧が見えるよう、`tools/build-seo.mjs` が `tools.json` からカードを `index.html` に書き、`sitemap.xml` / `robots.txt` と各ページの `og:image` / canonical をそろえます。`fix:asset-versions` から呼び、`check:seo` でずれを検出します（`docs/site-index.md`）。
 - **アクセス解析はCookieなしで、本番ホストだけ**: Cloudflare Web Analytics を選び、トークン未設定のあいだは送信しない形で入れ物だけ先に置いています（`docs/site-index.md`「アクセス解析」）。
 - **CSS/JS/JSONのキャッシュ版数は内容ハッシュ**: 生成物と参照の版数ずれで2日続けてCIが落ちた経緯から、`generate:timeline:public` が `fix:asset-versions` まで実行します。`?v=` の付いたJSONは `fetch` の `cache: "no-store"` を使わない（版数がキャッシュキーになる）。版数の無い `data/hotels/*.json` はこれまでどおり `no-store`。各ページは読むJSONを `<link rel="preload" as="fetch" crossorigin="anonymous">` で先に取り、JSの `fetch`（既定の `same-origin`）と二重に取らない。
