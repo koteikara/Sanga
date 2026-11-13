@@ -3354,6 +3354,29 @@
       "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
+      "id": "ticket-acl-md6-away",
+      "starts_at": "2026-11-24T00:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "date",
+      "date_candidates": [],
+      "type": "ticket",
+      "ticket_kind": "away_sale",
+      "title": "ブリーラム・ユナイテッド戦 アウェイ席 一般発売 開始",
+      "source": "official",
+      "action_type": "action",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "acl-md6"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22105",
+      "source_checked_at": "2026-11-13",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
+    },
+    {
       "id": "match-acl-md5",
       "ends_at": "2026-11-24T21:00:00+09:00",
       "type": "match",
@@ -3659,8 +3682,8 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 準々決勝 キックオフ",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "match-sec43",
@@ -3681,8 +3704,8 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 準決勝 キックオフ",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "match-sec44",
@@ -3703,8 +3726,8 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "天皇杯 決勝 キックオフ",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "ticket-acl-md7-season",
@@ -5275,8 +5298,8 @@
       "date_precision": "date",
       "date_candidates": [],
       "title": "神戸戦 キックオフ（ノエスタ）",
-      "calendar_sequence": 1,
-      "calendar_last_modified": "2026-09-09T03:13:17Z"
+      "calendar_sequence": 2,
+      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "match-sec21",
