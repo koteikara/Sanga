@@ -298,6 +298,8 @@ function applyVersions(events, snapshotAt, previous) {
 const SALE_MINUTES = 15;
 /** キックオフは2時間。試合はおおむねこの長さで、1時間だと短すぎる。 */
 const MATCH_MINUTES = 120;
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const DATETIME_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+09:00$/;
 
 /** JSTの `2026-07-25T11:00:00+09:00` に分を足して、同じ形で返す。 */
 function plusMinutes(startsAt, minutes) {
@@ -642,11 +644,15 @@ function buildAwayTickets(csvPath, matches) {
 function awaySaleEvent(record, match) {
   const opponent = match.opponent || '未定';
   const label = record.sale_label || 'アウェイ席 発売';
+  // 公式が日付だけで時刻を書いていないときは、時刻を推測しない。
+  // 終日（date）として出し、15分の枠は付けない。
+  const dateOnly = DATE_ONLY_PATTERN.test(record.starts_at);
+  const startsAt = dateOnly ? `${record.starts_at}T00:00:00+09:00` : record.starts_at;
   return {
     id: `ticket-${match.id}-away`,
-    starts_at: record.starts_at,
-    ends_at: plusMinutes(record.starts_at, SALE_MINUTES),
-    date_precision: 'datetime',
+    starts_at: startsAt,
+    ends_at: dateOnly ? '' : plusMinutes(startsAt, SALE_MINUTES),
+    date_precision: dateOnly ? 'date' : 'datetime',
     date_candidates: [],
     type: 'ticket',
     ticket_kind: 'away_sale',
@@ -718,6 +724,10 @@ function buildAwaySales(csvPath, matchIndex) {
     }
     if (!record.starts_at) {
       problems.push(`starts_at が空です: ${record.match_id}`);
+      return;
+    }
+    if (!DATE_ONLY_PATTERN.test(record.starts_at) && !DATETIME_PATTERN.test(record.starts_at)) {
+      problems.push(`starts_at の形式が不正です: ${record.match_id} ${record.starts_at}（YYYY-MM-DD か YYYY-MM-DDTHH:MM:SS+09:00）`);
       return;
     }
     if (!record.source_url) {

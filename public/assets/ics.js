@@ -42,11 +42,13 @@ export function toUtcStamp(date) {
 }
 
 /**
- * 終日の予定の `20260911` を作る。**端末のタイムゾーンで読む。**
- * UTCで読むと、日本時間の朝の予定が前日になってしまう。
+ * 終日の予定の `20260911` を作る。**常に日本時間の暦日で書く。**
+ * 端末やCIのタイムゾーン（UTC）で読むと、`2026-12-23T00:00:00+09:00` が
+ * 前日になってしまう。日程はJSTなので、生成場所がどこでも同じ日付にする。
  */
 export function toDateStamp(date) {
-  return date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
+  const jst = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  return jst.getUTCFullYear() + pad(jst.getUTCMonth() + 1) + pad(jst.getUTCDate());
 }
 
 /**

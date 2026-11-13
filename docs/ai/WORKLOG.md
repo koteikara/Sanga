@@ -39,6 +39,50 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-11-13 ブリーラム戦のアウェイ席一般発売を手入力する
+
+### 変更ファイル
+
+- `docs/sheets/away-sales.manual.csv`（`acl-md6` を1行追加）
+- `tools/generate-calendar-events.js`（公式が日付だけのとき `date_precision: date` にする）
+- `public/assets/ics.js`（終日の DATE を常にJSTの暦日で書く）
+- 生成物: `public/data/calendar-events.json`、`public/timeline.ics`、`public/timeline-events.ics`、参照の版数
+- `docs/supporter-timeline-design.md`
+
+### 変更内容
+
+Issue #376。京都公式の案内（https://www.sanga-fc.jp/news/detail/22105 、2026-11-13）に、
+ACL Elite MD6 ブリーラム戦のアウェイ席前売が出た。11/24 からオンラインのみ、当日の売場販売なし、
+3260席の自由席（エリア指定）、大人500バーツ、購入先は https://brutdticket.online/ 、開門は現地17:15。
+終了日時は書いていないので入れない。案内の「11/24(木)」は、2026-11-24 が火曜なので曜日の誤記。日付は11/24のまま採る。
+
+開始時刻が無いので、`starts_at` に 12:00 などを足さない。CSVは `2026-11-24` だけにし、生成は終日（時刻未定）にする。
+
+終日ICSの日付は、これまでCI（UTC）で作ると1日前になっていた。`toDateStamp` をJSTの暦日に直し、
+日程だけの試合（天皇杯・神戸戦など）のフィード日付も正しい日に揃える。墓標（すでにCANCELLED）の日付は、
+前回のフィードから持ち越す。
+
+### 確認結果
+
+`TZ=UTC npm run check` は終了コード 0。公開イベントは 218 件から 219 件になった。
+`ticket-acl-md6-away` は `starts_at: 2026-11-24T00:00:00+09:00`、`ends_at` 空、`date_precision: date`。
+`public/timeline.ics` は 146 件。`ticket-acl-md6-away` の `DTSTART;VALUE=DATE` は `20261124`。
+日程だけの試合（天皇杯・神戸戦）の終日日付も、JSTの暦日に直っている（例: `match-sec42` は `20261223`）。
+購読側に日付の訂正が届くよう、これら4件（`match-sec42` / `sec43` / `sec44` / `sec38`）の `calendar_sequence` を 1 から 2 に上げた。墓標4件の日付と版は前回のまま。
+`node tools/report-away-gaps.js --today 2026-11-13` は穴なし（acl-md6 を挙げない）。
+
+### 未確認項目
+
+公式案内の曜日表記が後から直るかどうか。
+
+### 残課題
+
+なし。
+
+### 人間が確認すべき点
+
+ブリーラム戦の行が公式案内と一致しているか。時刻を補っていないか。終日ICSの日付がJSTの暦日になっているか。
+
 ## 2026-11-11 acl-md8 の会場をパトゥムターニー・スタジアムへ
 
 ### 変更ファイル

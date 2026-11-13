@@ -15,7 +15,7 @@
  */(function () {
   "use strict";
 
-  var EVENTS_URL = "data/calendar-events.json?v=c1f47c21";
+  var EVENTS_URL = "data/calendar-events.json?v=a6225488";
   var MATCHES_URL = "data/matches.json?v=1b06b975";
   var STORAGE_KEY = "sanga-timeline-personal-events-v1";
   var PROFILE_KEY = "sanga-timeline-profile-v1";
@@ -1522,7 +1522,7 @@
    * カレンダーを使わない人には取りに行かない。
    */
   function loadIcs() {
-    return import("./ics.js?v=412b39a0");
+    return import("./ics.js?v=5f53935a");
   }
 
   async function exportIcs() {
