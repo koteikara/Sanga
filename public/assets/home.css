@@ -191,7 +191,7 @@
 /* ACL の試合の見出しに添える会場表記の注（AFC では「京都府立京都スタジアム」と載る） */
 .m-venue{grid-column:1 / -1;font-size:11px;font-weight:700;line-height:1.45;opacity:.92}
 
-/* 公式の英語チケットページへの案内（英語版・韓国語版）。席種とユニフォームの決まりは公式に任せる */
+/* 公式のチケット案内（英語版・韓国語版）。クラブ英語ページ、チケットぴあの英語購入、J.LEAGUE の訪日客向け案内。席種と購入手順は公式に任せる */
 .home-ticket{
   display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;
   margin:0 0 12px;padding:10px 12px;
@@ -200,11 +200,14 @@
   font-size:12.5px;color:var(--ground-ink-dim);
 }
 .home-ticket a{
-  display:inline-flex;align-items:center;min-height:var(--tap);padding:0 14px;
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:var(--tap);max-width:100%;min-width:min(100%, max-content);
+  padding:8px 14px;
   border-radius:999px;background:var(--paper);color:var(--accent);
-  font-size:14px;font-weight:900;text-decoration:none;
+  font-size:14px;font-weight:900;line-height:1.3;text-align:center;text-decoration:none;
 }
 .home-ticket a:hover{text-decoration:underline}
+.home-ticket a .keep{white-space:nowrap}
 
 /* 行き方の要約。HTML に直接書いてあり、JavaScript が動かなくても読める。詳しい案内は下の #accessBody に描く */
 .home-access-static{padding-bottom:0}

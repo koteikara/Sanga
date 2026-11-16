@@ -23,6 +23,7 @@
 | スカッド見出し | `public/assets/squad/` 7件 | リポジトリ内のHTML/CSSから生成。生成元は `experiments/squad-builder/assets/*-source.html`。8番目の「シンプル」は画像を使わず文字で表示 |
 | スタジアムの座席配置 | `experiments/stadium-3d/layout.json` | サンガスタジアム by KYOCERA「座席案内」の座席図PDF（https://sangastadium-by-kyocera.jp/seat-guide ）と、京都府「京都スタジアム（仮称）インフォメーションパッケージ」平成30年1月 p.15・p.18（https://www.pref.kyoto.jp/sposei/news/documents/11ms.pdf ）を2026-10-07に確認し、`experiments/stadium-3d/extract/build_layout.py` で計算した座標。保持するのは席の位置・列・番号（2026-10-09 から座席図に印刷された番号を読み取ったもの）・ブロック名と資料の寸法という事実で、PDF・図面・画像・文章は含まない。サンガスタジアム by KYOCERA のサイトは、2026-10-07時点でサイトマップに利用規約のページが無く、プライバシーポリシー（https://sangastadium-by-kyocera.jp/privacy-policy ）にも著作物の扱いの記載がないため、利用条件は未確認。検証用プロトタイプでのみ使い、公開物には未反映 |
 | スタジアムの位置と向き | `experiments/stadium-3d/sun.js` の `STADIUM` | OpenStreetMap のピッチの形（https://www.openstreetmap.org/way/733921520 、2026-10-09確認）から測った中心の緯度経度と長辺の向きの3つの数値。© OpenStreetMap contributors、ODbL。地図データそのものは含まない。座席ビューの日差しの計算にだけ使う |
+| 訪日客向けチケット案内へのリンク | `public/home-en.html`、`public/home-ko.html` の `.home-ticket` | ページ本文・画像は複製していない。公式ページへのリンクだけ（2026-11-16）。下の「訪日客向けチケット案内のリンク」 |
 | ホーム観戦ガイドの案内 | `public/data/home-guide.json` | 手で書いた行き方・散策・宿の紹介文。散策先とスタジアム・駅の座標は OpenStreetMap（Nominatim の検索結果、© OpenStreetMap contributors、ODbL）の数値を2026-10-16に確認したもの。宿の紹介は楽天トラベルの宿の案内（https://travel.rakuten.co.jp/HOTEL/187555/ 、https://travel.rakuten.co.jp/HOTEL/181808/ ）を確認して自分の言葉で書いたもの。散策先の説明は保津川下り・嵯峨野観光鉄道・亀岡市観光協会・亀岡市・京都府の公開情報を確認して書いた要約で、文章・画像は複製していない。駐車場は各予約サービスの検索結果ページへのリンクだけで、駐車場の一覧や料金は複製していない。試合の日の駐車場（SANGA CREW 会員の駐車場、保津川下りの駐車場、イオン亀岡店）は、Jリーグチケット・保津川下りの案内・ワクタカスポーツのまとめ記事（https://wakutakasports.com/kyoto-soccer-parking/ 、2026-09-19更新。ページからはリンクしない）を確認して自分の言葉で書いた。 |
 | ホーム観戦ガイドの写真（かめコレ） | `public/assets/home/stadium.webp`、`hozugawa.webp`、`torokko.webp`、`izumo-daijingu.webp` | 亀岡市「かめコレ-かめおか画像オープンデータコレクション-」（https://www.city.kameoka.kyoto.jp/site/kamecolle/ ）の写真4点（青空とスタジアム、秋の保津川下り、トロッコ列車、出雲大神宮。いずれも提供者 亀岡市）。CC BY 4.0（市の「オープンデータを利用する場合の条件」https://www.city.kameoka.kyoto.jp/soshiki/9/2066.html ）。960×540に切り抜いて WebP に縮め、リポジトリに置いた。写真の下に「写真：亀岡市 / CC BY 4.0（かめコレ（亀岡市））」を出す。2026-10-16確認 |
 | ホーム観戦ガイドの写真（Wikimedia Commons） | `public/data/home-guide.json` の `spots[].photo`、`specialties[].photo` | Wikimedia Commons の写真6点を、Wikimedia のサーバーの960px縮小画像で読み込む（リポジトリには置かない）。写真の下に作者・利用条件・Commons のファイルページを出す。CC0: 鍬山神社（Saigen Jiro）、穴太寺（Kuroshiononeko）。CC BY 4.0: 湯の花温泉（ブルーノ・プラス）。CC BY-SA 4.0: 亀岡市文化資料館（さかおり）、丹山酒造（Asturio Cantabrio、名物の欄）。CC BY-SA 3.0: 丹波亀山城跡（kamoseiro）。スタジアム・保津川下り・トロッコ・出雲大神宮は2026-10-16に かめコレ の写真へ差し替えた。名物の紹介文は亀岡市・京都府の公開情報を確認して自分の言葉で書いた。2026-10-16確認 |
@@ -131,6 +132,20 @@ ACL 2026/27 リーグステージ第8節（match id `acl-md8`、ポートFC、20
 | 許諾 | 認証局が配布する中間証明書。リポジトリに置いて TLS の検証に使う |
 
 `www.sanga-fc.jp` の葉は、この中間証明書がないと Node が検証できません。検証を無効にはしていません。
+
+## 訪日客向けチケット案内のリンク（2026-11-16）
+
+英語版・韓国語版ホーム観戦ガイドの冒頭に、公式ページへのリンクを足しました。文章・画像・価格表は写していません。アフィリエイトリンクではありません。
+
+| 項目 | 内容 |
+| --- | --- |
+| 置き場所 | `public/home-en.html`、`public/home-ko.html` の `.home-ticket`（PR 表記の直下）。日本語版 `home.html` には置いていない |
+| 残しているリンク | 京都サンガF.C. 英語チケット案内 https://www.sanga-fc.jp/ticket/english_ticket_page （2026-11-16 に 200。題は「BUY TICKET \| Enjoy Football at SANGA STADIUM by KYOCERA \| KYOTO SANGA F.C.」。末尾スラッシュなし） |
+| 追加1 | チケットぴあ 英語購入ページ（京都サンガ） https://quick.pia.jp/kyotosanga_en/ 。2026-11-16 に 200、転送なし。題は「KYOTO SANGA F.C. Official Ticket Site \| Buy Matchday Tickets」。運営はぴあ |
+| 追加2 | J.LEAGUE 公式の訪日客向けチケット案内 https://www.jleague.jp/en/special/clubtickets-lp/ 。2026-11-16 に 200、転送なし。題は「Buy tickets to watch football in Japan! \| J.LEAGUE」。運営は公益社団法人日本プロサッカーリーグ |
+| 付けていないもの | utm、fbclid などのトラッキング用クエリ。ページ本文の複製 |
+| 利用条件 | 各公式サイトのページをリンクしているだけで、本文の転載許諾は取っていない。リンクすること自体の許諾確認は未了 |
+| 韓国語 | 追加2件の表示文言は未確認。公開前にネイティブ確認が必要 |
 
 ## クラブカラー（2026-11-13）
 

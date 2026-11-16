@@ -39,7 +39,47 @@
 
 新しい記録はこの下へ追加します。
 
-## 2026-11-13 サンガ色を公式クラブカラーに合わせる
+## 2026-11-16 英語版・韓国語版ホーム観戦ガイドに訪日客向けチケット案内を足す
+
+### 変更ファイル
+
+- `public/home-en.html`、`public/home-ko.html`（`.home-ticket` を2件追加）
+- `public/assets/home.css`（長いボタン文言が折り返す指定だけ）
+- `public/home.html`（共有 CSS の `?v=` だけ。表示は変えていない）
+- `public/sitemap.xml`、`tools/seo-lastmod.json`（英語版・韓国語版の lastmod）
+- `docs/hotels-operation-flow.md`、`docs/site-index.md`、`docs/source-and-license.md`、`PROJECT_CONTEXT.md`
+
+### 変更内容
+
+PR 表記の下にあるクラブ英語チケット案内の隣に、次の公式リンクを足した。utm などのトラッキング用クエリは付けていない。アフィリエイトリンクは足していない。韓国語の「(영어)」は狭い幅で途中改行しないよう `span.keep` で囲んだ。
+
+- https://quick.pia.jp/kyotosanga_en/
+- https://www.jleague.jp/en/special/clubtickets-lp/
+
+外部リンクの属性は既存と同じ `target="_blank"` `rel="noopener noreferrer"`。
+
+### 確認結果
+
+2026-11-16 に3つの URL を開き、いずれも 200 だった。ぴあと J.LEAGUE は転送なし。クラブ英語ページは末尾スラッシュなしの URL のまま。
+
+`npm run check:static` は終了コード 0。`npm run check:seo` を含み、`sitemap.xml` の `lastmod` は英語版・韓国語版が 2026-11-16、日本語版は 2026-11-14 のまま。
+
+ヘッドレス Chromium で英語版・韓国語版を幅 320px・390px・760px で開き、3つのリンクがチケット案内に出ることを確認した。760px ではボタンと補足が横に並び、320px ではボタン文言が枠内で折り返す。実機のタップと、外部サイトを開いたあとの購入操作までは見ていない。
+
+### 未確認項目
+
+- 韓国語の追加文言（要ネイティブ確認）。
+- iPhone Safari などの実機。
+
+### 残課題
+
+- 韓国語が確認できたら文言を直す。本番デプロイはこの作業ではしない。
+
+### 人間が確認すべき点
+
+- 英語のボタン文言が意図どおりか。
+- 韓国語4文（ボタン2、補足2）をネイティブが見るか。
+- 下書きのままにする。マージと本番反映は別判断。
 
 ### 変更ファイル
 
