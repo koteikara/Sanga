@@ -5779,8 +5779,8 @@
     "source": "https://www.sanga-fc.jp/news",
     "csv": "docs/sheets/news.current.csv",
     "checked_at": "2026-11-09",
-    "article_count": 53,
-    "linked_count": 29,
+    "article_count": 54,
+    "linked_count": 28,
     "by_match": [
       {
         "match_id": "acl-md5",
@@ -5861,23 +5861,6 @@
             "published_on": "2026-11-09",
             "category": "スポンサー",
             "source_url": "https://www.sanga-fc.jp/news/detail/22088"
-          }
-        ]
-      },
-      {
-        "match_id": "sec14",
-        "count": 1,
-        "categories": [
-          {
-            "name": "グッズ",
-            "count": 1
-          }
-        ],
-        "articles": [
-          {
-            "published_on": "2026-11-04",
-            "category": "グッズ",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22075"
           }
         ]
       },
