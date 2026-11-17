@@ -26,6 +26,7 @@
  * - キックオフと試合終了は matches.json に持っている。二重に出さない
  * - 事務局や店舗の営業時間、駅の発着は落とす。語彙が閉じていて増えない
  * - 意味の分からない行は捨てる。時刻だけあっても役に立たない
+ * - ファンクラブの入会期間（「ご入会」「入会(決済完了)」）は応募の締切にしない
  *
  * **本文とタイトルは保存も転載もしない。** 出すのは日時と、こちらの語彙のラベルだけ。
  */
@@ -54,6 +55,20 @@ const HEADER = 'event_id,article_id,match_id,kind,label,starts_at,source_url,ret
 const DENY = /平日|月[〜～~]金|火[〜～~]金|営業|TEL|お電話番号|年末年始|祝日除|駅発|駅着|特急|号車/;
 
 const TIME = /(\d{1,2})[:：](\d{2})/;
+
+/**
+ * 入会期間。応募・申込の締切ではない。
+ * 記事22119は「2026年9月30日(水)23:59までにご入会(決済完了)」を締切として出していた。
+ */
+const MEMBERSHIP_JOIN = /ご入会|入会\s*[（(]\s*決済完了/;
+
+/**
+ * 年の無い月日を翌年にしてよい、公開日からの最大日数。
+ *
+ * 年をまたぐ締切（12月の記事の「1月5日」）だけを翌年にするため。
+ * 11月16日の記事の「9月30日」を翌年の9月30日にすると300日以上先になるので、ここには入らない。
+ */
+const YEAR_ROLL_WINDOW_DAYS = 45;
 
 function usage() {
   console.error('使い方: node tools/parse-news-times.js [出力CSV] [options]');
@@ -210,31 +225,97 @@ function readBooth(lines, match) {
   return found;
 }
 
+/** 公開日の日付と、年・月・日との差。暦の日数。 */
+function daysFromPublished(publishedOn, year, month, day) {
+  const [py, pm, pd] = publishedOn.split('-').map(Number);
+  return Math.round((Date.UTC(year, month - 1, day) - Date.UTC(py, pm - 1, pd)) / 86400000);
+}
+
+function isRealDate(year, month, day) {
+  if (!Number.isInteger(year) || month < 1 || month > 12 || day < 1 || day > 31) return false;
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year
+    && date.getUTCMonth() + 1 === month
+    && date.getUTCDate() === day;
+}
+
+/**
+ * 年が書いていない月日の年。
+ *
+ * 公開年を仮に置き、その日が公開日以降ならその年。
+ * 公開日より前なら、翌年の同じ月日が公開日から YEAR_ROLL_WINDOW_DAYS 以内のときだけ翌年。
+ * それより先へは送らない。過ぎてから日が空いた月日を、翌年の予定にしない。
+ */
+function yearOfNewsDate(month, day, publishedOn) {
+  const publishedYear = Number(publishedOn.slice(0, 4));
+  if (daysFromPublished(publishedOn, publishedYear, month, day) >= 0) return publishedYear;
+  const nextYear = publishedYear + 1;
+  if (daysFromPublished(publishedOn, nextYear, month, day) <= YEAR_ROLL_WINDOW_DAYS) return nextYear;
+  return publishedYear;
+}
+
+/** 「2026年9月30日(水)23:59」「11/19(木)12:00」「2026/9/30 23:59」を、行の中から全部拾う。 */
+function datedTimes(line) {
+  const re = /(?:(\d{4})(?:年|[\/／]))?(\d{1,2})[\/／月](\d{1,2})日?\s*(?:[（(][日月火水木金土][）)])?\s*(\d{1,2})[:：](\d{2})/g;
+  const hits = [];
+  let match;
+  while ((match = re.exec(line))) {
+    hits.push({
+      explicitYear: match[1] ? Number(match[1]) : 0,
+      month: Number(match[2]),
+      day: Number(match[3]),
+      hour: Number(match[4]),
+      minute: Number(match[5]),
+    });
+  }
+  return hits;
+}
+
+/**
+ * 締切側（行の最後の日付）の年。
+ *
+ * その日付に年があれば、それをそのまま使う。公開日との前後では動かさない。
+ * 締切側に年が無く、同じ行の手前の日付に年があるときは、その範囲の年を使う。
+ * 終わりの月日が始まり以上なら同じ年（「2026年5月28日～9月30日」）。
+ * 終わりのほうが前なら、範囲が年をまたいでいる（「2026年12月28日～1月5日」は2027年）。
+ * 行のどこにも年が無いときだけ yearOfNewsDate で補う。
+ */
+function yearForDeadline(hits, publishedOn) {
+  const last = hits[hits.length - 1];
+  if (last.explicitYear) return last.explicitYear;
+  for (let index = hits.length - 2; index >= 0; index -= 1) {
+    const start = hits[index];
+    if (!start.explicitYear) continue;
+    const startKey = start.month * 100 + start.day;
+    const endKey = last.month * 100 + last.day;
+    return endKey >= startKey ? start.explicitYear : start.explicitYear + 1;
+  }
+  return yearOfNewsDate(last.month, last.day, publishedOn);
+}
+
 /**
  * 応募の締切。
  *
- * **年が書かれていない。** 記事の公開日を起点にし、月日がそれより前なら翌年と見なす。
- * 「本日」は公開日そのもの。読めなければ出さない。
+ * 締切側は行の後ろに来る（「本日～11/19(木)12:00」「9月17日(木)15:00まで」）。
+ * 入会期間の行は出さない。読めなければ出さない。
  */
 function readEntryDeadline(lines, publishedOn) {
   const found = [];
-  const [year] = publishedOn.split('-').map(Number);
   lines.forEach((line) => {
+    if (MEMBERSHIP_JOIN.test(line)) return;
     if (DENY.test(line)) return;
     if (!/(まで|締切|締め切り)/.test(line) && !/[〜～]/.test(line)) return;
     if (!TIME.test(line)) return;
-    // 「〜9/10(木)12:00」「9月17日(木)15:00まで」のように、締切側は行の後ろに来る
-    const m = line.match(/(\d{1,2})[\/月](\d{1,2})日?\s*(?:\([日月火水木金土]\))?\s*(\d{1,2})[:：](\d{2})(?![\s\S]*\d{1,2}[\/月]\d{1,2})/);
-    if (!m) return;
-    let y = year;
-    const monthDay = `${pad(m[1])}-${pad(m[2])}`;
-    if (monthDay < publishedOn.slice(5)) y += 1; // 年をまたぐ締切
-    const hour = Number(m[3]);
-    if (hour > 23 || Number(m[4]) > 59) return;
+    const hits = datedTimes(line);
+    if (!hits.length) return;
+    const last = hits[hits.length - 1];
+    if (last.hour > 23 || last.minute > 59) return;
+    const year = yearForDeadline(hits, publishedOn);
+    if (!isRealDate(year, last.month, last.day)) return;
     found.push({
       kind: '応募の締切',
       label: '応募の締切',
-      starts_at: `${y}-${monthDay}T${pad(hour)}:${pad(m[4])}:00+09:00`,
+      starts_at: `${year}-${pad(last.month)}-${pad(last.day)}T${pad(last.hour)}:${pad(last.minute)}:00+09:00`,
     });
   });
   return found;
@@ -285,11 +366,11 @@ function isAclAway(match) {
  *
  * **当日発売は試合当日**、**前売は行に書かれた日付**です。前売の日付は
  * `試合5日前（9/10）13:00～` のように括弧で添えられます。相対表記は採らず、
- * 括弧の中の月日を使います。年は記事の公開日から決めます。
+ * 括弧の中の月日を使います。年は応募の締切と同じ規則です。
+ * 本文に年があればそれを使い、無いときだけ公開日から補います。
  */
 function readAclAwayTicket(lines, match, publishedOn) {
   const found = [];
-  const [year] = publishedOn.split('-').map(Number);
   lines.forEach((line) => {
     if (DENY.test(line)) return;
 
@@ -306,17 +387,20 @@ function readAclAwayTicket(lines, match, publishedOn) {
 
     const advanceAt = line.search(/前売/);
     if (advanceAt >= 0) {
-      const m = line.slice(advanceAt).match(/(\d{1,2})[\/月](\d{1,2})日?[^\d]{0,8}(\d{1,2})[:：](\d{2})/);
+      const m = line.slice(advanceAt).match(/(?:(\d{4})(?:年|[\/／]))?(\d{1,2})[\/／月](\d{1,2})日?[^\d]{0,8}(\d{1,2})[:：](\d{2})/);
       if (m) {
-        let y = year;
-        const monthDay = `${pad(m[1])}-${pad(m[2])}`;
-        if (monthDay < publishedOn.slice(5)) y += 1;
-        const hour = Number(m[3]);
-        if (hour <= 23 && Number(m[4]) <= 59) {
+        const month = Number(m[2]);
+        const day = Number(m[3]);
+        const hour = Number(m[4]);
+        const minute = Number(m[5]);
+        const year = m[1]
+          ? Number(m[1])
+          : yearOfNewsDate(month, day, publishedOn);
+        if (hour <= 23 && minute <= 59 && isRealDate(year, month, day)) {
           found.push({
             kind: 'アウェイ席の前売',
             label: 'アウェイ席 前売の発売',
-            starts_at: `${y}-${monthDay}T${pad(hour)}:${pad(m[4])}:00+09:00`,
+            starts_at: `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00+09:00`,
           });
         }
       }
