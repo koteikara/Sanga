@@ -80,6 +80,48 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
+UID:news-22125-sec20-entry-1200@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261119T030000Z
+SUMMARY:岡山戦 応募の締切
+DESCRIPTION:第20節 岡山戦（試合日 12/19（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22125\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22126-sec20-entry-1200@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261119T030000Z
+SUMMARY:岡山戦 応募の締切
+DESCRIPTION:第20節 岡山戦（試合日 12/19（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22126\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22122-sec17-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261122T145900Z
+SUMMARY:C大阪戦 応募の締切
+DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
+ sanga-fc.jp/news/detail/22122\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
 UID:news-22107-sec19-entry-1200@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
