@@ -10,42 +10,14 @@ X-WR-CALDESC:京都サンガF.C. の試合当日の予定（非公式）。
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:news-22071-sec19-entry-1200@sanga-timeline.invalid
+UID:news-22070-sec19-entry-1200@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
 LAST-MODIFIED:20261108T180927Z
 DTSTART:20261112T030000Z
 SUMMARY:千葉戦 応募の締切
 DESCRIPTION:第19節 千葉戦（試合日 12/13（日））\nhttps://www.s
- anga-fc.jp/news/detail/22071\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22091-sec15-entry-2359@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261115T145900Z
-SUMMARY:浦和戦 応募の締切
-DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
- anga-fc.jp/news/detail/22091\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22093-sec15-entry-2359@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261115T145900Z
-SUMMARY:浦和戦 応募の締切
-DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
- anga-fc.jp/news/detail/22093\n※非公式のファンツールによる
+ anga-fc.jp/news/detail/22070\n※非公式のファンツールによる
  予定です。日程が変わっている場合があります。購入
  ・応募の前に公式サイトで確認してください。
 STATUS:CONFIRMED
@@ -80,62 +52,6 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:news-22157-sec15-sameday-0500@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261120T200000Z
-SUMMARY:浦和戦 当日券の発売（オンライン・時刻は目安）
-DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
- anga-fc.jp/news/detail/22157\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22130-sec15-booth-1000@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261121T010000Z
-SUMMARY:浦和戦 グッズ販売開始
-DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
- anga-fc.jp/news/detail/22130\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22127-sec15-booth-1030@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261121T013000Z
-SUMMARY:浦和戦 グッズ販売開始
-DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
- anga-fc.jp/news/detail/22127\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22157-sec15-sameday-1100@sanga-timeline.invalid
-DTSTAMP:20261108T180927Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261121T020000Z
-SUMMARY:浦和戦 当日券の発売（窓口）
-DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
- anga-fc.jp/news/detail/22157\n※非公式のファンツールによる
- 予定です。日程が変わっている場合があります。購入
- ・応募の前に公式サイトで確認してください。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:news-22122-sec17-entry-2359@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:0
@@ -146,6 +62,21 @@ DESCRIPTION:第17節 C大阪戦（試合日 11/28（土））\nhttps://www.
  sanga-fc.jp/news/detail/22122\n※非公式のファンツールによる
  予定です。日程が変わっている場合があります。購入
  ・応募の前に公式サイトで確認してください。
+STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22128-acl-md5-booth-1600@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:0
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261124T070000Z
+SUMMARY:浦項スティーラーズ戦 グッズ販売開始
+DESCRIPTION:MD5 浦項スティーラーズ戦（試合日 11/24（火）
+ ）\nhttps://www.sanga-fc.jp/news/detail/22128\n※非公式のファン
+ ツールによる予定です。日程が変わっている場合があ
+ ります。購入・応募の前に公式サイトで確認してくだ
+ さい。
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -193,14 +124,98 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:news-22070-sec19-entry-1200@sanga-timeline.invalid
+UID:news-22071-sec19-entry-1200@sanga-timeline.invalid
 DTSTAMP:20261108T180927Z
 SEQUENCE:1
 LAST-MODIFIED:20261108T180927Z
 DTSTART:20261112T030000Z
 SUMMARY:千葉戦 応募の締切
 DESCRIPTION:第19節 千葉戦（試合日 12/13（日））\nhttps://www.s
- anga-fc.jp/news/detail/22070\n※非公式のファンツールによる
+ anga-fc.jp/news/detail/22071\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22091-sec15-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261115T145900Z
+SUMMARY:浦和戦 応募の締切
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22091\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22093-sec15-entry-2359@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261115T145900Z
+SUMMARY:浦和戦 応募の締切
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22093\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22157-sec15-sameday-0500@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261120T200000Z
+SUMMARY:浦和戦 当日券の発売（オンライン・時刻は目安）
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22157\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22130-sec15-booth-1000@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261121T010000Z
+SUMMARY:浦和戦 グッズ販売開始
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22130\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22127-sec15-booth-1030@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261121T013000Z
+SUMMARY:浦和戦 グッズ販売開始
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22127\n※非公式のファンツールによる
+ 予定です。日程が変わっている場合があります。購入
+ ・応募の前に公式サイトで確認してください。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22157-sec15-sameday-1100@sanga-timeline.invalid
+DTSTAMP:20261108T180927Z
+SEQUENCE:1
+LAST-MODIFIED:20261108T180927Z
+DTSTART:20261121T020000Z
+SUMMARY:浦和戦 当日券の発売（窓口）
+DESCRIPTION:第15節 浦和戦（試合日 11/21（土））\nhttps://www.s
+ anga-fc.jp/news/detail/22157\n※非公式のファンツールによる
  予定です。日程が変わっている場合があります。購入
  ・応募の前に公式サイトで確認してください。
 STATUS:CANCELLED
