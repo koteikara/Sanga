@@ -790,7 +790,7 @@
   var trP = OVERLAY ? getJson(OVERLAY).catch(function () { return {}; }) : Promise.resolve({});
   var affP = getJson("data/affiliates.json?v=3ccbd3a2").catch(function () { return {}; });
   var matchesP = getJson("data/matches.json?v=1b06b975");
-  var indexP = getJson("data/hotel-index.json?v=c5b877b4").catch(function () { return { matches: [] }; });
+  var indexP = getJson("data/hotel-index.json?v=8d18e469").catch(function () { return { matches: [] }; });
 
   Promise.all([guideP, affP, trP]).then(function (r) {
     var tr = r[2] || {};
