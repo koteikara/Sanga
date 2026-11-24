@@ -356,6 +356,48 @@ function tombstonesFor(previous, liveUids, matches, now) {
   return { specs, expired };
 }
 
+/**
+ * 今回も載る予定の版を、前回のフィードより下げない。
+ *
+ * 版は `tools/generate-calendar-events.js` が**前回のJSON**と見比べて決める。JSONには
+ * 墓標が無いので、一度消えて墓標になったUIDが戻ると、JSON側では「新しいUID」として
+ * 版0から始まる。そのまま書くと、前回 `SEQUENCE:1` の取り消しを `SEQUENCE:0` で上書きし、
+ * カレンダーアプリは古い版として無視する（2026-11-23、記事22070で発覚）。
+ *
+ * - 前回が墓標なら、前回の版 +1。取り消しの取り消しも中身の変化なので上げる
+ * - 前回が生きた予定で、JSONの版が前回より小さいなら、中身が同じなら前回の版、
+ *   変わっていれば前回の版 +1
+ * - JSONの版が前回以上なら、これまでどおりJSONの版を使う（ふだんはすべてこれ）
+ *
+ * 一度書いた結果を読み戻すと「前回が生きた予定・中身が同じ」になり、版は動かない。
+ * 何度作り直しても同じファイルになるので `--check` が通る。
+ */
+function keepSequenceUp(spec, previousEvent, stamps) {
+  if (!previousEvent) return spec;
+  const previousSequence = Number.isFinite(previousEvent.sequence) ? Math.floor(previousEvent.sequence) : 0;
+  const sequence = typeof spec.sequence === 'number' ? spec.sequence : 0;
+  const wasCancelled = previousEvent.status === 'CANCELLED';
+  if (!wasCancelled && sequence >= previousSequence) return spec;
+
+  const start = spec.allDay ? stamps.toDateStamp(spec.start) : stamps.toUtcStamp(spec.start);
+  const end = !spec.allDay && spec.end ? stamps.toUtcStamp(spec.end) : undefined;
+  const same = !wasCancelled
+    && previousEvent.dtstart === start
+    && previousEvent.dtend === end
+    && Boolean(previousEvent.allDay) === Boolean(spec.allDay)
+    && previousEvent.summary === spec.summary
+    && previousEvent.description === spec.description;
+
+  const previousModified = fromUtcStamp(previousEvent.lastModified);
+  let lastModified = spec.lastModified;
+  if (previousModified && (!lastModified || previousModified > lastModified)) lastModified = previousModified;
+
+  return Object.assign({}, spec, {
+    sequence: Math.max(sequence, same ? previousSequence : previousSequence + 1),
+    lastModified,
+  });
+}
+
 async function main(argv) {
   const options = { eventsPath: DEFAULT_EVENTS, matchesPath: DEFAULT_MATCHES, feed: DEFAULT_FEED, check: false };
   const positional = [];
@@ -391,16 +433,17 @@ async function main(argv) {
 
   // 組み立てはブラウザと共通。ESモジュールなので import() で読む。
   const icsPath = path.join(repoRoot, 'public', 'assets', 'ics.js');
-  const { buildCalendar, UID_DOMAIN, DISCLAIMER } = await import(pathToFileURL(icsPath).href);
+  const { buildCalendar, UID_DOMAIN, DISCLAIMER, toUtcStamp, toDateStamp } = await import(pathToFileURL(icsPath).href);
 
   const all = data.events || [];
   const target = all.filter(isDated).filter(feed.select);
-  const live = target.map((event) => specOf(event, matches, DISCLAIMER)).filter(Boolean);
-
   const stamp = stampOf(target, data.meta);
 
   // 前回配ったUIDのうち、今回いなくなったものを墓標にする。
+  // 今回も載るものは、版を前回より下げない。
   const previous = readPreviousFeed(outputPath);
+  const live = target.map((event) => specOf(event, matches, DISCLAIMER)).filter(Boolean)
+    .map((spec) => keepSequenceUp(spec, previous.get(`${spec.uid}@${UID_DOMAIN}`), { toUtcStamp, toDateStamp }));
   const liveUids = new Set(live.map((spec) => `${spec.uid}@${UID_DOMAIN}`));
   const graves = tombstonesFor(previous, liveUids, matches, stamp);
 

@@ -2898,30 +2898,6 @@
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
-      "id": "news-22071-sec19-entry-1200",
-      "starts_at": "2026-11-12T12:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "千葉戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec19"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22071",
-      "source_checked_at": "2026-11-21",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
       "id": "ticket-sec18-away",
       "starts_at": "2026-11-13T12:00:00+09:00",
       "ends_at": "2026-11-13T12:15:00+09:00",
@@ -2987,54 +2963,6 @@
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22015",
       "source_checked_at": "2026-11-13",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
-      "id": "news-22091-sec15-entry-2359",
-      "starts_at": "2026-11-15T23:59:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "浦和戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec15"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22091",
-      "source_checked_at": "2026-11-21",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
-      "id": "news-22093-sec15-entry-2359",
-      "starts_at": "2026-11-15T23:59:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "浦和戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec15"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22093",
-      "source_checked_at": "2026-11-21",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3149,54 +3077,6 @@
       "calendar_last_modified": "2026-09-09T03:13:17Z"
     },
     {
-      "id": "news-22125-sec20-entry-1200",
-      "starts_at": "2026-11-19T12:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "岡山戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec20"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22125",
-      "source_checked_at": "2026-11-21",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
-      "id": "news-22126-sec20-entry-1200",
-      "starts_at": "2026-11-19T12:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "entry",
-      "title": "岡山戦 応募の締切",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "応募の締切",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec20"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22126",
-      "source_checked_at": "2026-11-21",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
       "id": "ticket-sec19-benefit-regular",
       "starts_at": "2026-11-20T12:00:00+09:00",
       "ends_at": "2026-11-20T12:15:00+09:00",
@@ -3251,31 +3131,6 @@
       "is_visible": true,
       "calendar_sequence": 2,
       "calendar_last_modified": "2026-09-09T03:13:17Z"
-    },
-    {
-      "id": "news-22157-sec15-sameday-0500",
-      "starts_at": "2026-11-21T05:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "ticket",
-      "ticket_kind": "same_day",
-      "title": "浦和戦 当日券の発売（オンライン・時刻は目安）",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "当日券",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "sec15"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22157",
-      "source_checked_at": "2026-11-21",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
       "id": "news-22130-sec15-booth-1000",

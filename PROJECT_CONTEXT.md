@@ -2,7 +2,7 @@
 project: Sanga
 repository: https://github.com/koteikara/Sanga
 status: active
-updated: 2026-11-17
+updated: 2026-11-24
 knowledge_mocs:
   - AI・自動化
   - UI・デザイン
@@ -74,6 +74,7 @@ flowchart LR
 - **modern-screenshot をCDNではなく静的同梱**: iOS Safariでの画像生成の安定と、公開物の自己完結のためと読めます。`THIRD_PARTY_NOTICES.md` にライセンス表示を集約しています（同梱に切り替えた理由の記録は未確認）。
 - **公式サイトへの負荷を抑える**: `robots.txt` の `Crawl-delay: 10` に従い、1日1回・1リクエスト、ステップ間に `sleep 10` を置きます（`ticket-sales-sync.yml` のコメント、`docs/supporter-timeline-design.md`「公式サイトの利用条件」）。`PAUSE_OFFICIAL_SANGA_FETCH=true` のあいだ、日次ジョブは公式サイトへリクエストを送りません（2026-10-27〜2026-11-06は停止。現在は `false`）。
 - **ニュース本文の応募締切は、書いてある年を動かさない**: 年が無い月日だけ、記事の公開日から補う。公開日より前の月日を翌年にするのは、翌年のその日が公開日から45日以内のときだけ。同じ行の期間に年があるときは、その範囲から年を決める。ファンクラブの入会期間（「ご入会」「入会(決済完了)」）は応募の締切にしない（2026-11-17。記事22119が、2026-09-30の入会期限を2027-09-30の応募締切にしていた）。
+- **記事から読んだ過ぎた日時は公開しない**: 同期時点（取り込んだCSVの `retrieved_at_jst` の最新。実行時刻ではない）で過ぎた news-times の行は公開JSONに出さず、購読フィードでは墓標（`STATUS:CANCELLED`）のままにする。フィードの `SEQUENCE` は前回のフィードより下げない（2026-11-24。記事22070の締切が、本文の再取得で `CONFIRMED`・版0に戻っていた）。
 - **公式サイトのTLS検証は切らない**: `www.sanga-fc.jp` は葉だけを送る（2026-10-04から取得が `UNABLE_TO_VERIFY_LEAF_SIGNATURE`）。中間証明書 Cybertrust Japan SureServer CA G4 を `tools/certs/cybertrust-japan-sureserver-ca-g4.pem` に置き、`ticket-sales-sync.yml` が `NODE_EXTRA_CA_CERTS` で読む。フィンガープリントは `tools/check-sanga-ca.js` が公開値と突き合わせる。
 - **失敗を沈黙させない**: アウェイとホーム戦（Jリーグチケット）の取り込みは `continue-on-error` で本流を止めない一方、最後のステップでジョブを失敗させます。2026-08-31から10日間の失敗に気付けなかった経緯が根拠です。公式サイト（sanga-fc.jp）の販売スケジュールと公式の案内は、サイトが壊れていた2026-10-27〜2026-11-06は取得自体を止めていました（`PAUSE_OFFICIAL_SANGA_FETCH=true`。現在は `false`）。これは失敗の握りつぶしではなく、壊れた取得先へ毎日取りに行かないための停止です。停止中はジョブを赤くせず、Issueの連続失敗にも足しません。`false` に戻したあとの解析失敗は、これまでどおりジョブの失敗になります。
 - **本番デプロイは手動のみ**: 自動デプロイは行わず、`main` かつ `DEPLOY` 入力を要求します。デプロイ前に暗号化バックアップを必須にします（公開リポジトリのアーティファクトは誰でも取得できるため）。

@@ -7,3 +7,4 @@
 # textのままだと環境によってLFに変換され、購読フィードが壊れる。
 # 行末のCRは空白エラーとして扱わない（HTMLと同じ扱い）。
 public/timeline.ics -text whitespace=cr-at-eol
+tools/fixtures/past-news-times/*.ics -text whitespace=cr-at-eol
