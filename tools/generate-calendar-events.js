@@ -90,6 +90,7 @@ function usage() {
   console.error('  --news-times <csv>        記事から読んだ日時。イベントとして並べる');
   console.error('  --news-times-manual <csv> 上の手直し（drop / edit）');
   console.error('  --checked-at <日付> 出典の確認日。省略時はCSVの retrieved_at_jst から取る');
+  console.error('  --now <ISO8601>    同期時点（記事から読んだ日時が過ぎたかの判定に使う）。省略時は取り込んだCSVの retrieved_at_jst のうち最も新しいもの');
   console.error('  --check            出力先の既存ファイルと突き合わせ、差分があれば失敗する');
   console.error(`出力先を省略した場合: ${DEFAULT_OUTPUT}`);
 }
@@ -492,7 +493,49 @@ const NEWS_TIME_KINDS = {
  * `docs/sheets/news-times.manual.csv` の `action` が `drop` なら消し、
  * `edit` なら `label` と `starts_at` を差し替える。
  */
-function buildNewsTimes(csvPath, manualPath, matchIndex) {
+/**
+ * 同期時点を決める。記事から読んだ日時が「もう過ぎたか」を見るための時計。
+ *
+ * **実行時刻を使わない。** 使うと、同じ入力でも日が変わるだけで生成物が変わり、
+ * PRごとの `--check` が落ちる。取り込んだCSVの `retrieved_at_jst` のうち最も新しいものを
+ * 使えば、取り込み直したときだけ動く。販売スケジュールの取得が止まっていても、
+ * 案内の一覧・記事の取得時刻で進む。テストでは `--now` で固定する。
+ */
+function syncTimeOf(options, snapshotAt) {
+  if (options.now) {
+    const fixed = new Date(options.now);
+    if (Number.isNaN(fixed.getTime())) throw new Error(`--now が日時として読めません: ${options.now}`);
+    return fixed;
+  }
+  let latest = snapshotAt;
+  [options.newsPath, options.newsTimesPath].filter(Boolean).forEach((csvPath) => {
+    readCsvRecords(csvPath, { allowEmpty: true }).forEach((record) => {
+      const at = new Date(record.retrieved_at_jst || '');
+      if (!Number.isNaN(at.getTime()) && at > latest) latest = at;
+    });
+  });
+  return latest;
+}
+
+/**
+ * 記事から読んだ日時のうち、同期時点ですでに過ぎたものは公開JSONに出さない。
+ *
+ * **締切は過ぎたら行動の期限ではなくなる。** しかも、記事を取る・取らないは窓と
+ * 本数の上限（`tools/fetch-news-articles.js` の `pick()`）で日ごとに揺れる。過ぎた締切が
+ * 「取られた日だけ生きた予定に戻る」と、購読フィードでは一度 `STATUS:CANCELLED` にした
+ * 同じUIDが `CONFIRMED`・版0で上書きされる（2026-11-23、記事22070で発覚）。
+ * 出さなければ、前回フィードに載っていた分は `tools/build-ics-feed.js` が墓標にし、
+ * すでに墓標なら版を持ち越す。
+ *
+ * 終わりの時刻があればそれで、無ければ始まり（応募の締切は `starts_at` が期限）で見る。
+ * 対象は記事由来の行だけ。公式の販売スケジュール表の「開始」と試合は変えない。
+ */
+function hasPassed(event, syncAt) {
+  const at = new Date(event.ends_at || event.starts_at || '');
+  return !Number.isNaN(at.getTime()) && at < syncAt;
+}
+
+function buildNewsTimes(csvPath, manualPath, matchIndex, syncAt) {
   const manual = new Map();
   const problems = [];
   if (manualPath) {
@@ -507,6 +550,7 @@ function buildNewsTimes(csvPath, manualPath, matchIndex) {
   }
 
   const events = [];
+  const passed = [];
   readCsvRecords(csvPath, { allowEmpty: true }).forEach((record) => {
     if (!record.event_id || !record.starts_at || !record.match_id) return;
     const match = matchIndex.get(record.match_id);
@@ -518,6 +562,11 @@ function buildNewsTimes(csvPath, manualPath, matchIndex) {
     if (override && override.action === 'drop') return;
     const label = (override && override.label) || record.label;
     const startsAt = (override && override.starts_at) || record.starts_at;
+
+    if (syncAt && hasPassed({ starts_at: startsAt }, syncAt)) {
+      passed.push(`${record.event_id}（${startsAt}）`);
+      return;
+    }
 
     events.push({
       id: record.event_id,
@@ -544,7 +593,7 @@ function buildNewsTimes(csvPath, manualPath, matchIndex) {
     });
   });
 
-  return { events, problems };
+  return { events, problems, passed };
 }
 
 /**
@@ -991,13 +1040,16 @@ function build(options) {
   }
 
   let newsTimeProblems = [];
+  let newsTimesPassed = [];
   if (options.newsTimesPath) {
-    const built = buildNewsTimes(options.newsTimesPath, options.newsTimesManualPath, matchIndex);
+    const syncAt = syncTimeOf(options, snapshotAt);
+    const built = buildNewsTimes(options.newsTimesPath, options.newsTimesManualPath, matchIndex, syncAt);
     built.events.forEach((event) => {
       events.push(event);
       rounds.add(event.match_ids[0]);
     });
     newsTimeProblems = built.problems;
+    newsTimesPassed = built.passed;
   }
 
   let skipped = [];
@@ -1013,6 +1065,7 @@ function build(options) {
     awayUnmatched,
     awaySaleProblems,
     newsTimeProblems,
+    newsTimesPassed,
     homeSaleProblems: homeSales.problems.concat(homeSalesManual.problems),
     homeSaleChanges,
     meta: {
@@ -1037,7 +1090,7 @@ function build(options) {
 
 function main(argv) {
   const positional = [];
-  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', homeSalesPath: '', homeSalesManualPath: '', newsPath: '', newsTimesPath: '', newsTimesManualPath: '', checkedAt: '', check: false };
+  const options = { matchesPath: DEFAULT_MATCHES, samplesPath: '', awayPath: '', awaySalesPath: '', awaySalesCurrentPath: '', homeSalesPath: '', homeSalesManualPath: '', newsPath: '', newsTimesPath: '', newsTimesManualPath: '', checkedAt: '', now: '', check: false };
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -1052,6 +1105,7 @@ function main(argv) {
     if (arg === '--news-times') { options.newsTimesPath = argv[i += 1]; continue; }
     if (arg === '--news-times-manual') { options.newsTimesManualPath = argv[i += 1]; continue; }
     if (arg === '--checked-at') { options.checkedAt = argv[i += 1]; continue; }
+    if (arg === '--now') { options.now = argv[i += 1]; continue; }
     if (arg === '--check') { options.check = true; continue; }
     if (arg === '-h' || arg === '--help') { usage(); return 0; }
     if (arg.startsWith('--')) { console.error(`知らない引数です: ${arg}`); usage(); return 1; }
@@ -1079,6 +1133,8 @@ function main(argv) {
   delete data.awaySaleProblems;
   const newsTimeProblems = data.newsTimeProblems || [];
   delete data.newsTimeProblems;
+  const newsTimesPassed = data.newsTimesPassed || [];
+  delete data.newsTimesPassed;
   const homeSaleProblems = data.homeSaleProblems || [];
   delete data.homeSaleProblems;
   const homeSaleChanges = data.homeSaleChanges || [];
@@ -1096,6 +1152,11 @@ function main(argv) {
   if (newsTimeProblems.length) {
     console.error(`記事から読んだ日時に問題があります（${newsTimeProblems.length}件）。その行は取り込んでいません。`);
     newsTimeProblems.forEach((line) => { console.error(`  ${line}`); });
+  }
+
+  if (newsTimesPassed.length && !options.check) {
+    console.log(`記事から読んだ日時のうち、同期時点で過ぎた${newsTimesPassed.length}件は出していません（購読フィードでは墓標になります）。`);
+    newsTimesPassed.forEach((line) => { console.log(`  ${line}`); });
   }
 
   if (awaySaleProblems.length) {
