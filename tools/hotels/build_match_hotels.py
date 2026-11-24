@@ -6,6 +6,10 @@
   python tools/hotels/build_match_hotels.py --all-home          # これから行われるサンガスタジアムのホーム戦すべて
   python tools/hotels/build_match_hotels.py --match-id sec14 --response-file FIXTURE.json  # APIを呼ばず検証
 
+チェックイン日が今日（Asia/Tokyo の暦日）以前の泊は、APIを呼ばずに前回の公開JSON
+（public/data/hotels/{match_id}.json）のリストを残す。取り直すのは今日より先の泊だけ。
+VacantHotelSearch は取得時点の空室しか返さないので、当日以降に取り直すと候補が減るため。
+
 認証は環境変数 RAKUTEN_APP_ID / RAKUTEN_AFFILIATE_ID / RAKUTEN_ACCESS_KEY（GitHub Secrets 経由）。
 値をログに出さず、リポジトリにも書かない。出力のリンクは楽天がアフィリエイトIDつきで返したURLのみ。
 """
@@ -25,7 +29,7 @@ if str(CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(CURRENT_DIR))
 
 from models import HotelCandidate, PriceTier  # noqa: E402
-from public_schema import build_hotel_index_entry, build_match_hotels_document, to_public_hotel_dict  # noqa: E402
+from public_schema import build_hotel_index_entry, to_public_hotel_dict  # noqa: E402
 
 ROOT_DIR = CURRENT_DIR.parent.parent
 PUBLIC_DATA_DIR = ROOT_DIR / "public" / "data"
@@ -332,18 +336,23 @@ def home_hotel_dicts(hotels: list[HotelCandidate], guide: dict) -> list[dict]:
     return out
 
 
-def build_home(match: dict, guide: dict, index: dict, response_file: str | None) -> None:
+def build_home(match: dict, guide: dict, index: dict, response_file: str | None, today: date) -> bool:
+    """ホーム戦1試合。取り直した泊があれば True。"""
     stadium = guide["stadium"]
     day = date.fromisoformat(match_day(match))
     before = day - timedelta(days=1)
-    pre = fetch_home_night(guide, before, response_file)
-    same_day = fetch_home_night(guide, day, response_file)
+    previous = load_previous(match["id"])
+    if unchanged_previous(previous, before, day, today):
+        return report_both_kept(match["id"], previous, "（ホーム）")
+    pre, pre_fetched = night_hotels("pre", before, today, previous, lambda: home_hotel_dicts(fetch_home_night(guide, before, response_file), guide))
+    same_day, same_fetched = night_hotels("same_day", day, today, previous, lambda: home_hotel_dicts(fetch_home_night(guide, day, response_file), guide))
+    refetched = pre_fetched or same_fetched
     document = {
         "match_id": match["id"],
         "hotel_count": len(pre),
-        "hotels": home_hotel_dicts(pre, guide),
+        "hotels": pre,
         "same_day_hotel_count": len(same_day),
-        "same_day_hotels": home_hotel_dicts(same_day, guide),
+        "same_day_hotels": same_day,
         "meta": {
             "match_id": match["id"],
             "stadium_id": stadium["id"],
@@ -353,7 +362,7 @@ def build_home(match: dict, guide: dict, index: dict, response_file: str | None)
             "same_day_checkin_date": day.isoformat(),
             "same_day_checkout_date": (day + timedelta(days=1)).isoformat(),
             "station_name": stadium["station_name"],
-            "updated_at": now_jst(),
+            "updated_at": updated_at_for(refetched, previous),
             "source": "Rakuten Travel API",
             "search_conditions": {"adult_num": ADULT_NUM, "up_class_num": 0, "low_class_num": 0, "search_radius": SEARCH_RADIUS_KM, "station_search_radius": SEARCH_RADIUS_KM},
         },
@@ -363,6 +372,91 @@ def build_home(match: dict, guide: dict, index: dict, response_file: str | None)
     entry.update(stadium_id=stadium["id"], checkin_date=before.isoformat(), checkout_date=day.isoformat(), data_path=f"data/hotels/{match['id']}.json")
     index["matches"] = [m for m in index.get("matches", []) if m.get("match_id") != match["id"]] + [entry]
     print(f"{match['id']}（ホーム）: 前泊{len(pre)}件 ({before}) / 当日泊{len(same_day)}件 ({day})")
+    return refetched
+
+
+# ---------- 今日以前の泊は取り直さない ----------
+#
+# VacantHotelSearch は取得時点で空いている部屋しか返さない。チェックイン日が当日になってから
+# 取り直すと、候補が急に減る（2026-11-23 の acl-md5 浦項戦: 前泊が8件から4件）。
+# チェックイン日が今日（Asia/Tokyo の暦日）以前の泊は API を呼ばず、前回の公開JSONを残す。
+# 前泊と当日泊は別々に判定する。
+
+NIGHTS = {
+    # 泊: (配列, 件数, 前回のチェックイン日を持つ meta の項目)
+    "pre": ("hotels", "hotel_count", "checkin_date"),
+    "same_day": ("same_day_hotels", "same_day_hotel_count", "same_day_checkin_date"),
+}
+
+
+def keeps_previous(checkin: date, today: date) -> bool:
+    """チェックイン日が今日以前なら取り直さない（前回のリストを残す）。時刻は見ない。"""
+    return checkin <= today
+
+
+def load_previous(match_id: str) -> dict | None:
+    """前回の公開JSON。上書きする前に読む。無いか読めなければ None。"""
+    path = HOTELS_DIR / f"{match_id}.json"
+    if not path.exists():
+        return None
+    try:
+        return read_json(path)
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def previous_night(previous: dict | None, night: str, checkin: date) -> list[dict] | None:
+    """前回のその泊のリストを、順番も中身もそのまま返す。
+
+    前回が無い・その泊の配列が無い・前回のチェックイン日が今回と違う（試合日が動いた）ときは None。
+    宿を補ったり作ったりはしない。0件の前回は「データあり」なので空のリストを返す。
+    """
+    if not previous:
+        return None
+    key, _, meta_key = NIGHTS[night]
+    hotels = previous.get(key)
+    if not isinstance(hotels, list):
+        return None
+    if (previous.get("meta") or {}).get(meta_key) != checkin.isoformat():
+        return None
+    return hotels
+
+
+def night_hotels(night: str, checkin: date, today: date, previous: dict | None, fetch) -> tuple[list[dict], bool]:
+    """1泊ぶんのリストと、取り直したかどうか。
+
+    今日より先の泊は fetch() で取り直す。今日以前の泊は API を呼ばず、前回のリストを残す。
+    前回が使えなければ空にする（捏造しない）。
+    """
+    if not keeps_previous(checkin, today):
+        return fetch(), True
+    kept = previous_night(previous, night, checkin)
+    if kept is None:
+        print(f"  {'前泊' if night == 'pre' else '当日泊'} ({checkin}): チェックイン日が今日以前で、使える前回のリストが無いため0件（取り直していない）")
+        return [], False
+    print(f"  {'前泊' if night == 'pre' else '当日泊'} ({checkin}): 取り直していない（前回のリスト{len(kept)}件を残した）")
+    return kept, False
+
+
+def unchanged_previous(previous: dict | None, before: date, day: date, today: date) -> bool:
+    """2泊とも今日以前で、前回のリストを両方そのまま使えるなら、ファイルを書き直さない。"""
+    return (keeps_previous(before, today) and keeps_previous(day, today)
+            and previous_night(previous, "pre", before) is not None
+            and previous_night(previous, "same_day", day) is not None)
+
+
+def updated_at_for(refetched: bool, previous: dict | None) -> str:
+    """取り直した泊があれば今回の時刻。無ければ前回の時刻を残す（前回も無ければ今回の時刻）。"""
+    if not refetched and previous and (previous.get("meta") or {}).get("updated_at"):
+        return previous["meta"]["updated_at"]
+    return now_jst()
+
+
+def report_both_kept(match_id: str, previous: dict, label: str) -> bool:
+    """2泊とも残すとき。ファイルも索引の行も書き換えない。"""
+    print(f"{match_id}{label}: 2泊ともチェックイン日が今日以前のため、取り直していない"
+          f"（前泊{len(previous['hotels'])}件 / 当日泊{len(previous['same_day_hotels'])}件をそのまま残した）")
+    return False
 
 
 def save_json(data: dict, path: Path) -> None:
@@ -374,18 +468,24 @@ def now_jst() -> str:
     return datetime.now(JST).strftime("%Y-%m-%d %H:%M")
 
 
-def build_one(match: dict, stadiums: dict[str, dict], index: dict, response_file: str | None) -> None:
+def build_one(match: dict, stadiums: dict[str, dict], index: dict, response_file: str | None, today: date) -> bool:
+    """国内アウェイ戦1試合。取り直した泊があれば True。"""
     stadium = stadiums.get(match.get("venue", ""))
     if not stadium:
         raise KeyError(f"stadiums.json に venue がありません: {match.get('venue')}")
     stadium_id = stadium["id"]
     day = date.fromisoformat(match_day(match))
     before = day - timedelta(days=1)  # 前泊（試合前日に泊まって当日にスタジアムへ）
-    pre = fetch_night(stadium, stadium_id, before, response_file)
-    same_day = fetch_night(stadium, stadium_id, day, response_file)  # 当日泊（試合のあとに泊まる）
-    document = build_match_hotels_document(match["id"], pre)
+    previous = load_previous(match["id"])
+    if unchanged_previous(previous, before, day, today):
+        return report_both_kept(match["id"], previous, "")
+    pre, pre_fetched = night_hotels("pre", before, today, previous, lambda: [to_public_hotel_dict(h) for h in fetch_night(stadium, stadium_id, before, response_file)])
+    # 当日泊（試合のあとに泊まる）
+    same_day, same_fetched = night_hotels("same_day", day, today, previous, lambda: [to_public_hotel_dict(h) for h in fetch_night(stadium, stadium_id, day, response_file)])
+    refetched = pre_fetched or same_fetched
+    document = {"match_id": match["id"], "hotel_count": len(pre), "hotels": pre}
     document["same_day_hotel_count"] = len(same_day)
-    document["same_day_hotels"] = [to_public_hotel_dict(h) for h in same_day]
+    document["same_day_hotels"] = same_day
     document["meta"] = {
         "match_id": match["id"],
         "stadium_id": stadium_id,
@@ -395,7 +495,7 @@ def build_one(match: dict, stadiums: dict[str, dict], index: dict, response_file
         "same_day_checkin_date": day.isoformat(),
         "same_day_checkout_date": (day + timedelta(days=1)).isoformat(),
         "station_name": (base_station(stadium) or (None,))[0],
-        "updated_at": now_jst(),
+        "updated_at": updated_at_for(refetched, previous),
         "source": "Rakuten Travel API",
         "search_conditions": {"adult_num": ADULT_NUM, "up_class_num": 0, "low_class_num": 0, "search_radius": SEARCH_RADIUS_KM, "station_search_radius": STATION_RADIUS_KM},
     }
@@ -404,6 +504,7 @@ def build_one(match: dict, stadiums: dict[str, dict], index: dict, response_file
     entry.update(stadium_id=stadium_id, checkin_date=before.isoformat(), checkout_date=day.isoformat(), data_path=f"data/hotels/{match['id']}.json")
     index["matches"] = [m for m in index.get("matches", []) if m.get("match_id") != match["id"]] + [entry]
     print(f"{match['id']}: 前泊{len(pre)}件 ({before}) / 当日泊{len(same_day)}件 ({day})")
+    return refetched
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -412,7 +513,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--all-away", action="store_true")
     parser.add_argument("--all-home", action="store_true", help="サンガスタジアムのホーム戦（home-guide.json の venues）")
     parser.add_argument("--response-file", help="API応答の保存ファイル（検証用。APIは呼ばない）")
-    parser.add_argument("--today", help="YYYY-MM-DD（検証用）")
+    parser.add_argument("--today", help="YYYY-MM-DD（検証用）。対象試合の選定と、泊ごとの取り直し判定（チェックイン日が今日以前なら取り直さない）に使う")
     args = parser.parse_args(argv)
 
     today = date.fromisoformat(args.today) if args.today else datetime.now(JST).date()
@@ -427,19 +528,24 @@ def main(argv: list[str] | None = None) -> int:
 
     stadiums = load_stadiums()
     index = read_json(HOTEL_INDEX_PATH) if HOTEL_INDEX_PATH.exists() else {"meta": {}, "matches": []}
+    before_index = json.dumps(index, ensure_ascii=False, sort_keys=True)
     failures = 0
+    refetched_any = False
     for match in matches:
         try:
             if match.get("home_away") == "H" and match.get("venue") in guide.get("venues", []):
-                build_home(match, guide, index, args.response_file)
+                refetched_any |= build_home(match, guide, index, args.response_file, today)
             else:
-                build_one(match, stadiums, index, args.response_file)
+                refetched_any |= build_one(match, stadiums, index, args.response_file, today)
         except Exception as error:  # 1試合の失敗で全体を止めない。キーは例外文に入れていない
             failures += 1
             print(f"{match['id']}: 失敗 {error}", file=sys.stderr)
-    index["meta"].update(updated_at=now_jst(), source="Rakuten Travel API", season="2026-27")
+    # 索引の時刻は、どれか1試合でも取り直したときだけ進める。
+    if refetched_any:
+        index["meta"].update(updated_at=now_jst(), source="Rakuten Travel API", season="2026-27")
     index["matches"].sort(key=lambda m: m["match_id"])
-    save_json(index, HOTEL_INDEX_PATH)
+    if refetched_any or json.dumps(index, ensure_ascii=False, sort_keys=True) != before_index:
+        save_json(index, HOTEL_INDEX_PATH)
     return 1 if failures == len(matches) else 0
 
 

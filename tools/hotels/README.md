@@ -6,7 +6,11 @@ Rakuten Travel API を使ったホテル候補データの生成基盤です。
 
 ## 現在の状態
 
-`build_match_hotels.py` は楽天トラベルの実APIから試合ごとのJSONを作る（`--match-id` / `--all-away` / `--all-home`）。`--all-home` はサンガスタジアムのホーム戦で、検索区域とそばの2軒は `public/data/home-guide.json` から読む。必要な環境変数は `RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。詳細は `docs/hotels-operation-flow.md` の「アウェイ遠征ガイド」。以下の「PR #122 時点」は経緯として残す。
+`build_match_hotels.py` は楽天トラベルの実APIから試合ごとのJSONを作る（`--match-id` / `--all-away` / `--all-home`）。`--all-home` はサンガスタジアムのホーム戦で、検索区域とそばの2軒は `public/data/home-guide.json` から読む。必要な環境変数は `RAKUTEN_APP_ID` / `RAKUTEN_AFFILIATE_ID` / `RAKUTEN_ACCESS_KEY`。詳細は `docs/hotels-operation-flow.md` の「アウェイ遠征ガイド」。
+
+**取り直すのは、チェックイン日が今日（Asia/Tokyo の暦日）より先の泊だけ**（2026-11-24 から）。前泊・当日泊を別々に判定し、チェックイン日が今日以前の泊は API を呼ばず、`public/data/hotels/{match_id}.json` の前回の配列をそのまま残す（VacantHotelSearch は取得時点の空室しか返さず、当日以降に取り直すと候補が減るため）。前回が無い・日付が違うときは0件にし、宿を作らない。基準日は `--today YYYY-MM-DD` で固定できる。確かめるのは `check_keep_past_nights.py`（`npm run check:away`。実APIなし）。
+
+以下の「PR #122 時点」は経緯として残す。現在の挙動ではない。
 
 ## PR #122 時点の注意
 
@@ -28,6 +32,7 @@ Rakuten Travel API を使ったホテル候補データの生成基盤です。
 - `public_schema.py`: `public/data` 向け JSON 変換
 - `investigate.py`: 調査・疎通確認用 CLI
 - `build_match_hotels.py`: 公開データ生成エントリポイント
+- `check_keep_past_nights.py`: 今日以前の泊を取り直さないことの確認（実APIなし）
 
 ## メモ
 

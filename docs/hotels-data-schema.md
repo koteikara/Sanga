@@ -188,6 +188,8 @@ public/
 
 試合ごとのファイルには、前泊の `hotels` / `hotel_count` に加えて、当日泊（試合の日にチェックイン）の `same_day_hotels` / `same_day_hotel_count` を置く（項目は `hotels[]` と同じ）。`meta` には `same_day_checkin_date` / `same_day_checkout_date`、最寄り駅の名前 `station_name`、`search_conditions.station_search_radius` を足す。`hotel-index.json` の `hotel_count` は前泊の件数のまま。
 
+**チェックイン日が今日（Asia/Tokyo）以前の泊は、取り直さずに前回のリストを残す**（2026-11-24。`docs/hotels-operation-flow.md` の「更新」）。そのため、前泊と当日泊で取得した日が違うことがある。泊ごとの取得時刻の項目（`retrieved_at` など）は持たない。`meta.updated_at` は、そのファイルを最後に書いた時刻（どちらかの泊を取り直した時刻）。
+
 ## 5. 公開用に最小限必要な項目
 
 最初の公開段階では、`hotels[]` にすべての内部項目を出さなくてもよい。

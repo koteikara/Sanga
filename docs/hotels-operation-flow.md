@@ -63,7 +63,8 @@ node --check public/assets/app.js
 - 最寄り駅の周りに宿がほとんど無いスタジアムには「宿泊の拠点駅」`hub_name` / `hub_latitude` / `hub_longitude` / `hub_note`（行き方）を置き、駅周辺の検索をそこで行う（2026-10-16）。選び方は、スタジアムへ乗り換えなしか少ない乗り換えで行けて、OpenPOI API で「ホテル」を半径1kmで検索した件数が多い駅。現在: パナスタ→新大阪、メルスタ→東京（高速バス。スタジアム周辺にも駅周辺にも宿が少ないため、遠征の宿泊地として多い東京駅を採る）、埼スタ→浦和、水戸信ス→水戸、フクアリ→千葉、味スタ→調布、ノエスタ→神戸、ハナサカ→天王寺。ページでは「泊まるなら ○○駅周辺」と出す。
 - スタジアムの欄には、OpenStreetMap の埋め込み地図（`export/embed.html`、キー不要、`loading="lazy"`）と、Googleマップで周辺の「グルメ／ラーメン／居酒屋／カフェ」を検索するボタン（スタジアム周辺と、拠点駅か最寄り駅の周辺）、市の「ご当地グルメ」をGoogle検索するリンクを置く。
 - 料金は、VacantHotelSearch が返す空室プラン（`roomInfo` の `roomBasicInfo` と直後の `dailyCharge`）のうち、`dailyCharge.total`（その日1泊の合計料金）が最安のもの（`stay_charge_total`）。並び順もこの料金。ページでは「2名1泊 ¥○〜」と、2で割った「1人 約¥○」、食事の有無を出す。プランが取れなかった宿だけ `hotelMinCharge`（楽天の説明では「1部屋1泊あたり、税・サービス料込みの最安値の目安」）を「目安」として出す。楽天の説明には `total` が指定人数分かどうかが書かれていないため、実際の応答で `rakutenCharge`・`chargeFlag`（0=1人あたり、1=1室あたり）と突き合わせて確かめる。
-- 取得条件・日時（`meta.updated_at`、JST）をページに表示する。広告表記（PR）はページ冒頭と各ホテル欄に出す。
+- **チェックイン日が今日以前の泊は取り直さない（2026-11-24）。** VacantHotelSearch は取得時点で空いている部屋しか返さないので、チェックイン日の当日以降に取り直すと候補が急に減る（2026-11-23 17:32 の週次取得で、翌日の浦項戦 acl-md5 の前泊が8件から4件になった。#410）。`build_match_hotels.py` は前泊・当日泊を別々に見て、チェックイン日が今日（Asia/Tokyo の暦日。時刻は見ない）以前の泊は API を呼ばず、実行を始めたときの `public/data/hotels/{match_id}.json`（ワークフローでは checkout した main の公開JSON）の配列を、順番も中身も変えずに残す。取り直すのは今日より先の泊だけ。詳しくは下の「更新」。
+- 取得条件・日時（`meta.updated_at`、JST）をページに表示する。`meta.updated_at` は「この試合のファイルを最後に書いた時刻」で、泊ごとの取得時刻ではない。広告表記（PR）はページ冒頭と各ホテル欄に出す。
 - 見た目は過密日程カレンダーと同じ紫の地・ぼかし（ネビュラ）と紙のカード（`public/assets/away.css`）。試合ごとに大会色の帯（J1 / ルヴァン）、ホテルは写真つきカードを前泊・当日泊の2列で横に流す（2026-10-15、2列化は10-16）。列ごとに件数と「スワイプで他の宿 →」を出し、マウス操作の画面では左右の送りボタンも出す。ホテル名は全角英数字を半角にそろえ（NFKC）、3行まで出す。試合ごとの欄は開け閉めできる（`details` / `summary`。直近の試合と、URL の `#試合ID` の試合だけ最初から開く。ホテルと地図は開いたときに読む。見出しを押したときは中身を620msで伸び縮みさせ（grid の行を 0fr⇔1fr、easeInOutCubic、高さと透明度。時間は `away.css` の `--acc-dur`。JS の保険の時間 900ms はこれより長く保つ）、動きを止める設定〈`prefers-reduced-motion` / 入口ページの切り替え〉ではすぐ切り替える）。試合へ飛ぶ帯は濃い色で、スクロールしても画面の上に貼り付き、いま見ている試合を濃く示す。拠点駅の周りの宿でスタジアムから5kmより遠いものは、スタジアムまでの距離を出さず駅までの距離だけを出す（2026-10-16）。
 - ホテルの写真は楽天が返す `hotelImageUrl`（無ければ `hotelThumbnailUrl`）を `img.travel.rakuten.co.jp` から直接読む。画像を複製して置かない。読めないときは写真なしの絵に替える。評価（★と件数）も楽天の値をそのまま出す。楽天ウェブサービスのクレジット（Supported by Rakuten Developers）をページ下に置く。
 - A8.net の計測ピクセルは、同じ提携リンクにつきページで1回だけ置く（試合の数だけ表示回数が増えないように）。
@@ -76,9 +77,17 @@ node --check public/assets/app.js
 
 ### 更新
 
-- 自動: `hotels-sync.yml`（毎週月曜 10:00 JST。`.github/workflows/`）。差分があれば下書きPR（`away-guide.json` が変わると `away-guide.js` / `away.html` の版数も変わるため、コミットは `public/` 全体）。デプロイはしない。`github.token` で作ったPRではCIが自動で動かないので、PR画面から閉じて開き直すか、手元で `npm run check` を確かめてからmergeする。
+- 自動: `hotels-sync.yml`（毎週月曜 10:00 JST。`.github/workflows/`）。対象は試合日が今日より先の試合（`upcoming_domestic_away()` / `upcoming_home()`）。差分があれば下書きPR（`away-guide.json` が変わると `away-guide.js` / `away.html` の版数も変わるため、コミットは `public/` 全体）。デプロイはしない。`github.token` で作ったPRではCIが自動で動かないので、PR画面から閉じて開き直すか、手元で `npm run check` を確かめてからmergeする。
 - 手動: `python tools/hotels/build_match_hotels.py --all-away` → `node tools/generate-away-guide.js` → `npm run fix:asset-versions` → `npm run check:static`
 - API を呼ばない検証: `--response-file tools/fixtures/hotels/vacant-hotel-search.sample.json`（出力は公開データに含めない）
+- **泊ごとの取り直し（2026-11-24 から）。** 基準日 `today` は `--today YYYY-MM-DD`、無ければ実行時の Asia/Tokyo の日付。対象試合の選び方と、泊ごとの判定の両方に使う。
+  - チェックイン日 > `today`: これまでどおり取り直す。
+  - チェックイン日 <= `today`（チェックイン当日の夕方の実行も含む）: API を呼ばず、前回の公開JSONのその泊（前泊は `hotels` / `hotel_count`、当日泊は `same_day_hotels` / `same_day_hotel_count`）をそのまま残す。前泊を残したときは `hotel-index.json` の `hotel_count` も前回の件数のまま。0件の前回も「データあり」として0件のまま残す。
+  - 前回が使えないとき（ファイルが無い、その泊の配列が無い、前回の `meta.checkin_date` / `meta.same_day_checkin_date` が今回の日付と違う）は、その泊を0件・空配列にする。宿名・料金・件数を補ったり作ったりしない。
+  - 2泊とも残すときは、試合のファイルを書き直さない（`meta.updated_at` も前回のまま）。片方でも取り直したら `meta.updated_at` は今回の時刻。`hotel-index.json` の `meta.updated_at` は、どれか1試合でも取り直したときだけ進める。
+  - 残した泊は標準出力に「取り直していない（前回のリストN件を残した）」と出る。
+  - 確認: `tools/hotels/check_keep_past_nights.py`（`npm run check:away` から呼ぶ。実APIなし、一時ディレクトリに書く）。今日・過去・未来の泊、前回なし、日付のずれ、前回0件を、ホームとアウェイの両方で見る。
+  - 試合日を過ぎた試合は週次の対象から外れるので、問題になるのは試合前日（前泊のチェックイン当日）の実行と、`--match-id` で過ぎた試合を指定したとき。
 
 ### 会場・交通の追加
 
@@ -140,4 +149,4 @@ node --check public/assets/app.js
 - 1泊ごとに `search_areas` の順に検索する。先頭は `stadium`（スタジアムから半径3km。そばの2軒はここで見つける）、次は `kameoka`（湯の花温泉から半径3km）。区域ごとに安い順で6件まで、重なりは先の区域に残す。
 - 並びは、そばの2軒（`featured_hotels` の順、`featured: true`、`area: "stadium"`）→ スタジアム周辺のほかの宿 → 湯の花温泉（`area: "kameoka"`）。1試合4回のAPI呼び出し。
 - そばの2軒が取得時点で空いていないときも、ページは2軒を先頭に「取得時点では2名の空室が見つかりませんでした」として出す（知りたいことなので隠さない）。
-- `hotels-sync.yml` は `--all-away --all-home` で両方を週1回取り直す。
+- `hotels-sync.yml` は `--all-away --all-home` で両方を週1回取り直す。チェックイン日が今日以前の泊は取り直さず前回のリストを残す規則（「アウェイ遠征ガイド」の「更新」）は、ホーム戦にも同じに効く。そばの2軒が「空室が見つかりませんでした」になっている前回も、そのまま残る。
