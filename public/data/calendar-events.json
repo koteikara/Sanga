@@ -3461,6 +3461,30 @@
       "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
+      "id": "news-22058-sec17-happening-1100",
+      "starts_at": "2026-11-28T11:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "event",
+      "title": "C大阪戦 催しの開始",
+      "source": "official",
+      "action_type": "information",
+      "derived_from": "news_article",
+      "news_kind": "場内の催し",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec17"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22058",
+      "source_checked_at": "2026-11-24",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-24T05:45:41Z"
+    },
+    {
       "id": "news-22107-sec19-entry-1200",
       "starts_at": "2026-11-28T12:00:00+09:00",
       "ends_at": "",
