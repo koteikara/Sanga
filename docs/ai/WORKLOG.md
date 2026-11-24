@@ -39,6 +39,47 @@
 
 新しい記録はこの下へ追加します。
 
+## 2026-11-24 acl-md8 の会場の出典を公式特設サイトに戻す
+
+### 変更ファイル
+
+- `public/data/matches.json`（acl-md8 の `source_url`・`source_checked_at`・`updated_at`、`meta.updated_at`）
+- 生成物: `public/data/calendar-events.json`、`public/timeline.ics`、参照の版数、`experiments/supporter-timeline/calendar-events.sample.json`
+- `docs/source-and-license.md`、`docs/schedule-audit.md`
+
+### 変更内容
+
+ACL MD8 ポートFC戦（2027-02-16 19:00）の出典を、2026-11-11 に使ったX投稿から京都サンガ公式のACL特設サイト https://www.sanga-fc.jp/acle26-27 に戻した。確認日は 2026-11-24。会場名と日時は変えていない。X投稿は注記や別の欄に移さず、出典の経緯は `docs/source-and-license.md` の「以前の出典」に残した。
+
+2026-11-24 の特設サイトの表示は、MD8「2.16 TUE 19:00（※日本時間）」、会場「パトゥム・ターニー・スタジアム（タイ）」、ポートFC、アウェイ。`matches.json` は #391 の表記「パトゥムターニー・スタジアム（True BGスタジアム）」のまま。
+
+2026-11-11 の残課題「京都サンガ公式が会場を直したら、`source_url` を公式のページに戻す」は、これで済んだ。
+
+### 確認結果
+
+#415（同期）と #413（同期時点のガードなど）のマージ後の main に載せ直し、`npm run generate:timeline` で作り直した。そのあと `npm run check` は終了コード 0。件数は main と同じで、`calendar-events.json` 221件、`public/timeline.ics` 147件、`public/timeline-events.ics` 20件、`matches.json` 53件。`public/timeline-events.ics` に差分はない。生成物で変わったのは次のとおり。
+
+- `match-acl-md8` の `source_url`・`source_checked_at`
+- `calendar_sequence` の 2→3（`source_url` はカレンダーに出る項目なので上がる）
+- `calendar_last_modified` / LAST-MODIFIED が同期時点（2026-11-24T05:45:41Z）になった
+- ICSの SEQUENCE と DESCRIPTION の URL
+- `timeline.ics` の DTSTAMP（最新の更新時刻に連動）
+- 参照の版数
+
+題・開始・終了は変わっていない。公開物に ThaiFootballs の URL は残っていない。
+
+### 未確認項目
+
+なし。
+
+### 残課題
+
+取り込みの下書きPR（https://github.com/koteikara/Sanga/pull/411 など）は、`match-acl-md8` の出典がX投稿のまま。このPRのあとにマージするときは、main の `matches.json` から作り直して確かめる。
+
+### 人間が確認すべき点
+
+会場名の表記を特設サイトに合わせるか（中黒の位置と括弧内が違う）。変えるなら別のPR。マージと本番反映は別作業。
+
 ## 2026-11-17 ニュースの入会期間を応募締切にしない
 
 ### 変更ファイル
@@ -272,6 +313,8 @@ X投稿の本文は、この環境では取得できなかった（ページは4
 ### 残課題
 
 京都サンガ公式が会場を直したら、`source_url` を公式のページに戻す。ポートFC公式かAFC公式の変更ページが見つかったときも同じ。
+
+2026-11-24 に済んだ。京都サンガ公式のACL特設サイトに戻した（上の「2026-11-24 acl-md8 の会場の出典を公式特設サイトに戻す」）。
 
 開いている取り込み下書き PR #390 は `calendar-events.json` だけを変えていて、題が旧会場のまま。このPRのあとにそのままマージすると、公開カレンダーの題が戻る。`matches.json` は触っていないので、マージ前に main の試合データから作り直す。
 

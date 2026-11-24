@@ -94,6 +94,7 @@ node tools/export-matches-review.js > /tmp/sanga-matches-review.md
 | 2026-06-18 | sec16 | validate-matches | tentativeなら日付なしでも検証通過 | tentative・日付なし・※数字注記ありの場合だけ未定日程として検証通過 | https://www.sanga-fc.jp/news/detail/21152 | 修正済み | 第16節のような公式表「未定」日程を許容しつつ、注記なしの未定データは検出できるよう調整。 |
 | 2026-08-20 | sec20 | match_date / date_candidates / status | 2026-09-19 / confirmed | 未定（2026-12-19 候補） / tentative | https://www.jleague-ticket.jp/sales/perform/2630702/001 | 修正済み | 誤った日付で確定状態になっていたため、正しい状態に修正。date_candidates に2026-12-19を設定し、statusをtentativeに戻す。matches.jsonの配列も日付順にソート。 |
 | 2026-11-11 | acl-md8 | venue | タマサートスタジアム | パトゥムターニー・スタジアム（True BGスタジアム） | https://x.com/ThaiFootballs/status/2120056622617969015 | 修正済み | 日時は 2027-02-16 19:00 のまま。ポートFC公式サイト（portfcofficial.com）と公式SNS、AFC公式の日程表（2026-08-18時点のPDFはタマサートのまま）に、この試合の会場変更が載ったページは見つからなかった。京都サンガ公式（https://www.sanga-fc.jp/news/detail/21321 と https://www.sanga-fc.jp/acle26-27）は 2026-11-11 時点で旧会場のまま。出典は、ポートFCの発表を伝えた上記の投稿。以前の日程出典 https://www.sanga-fc.jp/news/detail/21321 は会場が古いので source_url から外した。住所・座標は未確認のため足していない。 |
+| 2026-11-24 | acl-md8 | source_url / source_checked_at | https://x.com/ThaiFootballs/status/2120056622617969015 / 2026-11-11 | https://www.sanga-fc.jp/acle26-27 / 2026-11-24 | https://www.sanga-fc.jp/acle26-27 | 修正済み | 京都サンガ公式のACL特設サイトが 2026-11-24 に新しい会場（「パトゥム・ターニー・スタジアム（タイ）」、2.16 TUE 19:00 日本時間）を載せたので、出典をX投稿から特設サイトに戻した。会場名と日時は変えていない。 |
 
 ## 修正時の注意
 
