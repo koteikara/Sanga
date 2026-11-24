@@ -473,6 +473,9 @@ function awayStateOf(stateRaw) {
  */
 const NEWS_TIME_KINDS = {
   '当日の流れ': { type: 'event', action_type: 'information' },
+  // 場内の催し（配布・ブース・抽選など）の開始。案内であって販売や締切ではないので、当日の流れと同じ型。
+  // 読むのは「開催時間」「実施時間」などのラベルの次の行の、最初の時刻だけ（tools/parse-news-times.js の readHappening）。
+  '場内の催し': { type: 'event', action_type: 'information' },
   '物販ブース': { type: 'goods', action_type: 'information' },
   // 当日券は公式の販売スケジュール表（先行5段階＋引換3件）には載らない別口。
   // ticket_kind を分けて、8段階の数え上げから外す。
@@ -494,26 +497,35 @@ const NEWS_TIME_KINDS = {
  * `edit` なら `label` と `starts_at` を差し替える。
  */
 /**
- * 同期時点を決める。記事から読んだ日時が「もう過ぎたか」を見るための時計。
+ * 同期時点を決める。記事から読んだ日時が「もう過ぎたか」を見るための時計で、
+ * 版の更新時刻（`calendar_last_modified`）にも同じ値を使う。
  *
  * **実行時刻を使わない。** 使うと、同じ入力でも日が変わるだけで生成物が変わり、
- * PRごとの `--check` が落ちる。取り込んだCSVの `retrieved_at_jst` のうち最も新しいものを
- * 使えば、取り込み直したときだけ動く。販売スケジュールの取得が止まっていても、
- * 案内の一覧・記事の取得時刻で進む。テストでは `--now` で固定する。
+ * PRごとの `--check` が落ちる。取り込んだCSV（販売スケジュールの全行、`--news`、
+ * `--news-times`）の有効な `retrieved_at_jst` のうち最も新しいものを使えば、取り込み直したとき
+ * だけ動く。販売スケジュールの取得が止まっていても、案内の一覧・記事の取得時刻で進む。
+ *
+ * **どれも読めなければ止める。** 以前は販売CSVの先頭行が読めないと実行時刻で進めていた
+ * （2026-11-24 に塞いだ）。テストでは `--now` で固定する。
  */
-function syncTimeOf(options, snapshotAt) {
+function syncTimeOf(options, ticketRecords) {
   if (options.now) {
     const fixed = new Date(options.now);
     if (Number.isNaN(fixed.getTime())) throw new Error(`--now が日時として読めません: ${options.now}`);
     return fixed;
   }
-  let latest = snapshotAt;
+  let latest = null;
+  const consider = (record) => {
+    const at = new Date(record.retrieved_at_jst || '');
+    if (!Number.isNaN(at.getTime()) && (!latest || at > latest)) latest = at;
+  };
+  ticketRecords.forEach(consider);
   [options.newsPath, options.newsTimesPath].filter(Boolean).forEach((csvPath) => {
-    readCsvRecords(csvPath, { allowEmpty: true }).forEach((record) => {
-      const at = new Date(record.retrieved_at_jst || '');
-      if (!Number.isNaN(at.getTime()) && at > latest) latest = at;
-    });
+    readCsvRecords(csvPath, { allowEmpty: true }).forEach(consider);
   });
+  if (!latest) {
+    throw new Error('同期時点を決められません。取り込んだCSVに有効な retrieved_at_jst がありません（実行時刻では進めません。テストなら --now で固定してください）');
+  }
   return latest;
 }
 
@@ -897,13 +909,14 @@ function build(options) {
   if (records.length === 0) throw new Error('CSVに対象の行がありません');
 
   const matchIndex = buildMatchIndex(options.matchesPath);
+
+  // 同期時点。過ぎた判定と、版の「変わった時刻」に使う。CSVを取り直した時刻を1つだけ使い、
+  // 行ごとには持たない。読めなければ止める（実行時刻にしない）。
+  const syncAt = syncTimeOf(options, records);
+  // 確認日も実行時刻から作らない。販売CSVに無ければ、同期時点の日付（JST）。
   const checkedAt = options.checkedAt
     || (records[0].retrieved_at_jst || '').slice(0, 10)
-    || new Date().toISOString().slice(0, 10);
-
-  // 版の「変わった時刻」に使う。CSVを取り直した時刻を1つだけ使い、行ごとには持たない。
-  const parsedSnapshot = new Date(records[0].retrieved_at_jst || '');
-  const snapshotAt = Number.isNaN(parsedSnapshot.getTime()) ? new Date() : parsedSnapshot;
+    || new Date(syncAt.getTime() + 9 * 3600000).toISOString().slice(0, 10);
 
   const events = [];
   const rounds = new Set();
@@ -1042,7 +1055,6 @@ function build(options) {
   let newsTimeProblems = [];
   let newsTimesPassed = [];
   if (options.newsTimesPath) {
-    const syncAt = syncTimeOf(options, snapshotAt);
     const built = buildNewsTimes(options.newsTimesPath, options.newsTimesManualPath, matchIndex, syncAt);
     built.events.forEach((event) => {
       events.push(event);
@@ -1081,7 +1093,7 @@ function build(options) {
       ics_template_version: ICS_TEMPLATE_VERSION,
       updated_at: checkedAt,
     },
-    events: applyVersions(sortEvents(events), snapshotAt, readPrevious(options.outputPath)),
+    events: applyVersions(sortEvents(events), syncAt, readPrevious(options.outputPath)),
     skipped,
     away_tickets: awayTickets,
     news,

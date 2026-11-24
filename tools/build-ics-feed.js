@@ -296,11 +296,21 @@ function fromUtcStamp(value) {
  * UIDから試合を引く。**UIDを分解しない。**
  * 試合IDにハイフンを含むもの（`acl-md1`）があり、区切りで切ると壊れるため、
  * 実在する試合IDと突き合わせる。
+ *
+ * 形は3つ。`match-{試合ID}`、`ticket-{試合ID}-…`、記事由来の `news-{記事番号}-{試合ID}-…`
+ * （`tools/parse-news-times.js` が作る。古い `news-21381-sec09-1200` も同じ頭）。
+ * 記事由来も引けないと、その墓標は試合日を過ぎても消えない（2026-11-24 まではそうだった）。
  */
 function matchOfUid(uid, matches) {
   const id = uid.split('@')[0];
-  for (const [matchId, match] of matches) {
-    if (id === `match-${matchId}` || id.startsWith(`ticket-${matchId}-`)) return match;
+  // 記事由来は `news-{記事番号}-{試合ID}-…`。記事番号は数字だけなので、そこまでは形で外せる。
+  // 残りの頭を、実在する試合IDと突き合わせる（ハイフンで切って何番目かを決めない）。
+  const news = id.match(/^news-\d+-(.+)$/);
+  // 長いIDから見る。短いIDが長いIDの頭に重なっても取り違えない。
+  const ids = Array.from(matches.keys()).sort((a, b) => b.length - a.length);
+  for (const matchId of ids) {
+    if (id === `match-${matchId}` || id.startsWith(`ticket-${matchId}-`)) return matches.get(matchId);
+    if (news && news[1].startsWith(`${matchId}-`)) return matches.get(matchId);
   }
   return null;
 }
@@ -488,4 +498,8 @@ async function main(argv) {
   return 0;
 }
 
-main(process.argv.slice(2)).then((code) => process.exit(code));
+if (require.main === module) {
+  main(process.argv.slice(2)).then((code) => process.exit(code));
+}
+
+module.exports = { matchOfUid, tombstoneExpiry, tombstonesFor };
