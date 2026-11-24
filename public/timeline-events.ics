@@ -10,36 +10,6 @@ X-WR-CALDESC:京都サンガF.C. の試合当日の予定（非公式）。
 REFRESH-INTERVAL;VALUE=DURATION:PT12H
 X-PUBLISHED-TTL:PT12H
 BEGIN:VEVENT
-UID:news-22128-acl-md5-booth-1600@sanga-timeline.invalid
-DTSTAMP:20261124T054541Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261124T070000Z
-SUMMARY:浦項スティーラーズ戦 グッズ販売開始
-DESCRIPTION:MD5 浦項スティーラーズ戦（試合日 11/24（火）
- ）\nhttps://www.sanga-fc.jp/news/detail/22128\n※非公式のファン
- ツールによる予定です。日程が変わっている場合があ
- ります。購入・応募の前に公式サイトで確認してくだ
- さい。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
-UID:news-22158-acl-md5-sameday-1700@sanga-timeline.invalid
-DTSTAMP:20261124T054541Z
-SEQUENCE:0
-LAST-MODIFIED:20261108T180927Z
-DTSTART:20261124T080000Z
-SUMMARY:浦項スティーラーズ戦 当日券の発売（窓口）
-DESCRIPTION:MD5 浦項スティーラーズ戦（試合日 11/24（火）
- ）\nhttps://www.sanga-fc.jp/news/detail/22158\n※非公式のファン
- ツールによる予定です。日程が変わっている場合があ
- ります。購入・応募の前に公式サイトで確認してくだ
- さい。
-STATUS:CONFIRMED
-TRANSP:TRANSPARENT
-END:VEVENT
-BEGIN:VEVENT
 UID:news-22058-sec17-happening-1100@sanga-timeline.invalid
 DTSTAMP:20261124T054541Z
 SEQUENCE:0
@@ -94,6 +64,36 @@ DESCRIPTION:MD6 ブリーラム・ユナイテッド戦（試合日 12/1（
  があります。購入・応募の前に公式サイトで確認して
  ください。
 STATUS:CONFIRMED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22128-acl-md5-booth-1600@sanga-timeline.invalid
+DTSTAMP:20261124T054541Z
+SEQUENCE:1
+LAST-MODIFIED:20261124T054541Z
+DTSTART:20261124T070000Z
+SUMMARY:浦項スティーラーズ戦 グッズ販売開始
+DESCRIPTION:MD5 浦項スティーラーズ戦（試合日 11/24（火）
+ ）\nhttps://www.sanga-fc.jp/news/detail/22128\n※非公式のファン
+ ツールによる予定です。日程が変わっている場合があ
+ ります。購入・応募の前に公式サイトで確認してくだ
+ さい。
+STATUS:CANCELLED
+TRANSP:TRANSPARENT
+END:VEVENT
+BEGIN:VEVENT
+UID:news-22158-acl-md5-sameday-1700@sanga-timeline.invalid
+DTSTAMP:20261124T054541Z
+SEQUENCE:1
+LAST-MODIFIED:20261124T054541Z
+DTSTART:20261124T080000Z
+SUMMARY:浦項スティーラーズ戦 当日券の発売（窓口）
+DESCRIPTION:MD5 浦項スティーラーズ戦（試合日 11/24（火）
+ ）\nhttps://www.sanga-fc.jp/news/detail/22158\n※非公式のファン
+ ツールによる予定です。日程が変わっている場合があ
+ ります。購入・応募の前に公式サイトで確認してくだ
+ さい。
+STATUS:CANCELLED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
