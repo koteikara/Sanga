@@ -3280,55 +3280,6 @@
       "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
-      "id": "news-22128-acl-md5-booth-1600",
-      "starts_at": "2026-11-24T16:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "goods",
-      "title": "浦項スティーラーズ戦 グッズ販売開始",
-      "source": "official",
-      "action_type": "information",
-      "derived_from": "news_article",
-      "news_kind": "物販ブース",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "acl-md5"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22128",
-      "source_checked_at": "2026-11-24",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
-      "id": "news-22158-acl-md5-sameday-1700",
-      "starts_at": "2026-11-24T17:00:00+09:00",
-      "ends_at": "",
-      "date_precision": "datetime",
-      "date_candidates": [],
-      "type": "ticket",
-      "ticket_kind": "same_day",
-      "title": "浦項スティーラーズ戦 当日券の発売（窓口）",
-      "source": "official",
-      "action_type": "action",
-      "derived_from": "news_article",
-      "news_kind": "当日券",
-      "audience": {},
-      "interest_tags": [],
-      "match_ids": [
-        "acl-md5"
-      ],
-      "source_url": "https://www.sanga-fc.jp/news/detail/22158",
-      "source_checked_at": "2026-11-24",
-      "status": "confirmed",
-      "is_visible": true,
-      "calendar_sequence": 0,
-      "calendar_last_modified": "2026-11-08T18:09:27Z"
-    },
-    {
       "id": "match-acl-md5",
       "ends_at": "2026-11-24T21:00:00+09:00",
       "type": "match",
@@ -3461,6 +3412,54 @@
       "calendar_last_modified": "2026-11-08T18:09:27Z"
     },
     {
+      "id": "news-22138-sec17-booth-1000",
+      "starts_at": "2026-11-28T10:00:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "goods",
+      "title": "C大阪戦 グッズ販売開始",
+      "source": "official",
+      "action_type": "information",
+      "derived_from": "news_article",
+      "news_kind": "物販ブース",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec17"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22138",
+      "source_checked_at": "2026-11-26",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-25T22:07:56Z"
+    },
+    {
+      "id": "news-22129-sec17-booth-1030",
+      "starts_at": "2026-11-28T10:30:00+09:00",
+      "ends_at": "",
+      "date_precision": "datetime",
+      "date_candidates": [],
+      "type": "goods",
+      "title": "C大阪戦 グッズ販売開始",
+      "source": "official",
+      "action_type": "information",
+      "derived_from": "news_article",
+      "news_kind": "物販ブース",
+      "audience": {},
+      "interest_tags": [],
+      "match_ids": [
+        "sec17"
+      ],
+      "source_url": "https://www.sanga-fc.jp/news/detail/22129",
+      "source_checked_at": "2026-11-26",
+      "status": "confirmed",
+      "is_visible": true,
+      "calendar_sequence": 0,
+      "calendar_last_modified": "2026-11-25T22:07:56Z"
+    },
+    {
       "id": "news-22058-sec17-happening-1100",
       "starts_at": "2026-11-28T11:00:00+09:00",
       "ends_at": "",
@@ -3478,7 +3477,7 @@
         "sec17"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22058",
-      "source_checked_at": "2026-11-24",
+      "source_checked_at": "2026-11-26",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3502,7 +3501,7 @@
         "sec19"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22107",
-      "source_checked_at": "2026-11-24",
+      "source_checked_at": "2026-11-26",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3526,7 +3525,7 @@
         "sec20"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22107",
-      "source_checked_at": "2026-11-24",
+      "source_checked_at": "2026-11-26",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -3595,7 +3594,7 @@
         "acl-md6"
       ],
       "source_url": "https://www.sanga-fc.jp/news/detail/22105",
-      "source_checked_at": "2026-11-24",
+      "source_checked_at": "2026-11-26",
       "status": "confirmed",
       "is_visible": true,
       "calendar_sequence": 0,
@@ -5660,24 +5659,24 @@
     "source": "https://www.sanga-fc.jp/news",
     "csv": "docs/sheets/news.current.csv",
     "checked_at": "2026-11-09",
-    "article_count": 53,
+    "article_count": 52,
     "linked_count": 33,
     "by_match": [
       {
         "match_id": "acl-md5",
-        "count": 6,
+        "count": 5,
         "categories": [
           {
             "name": "グッズ",
             "count": 2
           },
           {
-            "name": "チケット",
+            "name": "試合情報",
             "count": 2
           },
           {
-            "name": "試合情報",
-            "count": 2
+            "name": "チケット",
+            "count": 1
           }
         ],
         "articles": [
@@ -5705,11 +5704,6 @@
             "published_on": "2026-11-22",
             "category": "グッズ",
             "source_url": "https://www.sanga-fc.jp/news/detail/22128"
-          },
-          {
-            "published_on": "2026-10-27",
-            "category": "チケット",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22044"
           }
         ]
       },
@@ -5732,40 +5726,6 @@
             "published_on": "2026-11-13",
             "category": "試合情報",
             "source_url": "https://www.sanga-fc.jp/news/detail/22104"
-          }
-        ]
-      },
-      {
-        "match_id": "sec09",
-        "count": 1,
-        "categories": [
-          {
-            "name": "スポンサー",
-            "count": 1
-          }
-        ],
-        "articles": [
-          {
-            "published_on": "2026-11-09",
-            "category": "スポンサー",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22088"
-          }
-        ]
-      },
-      {
-        "match_id": "sec11",
-        "count": 1,
-        "categories": [
-          {
-            "name": "スポンサー",
-            "count": 1
-          }
-        ],
-        "articles": [
-          {
-            "published_on": "2026-11-09",
-            "category": "スポンサー",
-            "source_url": "https://www.sanga-fc.jp/news/detail/22088"
           }
         ]
       },
@@ -5854,11 +5814,15 @@
       },
       {
         "match_id": "sec17",
-        "count": 6,
+        "count": 8,
         "categories": [
           {
             "name": "試合情報",
             "count": 3
+          },
+          {
+            "name": "グッズ",
+            "count": 2
           },
           {
             "name": "ファンクラブ",
@@ -5870,6 +5834,16 @@
           }
         ],
         "articles": [
+          {
+            "published_on": "2026-11-25",
+            "category": "グッズ",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22138"
+          },
+          {
+            "published_on": "2026-11-25",
+            "category": "グッズ",
+            "source_url": "https://www.sanga-fc.jp/news/detail/22129"
+          },
           {
             "published_on": "2026-11-19",
             "category": "試合情報",
